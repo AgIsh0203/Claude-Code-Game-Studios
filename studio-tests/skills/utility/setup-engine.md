@@ -47,7 +47,7 @@ None. `/setup-engine` is a technical configuration skill. No director gates appl
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -263,7 +263,7 @@ Fixture defaults.
   returns every question as skipped
 - The sandbox carries the framework's `CLAUDE.md`. The rule this case checks is
   stated there ("A skipped or dismissed question is not an answer") and in
-  `.claude/docs/automation-modes.md`, not in `/setup-engine`'s own files; a rule
+  `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`, not in `/setup-engine`'s own files; a rule
   `CLAUDE.md` loads counts as the skill's own (`/skill-test` spec mode, Step 3),
   so a sandbox without it is set up wrong, not a skill FAIL
 

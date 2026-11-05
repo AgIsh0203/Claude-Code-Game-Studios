@@ -3,7 +3,7 @@
 Index of all director and lead review gates. Skills reference gate IDs from this
 index instead of embedding prompts inline — eliminating drift when prompts need
 updating. Each gate's full definition (Trigger, Context to pass, Prompt, Verdicts)
-lives in its own file under `.claude/docs/director-gates/`, named after the gate
+lives in its own file under `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/`, named after the gate
 ID in lowercase.
 
 **Scope**: All 7 production stages (Concept → Release), all 3 Tier 1 directors,
@@ -22,7 +22,7 @@ context window.**
 Agent by prefix: `CD-` creative-director · `TD-` technical-director ·
 `PR-` producer · `AD-` art-director · `LP-` lead-programmer · `QL-` qa-lead ·
 `ND-` narrative-director. Definition files below are in
-`.claude/docs/director-gates/`; each one's header names its agent's model tier.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/`; each one's header names its agent's model tier.
 
 | Gate ID | Purpose | Definition file |
 |---------|---------|-----------------|
@@ -93,7 +93,7 @@ The value is already resolved — skills call
 and read `review_mode` from the emitted block. Do **not** re-derive it here. The
 full chain (`.claude/ccgs/project.local.yaml` → `.claude/ccgs/project.yaml` → `.claude/ccgs/review-mode.txt`
 → `modes.rigor` expansion, `standard`→`lean`), its defaults and its failure modes are specified in
-`.claude/docs/config-resolution.md`, and covered by the config test suite.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`, and covered by the config test suite.
 
 An inline `--review [mode]` argument, if the skill accepts one, overrides the
 resolved value for that run.
@@ -115,7 +115,7 @@ Apply the resolved mode:
 # Apply mode check, then:
 Spawn `[agent-name]` via `Agent`:
 - Gate: [GATE-ID] — `Agent` prompt instructs the agent to read
-  `.claude/docs/director-gates/[gate-id].md` FIRST (parent must not read it)
+  `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` FIRST (parent must not read it)
 - Context: [fields under that gate's **Context to pass**]
 - Await the verdict before proceeding.
 ```

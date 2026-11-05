@@ -4,7 +4,7 @@ description: "Launch readiness across every department: code, content, store, ma
 argument-hint: "[launch-date or 'dry-run']"
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/launch-checklist/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/skills/launch-checklist/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -13,11 +13,11 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
-Resolved above — use as-is. No block → defaults in `.claude/docs/config-resolution.md`.
+Resolved above — use as-is. No block → defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Launch Checklist
 
@@ -37,7 +37,7 @@ trains the reader to skip the list, which defeats the gate:
   decision, unset is a missing one, and they must not produce the same output.
   Branch on the **four values this key takes** — `none | itch | steam | console` —
   and not on platform names. The full requirement table is the `## platform.cert_tier`
-  section of `.claude/docs/effects-map.md` — read **only that section** (Grep its
+  section of `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md` — read **only that section** (Grep its
   heading, then a bounded Read); the file as a whole is not a runtime input.
   - `none` — **emit no certification section at all.** Internal release, alpha or
     jam game. Say the section was omitted and why; do not leave it blank.
@@ -88,7 +88,7 @@ Read the argument for the launch date or `dry-run` mode. Dry-run mode generates 
 > reads either `scanned [N] files, [M] hits` or
 > `NOT ASSESSED — [code root unresolved | no source files | no asset folder | directory empty]`.
 > Never a bare tick. The code root is `src/`, `Assets/` or `Source/` by engine
-> (resolve per `.claude/docs/code-root-resolution.md`); assets live in
+> (resolve per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`); assets live in
 > `Content/`, `Assets/` or `Content/`.
 >
 > This applies to all four bullets below: each searches the same way, for

@@ -29,7 +29,7 @@ headings.** For each GDD discovered in Phase 1, pass its path explicitly to the
 structure-check script:
 
 ```
-Bash: bash .claude/scripts/gdd-structure-check.sh [path-to-gdd]
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh [path-to-gdd]
 ```
 
 **Pass paths one at a time; do not invoke it bare.** The no-argument form sweeps
@@ -53,7 +53,7 @@ informational):
   numeric rules (rates, curves, thresholds, costs — the system's `Category` is a
   hint, not the test); Player Fantasy and Tuning Knobs are advisory.
 - **`minimal`** — GDDs are not expected; audit `docs/GDD.md` instead,
-  against `.claude/docs/templates/game-brief.md`: each of the six required fields
+  against `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-brief.md`: each of the six required fields
   present and not a placeholder; the three one-liners advisory. Any GDD that
   does exist is checked at the `standard` bar, advisorily.
 
@@ -70,7 +70,7 @@ record with a targeted grep (not a full read):
   `Implemented`, `Needs Revision`.
 
 > **The `>?` is load-bearing, and so are `Draft`/`Implemented`.** Both emitters
-> write this field inside a blockquote — `.claude/docs/templates/game-design-document.md`
+> write this field inside a blockquote — `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-design-document.md`
 > and `/design-system` produce `> **Status**: …` — so an anchor of
 > `^\*\*Status\*\*:` matches nothing and reports *every* template-compliant GDD
 > as missing its Status. The template's own value list offers `Draft` and
@@ -159,7 +159,7 @@ Do not hand-migrate. Run the converter, which is deterministic and covered by
 the framework's own test suite:
 
 ```bash
-bash .claude/scripts/migrate-v1-config.sh --dry-run
+bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/migrate-v1-config.sh --dry-run
 ```
 
 The dry run writes nothing; record what it lists for the report. Do not run the
@@ -174,7 +174,7 @@ nothing** — the whole operation stays reversible with `git checkout`.
 Then tell the user to read `.claude/ccgs/migration-report.md` before running:
 
 ```bash
-bash .claude/scripts/migrate-v1-config.sh --finalize
+bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/migrate-v1-config.sh --finalize
 ```
 
 `--finalize` deletes a legacy file only after proving its value is present in

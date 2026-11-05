@@ -1,6 +1,6 @@
 # Accessibility Requirements
 
-> Authoring guidance: .claude/docs/templates/guidance/accessibility-requirements-guide.md (load per-section as you author — do not read entirely).
+> Authoring guidance: C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/accessibility-requirements-guide.md (load per-section as you author — do not read entirely).
 
 > **Status**: [In Design | Committed | Audited | Certified]
 > **Author**: [user + ux-designer]

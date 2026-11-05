@@ -32,7 +32,7 @@ finding or the verdict. `[engine]` is the lowercased `engine.name` from
 engine-reference paths out.
 
 ```
-Bash: bash .claude/scripts/review-receipts.sh check "[latest-report]" docs/architecture/adr-*.md docs/design/gdd/*.md docs/architecture/tr-registry.yaml docs/architecture/architecture.md docs/engine-reference/[engine]/*.md docs/engine-reference/[engine]/modules/*.md .claude/ccgs/project.yaml .claude/docs/technical-preferences.md docs/consistency-failures.md .claude/skills/architecture-review/SKILL.md .claude/skills/architecture-review/references/*.md
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh check "[latest-report]" docs/architecture/adr-*.md docs/design/gdd/*.md docs/architecture/tr-registry.yaml docs/architecture/architecture.md docs/engine-reference/[engine]/*.md docs/engine-reference/[engine]/modules/*.md .claude/ccgs/project.yaml .claude/docs/technical-preferences.md docs/consistency-failures.md C:/Users/ishan/.claude/ccgs-studio/.claude/skills/architecture-review/SKILL.md C:/Users/ishan/.claude/ccgs-studio/.claude/skills/architecture-review/references/*.md
 ```
 
 Phase 8 stamps the same list into this run's report; keep the two identical,

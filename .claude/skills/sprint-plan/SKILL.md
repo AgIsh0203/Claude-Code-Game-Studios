@@ -3,7 +3,7 @@ name: sprint-plan
 description: "New or updated sprint plan from the current milestone, completed work, and available capacity."
 argument-hint: "[new|update|status] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/sprint-plan/../../hooks/yaml-helper.sh" resolve_config *), Bash(ls docs/production/sprints/*)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/sprint-plan/../../hooks/yaml-helper.sh" resolve_config *), Bash(ls docs/production/sprints/*)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,story_granularity,workflow`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Sprint Plan
 
@@ -30,10 +30,10 @@ Phase 1 rather than re-globbing.
 
 Extract the mode argument (`new`, `update`, or `status`).
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -62,7 +62,7 @@ smaller than the range is planned whole — never padded with invented stories.
 
 1. **Read the current milestone** from `docs/production/milestones/` **if it exists**.
    No skill writes this directory — it is authored by hand from
-   `.claude/docs/templates/milestone-definition.md`. On the majority of projects
+   `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/milestone-definition.md`. On the majority of projects
    it is absent, which is the normal state, not a gap: note "no milestone
    defined — planning against the story backlog alone" and continue. Never block
    sprint planning on it, and never infer a milestone from the sprint files.
@@ -103,7 +103,7 @@ smaller than the range is planned whole — never padded with invented stories.
 
 5. **Check the risk register** at `docs/production/risk-register/` **if it exists**.
    Like the milestone above, no skill writes it — entries are authored by hand
-   from `.claude/docs/templates/risk-register-entry.md`. If the directory is
+   from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/risk-register-entry.md`. If the directory is
    absent, say so once ("no risk register — risks assessed from the sprint
    contents only") rather than skipping risk assessment silently.
 
@@ -314,7 +314,7 @@ stories that haven't changed, add new stories, remove dropped ones.
 - `lean` → skip (not a PHASE-GATE). Note: "PR-SPRINT skipped — Lean mode." Proceed to Phase 5 (QA plan gate).
 - `full` → spawn as normal.
 
-Before finalising the sprint plan, spawn `producer` via `Agent` using gate **PR-SPRINT** (`.claude/docs/director-gates/pr-sprint.md`).
+Before finalising the sprint plan, spawn `producer` via `Agent` using gate **PR-SPRINT** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/pr-sprint.md`).
 
 Pass: proposed story list (titles, estimates, dependencies), total team capacity in hours/days, any carryover from the previous sprint, milestone constraints and deadline, and any missing goal prerequisite.
 
@@ -322,7 +322,7 @@ Present the producer's assessment.
 
 If UNREALISTIC: revise the story selection (defer stories to Should Have or Nice to Have) and re-present the updated plan, then continue to Phase 5.
 
-If NOT ASSESSED: name the missing input — it is not REALISTIC. Supply it and re-run PR-SPRINT, or record `NOT ASSESSED — [missing input]` for PR-SPRINT in the plan's header (`.claude/docs/director-gates.md`) and continue to Phase 5, repeating it at the write ask.
+If NOT ASSESSED: name the missing input — it is not REALISTIC. Supply it and re-run PR-SPRINT, or record `NOT ASSESSED — [missing input]` for PR-SPRINT in the plan's header (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`) and continue to Phase 5, repeating it at the write ask.
 
 If CONCERNS, use `AskUserQuestion`:
 - Prompt: "Producer flagged concerns with this sprint plan. How do you want to proceed?"

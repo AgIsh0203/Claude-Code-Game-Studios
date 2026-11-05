@@ -121,7 +121,7 @@ public class [System]Tests
 #### Unreal (C++)
 
 The file goes inside the game module — `Source/<Module>/Private/Tests/` — or UBT
-never compiles it (see the test-root table in `.claude/docs/directory-structure.md`).
+never compiles it (see the test-root table in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md`).
 The flags need an application context **and** a filter; there is no `GameFilter`.
 Name tests `<Root>.[System].[Scenario]`, where `<Root>.` is the filter in
 `commands.test`'s `Automation RunTests` — `<Project>.`, or the distinct root
@@ -245,7 +245,7 @@ After a bug fix or hotfix, produce a **targeted** regression checklist, not a fu
 
 ### Bug Report Format
 
-Write every bug in `/bug-report`'s template (`.claude/skills/bug-report/SKILL.md`,
+Write every bug in `/bug-report`'s template (`C:/Users/ishan/.claude/ccgs-studio/.claude/skills/bug-report/SKILL.md`,
 Phase 2A, "Draft the bug report"), not a format of your own. `/bug-triage`,
 `/day-one-patch` and `/milestone-review` parse these lines, and a bug without
 them is never counted:

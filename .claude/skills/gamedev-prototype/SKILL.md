@@ -3,7 +3,7 @@ name: gamedev-prototype
 description: "Concept prototype before GDDs — throwaway HTML, Engine or Paper build, PROCEED/PIVOT/KILL/NOT ASSESSED. After /brainstorm and /setup-engine."
 argument-hint: "[concept-description] [--path html|engine|paper] [--review full|lean|solo] [--spike]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/gamedev-prototype/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/gamedev-prototype/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow`
 
 Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
-block → defaults in `.claude/docs/config-resolution.md`.
+block → defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Prototype
 

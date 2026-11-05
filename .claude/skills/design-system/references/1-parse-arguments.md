@@ -12,10 +12,10 @@
 - Detect retrofit mode
 - `workflow` for this system, and `## Summary` at every tier
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -83,7 +83,7 @@ existing `.md` file in `docs/design/gdd/`, enter **retrofit mode**:
 If NOT in retrofit mode, normalize the system name to kebab-case for the
 filename (e.g., "combat system" becomes `combat-system`).
 
-**`workflow`** for this system (per `.claude/docs/workflow-modes.md`) — use the
+**`workflow`** for this system (per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`) — use the
 `system_overrides` row for this system if the block lists one, else the project
 value.
 

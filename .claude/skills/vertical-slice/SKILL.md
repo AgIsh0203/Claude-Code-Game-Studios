@@ -3,7 +3,7 @@ name: vertical-slice
 description: "Pre-production validation — end-to-end build to confirm the full loop is achievable before committing to Production. After GDDs, architecture, UX specs."
 argument-hint: "[--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/vertical-slice/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/vertical-slice/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow`
 
 Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
-block → defaults in `.claude/docs/config-resolution.md`.
+block → defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Vertical Slice
 
@@ -46,10 +46,10 @@ whether the core idea is worth designing, run `/gamedev-prototype` (concept prot
 ## Phase 1: Resolve Review Mode and Load Context
 
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -261,7 +261,7 @@ This is the most honest data you will ever have about your production rate. Do n
 skip it. It feeds directly into sprint planning (at `workflow: minimal`, which has
 no sprints, into the brief's build order).
 
-Read `.claude/docs/templates/vertical-slice-report.md` to get the report structure.
+Read `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/vertical-slice-report.md` to get the report structure.
 If the template file is not found, use this fallback structure:
 - `## Vertical Slice Report — [Game Title] — [Date]`
 - `### Executive Summary` (PROCEED / PIVOT / KILL / NOT ASSESSED verdict + 2-sentence rationale)
@@ -298,7 +298,7 @@ the project — cross-reference it with sprint estimates.
 - `solo` → skip. Note: "CD-PLAYTEST skipped — Solo mode."
 - `lean` → skip (not a PHASE-GATE). Note: "CD-PLAYTEST skipped — Lean mode."
 - `full` → spawn `creative-director` via `Agent` using gate **CD-PLAYTEST**
-  (`.claude/docs/director-gates/cd-playtest.md`) — unless the slice's verdict is
+  (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/cd-playtest.md`) — unless the slice's verdict is
   NOT ASSESSED: with no playthrough there is nothing to review, so note
   "CD-PLAYTEST skipped — the slice has not been played yet."
 
@@ -318,7 +318,7 @@ CONCERNS or REJECT. Apply it to the recommendation:
   stand. Use `AskUserQuestion` to ask the user to choose `PIVOT` or `KILL`, and run
   Phase 8 for that choice. A PIVOT or KILL recommendation stands.
 - **NOT ASSESSED** [missing input] → the director made no judgement, so it neither
-  backs nor overturns the recommendation (`.claude/docs/director-gates.md`): name
+  backs nor overturns the recommendation (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`): name
   what was missing, then supply it and re-run the gate, or record
   `CD-PLAYTEST: NOT ASSESSED — [input]` in the report.
 

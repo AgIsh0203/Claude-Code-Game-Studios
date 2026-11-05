@@ -5,7 +5,7 @@ design documentation is REQUIRED before code can begin — for every skill that
 authors, reviews, gates, or plans against project artifacts. Skills reference
 this document instead of embedding the tier tables inline.
 
-**Companion spec**: `.claude/docs/effects-map.md`
+**Companion spec**: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md`
 sections `modes.workflow` and `workflow_overrides` are the source of
 truth for behavior. This document is the implementation pattern.
 
@@ -18,8 +18,8 @@ truth for behavior. This document is the implementation pattern.
 > genuinely does not cover, read only the one `effects-map.md` section for the
 > knob in question — never the file.
 
-**Related shared docs**: `.claude/docs/automation-modes.md` (how skills prompt),
-`.claude/docs/director-gates.md` (which reviewers spawn). `workflow` is
+**Related shared docs**: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` (how skills prompt),
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` (which reviewers spawn). `workflow` is
 orthogonal to both — it controls *what artifacts must exist*, not *how the
 skill prompts* or *who reviews*.
 
@@ -76,7 +76,7 @@ Silently ignoring it would leave an override that does nothing, unnoticed.
 
 > **Checked where GDDs are expected to already exist — not by the skill that
 > writes them.** `/gate-check` is the single implementing site (see
-> `.claude/skills/gate-check/SKILL.md` §"Per-system overrides"), and it runs at a
+> `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/gate-check/SKILL.md` §"Per-system overrides"), and it runs at a
 > phase boundary, by which point every in-scope GDD should be on disk. An
 > unmatched key there is genuinely suspicious.
 >
@@ -129,7 +129,7 @@ the expansion.) Per-system overrides read via
 | `minimal` | Low | One-page `docs/GDD.md` + engine choice (its build-order field is the plan — no separate sprint plan) | **Default.** Jam projects, small scope, design already in your head |
 
 **Default**: `minimal` (the rationale block above `_yaml_helper_defaults` in
-`.claude/hooks/yaml-helper.sh` carries the reasoning and the ordering
+`C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh` carries the reasoning and the ordering
 constraint). **Set by**: `/start` (via `modes.rigor`), `/settings`. **Locked to
 `.claude/ccgs/project.yaml`** (not locally overridable — divergence would change which
 artifacts must exist on disk).
@@ -146,7 +146,7 @@ artifacts must exist on disk).
 
 > **"Game brief" is a real artifact at `minimal`: `docs/GDD.md`.**
 > `/brainstorm` writes it from the one-page template
-> (`.claude/docs/templates/game-brief.md`) when the effective tier is `minimal`,
+> (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-brief.md`) when the effective tier is `minimal`,
 > in place of the full-length `docs/GDD.md` it writes at
 > `standard`/`full`. The two are distinct files for distinct tiers: any check,
 > gate, or glob for the `minimal` design artifact must target
@@ -161,7 +161,7 @@ The 8 GDD sections: Overview, Player Fantasy, Detailed Rules, Formulas,
 Edge Cases, Dependencies, Tuning Knobs, Acceptance Criteria.
 
 > **Section-name alias.** "Detailed Rules" is the canonical name in the design
-> standard, but the GDD template (`.claude/docs/templates/game-design-document.md`)
+> standard, but the GDD template (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-design-document.md`)
 > and `/design-system` author this section under the heading `## Detailed Design`
 > (with Core Rules / States / Interactions sub-headings). The two names denote the
 > **same required section** — any skill that detects or validates section presence
@@ -256,7 +256,7 @@ Project has `modes.workflow: standard`, `workflow_overrides.system_overrides.com
 
 **Gate enforcement** — `gate-check` uses a different artifact checklist per
 stage per tier (the highest-visibility impact). Each gate's own checklist and
-tier reductions live in `.claude/skills/gate-check/references/gate-<phase>.md`,
+tier reductions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/gate-check/references/gate-<phase>.md`,
 and `/gate-check` loads only the one gate it is running — that is the right
 place to look, not `effects-map.md`.
 

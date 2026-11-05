@@ -3,7 +3,7 @@ name: playtest-report
 description: "Structured playtest report template, or turn existing playtest notes into structured feedback."
 argument-hint: "[new|analyze path-to-notes] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/playtest-report/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/playtest-report/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation`
 
 Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
-block → defaults in `.claude/docs/config-resolution.md`.
+block → defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Playtest Report
 
@@ -21,10 +21,10 @@ block → defaults in `.claude/docs/config-resolution.md`.
 ## Phase 1: Parse Arguments
 
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -144,7 +144,7 @@ Present the categorized list, then route:
 - `lean` → skip (not a PHASE-GATE). Note: "CD-PLAYTEST skipped — Lean mode." Proceed to Phase 4 (save the report).
 - `full` → spawn as normal.
 
-After categorising findings, spawn `creative-director` via `Agent` using gate **CD-PLAYTEST** (`.claude/docs/director-gates/cd-playtest.md`).
+After categorising findings, spawn `creative-director` via `Agent` using gate **CD-PLAYTEST** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/cd-playtest.md`).
 
 Pass: the structured report content, game pillars and core fantasy (from
 `docs/GDD.md`), the specific hypothesis being tested. **If
@@ -155,7 +155,7 @@ they stand in for pillars. If neither document exists, say so in the prompt:
 *"No pillars available — assess against the hypothesis alone."* A director gate
 handed silence about pillars will invent them.
 
-Present the creative director's assessment before saving the report. If CONCERNS or REJECT, add a `## Creative Director Assessment` section to the report capturing the verdict and feedback. If APPROVE, note the approval in the report. If NOT ASSESSED (the director lacked an input — `.claude/docs/director-gates.md`), add the same section naming what was missing; it is not an approval.
+Present the creative director's assessment before saving the report. If CONCERNS or REJECT, add a `## Creative Director Assessment` section to the report capturing the verdict and feedback. If APPROVE, note the approval in the report. If NOT ASSESSED (the director lacked an input — `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`), add the same section naming what was missing; it is not an approval.
 
 ---
 

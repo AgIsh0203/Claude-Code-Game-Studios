@@ -3,7 +3,7 @@ name: test-flakiness
 description: "Find flaky tests from CI logs — aggregates pass rates, spots intermittent failures, recommends quarantine. After multiple runs."
 argument-hint: "[ci-log-path | scan | registry]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(ls -t *), Bash(bash "*/.claude/skills/test-flakiness/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(ls -t *), Bash(bash "*/skills/test-flakiness/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 

@@ -3,7 +3,7 @@ name: reverse-document
 description: "Generate missing design or architecture docs from existing implementation — works backwards from code and prototypes."
 argument-hint: "<type> <path> (e.g., 'design src/gameplay/combat' or 'architecture Assets/Scripts/Core')"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/reverse-document/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/reverse-document/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
@@ -33,7 +33,7 @@ appropriate design or architecture documentation. Use this when:
 - `concept` → Generate a concept document from prototype
 
 **Path**: Directory or file to analyze, under the code root — `src/` Godot,
-`Assets/` Unity, `Source/<Module>/` Unreal (`.claude/docs/code-root-resolution.md`)
+`Assets/` Unity, `Source/<Module>/` Unreal (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`)
 - `src/gameplay/combat/` → All combat-related code (Godot)
 - `Assets/Scripts/Core/EventSystem.cs` → Specific file (Unity)
 - `Source/MyGame/Private/AI/` → A module folder (Unreal)
@@ -43,18 +43,18 @@ appropriate design or architecture documentation. Use this when:
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
 Resolved above — use as-is. No block → defaults in
-`.claude/docs/config-resolution.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 **Resolve the workflow tier** for the target system: map `<path>` to a system
 name, then use the `system_overrides` row for that system if the block above
 lists one, else the project `workflow` value. It sets how much document is
 generated — see Phase 5. Semantics of each tier are in
-`.claude/docs/workflow-modes.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`.
 
 > **Resolve the tier — do not assume it.** `workflow-modes.md` defines what each
 > tier *means*, but it cannot say what *this project* is set to; take that from
@@ -209,7 +209,7 @@ Based on type, use appropriate template:
   Dependencies, Acceptance Criteria; + Formulas when the recovered system defines
   numeric rules). Skip Player Fantasy and Tuning Knobs.
 - **`minimal`** — generate a **game brief** in the one-page format
-  (`.claude/docs/templates/game-brief.md`), not a GDD. For the whole game
+  (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-brief.md`), not a GDD. For the whole game
   (the path is the code root itself) write `docs/GDD.md`; for a single
   reverse-engineered system write
   `docs/design/[system-name]-brief.md`.

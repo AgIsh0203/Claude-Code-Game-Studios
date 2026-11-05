@@ -35,7 +35,7 @@
 
 # The project root is two levels above this file: the injected command runs from
 # wherever the skill's shell starts, which need not be the root.
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null || { echo "STORIES      none"; exit 0; }
+cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "STORIES      none"; exit 0; }
 
 files=()
 for f in docs/production/epics/*/story-*.md; do

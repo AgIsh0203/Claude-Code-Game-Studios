@@ -3,7 +3,7 @@ name: project-stage-detect
 description: "Analyze project state, detect stage, identify gaps, recommend next steps. 'Where are we in development?'"
 argument-hint: "[optional: role filter like 'programmer' or 'designer']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/project-stage-detect/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/artifact-check.sh), Bash(bash ".claude/scripts/artifact-check.sh"), Bash(bash ./.claude/scripts/artifact-check.sh), Bash(bash .claude/scripts/artifact-check.sh *), Bash(bash ".claude/scripts/artifact-check.sh" *), Bash(bash ./.claude/scripts/artifact-check.sh *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/project-stage-detect/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh), Bash(bash "C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh"), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh *), Bash(bash "C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh" *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh *)
 model: haiku
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
@@ -27,12 +27,12 @@ of artifacts, and gaps that need attention. It's especially useful when:
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
 Resolved above — use as-is. No block → defaults in
-`.claude/docs/config-resolution.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 > **Resolve the tier — do not assume it.** The tier decides what counts as a gap
 > at all: at `full` every missing doc is one; at `minimal` none of them are,
@@ -41,7 +41,7 @@ Resolved above — use as-is. No block → defaults in
 > and ADRs — the exact "process feels mismatched to my project" experience
 > `modes.rigor` exists to prevent.
 
-**`workflow`** (per `.claude/docs/workflow-modes.md`). The tier governs
+**`workflow`** (per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`). The tier governs
 which absent documents count as gaps (step 3) — below `full`, optional docs are
 not flagged.
 
@@ -51,7 +51,7 @@ not flagged.
 catalogued artifact in one call:**
 
 ```
-Bash: bash .claude/scripts/artifact-check.sh
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh
 ```
 
 Run it exactly as written — from the project root, relative path, no
@@ -81,7 +81,7 @@ track, and the judgement calls.
 - Count narrative docs in `docs/story/`
 - Count level designs in `docs/design/levels/`
 
-**Source Code** (the code root — `src/` Godot, `Assets/` Unity, `Source/` Unreal; resolve per `.claude/docs/code-root-resolution.md`):
+**Source Code** (the code root — `src/` Godot, `Assets/` Unity, `Source/` Unreal; resolve per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`):
 - Count source files (language-agnostic)
 - Identify major systems (directories with 5+ files)
 - Check for core/, gameplay/, ai/, networking/, ui/ directories
@@ -170,7 +170,7 @@ for gaps the tier above says to surface):
 
 ### 4. Generate Stage Report
 
-Use template: `.claude/docs/templates/project-stage-report.md`
+Use template: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/project-stage-report.md`
 
 **Report structure**:
 ```markdown

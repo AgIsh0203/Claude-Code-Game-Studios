@@ -3,7 +3,7 @@ name: create-stories
 description: "Breaks one epic into implementable stories with acceptance criteria. Use when the user wants stories for an epic or the next batch of work to build. Not for turning the whole design into epics."
 argument-hint: "[epic-slug | epic-path] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/create-stories/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh extract *), Bash(bash .claude/scripts/md-section.sh list *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/create-stories/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh extract *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh list *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,docs.density,story_granularity,qa.level,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 Ask with the question tool. Without one, list the options numbered and end your turn
 to wait. A skipped or dismissed question is not an answer: ask again in plain text.
@@ -29,7 +29,7 @@ Foundation epics first, then Core, Feature, Presentation.
 **Next:** `/dev-story [story-path]` at `workflow: minimal`; otherwise
 `/story-readiness [story-path]`, then `/dev-story`.
 
-Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
+Asks follow `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` (collaborative always asks, guided
 asks on major choices, autonomous logs and goes on; `automation_always_ask`
 categories always ask).
 
@@ -111,12 +111,12 @@ Read no GDD, control manifest, TR registry or ADR at `minimal`. Go to Phase 3.
 1. **The epic:** `docs/production/epics/[epic-slug]/EPIC.md` in full (its layer, GDD,
    governing ADRs, and the GDD Requirements table with TR-IDs).
 2. **The GDD:** its sections by heading, never the whole file:
-   `bash .claude/scripts/md-section.sh extract docs/design/gdd/[file].md "Acceptance Criteria"`,
+   `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh extract docs/design/gdd/[file].md "Acceptance Criteria"`,
    and the same for `Formulas`, `Edge Cases` and `Detailed Design` (exit 3: try
    `Detailed Rules`, the design standard's name for the same section); at `full`
    the other required sections too (`list` shows the headings).
 3. **The control manifest:** the epic's layer only, and the version:
-   `bash .claude/scripts/md-section.sh extract docs/architecture/control-manifest.md "[Layer] Layer Rules"`,
+   `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh extract docs/architecture/control-manifest.md "[Layer] Layer Rules"`,
    plus its `Manifest Version` line.
 4. **The TR registry:** this system's entries only: in
    `docs/architecture/tr-registry.yaml`, the lines matching `system: <slug>\s*$`,
@@ -125,7 +125,7 @@ Read no GDD, control manifest, TR registry or ADR at `minimal`. Go to Phase 3.
 5. **The ADRs**, every one the epic names (governing, or in its requirements table,
    Proposed ones included), in one call:
    ```
-   bash .claude/scripts/adr-status.sh ADR-0001 ADR-0003 ...
+   bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh ADR-0001 ADR-0003 ...
    ```
    Each row gives the status, layer, `version` (the story's ADR Version stamp),
    `depends_on`, and missing sections. Then read only `Summary`, `Decision` (its
@@ -204,7 +204,7 @@ UI last. For each story:
 Read the `review_gate` line above. `skill-gates=skip` (solo or lean): no review;
 note "QL-STORY-READY skipped — [Solo | Lean] mode" in the Phase 6 list and the
 closing block. `skill-gates=run`: read `references/qa-lead-gate.md` and
-`.claude/docs/director-gates.md`, and run it now, before the Phase 6 ask. On a skip,
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`, and run it now, before the Phase 6 ask. On a skip,
 do not load it.
 
 ## Phase 6: Show the stories, ask once
@@ -244,7 +244,7 @@ before the yes.
 ### The story files
 
 **Each story** is `docs/production/epics/[epic-slug]/story-[NNN]-[slug].md`, laid out
-as `.claude/docs/templates/story.md`. Never reuse a story number. Write each file
+as `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/story.md`. Never reuse a story number. Write each file
 as a file, never through a shell command: a shell write skips the project's write
 checks.
 

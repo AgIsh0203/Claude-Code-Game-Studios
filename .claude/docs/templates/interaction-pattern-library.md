@@ -1,6 +1,6 @@
 # Interaction Pattern Library
 
-> Authoring guidance: .claude/docs/templates/guidance/interaction-pattern-library-guide.md (load per-section as you author — do not read entirely).
+> Authoring guidance: C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/interaction-pattern-library-guide.md (load per-section as you author — do not read entirely).
 
 > **Status**: [In Design | Stable | Under Revision]
 > **Author**: [user + ux-designer]
@@ -124,7 +124,7 @@ update this document before or simultaneously with any implementation change.
 
 > Full reference specifications for every pattern in this section (state tables
 > with timing/audio values, accessibility requirements, implementation notes)
-> are in `.claude/docs/templates/guidance/interaction-pattern-library-guide-standard-controls.md` —
+> are in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/interaction-pattern-library-guide-standard-controls.md` —
 > load only the pattern(s) currently being specified.
 
 ---
@@ -446,7 +446,7 @@ update this document before or simultaneously with any implementation change.
 ### Game-Specific UI Patterns
 
 > Full reference specifications for every pattern in this section are in
-> `.claude/docs/templates/guidance/interaction-pattern-library-guide-game-specific.md` — load only the
+> `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/interaction-pattern-library-guide-game-specific.md` — load only the
 > pattern(s) currently being specified.
 
 ---
@@ -566,7 +566,7 @@ update this document before or simultaneously with any implementation change.
 ### Navigation Patterns
 
 > Full reference specifications for this section and the next are in
-> `.claude/docs/templates/guidance/interaction-pattern-library-guide-navigation-feedback.md` — load
+> `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/interaction-pattern-library-guide-navigation-feedback.md` — load
 > only the pattern(s) currently being specified.
 
 ---

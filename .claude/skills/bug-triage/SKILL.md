@@ -3,7 +3,7 @@ name: bug-triage
 description: "Re-evaluate open bugs — priority vs severity, assign to sprints, surface systemic trends. Run when the count grows."
 argument-hint: "[sprint | full | trend]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/bug-triage/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/bug-triage/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -83,7 +83,7 @@ If no sprint file exists: note "No sprint plan found — assigning to backlog on
 
 ### Step 2c — Load severity reference
 
-Read `.claude/docs/coding-standards.md` for severity/priority definitions if they
+Read `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md` for severity/priority definitions if they
 exist. If they do not exist, use the standard definitions in Step 3.
 
 ---

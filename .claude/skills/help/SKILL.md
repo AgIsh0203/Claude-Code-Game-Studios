@@ -3,7 +3,7 @@ name: help
 description: "What should I do next? Use when stuck or you don't know what to do."
 argument-hint: "[optional: what you just finished, e.g. 'finished design-review' or 'stuck on ADRs']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash(bash "*/.claude/skills/help/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash "*/.claude/skills/help/../../scripts/story-status.sh"), Bash(bash .claude/scripts/story-status.sh*), Bash(bash .claude/scripts/artifact-check.sh *), Bash(bash ".claude/scripts/artifact-check.sh" *), Bash(bash ./.claude/scripts/artifact-check.sh *), Bash(git log *)
+allowed-tools: Read, Glob, Grep, Bash(bash "*/skills/help/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash "*/skills/help/../../scripts/story-status.sh"), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-status.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh *), Bash(bash "C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh" *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh *), Bash(git log *)
 model: haiku
 ---
 
@@ -28,13 +28,13 @@ These are resolved before this skill runs. Use them as-is:
   preserves values containing spaces (`Systems Design`).
 - **`workflow`** from the config block is the tier for Steps 2 and 5 — do not re-read it.
 - If no config block rendered, shell preprocessing is disabled; fall back to the
-  defaults in `.claude/docs/config-resolution.md`.
+  defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 ---
 
 ## Step 1: Read the Catalog
 
-Read `.claude/docs/workflow-catalog.yaml`. This is the authoritative list of all
+Read `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-catalog.yaml`. This is the authoritative list of all
 phases, their steps (in order), whether each step is required or optional, and
 the artifact globs that indicate completion.
 
@@ -42,7 +42,7 @@ the artifact globs that indicate completion.
 
 ## Step 1b: Find Skills Not in the Catalog
 
-After reading the catalog, Glob `.claude/skills/*/SKILL.md` to get the full list
+After reading the catalog, Glob `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/*/SKILL.md` to get the full list
 of installed skills. For each file, extract the `name:` field from its frontmatter.
 
 Compare against the `command:` values in the catalog. Any skill whose name does
@@ -93,7 +93,7 @@ Otherwise, check in this order:
    - Nothing → `concept` (fresh project)
 
 3. **`workflow`** was taken at the top of this step (per
-   `.claude/docs/workflow-modes.md`). It controls whether optional docs are
+   `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`). It controls whether optional docs are
    surfaced as next steps (Step 5).
 
 ---
@@ -101,7 +101,7 @@ Otherwise, check in this order:
 ## Step 3: Read Session Context
 
 Read `.claude/ccgs/session-state/active.md` if it exists — but only its STATUS
-and CHECKPOINT blocks (schema: `.claude/docs/templates/session-state.md`); the
+and CHECKPOINT blocks (schema: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/session-state.md`); the
 narrative below them can be long. Find the markers
 (`Grep pattern="<!-- /?(STATUS|CHECKPOINT) -->" path=".claude/ccgs/session-state/active.md" output_mode="content" -n`)
 and `Read` from the first to the last. A file with no markers predates the schema: read its
@@ -126,7 +126,7 @@ For each step in the current phase (from the catalog):
 **Resolve these deterministically — one call, not a glob per step:**
 
 ```
-Bash: bash .claude/scripts/artifact-check.sh --phase [current-phase]
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh --phase [current-phase]
 ```
 
 Run it exactly as written, here and below: from the project root, with the
@@ -183,7 +183,7 @@ At `minimal` the route is the catalog's `paths.minimal`, not a phase: engine →
 one call:
 
 ```
-Bash: bash .claude/scripts/artifact-check.sh --path minimal
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh --path minimal
 ```
 
 Map the statuses exactly as in Step 4. `implement` and `story-done` are
@@ -198,7 +198,7 @@ step is the first of these that applies:
    brief), which on a built game would start a new idea.
 3. `create-stories` not PRESENT → `/create-stories` with no argument (at
    `minimal` it builds the stories straight from the brief's MVP list)
-4. Stories exist → the list below was printed by `.claude/scripts/story-status.sh`
+4. Stories exist → the list below was printed by `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-status.sh`
    before you read this skill: one line per unfinished story, **already in
    the route's order** — `IN_REVIEW`, then `IN_PROGRESS`, then `TODO` (a
    `Ready` or `Not Started` story) in build order — then `BLOCKED`, `OTHER`,
@@ -235,7 +235,7 @@ step is the first of these that applies:
 game concept doc, art bible, systems map, GDDs, `/create-epics`, a sprint plan,
 `/gate-check`, or sprint close-out (`/smoke-check`, `/team-qa`,
 `/retrospective`). The brief replaces the design docs and its build order
-replaces the sprint plan (`.claude/docs/workflow-modes.md` — `minimal` floor).
+replaces the sprint plan (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md` — `minimal` floor).
 Every one of them still runs if the user asks for it; mention one only when the
 user's argument asks about it.
 
@@ -356,7 +356,7 @@ Need more detail?
 - `/start` — re-orient from scratch
 - `/settings` — if the process feels mismatched to your project, adjust
   `modes.rigor`. Apply the change-triggers in
-  `.claude/docs/settings-guidance.md § 4`: a **lower** tier when the user sounds
+  `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/settings-guidance.md § 4`: a **lower** tier when the user sounds
   overwhelmed by process (and rigor isn't already `minimal`), or a **higher** tier
   when the project has outgrown it (many systems, or in Production on
   `workflow: minimal`)

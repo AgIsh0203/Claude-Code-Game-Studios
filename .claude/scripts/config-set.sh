@@ -12,8 +12,8 @@
 # (storing the value a user means is legitimate; storing it silently is the
 # defect, so the `reserved` row is the skill's to say out loud).
 #
-# Usage: bash .claude/scripts/config-set.sh [--local] KEY VALUE [--dry-run] [--root DIR]
-#        bash .claude/scripts/config-set.sh [--local] KEY=VALUE ...
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/config-set.sh [--local] KEY VALUE [--dry-run] [--root DIR]
+#        bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/config-set.sh [--local] KEY=VALUE ...
 #   KEY         a dotted YAML path, for example modes.review_mode
 #   VALUE       the new value; quote one with spaces ("Systems Design"). KEY=VALUE
 #               splits at the first `=`
@@ -30,7 +30,7 @@
 # Where the facts come from, so nothing here is a second copy of them:
 #   enums and the local whitelist  the _yaml_helper_enums and
 #                                  _yaml_helper_locally_overridable constants in
-#                                  .claude/hooks/yaml-helper.sh, read as text
+#                                  C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh, read as text
 #   reserved keys                  effects-map.md: the `## ` heading above each
 #                                  `> ### RESERVED` banner, split on " and "
 #   known keys                     those two lists, the effects-map headings
@@ -136,7 +136,7 @@ esac
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "config-set: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "config-set: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "config-set: cannot reach the repo root" >&2; exit 1; }
 fi
 YH="$HERE/../hooks/yaml-helper.sh"
 EM="$HERE/../docs/effects-map.md"

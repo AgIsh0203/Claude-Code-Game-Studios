@@ -7,20 +7,20 @@
 # Replaces the by-hand reading of checks 1-7 over a skill's SKILL.md and its
 # references/, the counting that goes wrong across 74 skills.
 #
-# OBSERVATIONS, NEVER VERDICTS (CLAUDE.md, "Helpers in .claude/scripts/"). It
+# OBSERVATIONS, NEVER VERDICTS (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/"). It
 # prints what it found, check by check, and nothing here is a PASS, WARN or
 # FAIL: whether three phase headings are enough, whether `HIGH` in a skill is a
 # severity or a word, whether a hint matches its modes, and the one verdict the
 # skill reports (COMPLIANT, WARNINGS, NON-COMPLIANT, NOT ASSESSED) stay with
 # /skill-test. The rows hold the numbers and words those calls need.
 #
-# Usage: bash .claude/scripts/skill-lint.sh <name>|all [--root DIR]
-#   <name>      one skill, the folder name under .claude/skills/
-#   all         every folder under .claude/skills/ that holds a SKILL.md
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/skill-lint.sh <name>|all [--root DIR]
+#   <name>      one skill, the folder name under C:/Users/ishan/.claude/ccgs-studio/.claude/skills/
+#   all         every folder under C:/Users/ishan/.claude/ccgs-studio/.claude/skills/ that holds a SKILL.md
 #   --root DIR  the project; defaults to the repo this script is in
 #   -h, --help  this text
 #
-# Output: TSV. First `skills <n> .claude/skills`, then for each skill
+# Output: TSV. First `skills <n> C:/Users/ishan/.claude/ccgs-studio/.claude/skills`, then for each skill
 #   skill   <name>  files=<SKILL.md + references read>  lines=<n>
 #   check1  <name>  frontmatter=<ok|missing|unclosed|bad@LINE>  missing=<list|->  name=<match|mismatch:<v>|absent>
 #   check2  <name>  phases=<distinct numbered phase headings>  h2=<distinct ## headings>  h2_total=<all of them>
@@ -49,7 +49,7 @@
 #   - the last section is the last `## ` heading of SKILL.md and the text after
 #     it; skills_named lists the /names in it that are skill folders
 #
-# Exit codes: 0 done; 1 cannot read the root or find .claude/skills; 2 usage
+# Exit codes: 0 done; 1 cannot read the root or find C:/Users/ishan/.claude/ccgs-studio/.claude/skills; 2 usage
 # error; 3 no such skill. Reads only; never prompts.
 #
 # bash 3.2 and BWK awk safe, no Python.
@@ -77,12 +77,12 @@ case "$WHICH" in */*|*\\*|.*) usage "'$WHICH' is not a skill folder name" ;; esa
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "skill-lint: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "skill-lint: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "skill-lint: cannot reach the repo root" >&2; exit 1; }
 fi
-SK=".claude/skills"
+SK="C:/Users/ishan/.claude/ccgs-studio/.claude/skills"
 [ -d "$SK" ] || { echo "skill-lint: no $SK folder under $(pwd)" >&2; exit 1; }
 
-# Every folder under .claude/skills/, so skills_named can tell a skill from a path.
+# Every folder under C:/Users/ishan/.claude/ccgs-studio/.claude/skills/, so skills_named can tell a skill from a path.
 NAMES="|"
 for d in "$SK"/*/; do
   [ -d "$d" ] || continue

@@ -3,7 +3,7 @@ name: gate-check
 description: "Ready to advance between development phases? PASS/CONCERNS/NOT ASSESSED/FAIL with blockers and required artifacts. 'Can we move to production?'"
 argument-hint: "[target-phase: systems-design | technical-setup | pre-production | production | polish | release] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/gate-check/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/artifact-check.sh *), Bash(bash .claude/scripts/gdd-structure-check.sh*), Bash(bash .claude/scripts/adr-dep-graph.sh*), Bash(bash .claude/scripts/set-stage.sh *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/gate-check/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-dep-graph.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/set-stage.sh *)
 model: opus
 ---
 
@@ -12,7 +12,7 @@ model: opus
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,workflow,qa.level,testing.strict,performance.enforce,team.size,project.stage,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Phase Gate Validation
 
@@ -44,7 +44,7 @@ The project progresses through these stages:
 
 Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE) are skipped — gate-check becomes artifact-existence checks only. In `lean` mode, the phase-gate directors still run (phase gates are the purpose of lean mode); how many of them run is set by `workflow` below.
 
-**`workflow`** (per `.claude/docs/workflow-modes.md`):
+**`workflow`** (per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`):
 
 `gate-check` runs project-wide, so it uses the project-level `workflow` for the
 gate's overall artifact checklist (the loaded gate file), AND consults

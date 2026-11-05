@@ -9,7 +9,7 @@ when the pattern needs updating.
 implementation, and utility categories. Any skill that gates a decision
 through `AskUserQuestion` or writes files should follow this pattern.
 
-**Companion spec**: `.claude/docs/effects-map.md`
+**Companion spec**: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md`
 section `modes.automation` is the source of truth for behavior. This document
 is the implementation pattern.
 
@@ -34,7 +34,7 @@ Resolve automation mode (once, store for the run):
 2. Else read `modes.automation` from `.claude/ccgs/project.yaml` → use that value
 3. Else → default to `collaborative`
 
-Pattern reference: `.claude/docs/automation-modes.md`.
+Pattern reference: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`.
 ```
 
 This resolution is automatic via `get_effective_yaml_key modes.automation` —

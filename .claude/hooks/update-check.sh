@@ -27,7 +27,7 @@
 # Not framework.version itself: that is the project's file, and an upgrade
 # that keeps your .claude/ccgs/project.yaml leaves it on the old number (UPGRADING.md says
 # so), which would announce the release you already have. This file is replaced
-# with the rest of .claude/hooks/ on every upgrade, so its number is the
+# with the rest of C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/ on every upgrade, so its number is the
 # framework actually installed.
 UPDATE_CHECK_VERSION="1.2.0"
 UPDATE_CHECK_REPO="Donchitos/Claude-Code-Game-Studios"
@@ -175,7 +175,7 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
   elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
     CCGS_ROOT="$CLAUDE_PROJECT_DIR"
   else
-    CCGS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+    CCGS_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
   fi
   [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
   case "${1:-}" in

@@ -4,7 +4,7 @@ Shared procedure for any skill that reads, scans, counts or writes game source
 files. **An unresolved code root means the check did not run.** This file gives
 the resolution order.
 
-`.claude/docs/directory-structure.md` is the authority for which directory holds
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md` is the authority for which directory holds
 code. This file is the procedure for applying it.
 
 ## The roots
@@ -33,7 +33,7 @@ code. This file is the procedure for applying it.
 4. Otherwise: **unresolved.**
 
 The hooks already implement exactly this as `resolve_code_root()` in
-`.claude/hooks/yaml-helper.sh`. Skills must match its semantics so that a hook
+`C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh`. Skills must match its semantics so that a hook
 and a skill never disagree about where the code lives.
 
 ## Unresolved does not default to `src/`

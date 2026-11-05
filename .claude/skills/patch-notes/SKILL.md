@@ -3,7 +3,7 @@ name: patch-notes
 description: "Player-facing patch notes from git history and changelogs. Translates developer language into player communication."
 argument-hint: "[version] [--style brief|detailed|full]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/patch-notes/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/patch-notes/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -113,7 +113,7 @@ Verdict: **BLOCKED** — stop here without generating notes.
 
 **Template detection** — check whether a patch notes template exists:
 
-1. Glob for `docs/patch-notes-template.md` and `.claude/docs/templates/patch-notes-template.md`.
+1. Glob for `docs/patch-notes-template.md` and `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/patch-notes-template.md`.
 2. If found at either location, read it and use it as the output structure for Phase 4
    instead of the built-in style templates (Brief / Detailed / Full). Fill in the
    template's sections with the categorized data, mapping each category to the

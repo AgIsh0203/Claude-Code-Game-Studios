@@ -246,7 +246,7 @@ If CANNOT VERIFY: the fix is unconfirmed — do not close the bug; play its repr
 
 Schedule a post-incident review within 48 hours. `/retrospective` reviews a
 sprint or milestone, not an incident: record the review with
-`.claude/docs/templates/incident-response.md`, and raise its lessons at the next
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/incident-response.md`, and raise its lessons at the next
 `/retrospective`.
 
 Use `AskUserQuestion`:

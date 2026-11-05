@@ -3,7 +3,7 @@ name: adopt
 description: "Brownfield audit — do existing artifacts actually work? Numbered migration plan. Unlike /project-stage-detect, checks compliance not existence."
 argument-hint: "[focus: full | gdds | adrs | stories | infra]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/adopt/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/gdd-structure-check.sh *), Bash(bash .claude/scripts/migrate-v1-config.sh --dry-run*)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/skills/adopt/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/migrate-v1-config.sh --dry-run*)
 model: sonnet
 ---
 
@@ -43,11 +43,11 @@ wrong internal format.
 ---
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
-`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
-**`workflow`** (per `.claude/docs/workflow-modes.md`). It scopes the Phase 2 audit and
+**`workflow`** (per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`). It scopes the Phase 2 audit and
 Phase 3 severity: `full` audits all doc types at full structure; `standard` audits
 only the required docs/sections (optional sections are informational, not gaps);
 `minimal` is a `docs/GDD.md` format check — GDDs/ADRs/UX are not expected. See Phase 2.
@@ -83,7 +83,7 @@ only the required docs/sections (optional sections are informational, not gaps);
 ## Collaborative Protocol
 
 **Applies in `collaborative` mode (the default).** For `guided` and
-`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+`autonomous` modes, see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` — the rules below
 describe what collaborative mode requires, not universal behavior.
 
 1. **Read silently** — complete the full audit before presenting anything

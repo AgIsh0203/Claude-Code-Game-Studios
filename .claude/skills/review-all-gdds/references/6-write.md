@@ -11,7 +11,7 @@ Use `AskUserQuestion` for write permission:
 
 > **`[date]` here means ISO 8601 — `YYYY-MM-DD`, e.g.
 > `gdd-cross-review-2026-08-19.md`. This is not a style preference.**
-> `.claude/scripts/review-scope.sh` picks the prior review with
+> `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-scope.sh` picks the prior review with
 > `sort | tail -1`, so lexical order IS chronological order only for ISO dates.
 > Written as `aug-19-2026` or `19-08-2026`, the wrong file is chosen as the
 > baseline, the changed-set is computed from it, and GDDs modified since the

@@ -40,7 +40,7 @@ After conflict detection, analyse the dependency graph across all ADRs.
 **Build the graph deterministically — do not trace it by hand:**
 
 ```
-Bash: bash .claude/scripts/adr-dep-graph.sh
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-dep-graph.sh
 ```
 
 It collects every `Depends On` edge, finds the cycles and the order, and emits

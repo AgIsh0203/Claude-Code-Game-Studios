@@ -10,7 +10,7 @@
 > a formal gate (`/gate-check`) that must pass before you advance. At
 > `rigor: minimal` -- the default -- nothing requires a gate; see
 > [The Default Path](#the-default-path-rigor-minimal). The authoritative
-> phase sequence is defined in `.claude/docs/workflow-catalog.yaml` and read
+> phase sequence is defined in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-catalog.yaml` and read
 > by `/help`.
 
 ---
@@ -322,7 +322,7 @@ game has visual-asset stories; at `minimal` it is optional.
 - Recommended: a concept prototype whose REPORT.md says PROCEED
 
 This is the `full` list. `standard` and `minimal` drop items; the gate's own
-file, `.claude/skills/gate-check/references/gate-systems-design.md`, has the full
+file, `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/gate-check/references/gate-systems-design.md`, has the full
 checklist and what each tier drops.
 
 **Verdict:** PASS / CONCERNS / NOT ASSESSED / FAIL. PASS advances the stage.
@@ -485,7 +485,7 @@ If your game has story, lore, or dialogue, this is when you build it:
   and not NOT ASSESSED, which means the GDDs could not be compared
 
 This is the `full` list. `standard` and `minimal` drop items; the gate's own
-file, `.claude/skills/gate-check/references/gate-technical-setup.md`, has the full
+file, `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/gate-check/references/gate-technical-setup.md`, has the full
 checklist and what each tier drops.
 
 ---
@@ -632,7 +632,7 @@ there are systems to test.
   (`/ux-design accessibility`, `/ux-design patterns`)
 
 This is the `full` list. `standard` and `minimal` drop items; the gate's own
-file, `.claude/skills/gate-check/references/gate-pre-production.md`, has the full
+file, `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/gate-check/references/gate-pre-production.md`, has the full
 checklist and what each tier drops.
 
 ---
@@ -828,7 +828,7 @@ runs end to end.
   built but not yet played → NOT ASSESSED
 
 This is the `full` list. `standard` and `minimal` drop items; the gate's own
-file, `.claude/skills/gate-check/references/gate-production.md`, has the full
+file, `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/gate-check/references/gate-production.md`, has the full
 checklist and what each tier drops.
 
 ---
@@ -1016,7 +1016,7 @@ recommendation.
 - No open S1 Critical bugs, and performance within budget
 
 This is the `full` list. `standard` and `minimal` drop items; the gate's own
-file, `.claude/skills/gate-check/references/gate-polish.md`, has the full
+file, `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/gate-check/references/gate-polish.md`, has the full
 checklist and what each tier drops.
 
 ---
@@ -1199,7 +1199,7 @@ now; `/team-release` publishes them once the release is a GO.
   HIGH finding, and a `/localize qa` pass for every locale you ship
 
 This is the `full` list. `standard` and `minimal` drop items; the gate's own
-file, `.claude/skills/gate-check/references/gate-release.md`, has the full
+file, `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/gate-check/references/gate-release.md`, has the full
 checklist and what each tier drops.
 
 ---
@@ -1295,7 +1295,7 @@ Bypasses normal sprint processes with a full audit trail:
 
 ```
 Ask Claude to create a post-mortem using the template at
-.claude/docs/templates/post-mortem.md
+C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/post-mortem.md
 ```
 
 ---
@@ -1332,7 +1332,7 @@ set wins: the flag, `.claude/ccgs/project.local.yaml`, `.claude/ccgs/project.yam
 `.claude/ccgs/review-mode.txt`, then the rigor default. A `review-mode.txt` left
 from an older version still overrides rigor — delete it if the mode surprises you.
 
-Full gate definitions and check pattern: `.claude/docs/director-gates.md`
+Full gate definitions and check pattern: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`
 
 ---
 
@@ -1413,7 +1413,7 @@ The system has 15 hooks that run automatically:
 | `validate-write.sh` | Before a file write | Warns when a write would break a rule the skills state (never blocks) |
 | `validate-registry.sh` | Before an entity or TR-ID registry write | Warns when an entry would be deleted or renumbered, or a status is not in the header's list |
 | `validate-assets.sh` | After a file write | Checks data-file JSON, and asset naming in Godot's `Content/` |
-| `validate-skill-change.sh` | Skill file written | Advises running `/skill-test` after `.claude/skills/` changes |
+| `validate-skill-change.sh` | Skill file written | Advises running `/skill-test` after `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/` changes |
 | `log-agent.sh` | Agent start | Logs agent invocations for audit trail |
 | `log-agent-stop.sh` | Agent stop | Completes agent audit trail (start + stop) |
 | `validate-agent-artifact.sh` | Agent stop | Warns when a subagent stops without writing the file its brief named |

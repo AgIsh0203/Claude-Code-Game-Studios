@@ -44,7 +44,7 @@ If the player journey file does not exist, note the gap and proceed:
 > journey session after this spec is drafted."
 
 Also add to the UX spec's Open Questions section:
-> "Player journey map not yet created. Author it from the template at `.claude/docs/templates/player-journey.md` to establish player context for this screen."
+> "Player journey map not yet created. Author it from the template at `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/player-journey.md` to establish player context for this screen."
 
 > **Do not tell the user to "run `/ux-design` Phase 2b" to create it.** Phase 2b
 > is this step — the one that *reads* the file. That remediation is circular: it

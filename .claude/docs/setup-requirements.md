@@ -50,7 +50,7 @@ sudo pacman -S jq       # Arch
 - If Claude Code can't find Git Bash, set `CLAUDE_CODE_GIT_BASH_PATH` to its
   `bash.exe` in the `env` block of your settings (for example
   `C:\\Program Files\\Git\\bin\\bash.exe` in JSON)
-- Hooks use `bash .claude/hooks/[name].sh` — this works on Windows because
+- Hooks use `bash C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/[name].sh` — this works on Windows because
   Claude Code invokes commands through a shell that can find `bash.exe`
 
 ### macOS / Linux

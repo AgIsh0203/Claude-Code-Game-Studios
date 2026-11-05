@@ -43,7 +43,7 @@ If the project appears fresh (no artifacts at all), use `AskUserQuestion`:
 
 1. Search the folder they named, if they named one; otherwise the whole
    project, skipping `.claude/`, `.git/`, `docs/engine-reference/`,
-   `.claude/ccgs/studio-tests/`, `node_modules/` and the engine's build and
+   `C:/Users/ishan/.claude/ccgs-studio/studio-tests/`, `node_modules/` and the engine's build and
    cache folders.
 2. Glob `**/*.md` there, then Grep the matches for the headings each artifact
    carries: a GDD has `## Overview` with `## Detailed Rules` or

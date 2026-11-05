@@ -4,7 +4,7 @@
 - Architecture decisions are recorded as ADRs in `docs/architecture/`. **How many is
   set by `modes.workflow`** — all ADRs at `full`, *critical* ADRs only at `standard`,
   and none required at `minimal`, where the decision log and `docs/GDD.md`
-  carry the rationale instead. See `.claude/docs/workflow-modes.md`.
+  carry the rationale instead. See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`.
 - Gameplay values must be data-driven (external config), never hardcoded
 - All public methods must be unit-testable (dependency injection over singletons)
 - Commits must reference the relevant design document or task ID
@@ -15,7 +15,7 @@
 - **A parse check is not a run.** Every story that changes something
   player-observable is launched and observed before it closes, and the
   observation is a retained screenshot in `docs/production/qa/evidence/`. Procedure
-  per engine: `.claude/docs/run-and-observe.md`. Not waived at
+  per engine: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/run-and-observe.md`. Not waived at
   `qa.level: minimal` — tests are, the look is not.
 
 # Design Document Standards
@@ -27,7 +27,7 @@
   curves, thresholds, costs; the system's `Category` is a hint, not the test) at
   `standard`, and no
   GDD at all at `minimal`, where `docs/GDD.md` is the design record.
-  See `.claude/docs/workflow-modes.md`. The 8 sections:
+  See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`. The 8 sections:
   1. **Overview** -- one-paragraph summary
   2. **Player Fantasy** -- intended feeling and experience
   3. **Detailed Rules** -- unambiguous mechanics

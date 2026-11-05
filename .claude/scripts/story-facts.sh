@@ -7,11 +7,11 @@
 # /sprint-status inject; the status column here applies its rule word for
 # word, so the two never disagree.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # A LINT row is a rule that matched, with the numbers that made it match;
 # READY, NEEDS WORK or BLOCKED is still the skill's to say.
 #
-# Usage: bash .claude/scripts/story-facts.sh [--root DIR] [--all | --sprint | PATH ...] [--lint]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh [--root DIR] [--all | --sprint | PATH ...] [--lint]
 #                                          [--granularity coarse|balanced|fine]
 #   --all       every docs/production/epics/**/story-*.md (the default)
 #   --sprint    the stories docs/production/sprint-status.yaml lists in its file:
@@ -96,7 +96,7 @@ esac
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "story-facts: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$(dirname "$0")/../.." 2>/dev/null || { echo "story-facts: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "story-facts: cannot reach the repo root" >&2; exit 1; }
 fi
 
 YAML="docs/production/sprint-status.yaml"

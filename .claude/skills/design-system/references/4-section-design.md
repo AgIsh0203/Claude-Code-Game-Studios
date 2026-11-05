@@ -53,7 +53,7 @@ Context  ->  Questions  ->  Options  ->  Decision  ->  Draft  ->  Approval  ->  
    provisional assumptions about undesigned dependencies.
 
 6. **Approval**: Per the resolved `modes.automation` mode
-   (`.claude/docs/automation-modes.md`):
+   (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`):
 
    **In `collaborative` mode**: Immediately after the draft — in the SAME
    response — use `AskUserQuestion`. **NEVER use plain text. NEVER skip

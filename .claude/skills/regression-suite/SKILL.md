@@ -3,7 +3,7 @@ name: regression-suite
 description: "Map test coverage to GDD critical paths, find fixed bugs lacking regression tests, flag drift from new features."
 argument-hint: "[update | audit | report]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/regression-suite/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/skills/regression-suite/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,qa.level,system_overrides`
 
 Resolved above — use as-is. No block → defaults in
-`.claude/docs/config-resolution.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 
 # Regression Suite
@@ -35,12 +35,12 @@ and known failure points. This skill maintains that list.
 
 ---
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
 **Workflow tier**: `modes.workflow` as resolved above — supplied by `modes.rigor`
-unless set explicitly — per `.claude/docs/workflow-modes.md`; in `audit` mode consider
+unless set explicitly — per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`; in `audit` mode consider
 `workflow_overrides.system_overrides.<system>` per system as each GDD is read. It
 sets whether GDD critical paths are mapped or coverage is smoke-only — see Step 2c.
 
@@ -325,7 +325,7 @@ Verdict, first match wins:
 ## Collaborative Protocol
 
 **Applies in `collaborative` mode (the default).** For `guided` and
-`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+`autonomous` modes, see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` — the rules below
 describe what collaborative mode requires, not universal behavior.
 
 - **Never remove existing regression tests from the manifest** without

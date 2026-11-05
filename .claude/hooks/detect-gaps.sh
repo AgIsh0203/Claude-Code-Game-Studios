@@ -16,7 +16,7 @@
 #      make .claude/ a root, and the hooks would write .claude/production/
 #   3. CLAUDE_PROJECT_DIR       -> that  (populated in the hook environment),
 #      unless it names a .claude folder, for the same reason as rule 2
-#   4. this script's location   -> <root>/.claude/hooks/../.. by construction
+#   4. this script's location   -> C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/../.. by construction
 # Rule 4 always works and needs no environment at all; rules 1-2 stop it from
 # overriding a caller that legitimately means somewhere else.
 #
@@ -26,7 +26,7 @@ if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" !=
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
 else
-  CCGS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+  CCGS_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
@@ -44,8 +44,8 @@ echo "=== Checking for Documentation Gaps ==="
 FRESH_PROJECT=true
 
 # Check if engine is configured (.claude/ccgs/project.yaml first, fall back to technical-preferences.md)
-if [ -f ".claude/ccgs/project.yaml" ] && [ -f ".claude/hooks/yaml-helper.sh" ]; then
-  source .claude/hooks/yaml-helper.sh
+if [ -f ".claude/ccgs/project.yaml" ] && [ -f "C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh" ]; then
+  source C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh
   ENGINE_NAME=$(get_yaml_key .claude/ccgs/project.yaml engine.name 2>/dev/null)
   if [ -n "$ENGINE_NAME" ]; then
     FRESH_PROJECT=false
@@ -76,7 +76,7 @@ fi
 
 # Check if source code exists.
 #
-# All three code roots, not just `src/`. Per .claude/docs/directory-structure.md
+# All three code roots, not just `src/`. Per C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md
 # `src/` is the Godot row; Unity builds from `Assets/` and Unreal from
 # `Source/`. Testing only `src/` meant a Unity project with a full codebase
 # could still be greeted with "NEW PROJECT ... Run: /start".
@@ -114,7 +114,7 @@ if [ ! -f ".claude/ccgs/project.yaml" ]; then
     echo ""
     echo "⬆️  v1.0 PROJECT: legacy config ($LEGACY_FILES) but no .claude/ccgs/project.yaml."
     echo "   Run: /adopt — it detects this and drives the migration (non-destructive)."
-    echo "   Preview first: bash .claude/scripts/migrate-v1-config.sh --dry-run"
+    echo "   Preview first: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/migrate-v1-config.sh --dry-run"
   fi
 fi
 
@@ -146,8 +146,8 @@ fi
 # Resolved AFTER the fresh-project early-exit above, so a brand-new project
 # never pays for the lookup.
 WORKFLOW="standard"
-if [ -f .claude/hooks/yaml-helper.sh ]; then
-    . .claude/hooks/yaml-helper.sh 2>/dev/null
+if [ -f C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh ]; then
+    . C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh 2>/dev/null
     W=$(resolve_setting modes.workflow 2>/dev/null | cut -f1)
     [ -n "$W" ] && WORKFLOW="$W"
 fi
@@ -162,7 +162,7 @@ fi
 
 # --- Resolve the engine-specific code root for checks 1, 3 and 4 ------------
 #
-# Checks 1, 3 and 4 were all hardcoded to `src/`, which .claude/docs/directory-
+# Checks 1, 3 and 4 were all hardcoded to `src/`, which C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-
 # structure.md defines as the GODOT row of the code-root table -- Unity uses
 # `Assets/`, Unreal `Source/`. On those two engines every directory test below
 # failed, the source-file count came back 0, and NONE of the three checks ran.
@@ -327,7 +327,7 @@ fi
 # instead, and /help routes by the brief -- telling the user to run /gate-check
 # contradicted both.
 STAGE=""
-if [ "$WORKFLOW" != "minimal" ] && [ -f .claude/hooks/yaml-helper.sh ]; then
+if [ "$WORKFLOW" != "minimal" ] && [ -f C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh ]; then
     # get_yaml_key takes the file first; called with the key alone it returned
     # nothing, and only the legacy stage.txt was ever read.
     STAGE=$(get_yaml_key .claude/ccgs/project.yaml project.stage 2>/dev/null)

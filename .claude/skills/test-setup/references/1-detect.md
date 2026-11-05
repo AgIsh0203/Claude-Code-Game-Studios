@@ -21,7 +21,7 @@
    - Glob `addons/gdUnit4/bin/GdUnitCmdTool.gd` (Godot — note the capital U) or
      `Assets/Tests/EditMode/` (Unity) or `Source/*/Private/Tests/` (Unreal) for
      engine-specific artifacts. These are the **test roots** in
-     `.claude/docs/directory-structure.md`; tests anywhere else are never compiled
+     `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md`; tests anywhere else are never compiled
      on Unity or Unreal.
 
 3. **Report findings**:

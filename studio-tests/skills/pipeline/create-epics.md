@@ -39,7 +39,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 ## Director Gate Checks
 
-In `full` mode: PR-EPIC (`producer`, `.claude/docs/director-gates/pr-epic.md`)
+In `full` mode: PR-EPIC (`producer`, `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/pr-epic.md`)
 runs once all epics for the current layer are defined and before any epic file is
 written. Verdicts: REALISTIC → proceed to the write asks; CONCERNS →
 `AskUserQuestion` with `[A] Proceed as planned` / `[B] Revise epic boundaries` /
@@ -60,7 +60,7 @@ In `solo` mode: PR-EPIC is skipped. Output notes: "PR-EPIC skipped — Solo mode
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---

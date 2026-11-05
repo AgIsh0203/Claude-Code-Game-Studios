@@ -8,12 +8,12 @@
 # milestone review would otherwise run by hand, so they all read the same
 # counts.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # Whether a FIXME blocks a release is the checklist's rule. A scan that found
 # nothing because there was nothing to scan says so: scanned_files 0, and exit
 # 3 when the code root itself is unknown.
 #
-# Usage: bash .claude/scripts/code-markers.sh [--root DIR] [--long N] [--exclude PATTERN ...] [PATH ...]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/code-markers.sh [--root DIR] [--long N] [--exclude PATTERN ...] [PATH ...]
 #   PATH          folders or files to scan, relative to the root or absolute;
 #                 default: the code root project-state.sh resolves (src/,
 #                 Assets/ or Source/)
@@ -79,7 +79,7 @@ case "$LONG" in ''|*[!0-9]*) echo "code-markers: --long takes a whole number" >&
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "code-markers: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "code-markers: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "code-markers: cannot reach the repo root" >&2; exit 1; }
 fi
 
 if [ -z "$PATHS" ]; then

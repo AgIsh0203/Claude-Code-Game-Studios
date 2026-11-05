@@ -28,7 +28,7 @@ you write. Driven by `/skill-test` and `/skill-improve`.
 ## What's in here
 
 ```
-.claude/ccgs/studio-tests/
+C:/Users/ishan/.claude/ccgs-studio/studio-tests/
 ├── README.md              ← you are here
 ├── CLAUDE.md              ← tells Claude how to use this framework
 ├── catalog.yaml           ← master registry: all 74 skills + 49 agents, coverage tracking

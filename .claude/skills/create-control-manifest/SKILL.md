@@ -3,7 +3,7 @@ name: create-control-manifest
 description: "Builds a short list of must-do and never-do coding rules per system from accepted ADRs. Use when the user wants programmer rules or a cheat sheet from the ADRs, or needs it regenerated after ADR changes."
 argument-hint: "[update — regenerate from current ADRs] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/create-control-manifest/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/adr-status.sh*), Bash(bash .claude/scripts/md-section.sh *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/create-control-manifest/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation`
 
 Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
-block → defaults in `.claude/docs/config-resolution.md`.
+block → defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 Ask with the question tool. Without one, list the options numbered and end your turn
 to wait. A skipped or dismissed question is not an answer: ask again in plain text.
@@ -28,7 +28,7 @@ manifest says *what*.
 **When:** after `/architecture-review` passes and the ADRs are Accepted. Run it
 again whenever an ADR is accepted or revised.
 
-Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
+Asks follow `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` (collaborative always asks, guided
 asks on major choices, autonomous logs and goes on; `automation_always_ask`
 categories always ask).
 
@@ -36,7 +36,7 @@ categories always ask).
 
 ### ADRs
 
-`bash .claude/scripts/adr-status.sh` reads every `docs/architecture/adr-*.md` in one
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh` reads every `docs/architecture/adr-*.md` in one
 pass: the counts first (`adrs`, then `accepted`, `proposed`, `deprecated`,
 `superseded`, `unfilled`, `other`, `no_status`), then one row per ADR with its
 status and layer. Establish the denominator first: decide from the counts, before
@@ -78,7 +78,7 @@ Report: "Loaded [A] Accepted ADRs of [N], engine: [name + version]."
 For each ADR in **A**, read only four sections, never the whole file:
 
 ```
-bash .claude/scripts/md-section.sh extract docs/architecture/[adr-file].md "Decision"
+bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh extract docs/architecture/[adr-file].md "Decision"
 ```
 
 and the same for `Alternatives Considered`, `Performance Implications` and `Engine
@@ -157,7 +157,7 @@ I need to review the ADRs first.
 **The technical review.** Read the `review_gate` line above. `skill-gates=skip`
 (solo or lean): no agent; note `TD-MANIFEST skipped — [Solo | Lean] mode`.
 `skill-gates=run`: hand the review to the `technical-director` agent with gate
-**TD-MANIFEST** (`.claude/docs/director-gates/td-manifest.md`; the agent reads it
+**TD-MANIFEST** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/td-manifest.md`; the agent reads it
 itself). Brief:
 
 - **Objective:** check the extracted rules before they are written.
@@ -176,7 +176,7 @@ Act on the verdict:
 - **CONCERNS:** ask: "The technical director raised concerns. How do you want to go
   on?" Options: Revise the flagged rules / Accept and go on / Discuss further.
 - **REJECT:** write nothing; fix the flagged rules and show the summary again.
-- **NOT ASSESSED:** it is not an approval (`.claude/docs/director-gates.md`). Name
+- **NOT ASSESSED:** it is not an approval (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`). Name
   what was missing, then supply it and run the review again; or, when the user
   chooses to go on without it, go to Phase 5 and state `TD-MANIFEST: NOT ASSESSED —
   [input]` in the reply and the final verdict line.

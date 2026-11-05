@@ -9,7 +9,7 @@
 # and Phase 3) and the "planned content" count /consistency-check and
 # /asset-spec make from the same registry.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # A band name is the rule row that matched. Whether a system is HIGH PRIORITY
 # (the skill's text does not say whether "NOT STARTED or EARLY, AND tagged MVP
 # or Vertical Slice, OR blocking" groups as (A AND B) OR C or A AND (B OR C))
@@ -17,7 +17,7 @@
 # (NOT STARTED or EARLY). The counts are of files and entries; whether a scene
 # is a gameplay level or a UI scene is not known here (see by levels).
 #
-# Usage: bash .claude/scripts/content-count.sh [--root DIR] COMMAND [ARGS]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/content-count.sh [--root DIR] COMMAND [ARGS]
 #   registry        the planned named content: the entries of docs/design/registry/
 #                   entities.yaml's entities and items sections, read through
 #                   registry.sh, deprecated ones left out
@@ -221,7 +221,7 @@ fi
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "content-count: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "content-count: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "content-count: cannot reach the repo root" >&2; exit 1; }
 fi
 
 # ------------------------------------------------------------------- registry

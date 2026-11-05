@@ -16,7 +16,7 @@
 #      make .claude/ a root, and the hooks would write .claude/production/
 #   3. CLAUDE_PROJECT_DIR       -> that  (populated in the hook environment),
 #      unless it names a .claude folder, for the same reason as rule 2
-#   4. this script's location   -> <root>/.claude/hooks/../.. by construction
+#   4. this script's location   -> C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/../.. by construction
 # Rule 4 always works and needs no environment at all; rules 1-2 stop it from
 # overriding a caller that legitimately means somewhere else.
 #
@@ -26,7 +26,7 @@ if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" !=
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
 else
-  CCGS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+  CCGS_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
@@ -35,8 +35,8 @@ fi
 # the prototype boundary, the localization freeze, or the subagent write
 # exception. It runs BEFORE the write, while the old file can still be read.
 #
-# The logic is `.claude/scripts/write-guard.sh check`, its helper twin; this
-# hook reads the payload through `.claude/scripts/hook-input.sh` and calls it.
+# The logic is `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh check`, its helper twin; this
+# hook reads the payload through `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/hook-input.sh` and calls it.
 # A skill that writes a guarded file runs write-guard.sh itself as its last
 # step, because hooks do not run in every tool.
 #
@@ -96,19 +96,19 @@ esac
 case "$_VW_REST" in *prototypes*) _vw_go=1 ;; esac
 [ "$_vw_go" = 1 ] || exit 0
 
-[ -f .claude/hooks/yaml-helper.sh ] && . .claude/hooks/yaml-helper.sh 2>/dev/null
+[ -f C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh ] && . C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh 2>/dev/null
 vw_warn() {
   if command -v hook_warn >/dev/null 2>&1; then hook_warn PreToolUse "$1"
   else printf '%s\n' "$1" >&2; fi
   exit 0
 }
 for _vw_s in hook-input.sh write-guard.sh; do
-  [ -f ".claude/scripts/$_vw_s" ] || vw_warn "Write check skipped: the helper .claude/scripts/$_vw_s is missing, so the write goes ahead unchecked."
+  [ -f "C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/$_vw_s" ] || vw_warn "Write check skipped: the helper C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/$_vw_s is missing, so the write goes ahead unchecked."
 done
 
 _VW_NEW=$(mktemp 2>/dev/null) || exit 0
 trap 'rm -f "$_VW_NEW"' EXIT
-_VW_IN=$(printf '%s' "$INPUT" | bash .claude/scripts/hook-input.sh --root . --new "$_VW_NEW" 2>/dev/null)
+_VW_IN=$(printf '%s' "$INPUT" | bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/hook-input.sh --root . --new "$_VW_NEW" 2>/dev/null)
 vw_row() { printf '%s\n' "$_VW_IN" | awk -F '\t' -v k="$1" '$1 == k { print $2; exit }'; }
 _VW_WHERE=$(vw_row where); _VW_PATH=$(vw_row path); _VW_TOOL=$(vw_row tool)
 [ "$_VW_WHERE" = inside ] || exit 0
@@ -118,11 +118,11 @@ _VW_AGENT=$(vw_row agent); _VW_EXISTED=$(vw_row existed); _VW_GOT=$(vw_row new)
 set -- check "$_VW_PATH" --tool "$_VW_TOOL" --existed "$_VW_EXISTED"
 [ "$_VW_AGENT" != "-" ] && set -- "$@" --agent "$_VW_AGENT"
 if [ "$_VW_GOT" = ok ]; then
-  _VW_OUT=$(bash .claude/scripts/write-guard.sh --root . "$@" "$_VW_NEW" 2>/dev/null)
+  _VW_OUT=$(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh --root . "$@" "$_VW_NEW" 2>/dev/null)
 else
   # The content could not be rebuilt: the rules that read it (config,
   # prototype) say so below; the others still run on the path.
-  _VW_OUT=$(bash .claude/scripts/write-guard.sh --root . "$@" 2>/dev/null)
+  _VW_OUT=$(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh --root . "$@" 2>/dev/null)
 fi
 
 # At most this many findings in the warning: a longer list buries the point,
@@ -149,4 +149,4 @@ _VW_MSG=$(printf '%s\n' "$_VW_OUT" | VW_MAX="$_VW_MAX" VW_GOT="$_VW_GOT" VW_TOOL
 [ -n "$_VW_MSG" ] || exit 0
 vw_warn "Write check on $_VW_PATH (a warning; the write goes ahead):
 $_VW_MSG
-To see every finding: bash .claude/scripts/write-guard.sh check $_VW_PATH"
+To see every finding: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh check $_VW_PATH"

@@ -26,7 +26,7 @@ Knobs, and Formulas when no numeric rule exists) and nothing else: it is not a
 licence to strip a section because it looks optional, and §4 cannot fill a
 section §3 never created.
 
-Use the template structure from `.claude/docs/templates/game-design-document.md`:
+Use the template structure from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-design-document.md`:
 
 ```markdown
 # [System Name]

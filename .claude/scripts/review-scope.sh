@@ -5,7 +5,7 @@
 # finds the most recent cross-review report, lists GDDs changed since it, and
 # lists each changed GDD's declared dependencies (which must also be in scope).
 #
-# Usage: bash .claude/scripts/review-scope.sh
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-scope.sh
 #
 # Output:
 #   PRIOR_REVIEW: <path>          (or "NONE (full review required)")
@@ -29,7 +29,7 @@
 
 set -u
 
-cd "$(dirname "$0")/../.." || { echo "review-scope: cannot reach repo root" >&2; exit 1; }
+cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" || { echo "review-scope: cannot reach repo root" >&2; exit 1; }
 
 GDD_GLOB=':(glob)docs/design/gdd/*.md'
 

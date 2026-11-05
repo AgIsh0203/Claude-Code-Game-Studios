@@ -40,7 +40,7 @@ For `since-last-review` mode, compute the scope deterministically instead of
 reasoning through git history:
 
 ```
-Bash: bash .claude/scripts/review-scope.sh
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-scope.sh
 ```
 
 It prints `PRIOR_REVIEW:`, a `CHANGED:` list, and a `DEPS ...:` list of each

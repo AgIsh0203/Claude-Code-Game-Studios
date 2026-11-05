@@ -3,7 +3,7 @@ name: create-architecture
 description: "Author the architecture blueprint before code is written. Validates decisions against the pinned engine, flags knowledge gaps."
 argument-hint: "[focus-area: full | layers | data-flow | api-boundaries | adr-audit] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/create-architecture/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/registry.sh *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/skills/create-architecture/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,docs.density`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Create Architecture
 
@@ -23,9 +23,9 @@ It sits between design and implementation, and must exist before sprint planning
 **Distinct from `/architecture-decision`**: ADRs record individual point decisions.
 This skill creates the whole-system blueprint that gives ADRs their context.
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -36,7 +36,7 @@ no essays; `balanced` = diagrams + paragraph explanations of layer choices
 (`rigor: standard`); `thorough` = full prose with rationale, trade-offs, and alternatives
 considered per layer. Apply it to every section you author.
 
-**`workflow`** (see `.claude/docs/workflow-modes.md`):
+**`workflow`** (see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`):
 - `full` — full architecture: all layers, module ownership, data flow, API
   boundaries, full ADR audit.
 - `standard` — simplified: system layer map + critical ADR list only.
@@ -90,7 +90,7 @@ considered per layer. Apply it to every section you author.
 ## Collaborative Protocol
 
 **Applies in `collaborative` mode (the default).** For `guided` and
-`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+`autonomous` modes, see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` — the rules below
 describe what collaborative mode requires, not universal behavior.
 
 This skill follows the collaborative design principle at every phase:

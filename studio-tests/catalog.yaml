@@ -3,7 +3,7 @@ last_updated: ""
 skills:
   # Critical — gate skills that control phase transitions
   - name: gate-check
-    spec: .claude/ccgs/studio-tests/skills/gate/gate-check.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/gate/gate-check.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -14,7 +14,7 @@ skills:
     category: gate
 
   - name: design-review
-    spec: .claude/ccgs/studio-tests/skills/review/design-review.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/review/design-review.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -25,7 +25,7 @@ skills:
     category: review
 
   - name: story-readiness
-    spec: .claude/ccgs/studio-tests/skills/readiness/story-readiness.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/readiness/story-readiness.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -36,7 +36,7 @@ skills:
     category: readiness
 
   - name: story-done
-    spec: .claude/ccgs/studio-tests/skills/readiness/story-done.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/readiness/story-done.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -47,7 +47,7 @@ skills:
     category: readiness
 
   - name: review-all-gdds
-    spec: .claude/ccgs/studio-tests/skills/review/review-all-gdds.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/review/review-all-gdds.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -58,7 +58,7 @@ skills:
     category: review
 
   - name: architecture-review
-    spec: .claude/ccgs/studio-tests/skills/review/architecture-review.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/review/architecture-review.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -70,7 +70,7 @@ skills:
 
   # High — pipeline-critical skills
   - name: create-epics
-    spec: .claude/ccgs/studio-tests/skills/pipeline/create-epics.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/pipeline/create-epics.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -81,7 +81,7 @@ skills:
     category: pipeline
 
   - name: create-stories
-    spec: .claude/ccgs/studio-tests/skills/pipeline/create-stories.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/pipeline/create-stories.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -92,7 +92,7 @@ skills:
     category: pipeline
 
   - name: dev-story
-    spec: .claude/ccgs/studio-tests/skills/pipeline/dev-story.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/pipeline/dev-story.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -103,7 +103,7 @@ skills:
     category: pipeline
 
   - name: create-control-manifest
-    spec: .claude/ccgs/studio-tests/skills/pipeline/create-control-manifest.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/pipeline/create-control-manifest.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -114,7 +114,7 @@ skills:
     category: pipeline
 
   - name: propagate-design-change
-    spec: .claude/ccgs/studio-tests/skills/pipeline/propagate-design-change.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/pipeline/propagate-design-change.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -125,7 +125,7 @@ skills:
     category: pipeline
 
   - name: architecture-decision
-    spec: .claude/ccgs/studio-tests/skills/authoring/architecture-decision.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/authoring/architecture-decision.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -136,7 +136,7 @@ skills:
     category: authoring
 
   - name: map-systems
-    spec: .claude/ccgs/studio-tests/skills/pipeline/map-systems.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/pipeline/map-systems.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -147,7 +147,7 @@ skills:
     category: pipeline
 
   - name: vertical-slice
-    spec: .claude/ccgs/studio-tests/skills/pipeline/vertical-slice.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/pipeline/vertical-slice.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -158,7 +158,7 @@ skills:
     category: pipeline
 
   - name: design-system
-    spec: .claude/ccgs/studio-tests/skills/authoring/design-system.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/authoring/design-system.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -169,7 +169,7 @@ skills:
     category: authoring
 
   - name: consistency-check
-    spec: .claude/ccgs/studio-tests/skills/analysis/consistency-check.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/consistency-check.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -181,7 +181,7 @@ skills:
 
   # Medium — team and sprint management skills
   - name: sprint-plan
-    spec: .claude/ccgs/studio-tests/skills/sprint/sprint-plan.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/sprint/sprint-plan.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -192,7 +192,7 @@ skills:
     category: sprint
 
   - name: sprint-status
-    spec: .claude/ccgs/studio-tests/skills/sprint/sprint-status.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/sprint/sprint-status.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -203,7 +203,7 @@ skills:
     category: sprint
 
   - name: team-ui
-    spec: .claude/ccgs/studio-tests/skills/team/team-ui.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/team/team-ui.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -214,7 +214,7 @@ skills:
     category: team
 
   - name: team-combat
-    spec: .claude/ccgs/studio-tests/skills/team/team-combat.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/team/team-combat.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -225,7 +225,7 @@ skills:
     category: team
 
   - name: team-narrative
-    spec: .claude/ccgs/studio-tests/skills/team/team-narrative.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/team/team-narrative.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -236,7 +236,7 @@ skills:
     category: team
 
   - name: team-audio
-    spec: .claude/ccgs/studio-tests/skills/team/team-audio.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/team/team-audio.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -247,7 +247,7 @@ skills:
     category: team
 
   - name: team-level
-    spec: .claude/ccgs/studio-tests/skills/team/team-level.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/team/team-level.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -258,7 +258,7 @@ skills:
     category: team
 
   - name: team-polish
-    spec: .claude/ccgs/studio-tests/skills/team/team-polish.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/team/team-polish.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -269,7 +269,7 @@ skills:
     category: team
 
   - name: team-release
-    spec: .claude/ccgs/studio-tests/skills/team/team-release.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/team/team-release.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -280,7 +280,7 @@ skills:
     category: team
 
   - name: team-live-ops
-    spec: .claude/ccgs/studio-tests/skills/team/team-live-ops.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/team/team-live-ops.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -291,7 +291,7 @@ skills:
     category: team
 
   - name: team-qa
-    spec: .claude/ccgs/studio-tests/skills/team/team-qa.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/team/team-qa.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -303,7 +303,7 @@ skills:
 
   # Low — analysis, reporting, utility skills
   - name: skill-test
-    spec: .claude/ccgs/studio-tests/skills/utility/skill-test.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/skill-test.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -314,7 +314,7 @@ skills:
     category: utility
 
   - name: skill-improve
-    spec: .claude/ccgs/studio-tests/skills/utility/skill-improve.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/skill-improve.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -325,7 +325,7 @@ skills:
     category: utility
 
   - name: start
-    spec: .claude/ccgs/studio-tests/skills/utility/start.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/start.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -336,7 +336,7 @@ skills:
     category: utility
 
   - name: help
-    spec: .claude/ccgs/studio-tests/skills/utility/help.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/help.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -347,7 +347,7 @@ skills:
     category: utility
 
   - name: brainstorm
-    spec: .claude/ccgs/studio-tests/skills/utility/brainstorm.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/brainstorm.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -358,7 +358,7 @@ skills:
     category: utility
 
   - name: project-stage-detect
-    spec: .claude/ccgs/studio-tests/skills/utility/project-stage-detect.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/project-stage-detect.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -369,7 +369,7 @@ skills:
     category: utility
 
   - name: setup-engine
-    spec: .claude/ccgs/studio-tests/skills/utility/setup-engine.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/setup-engine.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -380,7 +380,7 @@ skills:
     category: utility
 
   - name: quick-design
-    spec: .claude/ccgs/studio-tests/skills/authoring/quick-design.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/authoring/quick-design.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -391,7 +391,7 @@ skills:
     category: authoring
 
   - name: ux-design
-    spec: .claude/ccgs/studio-tests/skills/authoring/ux-design.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/authoring/ux-design.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -402,7 +402,7 @@ skills:
     category: authoring
 
   - name: ux-review
-    spec: .claude/ccgs/studio-tests/skills/authoring/ux-review.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/authoring/ux-review.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -413,7 +413,7 @@ skills:
     category: authoring
 
   - name: art-bible
-    spec: .claude/ccgs/studio-tests/skills/authoring/art-bible.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/authoring/art-bible.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -424,7 +424,7 @@ skills:
     category: authoring
 
   - name: create-architecture
-    spec: .claude/ccgs/studio-tests/skills/authoring/create-architecture.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/authoring/create-architecture.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -435,7 +435,7 @@ skills:
     category: authoring
 
   - name: gamedev-code-review
-    spec: .claude/ccgs/studio-tests/skills/analysis/gamedev-code-review.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/gamedev-code-review.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -446,7 +446,7 @@ skills:
     category: analysis
 
   - name: balance-check
-    spec: .claude/ccgs/studio-tests/skills/analysis/balance-check.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/balance-check.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -457,7 +457,7 @@ skills:
     category: analysis
 
   - name: asset-audit
-    spec: .claude/ccgs/studio-tests/skills/analysis/asset-audit.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/asset-audit.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -468,7 +468,7 @@ skills:
     category: analysis
 
   - name: content-audit
-    spec: .claude/ccgs/studio-tests/skills/analysis/content-audit.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/content-audit.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -479,7 +479,7 @@ skills:
     category: analysis
 
   - name: tech-debt
-    spec: .claude/ccgs/studio-tests/skills/analysis/tech-debt.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/tech-debt.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -490,7 +490,7 @@ skills:
     category: analysis
 
   - name: scope-check
-    spec: .claude/ccgs/studio-tests/skills/analysis/scope-check.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/scope-check.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -501,7 +501,7 @@ skills:
     category: analysis
 
   - name: estimate
-    spec: .claude/ccgs/studio-tests/skills/analysis/estimate.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/estimate.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -512,7 +512,7 @@ skills:
     category: analysis
 
   - name: perf-profile
-    spec: .claude/ccgs/studio-tests/skills/analysis/perf-profile.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/perf-profile.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -523,7 +523,7 @@ skills:
     category: analysis
 
   - name: security-audit
-    spec: .claude/ccgs/studio-tests/skills/analysis/security-audit.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/security-audit.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -534,7 +534,7 @@ skills:
     category: analysis
 
   - name: test-evidence-review
-    spec: .claude/ccgs/studio-tests/skills/analysis/test-evidence-review.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/test-evidence-review.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -545,7 +545,7 @@ skills:
     category: analysis
 
   - name: test-flakiness
-    spec: .claude/ccgs/studio-tests/skills/analysis/test-flakiness.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/analysis/test-flakiness.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -556,7 +556,7 @@ skills:
     category: analysis
 
   - name: reverse-document
-    spec: .claude/ccgs/studio-tests/skills/utility/reverse-document.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/reverse-document.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -567,7 +567,7 @@ skills:
     category: utility
 
   - name: bug-report
-    spec: .claude/ccgs/studio-tests/skills/utility/bug-report.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/bug-report.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -578,7 +578,7 @@ skills:
     category: utility
 
   - name: hotfix
-    spec: .claude/ccgs/studio-tests/skills/utility/hotfix.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/hotfix.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -589,7 +589,7 @@ skills:
     category: utility
 
   - name: gamedev-prototype
-    spec: .claude/ccgs/studio-tests/skills/utility/gamedev-prototype.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/gamedev-prototype.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -600,7 +600,7 @@ skills:
     category: utility
 
   - name: playtest-report
-    spec: .claude/ccgs/studio-tests/skills/utility/playtest-report.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/playtest-report.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -611,7 +611,7 @@ skills:
     category: utility
 
   - name: milestone-review
-    spec: .claude/ccgs/studio-tests/skills/sprint/milestone-review.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/sprint/milestone-review.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -622,7 +622,7 @@ skills:
     category: sprint
 
   - name: retrospective
-    spec: .claude/ccgs/studio-tests/skills/sprint/retrospective.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/sprint/retrospective.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -633,7 +633,7 @@ skills:
     category: sprint
 
   - name: changelog
-    spec: .claude/ccgs/studio-tests/skills/sprint/changelog.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/sprint/changelog.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -644,7 +644,7 @@ skills:
     category: sprint
 
   - name: patch-notes
-    spec: .claude/ccgs/studio-tests/skills/sprint/patch-notes.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/sprint/patch-notes.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -655,7 +655,7 @@ skills:
     category: sprint
 
   - name: onboard
-    spec: .claude/ccgs/studio-tests/skills/utility/onboard.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/onboard.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -666,7 +666,7 @@ skills:
     category: utility
 
   - name: localize
-    spec: .claude/ccgs/studio-tests/skills/utility/localize.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/localize.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -677,7 +677,7 @@ skills:
     category: utility
 
   - name: launch-checklist
-    spec: .claude/ccgs/studio-tests/skills/utility/launch-checklist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/launch-checklist.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -688,7 +688,7 @@ skills:
     category: utility
 
   - name: release-checklist
-    spec: .claude/ccgs/studio-tests/skills/utility/release-checklist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/release-checklist.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -699,7 +699,7 @@ skills:
     category: utility
 
   - name: adopt
-    spec: .claude/ccgs/studio-tests/skills/utility/adopt.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/adopt.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -710,7 +710,7 @@ skills:
     category: utility
 
   - name: smoke-check
-    spec: .claude/ccgs/studio-tests/skills/utility/smoke-check.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/smoke-check.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -721,7 +721,7 @@ skills:
     category: utility
 
   - name: soak-test
-    spec: .claude/ccgs/studio-tests/skills/utility/soak-test.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/soak-test.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -732,7 +732,7 @@ skills:
     category: utility
 
   - name: test-setup
-    spec: .claude/ccgs/studio-tests/skills/utility/test-setup.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/test-setup.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -743,7 +743,7 @@ skills:
     category: utility
 
   - name: test-helpers
-    spec: .claude/ccgs/studio-tests/skills/utility/test-helpers.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/test-helpers.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -754,7 +754,7 @@ skills:
     category: utility
 
   - name: regression-suite
-    spec: .claude/ccgs/studio-tests/skills/utility/regression-suite.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/regression-suite.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -765,7 +765,7 @@ skills:
     category: utility
 
   - name: qa-plan
-    spec: .claude/ccgs/studio-tests/skills/utility/qa-plan.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/qa-plan.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -776,7 +776,7 @@ skills:
     category: utility
 
   - name: bug-triage
-    spec: .claude/ccgs/studio-tests/skills/utility/bug-triage.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/bug-triage.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -787,7 +787,7 @@ skills:
     category: utility
 
   - name: asset-spec
-    spec: .claude/ccgs/studio-tests/skills/utility/asset-spec.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/asset-spec.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -798,7 +798,7 @@ skills:
     category: utility
 
   - name: day-one-patch
-    spec: .claude/ccgs/studio-tests/skills/utility/day-one-patch.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/day-one-patch.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -809,7 +809,7 @@ skills:
     category: utility
 
   - name: settings
-    spec: .claude/ccgs/studio-tests/skills/utility/settings.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/utility/settings.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -822,7 +822,7 @@ skills:
 agents:
   # Tier 1 Directors
   - name: creative-director
-    spec: .claude/ccgs/studio-tests/agents/directors/creative-director.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/directors/creative-director.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -830,7 +830,7 @@ agents:
     category: director
 
   - name: technical-director
-    spec: .claude/ccgs/studio-tests/agents/directors/technical-director.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/directors/technical-director.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -838,7 +838,7 @@ agents:
     category: director
 
   - name: producer
-    spec: .claude/ccgs/studio-tests/agents/directors/producer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/directors/producer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -846,7 +846,7 @@ agents:
     category: director
 
   - name: art-director
-    spec: .claude/ccgs/studio-tests/agents/directors/art-director.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/directors/art-director.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -855,7 +855,7 @@ agents:
 
   # Tier 2 Leads
   - name: lead-programmer
-    spec: .claude/ccgs/studio-tests/agents/leads/lead-programmer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/leads/lead-programmer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -863,7 +863,7 @@ agents:
     category: lead
 
   - name: qa-lead
-    spec: .claude/ccgs/studio-tests/agents/leads/qa-lead.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/leads/qa-lead.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -871,7 +871,7 @@ agents:
     category: lead
 
   - name: narrative-director
-    spec: .claude/ccgs/studio-tests/agents/leads/narrative-director.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/leads/narrative-director.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -879,7 +879,7 @@ agents:
     category: lead
 
   - name: audio-director
-    spec: .claude/ccgs/studio-tests/agents/leads/audio-director.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/leads/audio-director.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -887,7 +887,7 @@ agents:
     category: lead
 
   - name: game-designer
-    spec: .claude/ccgs/studio-tests/agents/leads/game-designer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/leads/game-designer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -895,7 +895,7 @@ agents:
     category: lead
 
   - name: systems-designer
-    spec: .claude/ccgs/studio-tests/agents/leads/systems-designer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/leads/systems-designer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -903,7 +903,7 @@ agents:
     category: lead
 
   - name: level-designer
-    spec: .claude/ccgs/studio-tests/agents/leads/level-designer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/leads/level-designer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -912,7 +912,7 @@ agents:
 
   # Core Specialists
   - name: gameplay-programmer
-    spec: .claude/ccgs/studio-tests/agents/specialists/gameplay-programmer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/gameplay-programmer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -920,7 +920,7 @@ agents:
     category: specialist
 
   - name: ai-programmer
-    spec: .claude/ccgs/studio-tests/agents/specialists/ai-programmer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/ai-programmer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -928,7 +928,7 @@ agents:
     category: specialist
 
   - name: technical-artist
-    spec: .claude/ccgs/studio-tests/agents/specialists/technical-artist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/technical-artist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -936,7 +936,7 @@ agents:
     category: specialist
 
   - name: sound-designer
-    spec: .claude/ccgs/studio-tests/agents/specialists/sound-designer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/sound-designer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -944,7 +944,7 @@ agents:
     category: specialist
 
   - name: engine-programmer
-    spec: .claude/ccgs/studio-tests/agents/specialists/engine-programmer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/engine-programmer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -952,7 +952,7 @@ agents:
     category: specialist
 
   - name: tools-programmer
-    spec: .claude/ccgs/studio-tests/agents/specialists/tools-programmer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/tools-programmer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -960,7 +960,7 @@ agents:
     category: specialist
 
   - name: network-programmer
-    spec: .claude/ccgs/studio-tests/agents/specialists/network-programmer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/network-programmer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -968,7 +968,7 @@ agents:
     category: specialist
 
   - name: security-engineer
-    spec: .claude/ccgs/studio-tests/agents/qa/security-engineer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/qa/security-engineer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -976,7 +976,7 @@ agents:
     category: specialist
 
   - name: accessibility-specialist
-    spec: .claude/ccgs/studio-tests/agents/qa/accessibility-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/qa/accessibility-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -984,7 +984,7 @@ agents:
     category: specialist
 
   - name: ux-designer
-    spec: .claude/ccgs/studio-tests/agents/specialists/ux-designer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/ux-designer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -992,7 +992,7 @@ agents:
     category: specialist
 
   - name: ui-programmer
-    spec: .claude/ccgs/studio-tests/agents/specialists/ui-programmer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/ui-programmer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1000,7 +1000,7 @@ agents:
     category: specialist
 
   - name: performance-analyst
-    spec: .claude/ccgs/studio-tests/agents/specialists/performance-analyst.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/performance-analyst.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1009,7 +1009,7 @@ agents:
 
   # Engine Specialists — Godot
   - name: godot-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/godot/godot-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/godot/godot-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1017,7 +1017,7 @@ agents:
     category: engine
 
   - name: godot-gdscript-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/godot/godot-gdscript-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/godot/godot-gdscript-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1025,7 +1025,7 @@ agents:
     category: engine
 
   - name: godot-csharp-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/godot/godot-csharp-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/godot/godot-csharp-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1033,7 +1033,7 @@ agents:
     category: engine
 
   - name: godot-shader-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/godot/godot-shader-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/godot/godot-shader-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1041,7 +1041,7 @@ agents:
     category: engine
 
   - name: godot-gdextension-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/godot/godot-gdextension-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/godot/godot-gdextension-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1050,7 +1050,7 @@ agents:
 
   # Engine Specialists — Unity
   - name: unity-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unity/unity-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unity/unity-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1058,7 +1058,7 @@ agents:
     category: engine
 
   - name: unity-ui-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unity/unity-ui-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unity/unity-ui-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1066,7 +1066,7 @@ agents:
     category: engine
 
   - name: unity-shader-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unity/unity-shader-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unity/unity-shader-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1074,7 +1074,7 @@ agents:
     category: engine
 
   - name: unity-dots-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unity/unity-dots-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unity/unity-dots-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1082,7 +1082,7 @@ agents:
     category: engine
 
   - name: unity-addressables-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unity/unity-addressables-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unity/unity-addressables-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1091,7 +1091,7 @@ agents:
 
   # Engine Specialists — Unreal
   - name: unreal-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unreal/unreal-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unreal/unreal-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1099,7 +1099,7 @@ agents:
     category: engine
 
   - name: ue-blueprint-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unreal/ue-blueprint-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unreal/ue-blueprint-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1107,7 +1107,7 @@ agents:
     category: engine
 
   - name: ue-gas-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unreal/ue-gas-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unreal/ue-gas-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1115,7 +1115,7 @@ agents:
     category: engine
 
   - name: ue-umg-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unreal/ue-umg-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unreal/ue-umg-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1123,7 +1123,7 @@ agents:
     category: engine
 
   - name: ue-replication-specialist
-    spec: .claude/ccgs/studio-tests/agents/engine/unreal/ue-replication-specialist.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/engine/unreal/ue-replication-specialist.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1132,7 +1132,7 @@ agents:
 
   # Operations
   - name: devops-engineer
-    spec: .claude/ccgs/studio-tests/agents/operations/devops-engineer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/operations/devops-engineer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1140,7 +1140,7 @@ agents:
     category: operations
 
   - name: release-manager
-    spec: .claude/ccgs/studio-tests/agents/operations/release-manager.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/operations/release-manager.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1148,7 +1148,7 @@ agents:
     category: operations
 
   - name: live-ops-designer
-    spec: .claude/ccgs/studio-tests/agents/operations/live-ops-designer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/operations/live-ops-designer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1156,7 +1156,7 @@ agents:
     category: operations
 
   - name: community-manager
-    spec: .claude/ccgs/studio-tests/agents/operations/community-manager.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/operations/community-manager.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1164,7 +1164,7 @@ agents:
     category: operations
 
   - name: analytics-engineer
-    spec: .claude/ccgs/studio-tests/agents/operations/analytics-engineer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/operations/analytics-engineer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1172,7 +1172,7 @@ agents:
     category: operations
 
   - name: economy-designer
-    spec: .claude/ccgs/studio-tests/agents/operations/economy-designer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/operations/economy-designer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1180,7 +1180,7 @@ agents:
     category: operations
 
   - name: localization-lead
-    spec: .claude/ccgs/studio-tests/agents/operations/localization-lead.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/operations/localization-lead.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1189,7 +1189,7 @@ agents:
 
   # QA & Creative
   - name: qa-tester
-    spec: .claude/ccgs/studio-tests/agents/qa/qa-tester.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/qa/qa-tester.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1197,7 +1197,7 @@ agents:
     category: qa
 
   - name: prototyper
-    spec: .claude/ccgs/studio-tests/agents/specialists/prototyper.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/prototyper.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1205,7 +1205,7 @@ agents:
     category: specialist
 
   - name: writer
-    spec: .claude/ccgs/studio-tests/agents/specialists/writer.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/writer.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""
@@ -1213,7 +1213,7 @@ agents:
     category: specialist
 
   - name: world-builder
-    spec: .claude/ccgs/studio-tests/agents/specialists/world-builder.md
+    spec: C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/specialists/world-builder.md
     last_spec: ""
     last_spec_result: ""
     last_category: ""

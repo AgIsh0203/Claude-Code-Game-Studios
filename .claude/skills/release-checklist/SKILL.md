@@ -3,7 +3,7 @@ name: release-checklist
 description: "Pre-release checklist — build verification, certification requirements, store metadata, launch readiness."
 argument-hint: "[platform: pc|console|mobile|all]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/release-checklist/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/release-checklist/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,11 +12,11 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
-Resolved above — use as-is. No block → defaults in `.claude/docs/config-resolution.md`.
+Resolved above — use as-is. No block → defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Release Checklist
 
@@ -35,7 +35,7 @@ trains the reader to skip the list, which defeats the gate:
   decision, unset is a missing one, and they must not produce the same output.
   Branch on the **four values this key takes** — `none | itch | steam | console` —
   and not on platform names. The full requirement table is the `## platform.cert_tier`
-  section of `.claude/docs/effects-map.md` — read **only that section** (Grep its
+  section of `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md` — read **only that section** (Grep its
   heading, then a bounded Read); the file as a whole is not a runtime input.
   - `none` — **emit no certification section at all.** Internal release, alpha or
     jam game. Say the section was omitted and why; do not leave it blank.
@@ -91,7 +91,7 @@ certification track.
 > and on a release gate those are opposite findings. Report
 > `scanned [N] source files: [M] TODO, [M] FIXME, [M] HACK` — or, when the code
 > root (`src/`, `Assets/` or `Source/`; resolve per
-> `.claude/docs/code-root-resolution.md`) is unresolved,
+> `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`) is unresolved,
 > **`NOT ASSESSED — code root unresolved`**, and when it is absent or holds no
 > source files, **`NOT ASSESSED — no source files found to scan`**. A bare `0` is
 > not a result.

@@ -13,7 +13,7 @@ Three consequences, and none of them are optional reading:
    not the corner case.
 2. **Context, not enforcement.** A loaded rule is guidance the model weighs, the
    same as `CLAUDE.md`. Anything that must hold regardless of what the model
-   decides belongs in a hook — `.claude/hooks/` already enforces JSON validity
+   decides belongs in a hook — `C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/` already enforces JSON validity
    and commit shape that way.
 3. **A rule with no `paths:` loads every session**, at the same priority as
    `.claude/CLAUDE.md`. That is the lever for a rule that must always apply; it
@@ -25,7 +25,7 @@ an agent stating different versions of the same standard is worse than either
 alone.
 
 To see which rules actually load, and why, wire the `InstructionsLoaded` hook —
-`.claude/hooks/log-instructions.sh` records every instruction file and its load
+`C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/log-instructions.sh` records every instruction file and its load
 reason (`session_start`, `path_glob_match`, `nested_traversal`, `include`,
 `compact`) to `.claude/ccgs/session-logs/instructions-loaded.log`.
 
@@ -52,7 +52,7 @@ each rule's own globs list the case variants (`{AI,Ai,ai}`).
 | `shader-code.md` | `Content/shaders/**`, `**/*.gdshader` · `Assets/**/*.{shader,hlsl,cginc,compute,shadergraph}` · `Shaders/**`, `**/*.{usf,ush}` | Naming conventions, performance targets, cross-platform rules |
 | `scene-files.md` | `**/*.tscn`, `**/*.tres` · `**/*.unity`, `**/*.prefab`, `Assets/**/*.asset` · — | Hand-edit limits for editor-written scene and asset files; Unreal `.uasset`/`.umap` are binary, and `settings.json` denies edits to them |
 | `agent-memory.md` | `.claude/agent-memory/**` | The one place an agent may write unasked — and why a temporary absence must never be recorded as a durable fact |
-| `skill-authoring.md` | `.claude/skills/**`, `.claude/agents/**` | A check must be able to report that it did not run — the five obligations for verdicts, defaults, skips, sourcing and derived coverage |
+| `skill-authoring.md` | `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/**`, `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/**` | A check must be able to report that it did not run — the five obligations for verdicts, defaults, skips, sourcing and derived coverage |
 
 Each engine-facing rule loads on all three engines:
 

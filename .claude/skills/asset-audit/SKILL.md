@@ -77,7 +77,7 @@ Asset Standards section sets budgets, formats and the naming convention.
 
 Assets live under the engine's asset root: `Content/` on Godot, `Assets/` on
 Unity, `Content/` on Unreal. Resolve the engine and its code root per
-`.claude/docs/code-root-resolution.md`; that code root is the one Phase 3's
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`; that code root is the one Phase 3's
 orphan and missing-asset searches read. If it is unresolved, stop:
 `NOT ASSESSED — engine unresolved`, naming `/setup-engine`.
 

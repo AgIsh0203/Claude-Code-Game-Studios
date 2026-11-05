@@ -11,7 +11,7 @@ data from `docs/production/releases/[version]/changelog.md`, the version's entry
 tag. It checks for a tone guide (`.claude/docs/technical-preferences.md`,
 `docs/PATCH-NOTES-STYLE.md`, `docs/design/community/tone-guide.md`) and a patch-notes
 template (`docs/patch-notes-template.md`,
-`.claude/docs/templates/patch-notes-template.md`), removes internal-only
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/patch-notes-template.md`), removes internal-only
 changes, and translates the rest into player language in Brief, Detailed
 (default) or Full style — or in the template's structure when one exists, saying
 which template it used. No director gates are used. The skill asks "May I write
@@ -45,7 +45,7 @@ None. Patch notes generation is a fast compilation task; no gates are invoked.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -148,7 +148,7 @@ Fixture defaults.
 ### Case 4: Patch Note Template Exists — Used instead of the built-in styles
 
 **Fixture:**
-- `.claude/docs/templates/patch-notes-template.md` exists with a header block,
+- `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/patch-notes-template.md` exists with a header block,
   the sections `## New`, `## Fixed` and `## Known Issues`, and a footer
 - `docs/CHANGELOG.md` has a `v0.4.0` entry with one new feature and one bug fix,
   both player-facing; git history holds the matching Game commits
@@ -157,7 +157,7 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Skill globs `docs/patch-notes-template.md` and
-   `.claude/docs/templates/patch-notes-template.md`; finds and reads the second
+   `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/patch-notes-template.md`; finds and reads the second
 2. Skill uses the template as the output structure instead of the built-in
    Brief / Detailed / Full templates — even though `--style full` was passed
 3. The new feature goes under `## New`, the fix under `## Fixed`
@@ -170,7 +170,7 @@ Fixture defaults.
 - [ ] The template's structure replaces the built-in style — no "Developer Commentary" section from the Full style despite `--style full`
 - [ ] The new feature is placed under `## New` and the fix under `## Fixed`
 - [ ] The template's header and footer are preserved in the output
-- [ ] Output notes that `.claude/docs/templates/patch-notes-template.md` was used, and that it replaced the requested `--style full`
+- [ ] Output notes that `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/patch-notes-template.md` was used, and that it replaced the requested `--style full`
 
 ---
 

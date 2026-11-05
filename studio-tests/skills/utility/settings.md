@@ -16,7 +16,7 @@ Every write is validated against the schema enums first, then confirmed with an
 `AskUserQuestion` approval gate (`[A] Yes, write` / `[B] No, cancel`). A
 `.claude/ccgs/project.yaml` write is a `schema_changes` decision, so it is confirmed even in
 `autonomous` mode. `--local` refuses a key that is not on the local-override
-whitelist. A setting that `.claude/docs/effects-map.md` marks with a
+whitelist. A setting that `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md` marks with a
 `> ### RESERVED` banner is stored when asked, but every form says nothing reads
 it. The skill gives no verdict: it prints and writes configuration. No director
 gates apply.
@@ -32,7 +32,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] No verdict keyword is required: the output is configuration, not a judgement (`/skill-test static` Check 3 gives a WARN, never a FAIL, for this skill)
 - [ ] Both write phases ask for approval with `AskUserQuestion` before the `Edit` or `Write`
 - [ ] The reserved set is derived from `effects-map.md`'s `> ### RESERVED` headings, not hardcoded
-- [ ] Points to `.claude/docs/settings-guidance.md` for which value to choose
+- [ ] Points to `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/settings-guidance.md` for which value to choose
 
 ---
 
@@ -46,7 +46,7 @@ None. `/settings` is a configuration utility. No director gates apply.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -219,7 +219,7 @@ Fixture defaults.
 ### Case 7: Reserved setting — stored on request, flagged on every form
 
 **Fixture:**
-- `.claude/docs/effects-map.md` is the live file; pick a key whose section
+- `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md` is the live file; pick a key whose section
   carries the `> ### RESERVED` banner (`accessibility.target` when this spec
   was written — re-derive it with the skill's own grep)
 - `.claude/ccgs/project.yaml` does not set that key; the user answers `[A] Yes, write`

@@ -48,7 +48,7 @@ in any review mode.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -235,7 +235,7 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Phase 2 runs the four `get_effective_yaml_key` reads as one command that
-   first changes to the project root and loads `.claude/hooks/yaml-helper.sh`
+   first changes to the project root and loads `C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh`
    from there
 2. All four keys return their committed values; none comes back empty because
    the helper or `.claude/ccgs/project.yaml` was not found from the subfolder

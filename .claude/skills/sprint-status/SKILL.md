@@ -3,7 +3,7 @@ name: sprint-status
 description: "Fast, concise sprint snapshot — burndown and emerging risks for situational awareness. 'How is the sprint going?'"
 argument-hint: "[sprint-number or blank for current]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash(bash "*/.claude/skills/sprint-status/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash "*/.claude/skills/sprint-status/../../scripts/story-status.sh"), Bash(bash .claude/scripts/story-status.sh*)
+allowed-tools: Read, Glob, Grep, Bash(bash "*/skills/sprint-status/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash "*/skills/sprint-status/../../scripts/story-status.sh"), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-status.sh*)
 model: haiku
 ---
 
@@ -42,7 +42,7 @@ at `balanced` (`rigor: standard`), **AC-sized** at `fine`.
   - **At `workflow: minimal` there are no sprints by design** — the brief's
     build order is the plan and the story files carry it. Report progress
     through it instead, then stop:
-    1. The list below was printed by `.claude/scripts/story-status.sh`
+    1. The list below was printed by `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-status.sh`
        before you read this skill: one line per unfinished story, already in
        the route's order (`IN_REVIEW`, `IN_PROGRESS`, then `TODO` — a `Ready`
        or `Not Started` story — in build order), then `BLOCKED`, `OTHER`,

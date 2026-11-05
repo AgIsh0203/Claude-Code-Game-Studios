@@ -11,10 +11,10 @@
 # release actions). The hooks only call it. A skill that writes a guarded file
 # runs it itself as its last step, because hooks do not run in every tool.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # Whether a row stops the work is the calling skill's call, or the user's.
 #
-# Usage: bash .claude/scripts/write-guard.sh [--root DIR] COMMAND [ARGS]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh [--root DIR] COMMAND [ARGS]
 #   check PATH [NEW] [--tool Write|Edit] [--agent TYPE] [--existed yes|no]
 #                    every rule below that applies to PATH. NEW is a file
 #                    holding the content about to be written; without it the
@@ -119,7 +119,7 @@ esac
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "write-guard: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "write-guard: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "write-guard: cannot reach the repo root" >&2; exit 1; }
 fi
 
 # rel PATH — project-relative, slashes forward, ./ dropped; an absolute path

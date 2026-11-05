@@ -33,7 +33,7 @@
 set -u
 export LC_ALL=C
 
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+ROOT="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
 if [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -f "$CLAUDE_PROJECT_DIR/.claude/ccgs/project.yaml" ]; then
   ROOT="$CLAUDE_PROJECT_DIR"
 fi

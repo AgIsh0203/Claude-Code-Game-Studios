@@ -3,7 +3,7 @@ name: milestone-review
 description: "Milestone progress review — completeness, quality metrics, risk, go/no-go recommendation. At checkpoints or before a deadline."
 argument-hint: "[milestone-name|current] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/milestone-review/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/milestone-review/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow`
 
 Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
-block → defaults in `.claude/docs/config-resolution.md`.
+block → defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Milestone Review
 
@@ -51,10 +51,10 @@ the two happened — a reader cannot tell from a green result.
 
 Extract the milestone name (`current` or a specific name).
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -66,7 +66,7 @@ Read the milestone definition from `docs/production/milestones/` if it exists. I
 argument is `current`, use the most recently modified milestone file.
 
 > **No skill writes `docs/production/milestones/`** — definitions are authored by hand
-> from `.claude/docs/templates/milestone-definition.md`, so most projects have
+> from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/milestone-definition.md`, so most projects have
 > none. When the directory is absent or empty, say so and review against the
 > sprint reports alone; do not fabricate a definition. Take care with `current`:
 > this skill writes its own output as `[milestone-name]-review.md`, so a
@@ -114,7 +114,7 @@ blocked story count are `NOT ASSESSED — NO DATA`, not zero.
 
 - Scan for `TODO`, `FIXME`, `HACK` markers that indicate incomplete work
 - Count open bugs by severity for Quality Metrics from `docs/production/qa/bugs/` (one grep of the `**Severity**` and `**Status**` lines, as `/bug-triage` does); with no bug files, the bug lines are `NOT ASSESSED — NO DATA`, not zero
-- Check the risk register at `docs/production/risk-register/` if it exists (hand-authored from `.claude/docs/templates/risk-register-entry.md`; no skill writes it, so absence is normal — note it rather than skipping risk assessment silently)
+- Check the risk register at `docs/production/risk-register/` if it exists (hand-authored from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/risk-register-entry.md`; no skill writes it, so absence is normal — note it rather than skipping risk assessment silently)
 
 ---
 
@@ -209,7 +209,7 @@ the count moved.
 - `lean` → skip (not a PHASE-GATE). Note: "PR-MILESTONE skipped — Lean mode." Present the Go/No-Go section without a producer verdict.
 - `full` → spawn as normal.
 
-Before generating the Go/No-Go recommendation, spawn `producer` via `Agent` using gate **PR-MILESTONE** (`.claude/docs/director-gates/pr-milestone.md`).
+Before generating the Go/No-Go recommendation, spawn `producer` via `Agent` using gate **PR-MILESTONE** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/pr-milestone.md`).
 
 Pass: milestone name and target date, current completion percentage, blocked story count, velocity data from sprint reports (if available), list of cut candidates.
 
@@ -229,7 +229,7 @@ If AT RISK, use `AskUserQuestion`:
   - `[B] NO-GO — conditions cannot be met in time`
   - `[C] GO — I accept the risk and want to proceed`
 
-If NOT ASSESSED: name the missing input — it is not ON TRACK, and never recommend GO on it. Supply the input and re-run PR-MILESTONE, or recommend NOT ASSESSED — or CONDITIONAL GO / NO-GO where the review's own findings call for one (the rank in `.claude/docs/director-gates.md`).
+If NOT ASSESSED: name the missing input — it is not ON TRACK, and never recommend GO on it. Supply the input and re-run PR-MILESTONE, or recommend NOT ASSESSED — or CONDITIONAL GO / NO-GO where the review's own findings call for one (the rank in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`).
 
 Do not issue a GO against an OFF TRACK verdict; issue CONDITIONAL GO only if the user explicitly selects [B] above.
 

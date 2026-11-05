@@ -5,9 +5,9 @@
 # row; a skill or another tool's hook can call it the same way, because hooks
 # do not run in every tool.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 #
-# Usage: bash .claude/scripts/read-guard.sh [--root DIR] <command> <path> [options]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/read-guard.sh [--root DIR] <command> <path> [options]
 #   check <path> [--bounded yes|no]
 #                what the guard sees for a read of <path> (project-relative):
 #                --bounded yes when the read gives an offset or a limit
@@ -74,7 +74,7 @@ case "$BOUNDED" in yes|no) ;; *) usage "--bounded is yes or no, not $BOUNDED" ;;
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "read-guard: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "read-guard: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "read-guard: cannot reach the repo root" >&2; exit 1; }
 fi
 RPATH=$(printf '%s' "$RPATH" | sed 's|\\|/|g; s|^\./||')
 

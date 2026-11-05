@@ -16,7 +16,7 @@
 #      make .claude/ a root, and the hooks would write .claude/production/
 #   3. CLAUDE_PROJECT_DIR       -> that  (populated in the hook environment),
 #      unless it names a .claude folder, for the same reason as rule 2
-#   4. this script's location   -> <root>/.claude/hooks/../.. by construction
+#   4. this script's location   -> C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/../.. by construction
 # Rule 4 always works and needs no environment at all; rules 1-2 stop it from
 # overriding a caller that legitimately means somewhere else.
 #
@@ -26,7 +26,7 @@ if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" !=
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
 else
-  CCGS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+  CCGS_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
@@ -35,7 +35,7 @@ fi
 # Warns on pushes to protected branches, and on git tag, git merge, gh release,
 # butler push and steamcmd +run_app_build (the deploy steps /hotfix and
 # /team-release describe; which segments count is
-# `.claude/scripts/write-guard.sh git`, the helper twin) -- as hook JSON on
+# `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh git`, the helper twin) -- as hook JSON on
 # stdout, the only channel the user or Claude sees on exit 0.
 # Exit 0 = allow (the normal permission flow still applies), Exit 2 = block
 #
@@ -217,15 +217,15 @@ ACT_SEGS=$( { git_segment '(tag|merge)' "$ACT_CMD"
               command_segments "$ACT_CMD" | grep -E '(^|[[:space:]/\\])(gh|butler|steamcmd)(\.exe|\.sh)?[[:space:]]'; } 2>/dev/null )
 ACT_MSG=""
 if [ -n "$ACT_SEGS" ]; then
-    if [ -f .claude/scripts/write-guard.sh ]; then
-        ACTIONS=$(printf '%s\n' "$ACT_SEGS" | bash .claude/scripts/write-guard.sh --root . git 2>/dev/null \
+    if [ -f C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh ]; then
+        ACTIONS=$(printf '%s\n' "$ACT_SEGS" | bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh --root . git 2>/dev/null \
           | awk -F '\t' '$1 == "GIT_ACTION" && !seen[$2]++ {
               w = ($2 == "tag") ? "git tag" : ($2 == "merge") ? "git merge" : ($2 == "release") ? "gh release" \
                 : ($2 == "deploy-itch") ? "butler push" : "steamcmd +run_app_build"
               l = l (l == "" ? "" : ", ") w } END { print l }')
         [ -n "$ACTIONS" ] && ACT_MSG="This command runs $ACTIONS. Tagging, merging and deploying ask first (/hotfix, /team-release): go ahead only if the user approved this step."
     else
-        ACT_MSG="Git action check skipped: .claude/scripts/write-guard.sh is missing, so tag, merge and deploy steps were not checked."
+        ACT_MSG="Git action check skipped: C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh is missing, so tag, merge and deploy steps were not checked."
     fi
 fi
 

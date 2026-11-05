@@ -3,7 +3,7 @@ name: art-bible
 description: "Author the Art Bible — visual identity gating asset production. Run before /map-systems."
 argument-hint: "[--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/art-bible/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/art-bible/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,docs.density`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Art Bible
 
@@ -20,10 +20,10 @@ defaults in `.claude/docs/config-resolution.md`.
 ## Phase 0: Parse Arguments and Context Check
 
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -34,7 +34,7 @@ constraints + references; `balanced` = paragraphs explaining each visual choice
 (`rigor: standard`); `thorough` = full prose including style explorations, references, and
 rationale per choice. Apply it to every section you author.
 
-**`workflow`** (see `.claude/docs/workflow-modes.md`):
+**`workflow`** (see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`):
 - `full` — all 9 art bible sections required.
 - `standard` — required only if visual asset stories exist in the project;
   sections 1–4 are the minimum when required. `workflow_overrides.art_bible_strict:
@@ -95,7 +95,7 @@ Section | Status
 - Only work on sections with Status: Empty or Placeholder. Do not re-author sections that are already complete.
 
 If the file does not exist, this is a fresh authoring session. The first
-approved section creates the file from `.claude/docs/templates/art-bible.md`,
+approved section creates the file from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/art-bible.md`,
 whose nine `## N. Name` headings are the ones retrofit mode reads — ask first:
 "May I create `docs/design/art/art-bible.md` from the art bible template?" Each
 approved section then replaces its own `[To be designed]` line with `Edit`;
@@ -160,7 +160,7 @@ These four sections define the core visual language. **All other sections flow f
 > had just written.
 >
 > **This is not reduced specialist involvement** — every section is still
-> authored by the specialist, which is the point `.claude/docs/effects-map.md`
+> authored by the specialist, which is the point `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md`
 > makes about art-bible delegation being mandatory. It is one call instead of
 > three for the same three sections. Per-section user approval and
 > write-to-file-immediately are unchanged.
@@ -316,7 +316,7 @@ On either skip, ask "May I record the skipped sign-off in
 `> **Art Director Sign-Off (AD-ART-BIBLE)**: SKIPPED [date] — [solo|lean] mode`
 — the gate accepts either form as a recorded sign-off.
 
-After all sections are complete (or the scoped set from Phase 1 is complete), spawn `art-director` via `Agent` using gate **AD-ART-BIBLE** (`.claude/docs/director-gates/ad-art-bible.md`).
+After all sections are complete (or the scoped set from Phase 1 is complete), spawn `art-director` via `Agent` using gate **AD-ART-BIBLE** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/ad-art-bible.md`).
 
 Pass: the art bible path (`docs/design/art/art-bible.md`); the game pillars and core
 fantasy; the platform and performance constraints (`platform.*` and
@@ -376,7 +376,7 @@ Assign letters A, B, C… only to the options actually included. Mark the most l
 ## Collaborative Protocol
 
 **Applies in `collaborative` mode (the default).** For `guided` and
-`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+`autonomous` modes, see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` — the rules below
 describe what collaborative mode requires, not universal behavior.
 
 Every section follows: **Question → Options → Decision → Draft (from art-director agent) → Approval → Write to file**

@@ -6,11 +6,11 @@
 # of writing its own grep per entity or per TR-ID, so every skill reads the
 # same entries the same way.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # validate lists what it found. Whether a missing path matters, or a story may
 # cite a deprecated TR-ID, is the calling skill's rule.
 #
-# Usage: bash .claude/scripts/registry.sh [--root DIR] COMMAND [ARGS]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh [--root DIR] COMMAND [ARGS]
 #   list [REGISTRY] [--system SLUG]
 #                   one row per entry; REGISTRY is entities, tr or architecture
 #                   (all three when left out); --system keeps the TR-IDs of
@@ -215,7 +215,7 @@ esac
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "registry: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$(dirname "$0")/../.." 2>/dev/null || { echo "registry: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "registry: cannot reach the repo root" >&2; exit 1; }
 fi
 
 # --------------------------------------------------------- next-id, file kinds

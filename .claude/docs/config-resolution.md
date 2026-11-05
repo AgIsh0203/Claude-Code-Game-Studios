@@ -14,7 +14,7 @@ A skill that needs config puts this near the top of its **body** (not frontmatte
 directory name in the path:
 
 ````yaml
-allowed-tools: Read, …, Bash(bash "*/.claude/skills/<skill-name>/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, …, Bash(bash "*/skills/<skill-name>/../../hooks/yaml-helper.sh" resolve_config *)
 ````
 
 The command runs as preprocessing *before the model sees the skill*, and its
@@ -183,7 +183,7 @@ Because `rigor` itself defaults to `minimal`, an unconfigured project resolves
 these six to the lean row. That default was `standard`; it changed because the
 heavier tier costs more to reach working code without producing a better
 result. See the rationale block above `_yaml_helper_defaults`
-in `.claude/hooks/yaml-helper.sh` for the reasoning and the ordering
+in `C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh` for the reasoning and the ordering
 constraint. Raising the tier is one question in `/start` or one `/settings`
 call, and `settings-guidance.md § 4`'s upward triggers are written to fire from
 this starting state. (`team.size` is the one knob the flip does not move:
@@ -213,7 +213,7 @@ expansion), unlike the four on-disk knobs, which are locked.
 **`testing.strict.*` has no central default on purpose.** Its unset default
 differs per skill by design: `/smoke-check` treats unset as **blocking** (it is a
 build-health gate), while `/story-done` and `/dev-story` apply the per-story-type
-table in `.claude/docs/coding-standards.md`. The `testing.strict` line therefore
+table in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md`. The `testing.strict` line therefore
 reports only the *configured state* (`unset` where absent). The `gate_level` line
 (below) applies that table and names `/smoke-check`'s own default beside `config`.
 

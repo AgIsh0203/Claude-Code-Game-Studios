@@ -3,7 +3,7 @@ name: content-audit
 description: "Audit GDD content counts against what's implemented — planned vs built."
 argument-hint: "[system-name | --summary | (no arg = full audit)]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/content-audit/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/content-audit/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -13,11 +13,11 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
-Resolved above — use as-is. No block → defaults in `.claude/docs/config-resolution.md`.
+Resolved above — use as-is. No block → defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Content Audit
 
@@ -38,7 +38,7 @@ Parse the argument:
 
 ---
 
-**`workflow`** (see `.claude/docs/workflow-modes.md`):
+**`workflow`** (see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`):
 - `full` — full content-count audit against all GDD specs.
 - `standard` — audit only specs in the required sections; list any count found
   outside them as not audited at this tier.
@@ -132,7 +132,7 @@ the two happened — a reader cannot tell from a green result.
    headings (found with the Grep tool: pattern `^#`, content mode), since a
    whole-file Read over 40 KB is refused.
 
-5. **For each GDD, extract explicit content counts or lists**, noting the `##` section each sits under — at `standard`, a count outside the required sections (`.claude/docs/workflow-modes.md`) goes on the "Not audited at this tier" list, never into the inventory. Look for patterns
+5. **For each GDD, extract explicit content counts or lists**, noting the `##` section each sits under — at `standard`, a count outside the required sections (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`) goes on the "Not audited at this tier" list, never into the inventory. Look for patterns
    like:
    - "N enemies" / "enemy types:" / list of named enemies
    - "N levels" / "N areas" / "N maps" / "N stages"
@@ -164,7 +164,7 @@ and levels are `Content/**/*.umap`. Skipping this finds zero levels on every
 Unreal project and reports them NOT STARTED.
 
 **On Unity, content lives under `Assets/`** (compare the case exactly —
-`.claude/docs/code-root-resolution.md`), and rarely in a `data/` folder. So on
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`), and rarely in a `data/` folder. So on
 Unity every `Content/…` glob below also runs under `Assets/`, without requiring
 a `data/` segment — for items, `Assets/**/items/**`, `Assets/**/Items/**` and
 `Assets/**/*Item*.asset` — and data files include `.asset` (ScriptableObjects)
@@ -173,7 +173,7 @@ on a Unity project and reports them NOT STARTED.
 
 **Levels / Areas / Maps:**
 - Glob `Content/**/*.tscn`, `Content/**/*.unity`, `Content/**/*.umap`
-- Glob the **code root** for scene files: `*.tscn` (Godot), `*.unity` (Unity); on Unreal, `Content/**/*.umap` instead (above). Resolve the root per `.claude/docs/code-root-resolution.md`. **If the code root is unresolved, report `NOT ASSESSED — code root unresolved` rather than zero hits.**
+- Glob the **code root** for scene files: `*.tscn` (Godot), `*.unity` (Unity); on Unreal, `Content/**/*.umap` instead (above). Resolve the root per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`. **If the code root is unresolved, report `NOT ASSESSED — code root unresolved` rather than zero hits.**
 - Look for scene files in subdirectories named `levels/`, `areas/`, `maps/`,
   `worlds/`, `stages/`
 - Count unique files that appear to be level/scene definitions (not UI scenes)

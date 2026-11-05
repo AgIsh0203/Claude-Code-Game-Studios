@@ -3,7 +3,7 @@ name: ux-design
 description: "Section-by-section UX spec authoring for a screen, flow or HUD. Reads the player journey to provide context; also project-wide accessibility."
 argument-hint: "[screen/flow name] or 'hud' or 'patterns' or 'accessibility'"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/ux-design/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/skills/ux-design/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,13 +12,13 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,docs.density`
 
 Resolved above — use as-is. No block → defaults in
-`.claude/docs/config-resolution.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # UX Design
 
 When this skill is invoked:
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -28,15 +28,15 @@ accessibility criteria), the matching guide has it:
 
 | Producing | Guide |
 |---|---|
-| UX spec | `.claude/docs/templates/guidance/ux-spec-guide.md` |
-| HUD design | `.claude/docs/templates/guidance/hud-design-guide.md` |
-| Interaction patterns | `.claude/docs/templates/guidance/interaction-pattern-library-guide.md` (routes to three topic files) |
-| Accessibility requirements | `.claude/docs/templates/guidance/accessibility-requirements-guide.md` |
+| UX spec | `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/ux-spec-guide.md` |
+| HUD design | `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/hud-design-guide.md` |
+| Interaction patterns | `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/interaction-pattern-library-guide.md` (routes to three topic files) |
+| Accessibility requirements | `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/accessibility-requirements-guide.md` |
 
 **Load a guide per-section, never whole** — each is organised by section and the
 pointers in the templates name the exact section to read.
 
-**`workflow`** (see `.claude/docs/workflow-modes.md`):
+**`workflow`** (see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`):
 - `full` — a UX spec is required per screen.
 - `standard` — core screens only (main menu, HUD, primary game loop).
 - `minimal` — not required. Can still be run voluntarily.
@@ -62,7 +62,7 @@ Four authoring modes exist based on the argument:
 
 > **`accessibility` is the only mode that writes outside `docs/design/ux/`.** Its
 > output is a project-wide standard the per-screen specs consult, not a spec for
-> one screen — `.claude/docs/workflow-catalog.yaml`, the Pre-Production and
+> one screen — `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-catalog.yaml`, the Pre-Production and
 > Polish gates, and `/architecture-review` all check
 > `docs/design/accessibility-requirements.md` at that exact path. Do not "tidy" it
 > under `docs/design/ux/`: every one of those checks would stop matching, and the
@@ -100,11 +100,11 @@ the other two.**
 | UX Spec (screen or flow) | `references/sections-ux-spec.md` |
 | HUD Design | `references/sections-hud.md` |
 | Interaction Pattern Library | `references/sections-patterns.md` |
-| Accessibility Requirements | `.claude/docs/templates/guidance/accessibility-requirements-guide.md` |
+| Accessibility Requirements | `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/accessibility-requirements-guide.md` |
 
 > The accessibility guidance lives under `templates/guidance/` rather than this
 > skill's `references/` because the template it documents
-> (`.claude/docs/templates/accessibility-requirements.md`) is consumed by
+> (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/accessibility-requirements.md`) is consumed by
 > `/ux-review` and the gate files too. Same rule applies: load only the part
 > covering the section you are authoring, never the whole file.
 
@@ -155,7 +155,7 @@ When delegating to another agent via the `Agent` tool:
 ## Collaborative Protocol
 
 **In `collaborative` mode (the default).** For `guided` and `autonomous` modes,
-see the per-mode rules in `.claude/docs/automation-modes.md` — the steps below
+see the per-mode rules in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` — the steps below
 describe what collaborative mode requires, not what applies universally.
 
 This skill follows the collaborative design principle at every step:

@@ -36,7 +36,7 @@ row is just as easy to drop silently, because a missing row leaves no trace.
 Catch both by verifying the files after writing them:
 
 ```bash
-bash .claude/scripts/project-coherence.sh
+bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/project-coherence.sh
 ```
 
 It compares `.claude/ccgs/project.yaml` against `docs/engine-reference/<engine>/VERSION.md`,

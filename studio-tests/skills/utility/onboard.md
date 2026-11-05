@@ -3,7 +3,7 @@
 ## Skill Summary
 
 `/onboard [role|area]` generates an onboarding document for a new contributor or
-agent. It reads `CLAUDE.md`, the matching agent definition in `.claude/agents/`
+agent. It reads `CLAUDE.md`, the matching agent definition in `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/`
 when a role is given, scans the area that role works in (the code root for
 programmers, `docs/design/` for designers, `docs/story/` for narrative, `tests/`
 for QA, `docs/production/` for production) and reads recent git history.
@@ -44,7 +44,7 @@ in its allowed tools) and no director gates apply.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -56,14 +56,14 @@ Fixture defaults.
 **Fixture:**
 - `CLAUDE.md` exists
 - `.claude/ccgs/project.yaml` has `engine.name: Godot`, so the code root is `src/`
-- `src/` holds game code; `.claude/agents/gameplay-programmer.md` exists
+- `src/` holds game code; `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/gameplay-programmer.md` exists
 - `docs/production/sprints/sprint-005.md` exists; git log has recent commits
 - `modes.automation` is unset (defaults to `collaborative`)
 
 **Input:** `/onboard gameplay-programmer`
 
 **Expected behavior:**
-1. Skill reads `CLAUDE.md` and `.claude/agents/gameplay-programmer.md`
+1. Skill reads `CLAUDE.md` and `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/gameplay-programmer.md`
 2. Skill scans the code root `src/` for architecture, patterns and key files, and
    reads recent git history
 3. Skill generates a document headed `# Onboarding: gameplay-programmer` with the
@@ -87,14 +87,14 @@ Fixture defaults.
 ### Case 2: Designer Role — Scans docs/design/, Not the Code Root
 
 **Fixture:**
-- `CLAUDE.md` exists; `.claude/agents/game-designer.md` exists
+- `CLAUDE.md` exists; `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/game-designer.md` exists
 - `docs/design/gdd/` holds three system GDDs
 - `src/` also holds code
 
 **Input:** `/onboard game-designer`
 
 **Expected behavior:**
-1. Skill reads `CLAUDE.md` and `.claude/agents/game-designer.md`
+1. Skill reads `CLAUDE.md` and `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/game-designer.md`
 2. Phase 2 takes the designers branch and scans `docs/design/` for existing design
    documents
 3. "Current State of Your Area" reflects the three GDDs found
@@ -113,7 +113,7 @@ Fixture defaults.
 
 **Fixture:**
 - `CLAUDE.md` does not exist
-- `.claude/agents/` does not exist, so no agent definition can be read
+- `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/` does not exist, so no agent definition can be read
 - `tests/` does not exist; the directory is not a git repository
 
 **Input:** `/onboard qa-tester`
@@ -123,7 +123,7 @@ Fixture defaults.
 2. Because every required input is ABSENT, it stops and reports
    `NOT ASSESSED — NO DATA` as the whole verdict
 3. The report names what was missing and what produces it: `/test-setup` for
-   `tests/`; `CLAUDE.md` and `.claude/agents/` come with the framework itself —
+   `tests/`; `CLAUDE.md` and `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/` come with the framework itself —
    no skill creates them — so they are reported as missing from the install,
    not attributed to a skill
 4. No onboarding document is generated and no file is written
@@ -132,7 +132,7 @@ Fixture defaults.
 - [ ] Inputs are recorded as FOUND or ABSENT before any report is produced
 - [ ] Verdict is `NOT ASSESSED — NO DATA`, not COMPLETE
 - [ ] The missing inputs are named; `tests/` points to `/test-setup`
-- [ ] No skill is named as the producer of `CLAUDE.md` or `.claude/agents/` — none creates them
+- [ ] No skill is named as the producer of `CLAUDE.md` or `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/` — none creates them
 - [ ] No template is filled in and no "May I write" ask appears
 
 ---
@@ -140,7 +140,7 @@ Fixture defaults.
 ### Case 4: Edge Case — Programmer Role With an Unresolved Code Root
 
 **Fixture:**
-- `CLAUDE.md` exists; `.claude/agents/gameplay-programmer.md` exists
+- `CLAUDE.md` exists; `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/gameplay-programmer.md` exists
 - `.claude/ccgs/project.yaml` has no `engine.name`, technical-preferences has
   `[TO BE CONFIGURED]`, and both `src/` and `Assets/` exist (ambiguous tree)
 

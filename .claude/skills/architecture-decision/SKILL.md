@@ -3,7 +3,7 @@ name: architecture-decision
 description: "Create an ADR documenting a technical decision: context, alternatives considered, consequences."
 argument-hint: "[title | retrofit <path> | accept <ADR-id>] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(wc -c *), Bash(bash "*/.claude/skills/architecture-decision/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/registry.sh *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(wc -c *), Bash(bash "*/skills/architecture-decision/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,docs.density,team.size`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Architecture Decision
 
@@ -20,9 +20,9 @@ When this skill is invoked:
 
 ## 0. Parse Arguments — Detect Retrofit / Acceptance Mode
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -41,7 +41,7 @@ Consequences. Apply it to the prose sections; the Engine Compatibility, ADR
 Dependencies, and GDD Requirements tables are structural and stay whole at every
 density.
 
-**`workflow`** (see `.claude/docs/workflow-modes.md`):
+**`workflow`** (see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`):
 - `full` — all ADRs on the required ADR list must be completed.
 - `standard` — critical ADRs only (Foundation-layer systems).
 - `minimal` — not required. Can still be run voluntarily.

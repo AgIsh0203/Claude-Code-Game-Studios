@@ -7,7 +7,7 @@
 enumerates explicit and implicit systems, maps dependencies into layers
 (Foundation → Core → Feature → Presentation → Polish), assigns priority tiers
 (MVP / Vertical Slice / Alpha / Full Vision), derives a design order, and writes
-`docs/GDD.md` from `.claude/docs/templates/systems-index.md` after
+`docs/GDD.md` from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/systems-index.md` after
 approval. Each collaborative phase ends with an `AskUserQuestion`.
 
 Three director gates run in sequence, each in its own phase:
@@ -66,7 +66,7 @@ In `solo` mode the same three notes appear with "Solo mode."
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---

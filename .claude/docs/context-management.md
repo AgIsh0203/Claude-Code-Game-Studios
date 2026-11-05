@@ -17,7 +17,7 @@ after each significant milestone:
 - Implementation milestone reached
 - Test results obtained
 
-**Create it from `.claude/docs/templates/session-state.md`** — the file has a
+**Create it from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/session-state.md`** — the file has a
 schema, and hooks depend on it.
 
 Two regions, and the distinction is load-bearing:
@@ -42,7 +42,7 @@ anything else.
 `.claude/ccgs/session-logs/`:
 
 ```bash
-bash .claude/scripts/rotate-session-state.sh            # --dry-run to preview
+bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/rotate-session-state.sh            # --dry-run to preview
 ```
 
 The checkpoint stays, the narrative is appended to a dated log, nothing is
@@ -102,7 +102,7 @@ This keeps the context window holding only the *current* section's discussion
 - Medium (implement feature): ~8k tokens
 - Heavy (multi-system refactor): ~15k tokens
 
-## Deterministic Helpers — `.claude/scripts/`
+## Deterministic Helpers — `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/`
 
 The cheapest context saving is not summarising a document, it is **not reading it
 at all**. When a question has a deterministic answer, a script should answer it
@@ -112,8 +112,8 @@ Two directories, two purposes — reach for the right one:
 
 | Directory | Purpose | Invoked by |
 |---|---|---|
-| `.claude/hooks/` | Event-driven — wired into `settings.json` and fired by Claude Code | the harness |
-| `.claude/scripts/` | Manually invoked from a skill body | `bash .claude/scripts/<name>.sh` |
+| `C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/` | Event-driven — wired into `settings.json` and fired by Claude Code | the harness |
+| `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/` | Manually invoked from a skill body | `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/<name>.sh` |
 
 Current helpers:
 
@@ -125,7 +125,7 @@ Current helpers:
 
 Two rules for helpers:
 
-1. **Grant it the way `.claude/docs/config-resolution.md` shows.** `allowed-tools`
+1. **Grant it the way `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md` shows.** `allowed-tools`
    pre-approves commands; it does not restrict them — a skill without the grant
    still runs the script, after a permission prompt. An injected `` !`cmd` `` in
    the body is stricter: unapproved, it aborts the whole invocation, so it needs

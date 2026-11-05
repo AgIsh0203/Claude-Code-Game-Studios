@@ -3,7 +3,7 @@ name: team-polish
 description: "Orchestrate the polish team — performance-analyst, technical-artist, sound-designer, qa-tester — to optimize and harden a feature or area."
 argument-hint: "[feature or area to polish] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/.claude/skills/team-polish/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/skills/team-polish/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -23,14 +23,14 @@ In `guided` mode the pipeline advances automatically unless a phase is BLOCKED;
 in `autonomous` mode it runs end to end, recording each phase outcome via
 `log_decision`. Decisions in `automation_always_ask` categories
 (`is_always_ask_category` helper) always prompt regardless of mode. See
-`.claude/docs/automation-modes.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`.
 
 ## Phase 0: Resolve Config
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,team.size,workflow`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 `review_mode` sets director-gate depth, and this pipeline has no director gate:
 no phase below spawns CD-, TD-, PR- or AD-PHASE-GATE, at any `review_mode`. Its
@@ -38,7 +38,7 @@ phase gates are the pipeline's own decision points (defined under `team.size`
 below), and the agents that work at them are team members, not director gates.
 
 `automation` drives the Decision Points note above. See the Decision Points note above and
-`.claude/docs/automation-modes.md` for how each mode changes pipeline behavior.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` for how each mode changes pipeline behavior.
 
 **`team.size`**: which agents are active (orthogonal to review_mode gate-depth and workflow docs).
 - **`individual`** (default): `performance-analyst` + `technical-artist`. Other agents consulted via these two, not spawned separately. No programmer is active, so the optimisation list's programmer items are not implemented in this run — the report names the list as handed to `/dev-story` (Phase 2).
@@ -207,7 +207,7 @@ usually still there.
 
 If any spawned agent returns BLOCKED, errors, or cannot complete: **surface it
 immediately, don't proceed past a dependency it blocks, and always produce a
-partial report.** A skipped agent's section stays a named gap — never fill it with content of your own. Full procedure: `.claude/docs/error-recovery-protocol.md`.
+partial report.** A skipped agent's section stays a named gap — never fill it with content of your own. Full procedure: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/error-recovery-protocol.md`.
 
 Common blockers:
 - Input file missing (story not found, GDD absent) → redirect to the skill that creates it

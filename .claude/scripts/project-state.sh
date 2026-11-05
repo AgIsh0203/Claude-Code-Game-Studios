@@ -8,11 +8,11 @@
 # /start (engine, concept, code root, counts, origin), /adopt, /onboard,
 # /day-one-patch, /project-stage-detect and /gate-check's read-back of the stage.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # `phase_inferred` is help's artifact ladder applied to the counts, printed with
 # the rule that matched; whether it outranks `stage` is the calling skill's call.
 #
-# Usage: bash .claude/scripts/project-state.sh [--stage] [--root DIR]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/project-state.sh [--stage] [--root DIR]
 #   --stage     print only the four stage rows (no file counts; cheap)
 #   --root DIR  the project to read; defaults to the repo this script is in
 #   -h, --help  this text
@@ -26,7 +26,7 @@
 #   engine          engine.name: .claude/ccgs/project.local.yaml, then .claude/ccgs/project.yaml, then
 #                   the legacy `Engine:` line of .claude/docs/technical-preferences.md
 #   code_root       the same answer and source label as resolve_code_root in
-#                   .claude/hooks/yaml-helper.sh; never defaults to src
+#                   C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh; never defaults to src
 #   source_files    `unknown` when code_root is unset: unknown is not zero
 #   stage_yaml      project.stage in .claude/ccgs/project.yaml as written (even if invalid)
 #   stage_txt       first non-blank line of .claude/ccgs/stage.txt as written
@@ -63,7 +63,7 @@ done
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "project-state: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "project-state: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "project-state: cannot reach the repo root" >&2; exit 1; }
 fi
 [ -f "$HERE/yaml-get.awk" ] || { echo "project-state: $HERE/yaml-get.awk is missing" >&2; exit 1; }
 # `pwd -W` (Git Bash) prints C:/..., the form the other helpers report.
@@ -158,7 +158,7 @@ if [ -z "$ENGINE" ] && [ -f "$LEGACY" ]; then
   [ -n "$ENGINE" ] && { ESRC="$LEGACY"; CSRC="$LEGACY"; }
 fi
 # The code root each engine's own toolchain builds from
-# (.claude/docs/directory-structure.md): Godot src/, Unity Assets/, Unreal Source/.
+# (C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md): Godot src/, Unity Assets/, Unreal Source/.
 case "$(printf '%s' "$ENGINE" | tr '[:upper:]' '[:lower:]')" in
   godot) CODE_ROOT="src" ;;
   unity) CODE_ROOT="Assets" ;;

@@ -24,7 +24,7 @@
 > Because the override ends at your next prompt, a skill that stops to ask you
 > something in chat finishes on the session model after you answer.
 >
-> **This does NOT apply to agents.** `model:` in `.claude/agents/*.md` is a
+> **This does NOT apply to agents.** `model:` in `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/*.md` is a
 > different mechanism, spawned as a separate session rather than executed inline,
 > and Claude Code documents it as applied: it is second in the subagent model
 > order, after a `model` Claude passes for one invocation. See the agent section

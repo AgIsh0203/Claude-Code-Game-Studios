@@ -6,9 +6,9 @@
 # (validate-read.sh) read the payload through this script, so the JSON
 # decoding and the Edit rebuild exist once.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 #
-# Usage: bash .claude/scripts/hook-input.sh [--root DIR] [--new FILE] < payload.json
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/hook-input.sh [--root DIR] [--new FILE] < payload.json
 #   --new FILE   also write the content the file will hold to FILE: Write's
 #                content, or Edit's old_string replaced by new_string in the
 #                current file (first match, or every one with replace_all)
@@ -57,7 +57,7 @@ INPUT=$(cat)
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "hook-input: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "hook-input: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "hook-input: cannot reach the repo root" >&2; exit 1; }
 fi
 
 # Decodes the payload without jq. HI_MODE=head prints the tool name, the

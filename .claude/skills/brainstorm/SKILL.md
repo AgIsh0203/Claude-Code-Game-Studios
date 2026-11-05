@@ -3,7 +3,7 @@ name: brainstorm
 description: "Guides the user through finding and choosing a game concept. Use when the user wants game ideas, a new concept, a game jam idea, or to explore other directions, including dropping the current idea and starting over."
 argument-hint: "[genre or theme hint, or 'open'] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/brainstorm/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, Agent, AskUserQuestion, Bash(bash "*/skills/brainstorm/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -11,7 +11,7 @@ model: sonnet
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,docs.density,workflow`
 
-Resolved above; use as-is. No block → the defaults in `.claude/docs/config-resolution.md`
+Resolved above; use as-is. No block → the defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`
 (`workflow: minimal`, `review_mode: solo`, `automation: collaborative`, `docs.density: terse`), and
 say that the settings were not read.
 
@@ -24,15 +24,15 @@ depends on `workflow`:
   discovery questions, pillars, director gates or `game-concept.md`, and do not load
   `references/full-concept.md`.
 - **`standard` or `full`:** read `references/full-concept.md` and follow it. It writes
-  `docs/GDD.md` from `.claude/docs/templates/game-concept.md`. Its gates follow
-  `.claude/docs/director-gates.md`; each director agent is given its own gate file,
-  `.claude/docs/director-gates/<gate-id in lower case>.md` (`cd-pillars.md`,
+  `docs/GDD.md` from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-concept.md`. Its gates follow
+  `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`; each director agent is given its own gate file,
+  `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/<gate-id in lower case>.md` (`cd-pillars.md`,
   `ad-concept-visual.md`, `td-feasibility.md`, `pr-scope.md`), and you do not read those files
   yourself.
 
 `--review` in the text typed after the skill name overrides `review_mode` for this run.
 `docs.density` sets each section's depth: `terse` = bullets; `balanced` = with brief rationale;
-`thorough` = rationale and alternatives. Questions follow `.claude/docs/automation-modes.md`
+`thorough` = rationale and alternatives. Questions follow `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks, guided asks only for major decisions, autonomous logs and proceeds; the
 always-ask categories always ask).
 
@@ -43,7 +43,7 @@ question is not an answer: ask again in plain text.
 ## Lean Brief flow (`workflow: minimal`)
 
 A few exchanges, not fifteen: capture the thinking that carries the game on one page, then get to
-code. Write from the template `.claude/docs/templates/game-brief.md` (six required fields, three
+code. Write from the template `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-brief.md` (six required fields, three
 one-liners). If `docs/GDD.md` exists, read it and refine it instead of starting over.
 
 1. **Concept.** From the hint typed after the skill name (or one quick open question if there is

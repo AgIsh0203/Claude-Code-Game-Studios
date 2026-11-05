@@ -38,7 +38,7 @@ any "must migrate" items.
 
 ### Step 3 — Pre-Upgrade Audit
 
-Scan the **code root** (resolve per `.claude/docs/code-root-resolution.md`) for code that uses APIs known to be deprecated or changed in the
+Scan the **code root** (resolve per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`) for code that uses APIs known to be deprecated or changed in the
 target version:
 
 - Use Grep to search for deprecated API names extracted from the migration

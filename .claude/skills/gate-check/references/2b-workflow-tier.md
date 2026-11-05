@@ -30,13 +30,13 @@ across all of them:
 > **It relaxes tests, not the look.** A UI story's retained screenshots, and a
 > Visual/Feel story's screenshots plus lead sign-off, are required at every
 > `qa.level` wherever the gate file asks for story evidence
-> (`.claude/docs/coding-standards.md`: tests are waived at `minimal`, the look
+> (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md`: tests are waived at `minimal`, the look
 > is not).
 >
 > **The smoke check is excluded from that relaxation, and is the floor.**
 > `qa.level` relaxes *per-story test evidence*; a smoke check is **build health**,
 > not story evidence, and the two are already held apart on exactly this basis in
-> `.claude/docs/coding-standards.md` ("`/smoke-check` is a build-health gate, not
+> `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md` ("`/smoke-check` is a build-health gate, not
 > a per-story evidence gate ... This divergence is intentional"). So a gate file
 > that requires a smoke report keeps requiring it at every `qa.level`.
 >
@@ -86,7 +86,7 @@ tier:
 
 **Before applying any of them, check the block the other way round: does every
 KEY match a system?** `<system>` is the GDD filename stem
-(`.claude/docs/workflow-modes.md`), so for each key in `system_overrides`, look
+(`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`), so for each key in `system_overrides`, look
 for `docs/design/gdd/<key>.md`. Any key with no matching stem is reported, naming the
 key and listing the stems that do exist:
 
@@ -96,7 +96,7 @@ Surface it as a **CONCERNS**-level finding, not a Blocker — the project is sti
 gateable, but an override the user believes is in force and is not is exactly how
 a documented escape hatch silently stops working.
 
-This is the rule in `.claude/docs/workflow-modes.md`: a key that matches no
+This is the rule in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`: a key that matches no
 system is an error, not a no-op. The story skills resolve only in the system →
 override direction, so an orphan key is invisible to them; `/gate-check`, which
 resolves the whole block, is where it is caught.
@@ -110,7 +110,7 @@ Validate each GDD against its own effective tier's section count:
 - A system pinned **lower** (e.g. `inventory: minimal`) relaxes only that system
   — its GDD is checked at the lower tier; every other system stays at the project
   level. A system pinned **`minimal` imposes no GDD section requirement at all**
-  (`minimal` = "game brief replaces GDDs" — `.claude/docs/workflow-modes.md`): it
+  (`minimal` = "game brief replaces GDDs" — `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`): it
   never blocks the gate on a missing or incomplete GDD. Do not invent an
   "acceptance-criteria-only" floor for it — there is none.
 

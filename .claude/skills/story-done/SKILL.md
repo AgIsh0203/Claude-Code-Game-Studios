@@ -4,7 +4,7 @@ description: "Closes a finished story: verifies each acceptance criterion, check
 argument-hint: "[story-file-path] [--review full|lean|solo]"
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/story-done/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/story-status.sh*), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/session-state.sh *), Bash(git status --porcelain*)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/skills/story-done/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-status.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh check *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/session-state.sh *), Bash(git status --porcelain*)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,automation_always_ask,workflow,qa.level,gate_level,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 Ask with the question tool. Without one, list the options numbered and end your turn
 to wait. A skipped or dismissed question is not an answer: ask again in plain text.
@@ -30,7 +30,7 @@ and the story is marked Complete only on the user's yes.
 checkpoint is written at the end of every run, whatever the verdict.
 **Next:** the next story (Phase 8).
 
-Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
+Asks follow `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` (collaborative always asks, guided
 asks on major choices, autonomous logs and goes on; `automation_always_ask`
 categories always ask).
 
@@ -54,14 +54,14 @@ pair removed, is the story path. With nothing typed:
 
 1. The checkpoint in `.claude/ccgs/session-state/active.md`: its **Current task**
    line, when it names a story.
-2. Else the stories in progress: `bash .claude/scripts/story-facts.sh --all`, rows
+2. Else the stories in progress: `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh --all`, rows
    whose state is `IN_REVIEW` or `IN_PROGRESS`. Several: ask "Which story are we
    closing?" with one option per story.
 3. None: ask for the path. When `docs/production/epics/` holds no story file at all,
    stop:
    "No stories found in `docs/production/epics/` — run `/create-stories [epic-slug]` to make them (at `standard` and `full`, run `/create-epics` first if there is no epic yet)."
 
-**Its facts.** `bash .claude/scripts/story-facts.sh <story-path>` gives the status,
+**Its facts.** `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh <story-path>` gives the status,
 type, layer, TR-IDs, ADRs, criteria count, test-evidence status and dependencies.
 Then read the story in full: the criteria text, the Test Evidence path, `## Files`,
 Out of Scope.
@@ -71,7 +71,7 @@ Out of Scope.
 when there is no GDD path): that system's `system_overrides` row if there is one,
 else the project value.
 
-**What `qa.level` requires** (the evidence rows of `.claude/docs/coding-standards.md`).
+**What `qa.level` requires** (the evidence rows of `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md`).
 Take the value from the `qa.level` line above, never from `workflow` or `rigor`: the
 two are set apart, so `workflow: minimal` with `qa.level: standard` still requires a
 Logic story's unit test.
@@ -97,10 +97,10 @@ By the tier. Read every document by section, never whole.
   entry's text below (the anchor keeps `TR-combat-001` from matching
   `TR-combat-0010`; `\s*` takes a Windows line ending). Never use text quoted in the
   story; the GDD's Acceptance Criteria and Detailed Design
-  (`bash .claude/scripts/md-section.sh extract docs/design/gdd/<file>.md "Acceptance Criteria"`,
+  (`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh extract docs/design/gdd/<file>.md "Acceptance Criteria"`,
   then the same for `"Detailed Design"`; exit 3: try `"Detailed Rules"`, the design
   standard's name for the same section);
-  each ADR's status with `bash .claude/scripts/adr-status.sh <ADR ids>`, then its
+  each ADR's status with `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh <ADR ids>`, then its
   Decision and Consequences sections.
 - **`standard`:** the same GDD sections; the ADR sections only for a critical ADR
   (`adr-status.sh`'s layer column reads Foundation, or has no layer).
@@ -117,7 +117,7 @@ Take each acceptance criterion in turn:
   exists (report "test file present", never "test passes": nothing here runs it);
   numeric literals in gameplay code that belong in data files; player-facing
   strings in the code root that belong in localization files (resolve the root
-  per `.claude/docs/code-root-resolution.md`; unresolved, report `NOT ASSESSED —
+  per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`; unresolved, report `NOT ASSESSED —
   code root unresolved`, never zero hits).
 - **Asked:** behaviour ("the player takes damage when…"), feel, and performance
   criteria. Never mark one passed from reading the code: the code says what should
@@ -170,7 +170,7 @@ in the notes. Name what is missing and where it goes. An evidence doc with no im
 beside it is not evidence: a described check is an assertion.
 
 **Is the evidence older than its code?** For a retained image, run
-`bash .claude/scripts/review-receipts.sh check docs/production/qa/evidence/[story-slug]/stamp.txt`.
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh check docs/production/qa/evidence/[story-slug]/stamp.txt`.
 Each `CHANGED:` or `GONE:` file: "[file] changed after the evidence was captured —
 re-capture it." `RECEIPT: NONE`: "no stamp — whether the evidence is older than the
 code cannot be told". Report these lines; they never change the verdict.
@@ -218,7 +218,7 @@ Read the `review_gate` line above.
   approved with suggestions / No — skipping review for this story / No — I'll run
   it before the sprint close-out. The answer sets Reviewed by.
 - **`skill-gates=run`:** read `references/review-gates.md` and
-  `.claude/docs/director-gates.md`, and run both gates now. On a skip, do not load
+  `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`, and run both gates now. On a skip, do not load
   it.
 
 **Reviewed by** is never blank: `lead-programmer` when LP-CODE-REVIEW ran;
@@ -278,7 +278,7 @@ close.
 
 **On close:**
 
-1. `bash .claude/scripts/md-section.sh set-field <story> Status Complete`, then
+1. `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh set-field <story> Status Complete`, then
    `set-field <story> "Last Updated" <YYYY-MM-DD> --after Status`.
 2. Add at the end of the story, with a file edit, never a shell command (a shell
    write skips the project's write checks):
@@ -304,7 +304,7 @@ fix a failing criterion yourself: report it and ask what to do.
 ## Phase 8: Next story, checkpoint, close
 
 **The next story.** With no sprint plan in `docs/production/sprints/` (always at
-`workflow: minimal`): Run `bash .claude/scripts/story-status.sh` after the close, so
+`workflow: minimal`): Run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-status.sh` after the close, so
 this story's new status is in it. It prints the unfinished stories in route order;
 do not re-rank them. The first `In Review` story is next (the first `IN_REVIEW`
 line), else the first `In Progress` one, else the first `Ready` or `Not Started`
@@ -331,7 +331,7 @@ all, not even as an option: it is not on that path. With no sprint plan at
 With a sprint plan: read `references/sprint-next.md`.
 
 **The checkpoint**, on every verdict, closed or not. Pipe the block to
-`bash .claude/scripts/session-state.sh checkpoint`, which replaces the old block:
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/session-state.sh checkpoint`, which replaces the old block:
 
 ```
 **Updated:** [date]

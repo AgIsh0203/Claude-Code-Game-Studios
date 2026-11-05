@@ -16,7 +16,7 @@
 #      make .claude/ a root, and the hooks would write .claude/production/
 #   3. CLAUDE_PROJECT_DIR       -> that  (populated in the hook environment),
 #      unless it names a .claude folder, for the same reason as rule 2
-#   4. this script's location   -> <root>/.claude/hooks/../.. by construction
+#   4. this script's location   -> C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/../.. by construction
 # Rule 4 always works and needs no environment at all; rules 1-2 stop it from
 # overriding a caller that legitimately means somewhere else.
 #
@@ -26,7 +26,7 @@ if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" !=
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
 else
-  CCGS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+  CCGS_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
@@ -39,7 +39,7 @@ fi
 #   exit 2 = build-breaking issue (a data file that is not valid JSON)
 #
 # A PostToolUse hook CANNOT block -- the write has already happened by the time
-# this runs (see .claude/docs/hooks-reference/hook-input-schemas.md). The only
+# this runs (see C:/Users/ishan/.claude/ccgs-studio/.claude/docs/hooks-reference/hook-input-schemas.md). The only
 # question is who hears about it, and that is what the exit code selects:
 #   exit 1 -> stderr goes to the USER only. Claude never sees it, so a JSON file
 #             it just corrupted looks like it wrote cleanly and it moves on.
@@ -154,7 +154,7 @@ fi
 # hook_warn in yaml-helper.sh. stderr stays as the fallback without the helper.
 if [ -n "$WARNINGS" ]; then
     _VA_MSG=$(echo -e "=== Asset Validation: Warnings ===$WARNINGS\n==================================\n(Warnings are advisory. Fix before final commit.)")
-    [ -f .claude/hooks/yaml-helper.sh ] && . .claude/hooks/yaml-helper.sh 2>/dev/null
+    [ -f C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh ] && . C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh 2>/dev/null
     if command -v hook_warn >/dev/null 2>&1; then
         hook_warn PostToolUse "$_VA_MSG"
     else

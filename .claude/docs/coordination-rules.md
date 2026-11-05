@@ -22,7 +22,7 @@
 
 ## Model Tier Assignment
 
-Read `.claude/docs/model-tiers.md` on demand. It carries the tier table, the
+Read `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/model-tiers.md` on demand. It carries the tier table, the
 per-skill assignments and the authoring rule.
 
 **Key point:** whether a skill's `model:` is used
@@ -50,7 +50,7 @@ must NOT be parallelised.
 
 ### Agent Teams (experimental — opt-in)
 Multiple independent Claude Code *sessions* coordinated via a shared task list.
-Opt-in only — read `.claude/docs/agent-teams.md` on demand before proposing one.
+Opt-in only — read `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/agent-teams.md` on demand before proposing one.
 
 ## Parallel Task Protocol
 

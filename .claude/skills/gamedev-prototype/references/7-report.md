@@ -5,7 +5,7 @@
 
 ## Phase 7: Generate Prototype Report
 
-Read `.claude/docs/templates/prototype-report.md` to get the report structure.
+Read `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/prototype-report.md` to get the report structure.
 Fill in every section based on what was observed during this session. Replace all
 placeholder text with real observations — no generic filler.
 

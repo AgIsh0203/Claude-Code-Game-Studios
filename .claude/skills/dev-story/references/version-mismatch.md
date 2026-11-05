@@ -13,7 +13,7 @@ How do you want to go on?" Options:
 
 - **Re-read the changed ADR and refresh the story (Recommended).** Read the ADR's
   Decision, Engine Compatibility and ADR Dependencies sections with
-  `bash .claude/scripts/md-section.sh extract <adr> "Decision"` and the same for
+  `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh extract <adr> "Decision"` and the same for
   the other two. Then edit the story: `ADR Version` becomes the ADR's `version`
   (never today's date, or the next run mismatches again), and the ADR Decision
   Summary and `## Implementation Notes` are replaced with the guidance you read.

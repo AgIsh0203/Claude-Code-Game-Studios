@@ -8,13 +8,13 @@
 # /gate-check's pre-production "ADR Circular Dependency Check" and of
 # /architecture-review's dependency ordering.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (per .claude/docs/context-management.md rule 2).
+# EMITS OBSERVATIONS, NOT A VERDICT (per C:/Users/ishan/.claude/ccgs-studio/.claude/docs/context-management.md rule 2).
 # The caller (gate-pre-production) decides FAIL vs CONCERNS per tier. In
 # particular NO_DEPS_SECTION and UNFILLED_DEPS are load-bearing: they make "no
 # cycles because the graph is clean" distinguishable from "no cycles because
 # half the ADRs have no dependency section, or never filled it in".
 #
-# Usage: bash .claude/scripts/adr-dep-graph.sh [adr-dir]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-dep-graph.sh [adr-dir]
 #   adr-dir defaults to docs/architecture (relative to repo root). An explicit
 #   dir (used by the test suite) is taken as-is.
 #
@@ -58,7 +58,7 @@ set -u
 if [ -n "${1:-}" ]; then
     ADR_DIR="$1"
 else
-    cd "$(dirname "$0")/../.." || { echo "adr-dep-graph: cannot reach repo root" >&2; exit 1; }
+    cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" || { echo "adr-dep-graph: cannot reach repo root" >&2; exit 1; }
     ADR_DIR="docs/architecture"
 fi
 

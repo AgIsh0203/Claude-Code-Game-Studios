@@ -4,7 +4,7 @@
 
 `/project-stage-detect [role]` determines the project's development stage and
 its gaps. It starts with a deterministic pass (`bash
-.claude/scripts/artifact-check.sh`, which reports PRESENT / ABSENT / SHORT /
+C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh`, which reports PRESENT / ABSENT / SHORT /
 PATTERN_MISS / NO_CHECK per artifact), then scans `docs/design/`, the code root,
 `docs/production/`, `docs/prototypes/`, `docs/architecture/` and `tests/`.
 
@@ -56,7 +56,7 @@ None. `/project-stage-detect` is a diagnostic utility. It spawns no agents
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -78,7 +78,7 @@ Fixture defaults.
 **Input:** `/project-stage-detect`
 
 **Expected behavior:**
-1. Skill runs `bash .claude/scripts/artifact-check.sh` before hand-scanning
+1. Skill runs `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh` before hand-scanning
 2. Skill reads the configured stage `Production` from `.claude/ccgs/project.yaml`
 3. Skill still runs the heuristics; 24 source files (10+) indicate Production
 4. Report states the configured and observed stages agree; Stage Confidence is PASS

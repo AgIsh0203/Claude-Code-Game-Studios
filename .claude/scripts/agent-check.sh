@@ -15,7 +15,7 @@
 # whether a brief is good enough: the reader decides. The delegation markers are
 # word counts, not grades.
 #
-# Usage: bash .claude/scripts/agent-check.sh [--agent <name>] [--skill <name>] [project-root]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/agent-check.sh [--agent <name>] [--skill <name>] [project-root]
 #   --agent <name>  one agent: its block, the overlap pairs it is in, and the
 #                   delegation blocks that name it
 #   --skill <name>  one skill: its delegation blocks only
@@ -69,13 +69,13 @@ done
 if [ -n "$ROOT_ARG" ]; then
   ROOT="$ROOT_ARG"
 else
-  cd "$(dirname "$0")/../.." || { echo "agent-check: cannot reach repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" || { echo "agent-check: cannot reach repo root" >&2; exit 1; }
   # `pwd -W` (Git Bash) gives C:/... so the Windows Python below can open it.
   ROOT="$(pwd -W 2>/dev/null || pwd)"
 fi
 
-if [ ! -d "$ROOT/.claude/agents" ]; then
-  echo "agent-check: no .claude/agents folder under $ROOT" >&2
+if [ ! -d "C:/Users/ishan/.claude/ccgs-studio/.claude/agents" ]; then
+  echo "agent-check: no C:/Users/ishan/.claude/ccgs-studio/.claude/agents folder under $ROOT" >&2
   exit 1
 fi
 
@@ -139,7 +139,7 @@ CUE = re.compile(
 MARKERS = {
     "objective": re.compile(r"\bask (?:them|it|each)\b|\bto (?:review|check|write|design|draft|produce|validate|assess|evaluate|audit|analy[sz]e|create|implement|identify|find)\b|\bgoal\b|\bobjective\b", re.I),
     "output": re.compile(r"\breturn\b|\boutput\b|\breport\b|\bformat\b|\bwrite (?:your|the|its) [\w ]{0,20}to\b", re.I),
-    "sources": re.compile(r"`[\w.-]+/[\w./*-]+`|\bread\b|\bpass\b|\binputs?\b|\bsources?\b", re.I),
+    "sources": re.compile(r"`(?:[A-Za-z]:/)?[\w.-]+/[\w./*-]+`|\bread\b|\bpass\b|\binputs?\b|\bsources?\b", re.I),
     "boundaries": re.compile(r"\bdo not\b|\bdon't\b|\bnever\b|\bonly\b|\bmust not\b", re.I),
     "recheck": re.compile(r"\bre-?check|\bre-?verify|\bdouble-check|\bsecond opinion\b|\bverify (?:your|the|its) own\b", re.I),
 }
@@ -209,8 +209,8 @@ def words(text):
 
 
 # --- agents ---------------------------------------------------------------
-agent_dir = os.path.join(root, ".claude", "agents")
-skill_dir = os.path.join(root, ".claude", "skills")
+agent_dir = "C:/Users/ishan/.claude/ccgs-studio/.claude/agents"
+skill_dir = "C:/Users/ishan/.claude/ccgs-studio/.claude/skills"
 agents = {}
 for fn in sorted(os.listdir(agent_dir)):
     if fn.endswith(".md"):
@@ -265,7 +265,7 @@ for name, path in agents.items():
         for sk in split_list(fm.get("skills", "")):
             off = model_invocation_off(sk)
             if off is None:
-                rec["notes"].append("preload-off skills: lists %s, which is not a skill in .claude/skills/" % sk)
+                rec["notes"].append("preload-off skills: lists %s, which is not a skill in C:/Users/ishan/.claude/ccgs-studio/.claude/skills/" % sk)
             elif off:
                 rec["notes"].append("preload-off skills: lists %s, which sets disable-model-invocation: true" % sk)
     body = text.splitlines()[body_start:]
@@ -337,7 +337,7 @@ for sname, path in skill_files:
             continue
         heading = lines[s].lstrip("#").strip() if re.match(r"^#{1,6}\s", lines[s]) else "(top of file)"
         marks = {k2: len(rx.findall(chunk)) for k2, rx in MARKERS.items()}
-        rel = os.path.relpath(path, root).replace(os.sep, "/")
+        rel = (os.path.relpath(path, root) if os.path.splitdrive(os.path.abspath(path))[0].lower() == os.path.splitdrive(os.path.abspath(root))[0].lower() else os.path.abspath(path)).replace(os.sep, "/")
         blocks.append((sname, rel, s + 1, heading[:70], named, e - s, marks))
 
 # --- report --------------------------------------------------------------
@@ -352,10 +352,10 @@ print("ROOT: %s" % root)
 print("AGENTS: %d  SKILLS: %d  SKILL_FILES: %d  DELEGATION_BLOCKS: %d"
       % (len(agents), len(skills), len(skill_files), len(blocks)))
 if agent_filter and agent_filter not in agents:
-    print("NOT FOUND: agent %s is not a file in .claude/agents/" % agent_filter)
+    print("NOT FOUND: agent %s is not a file in C:/Users/ishan/.claude/ccgs-studio/.claude/agents/" % agent_filter)
     show_agents = []
 if skill_filter and skill_filter not in skills:
-    print("NOT FOUND: skill %s is not a folder in .claude/skills/" % skill_filter)
+    print("NOT FOUND: skill %s is not a folder in C:/Users/ishan/.claude/ccgs-studio/.claude/skills/" % skill_filter)
 
 for name in show_agents:
     r = records[name]

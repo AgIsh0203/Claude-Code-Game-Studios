@@ -3,7 +3,7 @@ name: architecture-review
 description: "Traceability matrix mapping GDD requirements to ADRs. Finds gaps, cross-ADR conflicts, engine compatibility. PASS/CONCERNS/NOT ASSESSED/FAIL."
 argument-hint: "[focus: full | coverage | consistency | engine | rtm | single-gdd path/to/gdd.md]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/architecture-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(bash .claude/scripts/adr-dep-graph.sh*), Bash(bash .claude/scripts/registry.sh validate*)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/architecture-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh check *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh hash *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-dep-graph.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh validate*)
 model: opus
 ---
 
@@ -32,11 +32,11 @@ and Pre-Production.
 
 ---
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
-**`workflow`** (see `.claude/docs/workflow-modes.md`):
+**`workflow`** (see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`):
 - `full` — full traceability matrix across all GDDs and all ADRs.
 - `standard` — reduced scope: architecture doc + critical ADRs only.
 - `minimal` — not applicable (no architecture doc required).
@@ -90,14 +90,14 @@ usually still there.
 If any spawned agent returns BLOCKED, errors, or fails to complete: **surface it
 immediately, don't proceed past a dependency it blocks, and always produce a
 partial report** (retry scope here = fewer GDDs / single-system). Full procedure:
-`.claude/docs/error-recovery-protocol.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/error-recovery-protocol.md`.
 
 ---
 
 ## Collaborative Protocol
 
 **Applies in `collaborative` mode (the default).** For `guided` and
-`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+`autonomous` modes, see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` — the rules below
 describe what collaborative mode requires, not universal behavior.
 
 1. **Read silently** — do not narrate every file read

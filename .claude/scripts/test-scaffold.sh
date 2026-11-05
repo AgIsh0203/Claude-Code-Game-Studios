@@ -7,11 +7,11 @@
 # folder's .gitkeep, the engine's test folders or assembly definitions, the CI
 # workflow and the smoke-test seed.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # It reports what it did with each path and what is still missing; whether
 # the project may advance a gate on the strength of it is the skill's call.
 #
-# Usage: bash .claude/scripts/test-scaffold.sh ENGINE [--dry-run | --list] [--root DIR]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/test-scaffold.sh ENGINE [--dry-run | --list] [--root DIR]
 #          [--module NAME] [--project NAME] [--date YYYY-MM-DD]
 #   ENGINE          godot, unity or unreal (the engine.name values, in any case;
 #                   UE5 is not one)
@@ -111,7 +111,7 @@ fi
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "test-scaffold: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "test-scaffold: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "test-scaffold: cannot reach the repo root" >&2; exit 1; }
 fi
 
 # ------------------------------------------------------------ names and version

@@ -3,7 +3,7 @@ name: story-readiness
 description: "Checks whether a story is ready to implement: clear acceptance criteria, no open questions, valid ADR and dependencies. Use when the user asks if a story, or the sprint's stories, are ready to start or build."
 argument-hint: "[story-file-path or 'all' or 'sprint'] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/story-readiness/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/adr-status.sh *)
+allowed-tools: Read, Glob, Grep, AskUserQuestion, Agent, Bash(bash "*/skills/story-readiness/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,qa.level,gate_level,story_granularity,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 Ask with the question tool. Without one, list the options numbered and end your turn
 to wait. A skipped or dismissed question is not an answer: ask again in plain text.
@@ -39,7 +39,7 @@ fixes in the conversation.
 4. **READY**: every item passes, is N/A with a reason, or is advisory. Advisory
    gaps are still listed.
 
-Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
+Asks follow `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` (collaborative always asks, guided
 asks on major choices, autonomous logs and goes on; `automation_always_ask`
 categories always ask).
 
@@ -70,7 +70,7 @@ Say "Checking [N] story files." before going on.
 1. **Stories.** Run the story helper over the scope, with the `story_granularity`
    resolved above:
    ```
-   bash .claude/scripts/story-facts.sh --lint --granularity <story_granularity> [--sprint | --all | <path> ...]
+   bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh --lint --granularity <story_granularity> [--sprint | --all | <path> ...]
    ```
    Each `STORY` row gives a story's status, type, layer, estimate, TR-IDs, ADRs,
    acceptance-criteria count, test-evidence line and dependencies. Each `LINT` row
@@ -81,7 +81,7 @@ Say "Checking [N] story files." before going on.
    `docs/production/sprint-status.yaml`: report "no sprint plan found". Read each story file too: the testability, scope and
    asset items below need its words.
 2. **ADRs.** One call gives every ADR's status and layer:
-   `bash .claude/scripts/adr-status.sh`. A `no_status` or `UNFILLED` status is a
+   `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh`. A `no_status` or `UNFILLED` status is a
    malformed ADR: never treat an absent status as a failed one (route:
    `/architecture-decision retrofit [file]`). An ADR a story cites with no row is missing.
 3. **Control manifest.** Only its `Manifest Version` line in
@@ -226,7 +226,7 @@ items: list both.
 
 Read the `review_gate` line above. `skill-gates=skip` (solo or lean): skip it, and
 the reply says "QL-STORY-READY skipped — [Solo | Lean] mode". `skill-gates=run`:
-read `references/qa-lead-gate.md` and `.claude/docs/director-gates.md`, and run it
+read `references/qa-lead-gate.md` and `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`, and run it
 before reporting. On a skip, do not load it.
 
 ## Phase 6: Report and close

@@ -3,7 +3,7 @@ name: test-helpers
 description: "Generate engine-specific test helper libraries — assertion utilities, factory functions, mocks in the engine's test folder. Reduces boilerplate."
 argument-hint: "[system-name | all | scaffold]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/test-helpers/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/test-helpers/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -25,7 +25,7 @@ and assertion patterns are abstracted into helpers. This skill generates a
 and systems — so every developer writes less boilerplate and more assertions.
 
 **Output:** engine-specific helper files in the engine's **helper root** —
-the only place its test runner compiles them (`.claude/docs/directory-structure.md`):
+the only place its test runner compiles them (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md`):
 
 | Engine | Helper root |
 |---|---|

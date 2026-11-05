@@ -3,7 +3,7 @@ name: perf-profile
 description: "Performance profiling — find bottlenecks, measure against budgets, produce ranked optimization recommendations."
 argument-hint: "[system-name or 'full']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash "*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh" get_effective_yaml_key *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/perf-profile/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash "*/skills/perf-profile/../../hooks/yaml-helper.sh" get_effective_yaml_key *)
 model: sonnet
 ---
 
@@ -12,11 +12,11 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys performance.enforce,automation,workflow`
 
 Resolved above — use as-is. No block → defaults in
-`.claude/docs/config-resolution.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Performance Profile
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 

@@ -3,7 +3,7 @@ name: create-epics
 description: "Turns the GDDs and architecture into epics, one per architectural module. Use when the user wants to break the game into epics or plan the work before writing stories. Not for splitting one epic into stories."
 argument-hint: "[system-name | layer: foundation|core|feature|presentation | all] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/create-epics/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/gdd-structure-check.sh*), Bash(bash .claude/scripts/adr-status.sh*), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/write-guard.sh overwrite *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/create-epics/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh overwrite *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,docs.density,engine_values,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 Ask with the question tool. Without one, list the options numbered and end your turn
 to wait. A skipped or dismissed question is not an answer: ask again in plain text.
@@ -28,7 +28,7 @@ nearly done describe a design that will have changed.
 `docs/production/epics/index.md`, each after its own yes.
 **Next:** `/create-stories [epic-slug]` per epic. This skill never writes a story.
 
-Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
+Asks follow `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` (collaborative always asks, guided
 asks on major choices, autonomous logs and goes on; `automation_always_ask`
 categories always ask).
 
@@ -85,7 +85,7 @@ per group of MVP features that ship together. Every epic names its slug, since
 
 ### `standard` and `full`: the design and the architecture
 
-1. **The system GDDs.** `bash .claude/scripts/gdd-structure-check.sh` lists every
+1. **The system GDDs.** `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh` lists every
    system GDD; the game concept, systems index, pillars, cross-reviews and the other
    non-system documents are left out for you. Their count is **N**. N is 0: stop,
    "No system GDDs found in `docs/design/gdd/` — run `/design-system` first."
@@ -98,8 +98,8 @@ per group of MVP features that ship together. Every epic names its slug, since
    "No `docs/architecture/architecture.md` — run `/create-architecture` first." Never invent module boundaries.
 4. **For in-scope systems only**, by section, never whole:
    - each GDD's Overview and Acceptance Criteria
-     (`bash .claude/scripts/md-section.sh extract docs/design/gdd/<file>.md "Overview"`);
-   - `bash .claude/scripts/adr-status.sh` for every ADR's status, layer and missing
+     (`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh extract docs/design/gdd/<file>.md "Overview"`);
+   - `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh` for every ADR's status, layer and missing
      sections; then the GDD Requirements Addressed, Decision and Engine
      Compatibility sections of the ADRs that cover in-scope systems;
    - `docs/architecture/tr-registry.yaml`: the entries whose `system:` is an
@@ -166,7 +166,7 @@ answered.
 Read the `review_gate` line above. `skill-gates=skip` (solo or lean): no agent; note
 `PR-EPIC skipped — [Solo | Lean] mode` in the reply and the closing block.
 `skill-gates=run`: read `references/pr-epic-gate.md` and
-`.claude/docs/director-gates.md`, and run it now, after every epic in scope is
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`, and run it now, after every epic in scope is
 defined and before any write. On a skip, do not load it.
 
 ## Phase 5: Write each epic
@@ -184,7 +184,7 @@ them, and resetting them orphans the stories already there.
 `docs/production/epics/index.md`[, creating it]?" This is its own ask, one per epic, after
 the Phase 3 yes: that yes approved the epic, not the write. Write only on an explicit
 yes to it. Right
-before writing, run `bash .claude/scripts/write-guard.sh overwrite
+before writing, run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh overwrite
 docs/production/epics/[epic-slug]/EPIC.md`. It always prints a `checked` row; an
 `OVERWRITE` row back means the file exists after all, so write nothing and ask the
 update question instead.

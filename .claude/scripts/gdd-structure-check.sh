@@ -22,8 +22,8 @@
 # caller decides what it means at the project's tier.
 #
 # Usage:
-#   bash .claude/scripts/gdd-structure-check.sh                    # all system GDDs
-#   bash .claude/scripts/gdd-structure-check.sh docs/design/gdd/foo.md  # one GDD
+#   bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh                    # all system GDDs
+#   bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh docs/design/gdd/foo.md  # one GDD
 #
 # Output (per GDD; the ABSENT and PLACEHOLDER lines are omitted when empty):
 #   combat.md PRESENT: Overview,Player Fantasy,Detailed Rules,...
@@ -33,7 +33,7 @@
 
 set -u
 
-cd "$(dirname "$0")/../.." || { echo "gdd-structure-check: cannot reach repo root" >&2; exit 1; }
+cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" || { echo "gdd-structure-check: cannot reach repo root" >&2; exit 1; }
 
 # Each MATCH entry is an ERE alternation of every accepted heading for one
 # required section; LABEL is the canonical name reported to the caller.

@@ -165,7 +165,7 @@ Engine Compatibility says why).
 - `lean` → skip (not a PHASE-GATE). Note: "TD-ADR skipped — Lean mode." Proceed to Step 5.7 (GDD sync check).
 - `full` → spawn as normal.
 
-5.6. **Technical Director Strategic Review** — After the engine specialist validation, spawn `technical-director` via `Agent` using gate **TD-ADR** (`.claude/docs/director-gates/td-adr.md`):
+5.6. **Technical Director Strategic Review** — After the engine specialist validation, spawn `technical-director` via `Agent` using gate **TD-ADR** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/td-adr.md`):
    - Pass: the ADR file path (or draft content), engine version, domain, any existing ADRs in the same domain
    - The TD validates architectural coherence (is this decision consistent with the whole system?) — distinct from the engine specialist's API-level check
    - On CONCERNS: show them to the user verbatim and ask with the standard options from `director-gates.md` — `Revise flagged items` / `Accept and proceed` / `Discuss further`. Revise the flagged Decision or Alternatives sections only on `Revise flagged items`.
@@ -254,7 +254,7 @@ Only proceed if the user selects yes. If yes: append new entries. Never modify e
 changing, set the old entry to `status: "superseded_by: ADR-[NNNN]"` and add the new entry. Keep the quotes:
 unquoted, the second colon makes the file invalid YAML.
 
-After writing, run `bash .claude/scripts/registry.sh validate` and fix every row about an entry this write added
+After writing, run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh validate` and fix every row about an entry this write added
 or changed (a DUPLICATE, STATUS or LAYOUT row, an UNQUOTED row (quote the value it names), or a PATH_MISSING row for a path it named) before you go on; name
 rows about other entries to the user rather than fixing them unasked. If the script is missing or prints nothing,
 say the registry check did not run, then re-read the entries you wrote against the rules in the file's header.

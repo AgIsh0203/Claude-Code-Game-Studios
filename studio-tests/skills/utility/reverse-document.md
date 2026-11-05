@@ -44,7 +44,7 @@ None. `/reverse-document` is a documentation utility. No director gates apply.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -211,7 +211,7 @@ Fixture defaults.
 **Expected behavior:**
 1. The tier resolves to `minimal` from the config block, not assumed
 2. Findings are presented and answered before any draft
-3. The draft is a one-page game brief in the `.claude/docs/templates/game-brief.md`
+3. The draft is a one-page game brief in the `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-brief.md`
    format — not a GDD — for this one system
 4. The provenance banner sits directly under the title
 5. Skill asks "May I write this to `docs/design/health-system-brief.md`?" — not
@@ -239,7 +239,7 @@ Fixture defaults.
 **Expected behavior:**
 1. The tier resolves to `minimal` from the config block; the path is the code root itself, so the target is the whole game, not one system
 2. Findings are presented and answered before any draft
-3. The draft is a one-page game brief in the `.claude/docs/templates/game-brief.md` format covering the whole game (pitch, core loop, what is built), not a GDD and not a brief for one system
+3. The draft is a one-page game brief in the `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/game-brief.md` format covering the whole game (pitch, core loop, what is built), not a GDD and not a brief for one system
 4. The provenance banner sits directly under the title
 5. Skill asks "May I write this to `docs/GDD.md`?" — not `docs/design/gdd/`, and not a `docs/design/[system-name]-brief.md` path
 6. File written on approval; verdict COMPLETE

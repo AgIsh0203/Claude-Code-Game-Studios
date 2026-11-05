@@ -3,7 +3,7 @@ name: qa-plan
 description: "QA test plan for a sprint — classifies stories by Logic/Integration/Visual/UI, covers automated tests, manual cases, smoke scope."
 argument-hint: "[sprint | feature: system-name | story: path]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/qa-plan/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/skills/qa-plan/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,qa.level,system_overrides`
 
 Resolved above — use as-is. No block → defaults in
-`.claude/docs/config-resolution.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 
 # QA Plan
@@ -31,12 +31,12 @@ plan.
 
 ---
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
 **Workflow tier**: resolve per the GDD's system as each is read (per
-`.claude/docs/workflow-modes.md`): `workflow_overrides.system_overrides.<system>`
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`): `workflow_overrides.system_overrides.<system>`
 if the block lists one, else the project value. It sets how many GDD sections
 the test plan is mined from — see Phase 2.
 
@@ -45,7 +45,7 @@ plan — drop the automated-test-required rows and the test-file DoD; at `standa
 a full plan per story type; at `full`, also add per-system coverage targets.
 Distinct axis from `workflow` (which sets how many GDD sections are mined).
 No level drops the Visual/Feel and UI screenshot rows — tests are waived at
-`minimal`, the look is not (`.claude/docs/coding-standards.md`).
+`minimal`, the look is not (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md`).
 
 ## Phase 1: Parse Scope
 
@@ -338,7 +338,7 @@ shown, not written, if the write was declined). The only other outcome is the
 ## Collaborative Protocol
 
 **Applies in `collaborative` mode (the default).** For `guided` and
-`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+`autonomous` modes, see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` — the rules below
 describe what collaborative mode requires, not universal behavior.
 
 - **Never write the plan without asking** — Phase 5 requires explicit approval.

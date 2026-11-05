@@ -8,13 +8,13 @@
 # `pattern`, `min_count` and `any_of` per step; nothing consumed it
 # deterministically, so the model re-derived the same answers by opening files.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (per .claude/docs/context-management.md
+# EMITS OBSERVATIONS, NOT A VERDICT (per C:/Users/ishan/.claude/ccgs-studio/.claude/docs/context-management.md
 # rule 2). It reports what is on disk; the CALLER applies the workflow tier,
 # the required/optional distinction, and any per-system override. In
 # particular this script never says PASS or FAIL, and never decides that an
 # ABSENT artifact is a blocker — at `minimal` most of them are not.
 #
-# Usage: bash .claude/scripts/artifact-check.sh [--phase <id> | --path <id>] [project-root]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh [--phase <id> | --path <id>] [project-root]
 #   --phase <id>  restrict output to one phase (concept, systems-design, ...)
 #   --path <id>   report one tier path instead of the phase ladder (`minimal`).
 #                 Paths live under the catalog's top-level `paths:` key with the
@@ -47,7 +47,7 @@
 #
 # Patterns are POSIX ERE and are matched with `grep -E`, never Python `re`
 # (the catalog uses classes like [[:space:]]) and never `grep -P` (unavailable
-# on Windows Git Bash — see .claude/docs/coding-standards notes).
+# on Windows Git Bash — see C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards notes).
 
 set -u
 
@@ -76,13 +76,13 @@ fi
 if [ -n "$ROOT_ARG" ]; then
   ROOT="$ROOT_ARG"
 else
-  cd "$(dirname "$0")/../.." || { echo "artifact-check: cannot reach repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" || { echo "artifact-check: cannot reach repo root" >&2; exit 1; }
   # `pwd -W` (Git Bash) gives C:/... . A /c/... path reaches the Windows Python
   # below only through MSYS path conversion, which MSYS_NO_PATHCONV=1 turns off.
   ROOT="$(pwd -W 2>/dev/null || pwd)"
 fi
 
-CATALOG="$ROOT/.claude/docs/workflow-catalog.yaml"
+CATALOG="C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-catalog.yaml"
 if [ ! -f "$CATALOG" ]; then
   echo "artifact-check: catalog not found at $CATALOG" >&2
   exit 1
@@ -316,7 +316,7 @@ if flt and not sel:
     sys.exit(2)
 
 total_steps = sum(len(s) for _, s in sel)
-print("CATALOG: %s" % os.path.relpath(catalog_path, root).replace(os.sep, "/"))
+print("CATALOG: %s" % (os.path.relpath(catalog_path, root) if os.path.splitdrive(os.path.abspath(catalog_path))[0].lower() == os.path.splitdrive(os.path.abspath(root))[0].lower() else os.path.abspath(catalog_path)).replace(os.sep, "/"))
 print("ROOT: %s" % root.replace(os.sep, "/"))
 print("%sS: %d" % (label, len(sel)))
 print("STEPS: %d" % total_steps)

@@ -3,7 +3,7 @@ name: team-qa
 description: "Orchestrate the QA team through a full testing cycle — qa-lead strategy and test plan, qa-tester case writing, execution, sign-off."
 argument-hint: "[sprint | feature: system-name] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/team-qa/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/team-qa/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -21,18 +21,18 @@ In `guided` mode the pipeline advances automatically unless a phase is BLOCKED;
 in `autonomous` mode it runs end to end, recording each phase outcome via
 `log_decision`. Decisions in `automation_always_ask` categories
 (`is_always_ask_category` helper) always prompt regardless of mode. See
-`.claude/docs/automation-modes.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`.
 
 ## Phase 0: Resolve Config
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,team.size,qa.level`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 `qa.level` decides what a Logic, Integration or Config/Data story's evidence is:
 its automated test at `standard` and `full`; at `minimal`, where tests are waived
-(`.claude/docs/coding-standards.md`), the acceptance-criteria walk in Phase 5 —
+(`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md`), the acceptance-criteria walk in Phase 5 —
 a story without a test is then WAIVED, not missing its evidence. The UI and
 Visual/Feel screenshots are required at every level.
 
@@ -42,7 +42,7 @@ phase gates are the pipeline's own decision points (defined under `team.size`
 below), and the agents that work at them are team members, not director gates.
 
 `automation` drives the Decision Points note above. See the Decision Points note above and
-`.claude/docs/automation-modes.md` for how each mode changes pipeline behavior.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` for how each mode changes pipeline behavior.
 
 **`team.size`**: which agents are active (orthogonal to review_mode gate-depth and workflow docs).
 - **`individual`** (default): `qa-tester` only; `qa-lead` invoked at phase gates only.
@@ -241,7 +241,7 @@ closed by those screenshots; a Visual/Feel story also needs the lead sign-off.
 Then ask "May I write the evidence for [story titles] to
 `docs/production/qa/evidence/`?", once per story group, and write the evidence
 artifact `docs/production/qa/evidence/[story-slug]-evidence.md` from
-`.claude/docs/templates/test-evidence.md`, carrying the sign-off table intact and
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/test-evidence.md`, carrying the sign-off table intact and
 referencing the screenshots. If no screenshot was saved, name that story in the
 Phase 5 summary as missing its retained evidence rather than writing a doc that
 implies one.
@@ -365,7 +365,7 @@ usually still there.
 
 If any spawned agent returns BLOCKED, errors, or cannot complete: **surface it
 immediately, don't proceed past a dependency it blocks, and always produce a
-partial report.** Full procedure: `.claude/docs/error-recovery-protocol.md`.
+partial report.** Full procedure: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/error-recovery-protocol.md`.
 
 Common blockers:
 - Input file missing (story not found, GDD absent) → redirect to the skill that creates it

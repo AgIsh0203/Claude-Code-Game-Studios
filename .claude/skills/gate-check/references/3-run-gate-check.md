@@ -26,7 +26,7 @@ For each item in the target gate:
 what exists:**
 
 ```
-Bash: bash .claude/scripts/artifact-check.sh --phase [source-phase]
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh --phase [source-phase]
 ```
 
 Pass the phase being advanced *from* (its steps are the work that must be
@@ -34,7 +34,7 @@ complete): `systems-design` for the Systems Design → Technical Setup gate,
 `pre-production` for Pre-Production → Production, and so on.
 
 At `workflow: minimal`, also run
-`bash .claude/scripts/artifact-check.sh --path minimal`: the brief and stories
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/artifact-check.sh --path minimal`: the brief and stories
 live on that path, not on any phase, and its `game-brief` and `create-stories`
 rows are this tier's floor.
 
@@ -132,7 +132,7 @@ A report whose `Focus:` line names one pass only (a `consistency` or
   read the GDDs to count headings:
 
   ```
-  Bash: bash .claude/scripts/gdd-structure-check.sh
+  Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh
   ```
 
   It prints a `PRESENT:` / `ABSENT:` pair per GDD, plus a `PLACEHOLDER:` line
@@ -162,7 +162,7 @@ A report whose `Focus:` line names one pass only (a `consistency` or
 
   Only these three values are recognized. Surface anything else to the user and
   fall back to `warn` rather than guessing.
-- For localization checks: `Grep` for hardcoded strings in the **code root** (resolve per `.claude/docs/code-root-resolution.md`). **If the code root is unresolved, report `NOT ASSESSED — code root unresolved` rather than zero hits.**
+- For localization checks: `Grep` for hardcoded strings in the **code root** (resolve per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`). **If the code root is unresolved, report `NOT ASSESSED — code root unresolved` rather than zero hits.**
 
 ### Cross-Reference Checks
 - Compare `docs/design/gdd/` documents against implementations in the **code root**

@@ -51,7 +51,7 @@ tool and invokes no director gate.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -61,7 +61,7 @@ Fixture defaults.
 ### Case 1: Happy Path — Complete UX spec, APPROVED
 
 **Fixture:**
-- `docs/design/ux/inventory.md` follows `.claude/docs/templates/ux-spec.md`: header with Status, Author, Platform Target (PC, Console), Related GDDs (`docs/design/gdd/inventory.md`), Accessibility Tier and `> **Template**: UX Spec`; every section populated, including States & Variants (loading, empty, populated, error), keyboard and d-pad navigation with focus order, an Input Method Completeness Checklist block for keyboard/mouse and for gamepad with every item ticked, and at least 5 testable acceptance criteria
+- `docs/design/ux/inventory.md` follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/ux-spec.md`: header with Status, Author, Platform Target (PC, Console), Related GDDs (`docs/design/gdd/inventory.md`), Accessibility Tier and `> **Template**: UX Spec`; every section populated, including States & Variants (loading, empty, populated, error), keyboard and d-pad navigation with focus order, an Input Method Completeness Checklist block for keyboard/mouse and for gamepad with every item ticked, and at least 5 testable acceptance criteria
 - `docs/design/accessibility-requirements.md` commits the Standard tier
 - `docs/design/ux/interaction-patterns.md` exists, and every interactive component in the spec names a pattern from it
 - `.claude/ccgs/project.yaml` `platform` block: `targets: [PC, Console]`, `gamepad_support: Full`
@@ -161,7 +161,7 @@ Fixture defaults.
 ### Case 5: `all` Argument and No Director Gate
 
 **Fixture:**
-- `docs/design/ux/` contains `hud.md` (written by `/ux-design hud`, header line `> **Template**: HUD Design`), `inventory.md` (written by `/ux-design inventory`, `> **Template**: UX Spec`) and `pause-menu.md` (hand-written from `.claude/docs/templates/ux-spec.md`, with no Template line)
+- `docs/design/ux/` contains `hud.md` (written by `/ux-design hud`, header line `> **Template**: HUD Design`), `inventory.md` (written by `/ux-design inventory`, `> **Template**: UX Spec`) and `pause-menu.md` (hand-written from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/ux-spec.md`, with no Template line)
 - `.claude/ccgs/project.yaml` has `modes.review_mode: full`
 
 **Input:** `/ux-review all`

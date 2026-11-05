@@ -19,12 +19,12 @@
 # moving a user's working notes would be a verdict.
 #
 # Usage:
-#   bash .claude/scripts/rotate-session-state.sh            # rotate
-#   bash .claude/scripts/rotate-session-state.sh --dry-run  # show, change nothing
-#   bash .claude/scripts/rotate-session-state.sh --help
+#   bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/rotate-session-state.sh            # rotate
+#   bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/rotate-session-state.sh --dry-run  # show, change nothing
+#   bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/rotate-session-state.sh --help
 
 set -u
-cd "$(dirname "$0")/../.." || exit 1
+cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" || exit 1
 
 STATE=".claude/ccgs/session-state/active.md"
 LOGDIR=".claude/ccgs/session-logs"
@@ -55,7 +55,7 @@ if ! grep -q "$MARKER" "$STATE"; then
   echo "REFUSED: $STATE has no <!-- /CHECKPOINT --> marker."
   echo "  Rotation splits the file at that marker, so without it this script"
   echo "  cannot tell the checkpoint from the narrative and would move both."
-  echo "  Re-create the file from .claude/docs/templates/session-state.md first."
+  echo "  Re-create the file from C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/session-state.md first."
   exit 3
 fi
 

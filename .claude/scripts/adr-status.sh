@@ -10,13 +10,13 @@
 # owns the dependency graph and its cycles; this script reads the same
 # Depends On row the same way, so the two agree on every edge.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # Whether a Proposed ADR blocks a story, which sections an ADR must have, and
 # what a missing Layer row means are the calling skill's rules: the skills'
 # own lists of required sections disagree, so this script reports every
 # section of the shipped template that is missing and leaves the choice there.
 #
-# Usage: bash .claude/scripts/adr-status.sh [--root DIR] [ID|PATH ...]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh [--root DIR] [ID|PATH ...]
 #   ID          ADR-0003, adr-0003 or 0003: the ADR whose file name carries it
 #   PATH        an ADR file, relative to the root or absolute
 #   (none)      every docs/architecture/adr-*.md (one level, as adr-dep-graph.sh)
@@ -81,11 +81,11 @@ done
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "adr-status: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$(dirname "$0")/../.." 2>/dev/null || { echo "adr-status: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "adr-status: cannot reach the repo root" >&2; exit 1; }
 fi
 
 ADR_DIR="docs/architecture"
-TEMPLATE=".claude/docs/templates/architecture-decision-record.md"
+TEMPLATE="C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/architecture-decision-record.md"
 # adr_id PATH — adr-dep-graph.sh's id: the first adr-<digits> in the name, lower case.
 adr_id() { printf '%s\n' "${1##*/}" | tr '[:upper:]' '[:lower:]' | grep -oE 'adr-[0-9]+' | head -1; }
 

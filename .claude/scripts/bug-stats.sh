@@ -7,12 +7,12 @@
 # /bug-triage, /team-qa, /day-one-patch, /regression-suite and /team-release,
 # and the session-start note's open-bug count.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # Whether an open S2 fails a gate, which statuses a skill treats as open, and
 # when a bug is "old" stay in the skill: every status is counted as written,
 # so a skill with a different rule can still apply it.
 #
-# Usage: bash .claude/scripts/bug-stats.sh [--root DIR] [--today YYYY-MM-DD] [DIR ...]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/bug-stats.sh [--root DIR] [--today YYYY-MM-DD] [DIR ...]
 #   DIR         folders to search for bug files at any depth, relative to the
 #               root or absolute; default docs/production/qa/bugs/, one level
 #               (where /bug-report writes)
@@ -86,7 +86,7 @@ esac
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "bug-stats: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$(dirname "$0")/../.." 2>/dev/null || { echo "bug-stats: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "bug-stats: cannot reach the repo root" >&2; exit 1; }
 fi
 
 # BUG-<number>.md: -iname keeps a lowercase bug-0003.md, the digit keeps out

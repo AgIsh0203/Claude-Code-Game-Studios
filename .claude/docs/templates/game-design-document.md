@@ -1,6 +1,6 @@
 # [System Name]
 
-> Authoring guidance: .claude/docs/templates/guidance/game-design-document-guide.md (load per-section as you author — do not read entirely).
+> Authoring guidance: C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/game-design-document-guide.md (load per-section as you author — do not read entirely).
 
 > **Status**: [In Design | Designed | In Review | Needs Revision | Approved | Implemented]
 > **Author**: [user + agents]

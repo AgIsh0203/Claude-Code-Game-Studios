@@ -89,7 +89,7 @@ Full-read a story only when its Test Evidence section is missing or ambiguous.
 
 ### Step 3b-2 — Load test files
 
-Glob the engine's test root (`.claude/docs/directory-structure.md`): Godot
+Glob the engine's test root (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md`): Godot
 `tests/unit/**/*_test.*` and `tests/integration/**/*_test.*`; Unity
 `Assets/Tests/**/*Tests.cs`; Unreal `Source/*/Private/Tests/**/*.cpp`. With no
 engine configured, say the test index could not be built rather than reading an

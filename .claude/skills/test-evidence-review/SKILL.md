@@ -3,7 +3,7 @@ name: test-evidence-review
 description: "Quality review of test files and evidence — goes beyond existence, evaluates assertion coverage. ADEQUATE/INCOMPLETE/MISSING/NOT ASSESSED per story."
 argument-hint: "[story-path | sprint | system-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/test-evidence-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/review-receipts.sh check *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/test-evidence-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh check *)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -29,7 +29,7 @@ item here is one that would stop `/story-done`:
   block (Logic→`logic`, Integration→`integration`, Visual/Feel→`visual`,
   UI→`ui`, Config/Data→`config`): `true` → BLOCKING, `false` → ADVISORY, `unset`
   → a plain-boolean `testing.strict: true|false` (legacy form) applies to every
-  type; else the Default Gate Level in `.claude/docs/coding-standards.md`
+  type; else the Default Gate Level in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md`
   (BLOCKING for Logic, Integration, Visual/Feel and UI; ADVISORY for
   Config/Data). Every "BLOCKING" below means that story type's gate level.
 
@@ -113,7 +113,7 @@ it. Fall back to searching only when no path is stated or it is not found:
 
 **Logic stories**: search the engine's unit-test root — `tests/unit/[system]/`
 (Godot), `Assets/Tests/EditMode/` (Unity), `Source/<Module>/Private/Tests/`
-(Unreal); see `.claude/docs/directory-structure.md` — for a file whose name
+(Unreal); see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md` — for a file whose name
 contains the story slug or its system. Test files are named per
 `.claude/rules/test-standards.md`, not necessarily `[story-slug]_test.*`.
 
@@ -200,7 +200,7 @@ Missing criteria mean a criterion was never verified.
 ### Sign-off completeness
 
 What closes the story follows the evidence table in
-`.claude/docs/coding-standards.md` — the same rule `/story-done` applies, at every
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md` — the same rule `/story-done` applies, at every
 `qa.level`:
 - **Visual/Feel**: the evidence doc (from the test-evidence template) must have
   every sign-off row `[x] Approved`. A blank or missing row is INCOMPLETE.
@@ -220,7 +220,7 @@ A walkthrough log is welcome but not required.
 ### Evidence older than its code
 
 For each story with a retained image, run
-`bash .claude/scripts/review-receipts.sh check docs/production/qa/evidence/[story-slug]/stamp.txt`.
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh check docs/production/qa/evidence/[story-slug]/stamp.txt`.
 List each `CHANGED:` or `GONE:` file as POTENTIALLY STALE — it changed after the
 evidence was captured. `RECEIPT: NONE`: say "no stamp" and use the date check
 below. A report line only: it never changes the story's verdict.
@@ -253,7 +253,7 @@ For each story, assign a verdict:
 > at all. Use `NOT ASSESSED` when:
 >
 > - the story's **type cannot be determined**, so the required evidence is
->   unknown (the type→evidence mapping in `.claude/docs/coding-standards.md` is
+>   unknown (the type→evidence mapping in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md` is
 >   what makes any other verdict meaningful);
 > - the evidence path is named but **unreadable or outside this run's scope**;
 > - the story file itself could not be parsed.

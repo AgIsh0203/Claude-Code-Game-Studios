@@ -3,7 +3,7 @@ name: security-audit
 description: "Security audit — save tampering, cheat vectors, network exploits, data exposure, input validation. Before public or multiplayer release."
 argument-hint: "[full | network | save | input | quick]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, Bash(bash "*/.claude/skills/security-audit/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, Bash(bash "*/skills/security-audit/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -95,7 +95,7 @@ scan here, and let the report's **Audited by** line say so.
 
 **Send this fixed brief template.** Fill only the `{…}` slots, from
 `.claude/ccgs/project.yaml` (else technical preferences), the code root resolved per
-`.claude/docs/code-root-resolution.md`, and the Phase 3 text copied as written.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`, and the Phase 3 text copied as written.
 Add nothing else: no view on the game's type, no expected severity, no opinion
 on any finding — a sentence of your own is where a pre-rating gets in.
 

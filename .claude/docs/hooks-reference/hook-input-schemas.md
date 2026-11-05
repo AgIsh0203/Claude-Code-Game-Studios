@@ -161,11 +161,11 @@ no one**. Print a JSON object on stdout instead:
 - **Leave out `permissionDecision`** unless you mean it: on PreToolUse, `"allow"`
   skips the user's permission prompt.
 
-CCGS hooks use `hook_warn` from `.claude/hooks/yaml-helper.sh`, which builds this
+CCGS hooks use `hook_warn` from `C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh`, which builds this
 object and escapes the message without needing `jq`:
 
 ```bash
-. .claude/hooks/yaml-helper.sh
+. C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh
 hook_warn PostToolUse "Asset names must be lowercase: $FILE_PATH"
 exit 0
 ```

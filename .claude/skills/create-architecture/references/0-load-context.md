@@ -121,7 +121,7 @@ numbering:
   A requirement that matches an `active` entry for the same system (same intent,
   wording may differ) keeps that entry's ID. Skip `deprecated` and
   `superseded-by` entries; they were retired on purpose. Every other requirement
-  is **provisional**: number it from `bash .claude/scripts/registry.sh next-id tr
+  is **provisional**: number it from `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh next-id tr
   <system>` onwards, so it cannot reuse a registered or retired ID, and mark it
   `(provisional)`. `/architecture-review` registers it and gives the permanent ID.
 - **Registry absent, or `requirements: []`:** every ID is provisional. Say so in

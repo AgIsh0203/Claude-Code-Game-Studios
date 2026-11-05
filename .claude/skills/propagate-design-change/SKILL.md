@@ -3,7 +3,7 @@ name: propagate-design-change
 description: "Finds architecture decisions (ADRs) made stale by a changed GDD and walks through resolving each. Use when the user changed a number or rule in a GDD and asks which ADRs or architecture decisions are now out of date."
 argument-hint: "[path/to/changed-gdd.md] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/propagate-design-change/../../hooks/yaml-helper.sh" resolve_config *), Bash(git diff *), Bash(git log *), Bash(bash .claude/scripts/adr-status.sh*), Bash(bash .claude/scripts/md-section.sh *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/propagate-design-change/../../hooks/yaml-helper.sh" resolve_config *), Bash(git diff *), Bash(git log *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,automation_always_ask,workflow,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
-block → defaults in `.claude/docs/config-resolution.md`.
+block → defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 Ask with the question tool. Without one, list the options numbered and end your turn
 to wait. A skipped or dismissed question is not an answer: ask again in plain text.
@@ -25,7 +25,7 @@ with what the GDD says now, and walks the user through each one.
 
 **Example:** `/propagate-design-change docs/design/gdd/combat-system.md`
 
-Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
+Asks follow `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` (collaborative always asks, guided
 asks on major choices, autonomous logs and goes on; `automation_always_ask`
 categories always ask: an ADR impact here is `schema_changes` and
 `architecture_decisions`).
@@ -65,7 +65,7 @@ From the hunks: the `@@` headers name the section each change sits in, so the
 changed-section list comes from the diff itself. A section with no hunk is unchanged
 by construction. Read the surrounding section only when a hunk cannot be understood
 alone (a changed number whose meaning depends on the rule above it), and then only
-that section: `bash .claude/scripts/md-section.sh extract docs/design/gdd/[file].md "[Section]"`.
+that section: `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh extract docs/design/gdd/[file].md "[Section]"`.
 
 ## Phase 3: The change summary
 
@@ -92,7 +92,7 @@ disagree. List them under "Downstream GDDs to re-check".
 
 ## Phase 4: The ADRs in scope
 
-`bash .claude/scripts/adr-status.sh` lists every ADR with its status, layer and
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh` lists every ADR with its status, layer and
 missing sections.
 
 - **`full`:** every ADR.
@@ -107,7 +107,7 @@ check." Stop.
 **Which ones reference this GDD.** Without reading whole ADRs:
 
 1. each ADR's GDD Requirements Addressed section
-   (`bash .claude/scripts/md-section.sh extract <adr> "GDD Requirements Addressed"`),
+   (`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh extract <adr> "GDD Requirements Addressed"`),
    for rows naming the changed GDD;
 2. a search of the ADRs for the changed GDD's file name, which catches an ADR that
    cites it in prose without a table row.
@@ -184,7 +184,7 @@ ADRs referencing this GDD: [M]
 **The technical review.** Read the `review_gate` line above. `skill-gates=skip`
 (solo or lean): no agent; note `TD-CHANGE-IMPACT skipped — [Solo | Lean] mode`.
 `skill-gates=run`: hand the review to the `technical-director` agent with gate
-**TD-CHANGE-IMPACT** (`.claude/docs/director-gates/td-change-impact.md`; the agent
+**TD-CHANGE-IMPACT** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/td-change-impact.md`; the agent
 reads it itself). Brief:
 
 - **Objective:** check the impact report before the user acts on it.
@@ -202,7 +202,7 @@ Act on the verdict:
   on?" Options: Revise the impact assessment / Accept with the noted concerns /
   Discuss further.
 - **REJECT:** do not go to Phase 7; analyse the impact again first.
-- **NOT ASSESSED:** it is not an approval (`.claude/docs/director-gates.md`). Name
+- **NOT ASSESSED:** it is not an approval (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`). Name
   what was missing, then supply it and run the review again; or, when the user
   chooses to go on without it, go to Phase 7 and state `TD-CHANGE-IMPACT: NOT
   ASSESSED — [input]` in the report and the final verdict line.
@@ -221,7 +221,7 @@ For each ADR marked Needs Review or Likely Superseded, one at a time, ask: "ADR-
 replace only the body of its `## Status` section:
 
 ```
-bash .claude/scripts/md-section.sh replace docs/architecture/[adr-file].md "Status" <<'EOF'
+bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh replace docs/architecture/[adr-file].md "Status" <<'EOF'
 Superseded — replacement pending (see docs/architecture/change-impact-[date]-[system-slug].md)
 EOF
 ```

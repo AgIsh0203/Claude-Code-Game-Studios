@@ -3,7 +3,7 @@ name: onboard
 description: "Onboarding doc for a new contributor or agent — project state, conventions, priorities relevant to the specified role."
 argument-hint: "[role|area]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/onboard/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/onboard/../../hooks/yaml-helper.sh" resolve_config *)
 model: haiku
 ---
 
@@ -13,7 +13,7 @@ model: haiku
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -52,15 +52,15 @@ the two happened — a reader cannot tell from a green result.
 
 Read CLAUDE.md for project overview and standards.
 
-Read the relevant agent definition from `.claude/agents/` if a specific role is specified.
+Read the relevant agent definition from `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/` if a specific role is specified.
 
-`CLAUDE.md` and `.claude/agents/` ship with the framework — no skill creates them. If either is missing, report it as missing from the install.
+`CLAUDE.md` and `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/` ship with the framework — no skill creates them. If either is missing, report it as missing from the install.
 
 ---
 
 ## Phase 2: Scan Relevant Area
 
-- For programmers: scan the code root (resolve per `.claude/docs/code-root-resolution.md`) for architecture, patterns, key files. An unresolved root means the scan did not run: the sections it feeds read `NOT ASSESSED — code root unresolved`, never a guess at `src/`
+- For programmers: scan the code root (resolve per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`) for architecture, patterns, key files. An unresolved root means the scan did not run: the sections it feeds read `NOT ASSESSED — code root unresolved`, never a guess at `src/`
 - For designers: scan `docs/design/` for existing design documents
 - For narrative: scan `docs/story/` for world-building and story docs
 - For QA: scan `tests/` for existing test coverage (`/test-setup` creates it)

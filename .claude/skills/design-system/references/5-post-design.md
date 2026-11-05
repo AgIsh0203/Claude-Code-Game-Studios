@@ -60,7 +60,7 @@ Read over 40 KB is refused. Verify:
 - `lean` → skip (not a PHASE-GATE). Note: "CD-GDD-ALIGN skipped — Lean mode." Proceed to Step 5b.
 - `full` → spawn as normal.
 
-Before finalizing the GDD, spawn `creative-director` via `Agent` using gate **CD-GDD-ALIGN** (`.claude/docs/director-gates/cd-gdd-align.md`).
+Before finalizing the GDD, spawn `creative-director` via `Agent` using gate **CD-GDD-ALIGN** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/cd-gdd-align.md`).
 
 Pass: completed GDD file path, game pillars (from `docs/GDD.md` or `docs/GDD.md`; if there is neither, the pitch and "what they feel" line of `docs/GDD.md`), MDA aesthetics target, and the GDD's Player Fantasy section — or, when this tier did not author one, say so.
 
@@ -127,7 +127,7 @@ there are no `referenced_by` arrays to merge.)
 If yes: append new entries and update `referenced_by` arrays. Never modify
 existing `value` / attribute fields without surfacing it as a conflict first.
 
-After writing, run `bash .claude/scripts/registry.sh validate` and fix every row
+After writing, run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh validate` and fix every row
 about an entry this write added or changed (a DUPLICATE, STATUS or LAYOUT row,
 or a PATH_MISSING row for a path it named) before you go on; name rows about
 other entries to the user rather than fixing them unasked. If the script is

@@ -27,7 +27,7 @@ mode) and Read those ranges with offset and limit.
 >
 > **This callout keys on the PROJECT tier, not this system's effective tier.**
 > The two differ whenever `workflow_overrides.system_overrides` bumps one system
-> above a `minimal` project — the configuration `.claude/docs/settings-guidance.md`
+> above a `minimal` project — the configuration `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/settings-guidance.md`
 > advertises as the reason the override exists ("bump one deep system"). Those two
 > files are absent because the *project* is `minimal`; raising *this system* to
 > `standard` or `full` does not create them. So on a `minimal` project, take this
@@ -71,7 +71,7 @@ mode) and Read those ranges with offset and limit.
 - **Entity registry**: If `docs/design/registry/entities.yaml` exists, list the
   entries this system owns and the entries that reference it, each whole:
   ```
-  bash .claude/scripts/registry.sh slice docs/design/gdd/[system-name].md
+  bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh slice docs/design/gdd/[system-name].md
   ```
   `referenced_by:` is a block list (the key and its paths are on separate
   lines), so a grep for the path finds the line but not the entry that owns

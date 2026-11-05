@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # session-state.sh — read and write .claude/ccgs/session-state/active.md in the
-# layout .claude/docs/templates/session-state.md defines, so a skill hands
+# layout C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/session-state.md defines, so a skill hands
 # over the words and this script places them.
 #
 # Replaces the hand-run checkpoint steps in /story-done and /dev-story.
@@ -11,7 +11,7 @@
 # the same words inside a sentence, as in the template's own HOW comment, are
 # not a marker.
 #
-# Usage: bash .claude/scripts/session-state.sh <command> [--root DIR]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/session-state.sh <command> [--root DIR]
 #   show        print the STATUS block (when there is one) through the end of
 #               the CHECKPOINT block
 #   checkpoint  replace what is between the CHECKPOINT markers with stdin.
@@ -49,7 +49,7 @@ LC_ALL=C
 export LC_ALL
 
 STATE=".claude/ccgs/session-state/active.md"
-TEMPLATE=".claude/docs/templates/session-state.md"
+TEMPLATE="C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/session-state.md"
 # The template asks for a checkpoint under ~25 lines because session-start.sh
 # shows it whole in every new session; longer is allowed but warned about.
 MAX_LINES=25
@@ -74,7 +74,7 @@ done
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "session-state: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$(dirname "$0")/../.." 2>/dev/null || { echo "session-state: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "session-state: cannot reach the repo root" >&2; exit 1; }
 fi
 
 # locate FILE — print "so sc co cc": the line numbers of the STATUS opener and

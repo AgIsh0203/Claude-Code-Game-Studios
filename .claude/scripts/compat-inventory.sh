@@ -14,18 +14,18 @@
 # run. Whether a construct should stay, move to frontmatter or be reworded is the
 # reader's call.
 #
-# Usage: bash .claude/scripts/compat-inventory.sh [--skill <name> | --agent <name>] [project-root]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/compat-inventory.sh [--skill <name> | --agent <name>] [project-root]
 #   --skill <name>  one skill's files only (SKILL.md and everything in its folder)
 #   --agent <name>  one agent file only
 #   project-root    defaults to the repo root (the test suite passes fixtures)
 #
 # Files read, in groups:
-#   skills        .claude/skills/<name>/**/*.md
-#   agents        .claude/agents/*.md
+#   skills        C:/Users/ishan/.claude/ccgs-studio/.claude/skills/<name>/**/*.md
+#   agents        C:/Users/ishan/.claude/ccgs-studio/.claude/agents/*.md
 #   instructions  CLAUDE.md, CLAUDE.local.md, .claude/CLAUDE.md, <top-level folder>/CLAUDE.md,
 #                 .claude/rules/*.md
-#   docs          .claude/docs/**/*.md
-#   hooks         .claude/hooks/*.sh and .claude/statusline.sh
+#   docs          C:/Users/ishan/.claude/ccgs-studio/.claude/docs/**/*.md
+#   hooks         C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/*.sh and .claude/statusline.sh
 #   settings      .claude/settings.json (settings.local.json is personal and not read)
 #
 # Output:
@@ -89,7 +89,7 @@ fi
 if [ -n "$ROOT_ARG" ]; then
   ROOT="$ROOT_ARG"
 else
-  cd "$(dirname "$0")/../.." || { echo "compat-inventory: cannot reach repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" || { echo "compat-inventory: cannot reach repo root" >&2; exit 1; }
   # `pwd -W` (Git Bash) gives C:/... so the Windows Python below can open it.
   ROOT="$(pwd -W 2>/dev/null || pwd)"
 fi
@@ -198,7 +198,7 @@ def read_lines(path):
 
 
 def rel(path):
-    return os.path.relpath(path, root).replace(os.sep, "/")
+    return (os.path.relpath(path, root) if os.path.splitdrive(os.path.abspath(path))[0].lower() == os.path.splitdrive(os.path.abspath(root))[0].lower() else os.path.abspath(path)).replace(os.sep, "/")
 
 
 def md_files(folder):
@@ -322,7 +322,7 @@ def import_targets(path, lines):
     return out
 
 
-claude = os.path.join(root, ".claude")
+claude = "C:/Users/ishan/.claude/ccgs-studio/.claude"  # the framework lives in the ccgs plugin
 
 # --- groups ----------------------------------------------------------------
 skill_dir = os.path.join(claude, "skills")
@@ -505,9 +505,9 @@ print("FOUND_LINES: %d in %d of %d files read" % (len(found), len({f[2] for f in
 if scope_note:
     print(scope_note)
 if skill_filter and skill_filter not in skills:
-    print("NOT FOUND: skill %s is not a folder in .claude/skills/" % skill_filter)
+    print("NOT FOUND: skill %s is not a folder in C:/Users/ishan/.claude/ccgs-studio/.claude/skills/" % skill_filter)
 if agent_filter and agent_filter not in agents:
-    print("NOT FOUND: agent %s is not a file in .claude/agents/" % agent_filter)
+    print("NOT FOUND: agent %s is not a file in C:/Users/ishan/.claude/ccgs-studio/.claude/agents/" % agent_filter)
 for note in notes:
     print("NOTE: %s" % note)
 

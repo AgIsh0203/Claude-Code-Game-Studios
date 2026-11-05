@@ -7,12 +7,12 @@
 # Replaces the hand-run test command, `timeout`, exit-code reading and "looks
 # like success and is not" cases.
 #
-# OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/"). The
+# OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/"). The
 # `rule` row says which row of the ladder the exit code and output fall on, in
 # plain words; PASS, FAIL, NOT ASSESSED and "PASS WITH WARNINGS" stay with
 # /smoke-check, which also decides what an unmatched exit code means.
 #
-# Usage: bash .claude/scripts/test-run.sh <engine> [options]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/test-run.sh <engine> [options]
 #   <engine>            godot, unity or unreal (any case)
 #   --cmd COMMAND       the test command to run, instead of .claude/ccgs/project.yaml's
 #                       commands.test or the engine's default
@@ -134,7 +134,7 @@ case "$TIMEOUT" in ''|*[!0-9]*) usage "--timeout is whole seconds" ;; esac
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "test-run: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "test-run: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "test-run: cannot reach the repo root" >&2; exit 1; }
 fi
 [ -f "$HERE/yaml-get.awk" ] || { echo "test-run: $HERE/yaml-get.awk is missing" >&2; exit 1; }
 yget() { [ -f .claude/ccgs/project.yaml ] && YG_PATH="$1" awk -f "$HERE/yaml-get.awk" .claude/ccgs/project.yaml; }

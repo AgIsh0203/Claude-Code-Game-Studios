@@ -43,7 +43,7 @@ None. `/sprint-status` is a read-only reporting skill; no gates are invoked.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -257,7 +257,7 @@ Fixture defaults.
 - [ ] Presents the story status table before the Burndown verdict
 - [ ] Does not ask for approval
 - [ ] Ends with at most one recommended next step
-- [ ] Declares `model: haiku` (when a declared tier is used: `.claude/docs/model-tiers.md`)
+- [ ] Declares `model: haiku` (when a declared tier is used: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/model-tiers.md`)
 
 ---
 

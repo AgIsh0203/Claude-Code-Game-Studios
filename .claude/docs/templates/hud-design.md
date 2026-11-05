@@ -1,6 +1,6 @@
 # HUD Design
 
-> Authoring guidance: .claude/docs/templates/guidance/hud-design-guide.md (load per-section as you author — do not read entirely).
+> Authoring guidance: C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/guidance/hud-design-guide.md (load per-section as you author — do not read entirely).
 
 > **Status**: [In Design | In Review | Approved | Implemented]
 > **Author**: [user + ux-designer]

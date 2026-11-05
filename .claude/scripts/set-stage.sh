@@ -10,7 +10,7 @@
 # CONCERNS whose risks the user accepted) with the user's yes; this script
 # never decides that and never prompts. Run it after the yes.
 #
-# Usage: bash .claude/scripts/set-stage.sh <Stage> [--dry-run] [--root DIR]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/set-stage.sh <Stage> [--dry-run] [--root DIR]
 #   <Stage>     one of: Concept, Systems Design, Technical Setup,
 #               Pre-Production, Production, Polish, Release (quote the
 #               two-word names)
@@ -83,7 +83,7 @@ fi
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "set-stage: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "set-stage: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "set-stage: cannot reach the repo root" >&2; exit 1; }
 fi
 [ -f "$HERE/project-state.sh" ] || { echo "set-stage: $HERE/project-state.sh is missing; cannot read the stage back" >&2; exit 1; }
 
@@ -110,7 +110,7 @@ if [ ! -f .claude/ccgs/project.yaml ]; then
   # /gate-check's minimal template (references/6-update-stage.md, 6.1).
   {
     echo "# CCGS project configuration — single source of truth for project settings."
-    echo "# Schema: grep the \`## <key>\` section of .claude/docs/effects-map.md —"
+    echo "# Schema: grep the \`## <key>\` section of C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md —"
     echo "# it is ~31k tokens whole, ~900 per section. Do not open it entire."
     echo ""
     echo "schema_version: 1"

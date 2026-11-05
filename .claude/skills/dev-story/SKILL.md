@@ -4,7 +4,7 @@ description: "Implements one story in code with tests, following its ADRs. Use w
 argument-hint: "[story-path]"
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/dev-story/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/session-state.sh *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(godot *), Bash(mkdir -p docs/production/qa/evidence/*)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/dev-story/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/session-state.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh hash *), Bash(godot *), Bash(mkdir -p docs/production/qa/evidence/*)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,qa.level,gate_level,engine_values,specialists,perf_budgets,system_overrides`
 
 Resolved above — use as-is. No block → defaults in
-`.claude/docs/config-resolution.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 Ask with the question tool. Without one, list the options numbered and end your turn
 to wait. A skipped or dismissed question is not an answer: ask again in plain text.
@@ -27,12 +27,12 @@ result parses and looks right, and hands off.
 **Writes** (each after an ask that names it): the story's `Status`, `Last Updated`
 and `## Files`, and its `docs/production/sprint-status.yaml` entry. The programmer agents
 write the code and tests under the code root and test root
-(`.claude/docs/code-root-resolution.md`). The session checkpoint and the evidence
+(`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`). The session checkpoint and the evidence
 stamp are written without an ask.
 **Next:** `/story-done [story-path]`; at `standard` and `full`, `/gamedev-code-review
 [files]` first.
 
-Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
+Asks follow `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` (collaborative always asks, guided
 asks on major choices, autonomous logs and goes on; `automation_always_ask`
 categories always ask).
 
@@ -53,11 +53,11 @@ Checklist (copy it and tick as you go):
 The text typed after the skill name is the story path. With nothing typed, take the
 story the checkpoint in `.claude/ccgs/session-state/active.md` names and confirm it:
 "Continuing work on [title] — is that correct?" None there: ask "Which story are we
-implementing?" with the `TODO` rows of `bash .claude/scripts/story-facts.sh --all`
+implementing?" with the `TODO` rows of `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh --all`
 as options. No story file under `docs/production/epics/` at all: stop with
 "No stories found in `docs/production/epics/` — run `/create-stories [epic-slug]` to make them (at `standard` and `full`, run `/create-epics` first if there is no epic yet)."
 
-`bash .claude/scripts/story-facts.sh <story-path>` gives its type, layer, TR-IDs,
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh <story-path>` gives its type, layer, TR-IDs,
 ADRs and dependencies. Then read the story in full.
 
 **Tier.** `workflow` for the story's system, keyed on the GDD filename stem of its
@@ -76,7 +76,7 @@ project value. Say it in your first reply: `Tier: workflow [value]`. That value,
 
 A story whose ADR field reads `N/A — [reason]` names none.
 
-**The ADR.** `bash .claude/scripts/adr-status.sh <ADR id>` gives its status and
+**The ADR.** `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/adr-status.sh <ADR id>` gives its status and
 `version`. Stop messages: `Proposed` — "ADR-NNNN is still Proposed. Accept it with
 `/architecture-decision accept ADR-NNNN` before implementing." `Deprecated` or
 `Superseded` — "ADR-NNNN is [status]; point the story at [successor] (edit its ADR
@@ -101,7 +101,7 @@ Never treat an absent stamp as a stale one: unknown falls back to the story, and
 story's. They differ: read `references/version-mismatch.md`.
 
 **Dependencies.** For each path on the story's Depends on line,
-`bash .claude/scripts/story-facts.sh <path>`. Not `COMPLETE`: ask "[this story]
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/story-facts.sh <path>`. Not `COMPLETE`: ask "[this story]
 depends on [dependency], which is [status], not Complete. How do you want to go
 on?" Options: Proceed anyway — I accept the risk / Stop — I'll finish the
 dependency first / It is done, the status was never updated — mark it Complete.
@@ -119,7 +119,7 @@ and at the end lists the files changed under its `## Files`." Leave the sprint f
 out of the question when it does not exist. Put what you will do next before the
 question: the question is the last thing in the reply. On yes:
 
-- `bash .claude/scripts/md-section.sh set-field <story> Status "In Progress"`, then
+- `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh set-field <story> Status "In Progress"`, then
   `set-field <story> "Last Updated" <YYYY-MM-DD> --after Status`. At `minimal` the
   story file is the only record of progress.
 - `docs/production/sprint-status.yaml`: this story's entry gets `status: in-progress` and
@@ -211,7 +211,7 @@ over it, and leave the status as it is.
 names that is not on disk is a failed step, however fluent the report: resume the agent and name the missing
 file. A report of BLOCKED, an error, or "cannot complete": say so at once, go no
 further past what it blocks, and give a partial report
-(`.claude/docs/error-recovery-protocol.md`). Scope too large: split it with
+(`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/error-recovery-protocol.md`). Scope too large: split it with
 `/create-stories`. The ADR and the story disagree: report the conflict; never guess.
 
 **Is the test there?** At `qa.level: standard` and `full`, for a Logic or Integration
@@ -234,12 +234,12 @@ command, the exit code and any error lines:
 - **No engine executable:** `parse NOT VERIFIED — engine binary not available`.
   Never infer from reading the code that it parses.
 
-**Run it and look** (`.claude/docs/run-and-observe.md`). For every story a player
+**Run it and look** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/run-and-observe.md`). For every story a player
 can see (every Visual/Feel and UI story, and any other with a surface): launch
 straight into the scene the story touched, capture a screenshot straight into
 `docs/production/qa/evidence/[story-slug]/` (`[story-slug]` is the story file's name
 without `.md`; `mkdir -p` the folder first), stamp it with
-`bash .claude/scripts/review-receipts.sh hash <each changed file> > docs/production/qa/evidence/[story-slug]/stamp.txt`,
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh hash <each changed file> > docs/production/qa/evidence/[story-slug]/stamp.txt`,
 then open the image and compare it with the criteria. Not waived at `qa.level:
 minimal`. Report exactly one line, plain text starting `Run result:` (no bold:
 `/story-done` reads it as written):
@@ -285,13 +285,13 @@ Visual/Feel, the sign-off in `docs/production/qa/evidence/[story-slug]-evidence.
 
 **`## Files`.** Replace the section's body with the list of changed code and test
 files, one per line, as the Phase 3 ask said:
-`bash .claude/scripts/md-section.sh replace <story> "Files"` with the list on stdin.
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/md-section.sh replace <story> "Files"` with the list on stdin.
 A story with no such section: add `## Files` and the list at its end, with a file
 edit, never a shell command (a shell write skips the project's write checks). Skip
 this when the Phase 3 ask was declined.
 
 **The checkpoint**, on every outcome. Pipe the block to
-`bash .claude/scripts/session-state.sh checkpoint`, which replaces the old one:
+`bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/session-state.sh checkpoint`, which replaces the old one:
 
 ```
 **Updated:** [date]

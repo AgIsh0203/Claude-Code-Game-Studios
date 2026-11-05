@@ -21,7 +21,7 @@
 
   ROTATION. When the narrative below grows past ~200 lines, move it to
   `.claude/ccgs/session-logs/` and start it fresh:
-      bash .claude/scripts/rotate-session-state.sh
+      bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/rotate-session-state.sh
   Nothing is lost — and the commit history already records most of what the
   narrative repeats.
 -->

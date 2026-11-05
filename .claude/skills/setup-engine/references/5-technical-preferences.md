@@ -97,7 +97,7 @@ Example filled section:
   NUnit for Unity, Automation Spec for Unreal — and ask before adding.
   > **Must match `commands.test` in Section 5.5.1, which writes gdUnit4's own
   > runner (`res://addons/gdUnit4/bin/GdUnitCmdTool.gd`), and
-  > `.claude/docs/coding-standards.md`, which names the same runner.** Naming GUT
+  > `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md`, which names the same runner.** Naming GUT
   > here would have the skill recommend one framework and configure another in the
   > same run.
 - **Forbidden Patterns**: Leave as placeholder — do NOT pre-populate.

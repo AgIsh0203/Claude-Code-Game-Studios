@@ -1,0 +1,8 @@
+{
+  "name": "ccgs",
+  "version": "1.2.0-projecti.1",
+  "description": "Claude Code Game Studios (Donchitos/Claude-Code-Game-Studios v1.2.0), adapted for ProjectI and run as a local plugin: skills, agents, hooks, helper scripts and docs. Per-project state stays in each project's .claude/ccgs/.",
+  "author": { "name": "Donchitos; ProjectI changes by AgIsh0203" },
+  "homepage": "https://github.com/AgIsh0203/Claude-Code-Game-Studios",
+  "license": "MIT"
+}

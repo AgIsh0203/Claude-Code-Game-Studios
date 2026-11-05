@@ -57,7 +57,7 @@ advancement is `/gate-check`.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -159,7 +159,7 @@ Fixture defaults.
 **Expected behavior:**
 1. The code root is unresolved, so no scan runs
 2. Codebase Health reads `NOT ASSESSED — code root unresolved`
-   (`.claude/docs/code-root-resolution.md`), not `0` TODO/FIXME/HACK
+   (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`), not `0` TODO/FIXME/HACK
 3. The test line reads `Test results: NOT ASSESSED — no test output or CI logs
    found` rather than being omitted
 4. The rest of the checklist is still generated and offered for writing

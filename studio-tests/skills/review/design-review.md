@@ -7,7 +7,7 @@ design standard (Overview, Player Fantasy, Detailed Rules, Formulas, Edge
 Cases, Dependencies, Tuning Knobs, Acceptance Criteria). Which sections are
 REQUIRED depends on the workflow tier resolved for that system: all 8 at
 `full`; 5 at `standard` (plus Formulas when the system defines numeric rules).
-It gathers section presence with `.claude/scripts/gdd-structure-check.sh`,
+It gathers section presence with `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh`,
 validates the declared dependency graph, checks internal consistency,
 implementability and cross-system fit, and produces a verdict of APPROVED,
 NEEDS REVISION, MAJOR REVISION NEEDED, or NOT ASSESSED.
@@ -37,7 +37,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -60,7 +60,7 @@ Fixture defaults.
 **Expected behavior:**
 1. Freshness check (`review-receipts.sh check …`) finds no receipt → full review
 2. Skill reads the target document in full and reads CLAUDE.md
-3. Skill runs `bash .claude/scripts/gdd-structure-check.sh docs/design/gdd/light-manipulation.md`
+3. Skill runs `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh docs/design/gdd/light-manipulation.md`
 4. Skill Globs `docs/design/gdd/` for each declared dependency
 5. Skill checks internal consistency, implementability and cross-system fit
 6. No agents are spawned (lean)

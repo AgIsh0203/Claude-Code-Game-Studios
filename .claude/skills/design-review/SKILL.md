@@ -3,7 +3,7 @@ name: design-review
 description: "Reviews one design document for completeness, internal consistency, implementability, and design standards. Before handing to programmers."
 argument-hint: "[path-to-design-doc] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/design-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(bash .claude/scripts/gdd-structure-check.sh *), Bash(grep -E '^  - name:' docs/design/registry/entities.yaml), Bash(grep -n -i -E *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/design-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh check *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh hash *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh *), Bash(grep -E '^  - name:' docs/design/registry/entities.yaml), Bash(grep -n -i -E *)
 model: sonnet
 ---
 
@@ -15,7 +15,7 @@ Resolved above — use as-is; `--review` overrides `review_mode`. `--depth` is
 the pre-1.1 name for the same flag: treat `--depth <mode>` exactly as
 `--review <mode>`, and say once that it was renamed. Given both, `--review`
 wins and `--depth` is ignored — say so. No block → defaults in
-`.claude/docs/config-resolution.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Design Review
 
@@ -23,10 +23,10 @@ wins and `--depth` is ignored — say so. No block → defaults in
 ## Phase 0: Parse Arguments
 
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -55,7 +55,7 @@ Resolved mode controls how thorough this review is:
 price and reproduces the same verdict.** Run:
 
 ```
-Bash: bash .claude/scripts/review-receipts.sh check "docs/design/gdd/reviews/[doc-name]-review-log.md" "[target-doc-path]" "docs/design/registry/entities.yaml" ".claude/skills/design-review/SKILL.md"
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh check "docs/design/gdd/reviews/[doc-name]-review-log.md" "[target-doc-path]" "docs/design/registry/entities.yaml" "C:/Users/ishan/.claude/ccgs-studio/.claude/skills/design-review/SKILL.md"
 ```
 
 The registry is in the check because this review consults it for
@@ -138,7 +138,7 @@ everything "implied". Do not glob-read all of `docs/design/gdd/`.
 **Step 2a — gather section presence deterministically (no document read):**
 
 ```
-Bash: bash .claude/scripts/gdd-structure-check.sh [target-doc-path]
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/gdd-structure-check.sh [target-doc-path]
 ```
 
 It prints a `PRESENT:` list and, when applicable, an `ABSENT:` list and a
@@ -429,7 +429,7 @@ Prior verdict resolved: [Yes / No / First review]
 Findings:
 - [BLOCKING] [section]: [one-line finding]
 - [RECOMMENDED] [section]: [one-line finding]
-[output of: Bash: bash .claude/scripts/review-receipts.sh hash "[target-doc-path]" "docs/design/registry/entities.yaml" ".claude/skills/design-review/SKILL.md" [every other file this review read for cross-document facts: the related GDDs in docs/design/gdd/, docs/GDD.md or docs/GDD.md, the docs/story/ files] — a file that does not exist prints `not stamped, no such file` and is left out]
+[output of: Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh hash "[target-doc-path]" "docs/design/registry/entities.yaml" "C:/Users/ishan/.claude/ccgs-studio/.claude/skills/design-review/SKILL.md" [every other file this review read for cross-document facts: the related GDDs in docs/design/gdd/, docs/GDD.md or docs/GDD.md, the docs/story/ files] — a file that does not exist prints `not stamped, no such file` and is left out]
 ```
 
 Findings rules: one line per finding, named by the section it lives in;

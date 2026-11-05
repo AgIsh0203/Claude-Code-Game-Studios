@@ -3,7 +3,7 @@ name: start
 description: "Guides a first-time user through onboarding and picks the right workflow. Use when the user is new, just cloned or installed the studio, has no idea or engine yet, asks where to begin, or wants to bring in an existing game."
 argument-hint: "[no arguments]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, AskUserQuestion, Bash(bash .claude/scripts/project-state.sh*), Bash(bash .claude/scripts/set-stage.sh *), Bash(bash .claude/scripts/config-set.sh *)
+allowed-tools: Read, Glob, Grep, AskUserQuestion, Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/project-state.sh*), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/set-stage.sh *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/config-set.sh *)
 model: sonnet
 ---
 
@@ -28,12 +28,12 @@ question is not an answer: ask again in plain text.
 
 The questions in Phases 2, 4 and 5 shape the project, so they are asked in every automation mode.
 The engine is not one of them: `/setup-engine` chooses it. Phase 6's last question follows a
-`modes.automation` already in `.claude/ccgs/project.yaml`, per `.claude/docs/automation-modes.md`; with none
+`modes.automation` already in `.claude/ccgs/project.yaml`, per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`; with none
 set, ask it.
 
 ## Phase 1: Read the project
 
-Run `bash .claude/scripts/project-state.sh` and keep its rows. Do not show them yet; they check
+Run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/project-state.sh` and keep its rows. Do not show them yet; they check
 the user's answer in Phase 2.
 
 | Row | Use |
@@ -105,7 +105,7 @@ Work out two values.
 
 **Rigor.** If `modes.rigor` is already set in `.claude/ccgs/project.yaml`, keep it and say so. Otherwise infer
 it from what the user said in Phases 2 and 3, using the signals in
-`.claude/docs/settings-guidance.md` §3:
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/settings-guidance.md` §3:
 
 | The user's words mention | Rigor |
 |---|---|
@@ -132,8 +132,8 @@ Then ask with the question tool: "Save these to `.claude/ccgs/project.yaml` (and
 `.claude/ccgs/stage.txt`)?" Options: `Save them` / `Don't save`. Ask no question about the rigor
 itself: the card shows it, and `/settings` changes it.
 
-- **Save them:** run `bash .claude/scripts/set-stage.sh "[stage]"`, then, only when rigor was not
-  already set, `bash .claude/scripts/config-set.sh modes.rigor [value]`. Check the read-back rows
+- **Save them:** run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/set-stage.sh "[stage]"`, then, only when rigor was not
+  already set, `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/config-set.sh modes.rigor [value]`. Check the read-back rows
   match. Say: "Saved. Rigor `[value]` sets six other settings; `/settings` shows them and changes
   any of them."
 - **Don't save**, or anything other than an explicit yes: write nothing, keep the values for this
@@ -153,7 +153,7 @@ If `modes.automation` is already set, say "Automation is `[value]`" and go on. O
   most tokens.
 
 Mapping: `Guided` → `guided`, `Collaborative` → `collaborative`, `Autonomous` → `autonomous`. The
-pick is the consent to write it: run `bash .claude/scripts/config-set.sh modes.automation [value]`,
+pick is the consent to write it: run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/config-set.sh modes.automation [value]`,
 unless the Phase 4 save was declined (then say it was not saved).
 
 ## Phase 6: Show the path

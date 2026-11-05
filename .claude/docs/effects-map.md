@@ -9,7 +9,7 @@
 > **So opening it whole costs many times what you need.** To look up a setting:
 >
 > ```
-> Grep pattern="^## modes.review_mode" path=".claude/docs/effects-map.md" -A 40
+> Grep pattern="^## modes.review_mode" path="C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md" -A 40
 > ```
 >
 > Read the section for your key and stop. The same rule the skills already apply
@@ -459,7 +459,7 @@ pipeline's own review steps run in every mode.
 `/start` asks that sets the six knobs below
 **Values:** `minimal` | `standard` | `full`
 **Default:** `minimal` — see the rationale block above `_yaml_helper_defaults`
-in `.claude/hooks/yaml-helper.sh`. Short version: the heavier tier costs more to
+in `C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh`. Short version: the heavier tier costs more to
 reach working code without producing a better result.
 **Set by:** `/start` (Phase 4: inferred from the user's description, shown, saved on a yes), `/settings`
 **Read by:** nothing directly — it is read *through* the six knobs it supplies
@@ -729,7 +729,7 @@ has a value that opts out of a requirement the workflow level imposes.
 > This rule does not extend to it. On a
 > `full` project, `system_overrides.inventory: minimal` really does drop that
 > system's required sections to zero. Intended — see
-> `.claude/docs/workflow-modes.md § workflow_overrides`. Stating the additive
+> `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md § workflow_overrides`. Stating the additive
 > rule over the whole key is wrong: the guarantee never held for
 > `system_overrides`, so do not rely on it as a safety net.
 
@@ -1628,7 +1628,7 @@ validates and what artifacts are expected to exist
 > auto-detection. When `/gate-check` advances the stage it dual-writes BOTH
 > `.claude/ccgs/project.yaml` and `.claude/ccgs/stage.txt`, so hooks that have not migrated
 > still resolve correctly. `/start` also dual-writes the initial stage. The
-> legacy `.txt` file is retired at `.claude/scripts/migrate-v1-config.sh --finalize`.
+> legacy `.txt` file is retired at `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/migrate-v1-config.sh --finalize`.
 
 ---
 
@@ -1819,7 +1819,7 @@ keys are inside the locked file, not a local override).
 |-------|---------|
 | `build` | Full project build for CI or release. `/smoke-check` runs it only as the WAIVED-path build check when `commands.smoke` is unset; `project-coherence.sh` (which `/smoke-check` runs first) checks the export preset it names, and `/launch-checklist` only asks whether the build produces a valid artifact. |
 | `test` | Run the full test suite. Run by `/smoke-check` and, narrowed to the affected suite, by `/hotfix`, `/bug-report` (verify mode) and `/day-one-patch`; `project-coherence.sh` checks the runner it names. `/regression-suite` does **not** run it. |
-| `run` | Launch the **game** windowed at a fixed resolution — not the editor. Used by `/dev-story` Phase 6 step 4 to observe the feature and retain a screenshot; see `.claude/docs/run-and-observe.md` for the per-engine capture flags that are appended to it. |
+| `run` | Launch the **game** windowed at a fixed resolution — not the editor. Used by `/dev-story` Phase 6 step 4 to observe the feature and retain a screenshot; see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/run-and-observe.md` for the per-engine capture flags that are appended to it. |
 | `smoke` | Minimal "does it boot?" check. Run by `/dev-story` as the Unity parse check (Phase 6 step 2), and by `/smoke-check` as the build check when `qa.level: minimal` waives tests. |
 
 ---
@@ -1864,7 +1864,7 @@ Users override per-project as needed via `/settings commands.<field>=<value>` or
 | **smoke-check** | Runs `commands.test`, or the engine's default when it is unset; on Unreal it builds the editor target first. Critical path for QA hand-off. |
 | **launch-checklist** | Emits a checklist **item** asking whether the build produces a valid artifact. It does **not** run `commands.build`; the verification is a human step. |
 | **validate-push.sh** | Does **not** read `commands.*`. It warns on pushes to protected branches (`main`/`master`/`release/*`) and runs no build or smoke command — the block path in it is commented out, so it never fails a push. |
-| **dev-story** | Phase 6 step 2 is the parse check: `.claude/scripts/godot-parse-check.gd` on Godot, `commands.smoke` on Unity, the editor-target build on Unreal. Phase 6 step 4 runs `commands.run` — the windowed game launch — to observe the feature and retain a screenshot (`.claude/docs/run-and-observe.md`). |
+| **dev-story** | Phase 6 step 2 is the parse check: `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/godot-parse-check.gd` on Godot, `commands.smoke` on Unity, the editor-target build on Unreal. Phase 6 step 4 runs `commands.run` — the windowed game launch — to observe the feature and retain a screenshot (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/run-and-observe.md`). |
 | **regression-suite** | Maps coverage by **globbing test filenames**. It does **not** invoke `commands.test`, so coverage here means "a test file exists", never "a test passed". |
 
 ---
@@ -1960,7 +1960,7 @@ skeleton-first output files for recovery
 > Skills do not read it: `/dev-story` and `/story-done` update the checkpoint in
 > `active.md` whatever its value.
 
-> **The default is `on`, deliberately.** `.claude/docs/context-management.md`
+> **The default is `on`, deliberately.** `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/context-management.md`
 > tells you to rely on `.claude/ccgs/session-state/active.md` as your
 > crash-recovery checkpoint, so defaulting this off would quietly take away
 > recovery, the session archive and the subagent tally. What `off` saves — the
@@ -2046,7 +2046,7 @@ and resumes at the first `incomplete` section. No `active.md` needed.
 | Skill | Output file | Skeleton written when |
 |-------|-------------|----------------------|
 | **design-system** | `docs/design/gdd/[system].md` | Before Phase 1 (section discussion) |
-| **art-bible** | `docs/design/art/art-bible.md` | From `.claude/docs/templates/art-bible.md`, after asking, when section 1 is approved |
+| **art-bible** | `docs/design/art/art-bible.md` | From `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/art-bible.md`, after asking, when section 1 is approved |
 | **create-architecture** | `docs/architecture/architecture.md` | Not skeleton-first: written once at Phase 7 after its ask (an existing document is updated in place) |
 | **ux-design** | `docs/design/ux/[screen].md` | Before screen discussion |
 | **create-stories** | `docs/production/epics/[epic-slug]/story-NNN-[slug].md` | Not skeleton-first: written in Step 6, after the ask names every file |
@@ -2172,7 +2172,7 @@ the `<!-- CHECKPOINT -->` block; the others append a SESSION EXTRACT.
 **Values:** `on` | `off`; `true` and `false` also work  
 **Default:** `on`  
 **Set by:** `/settings`  
-**Read by:** `validate-read.sh` (PreToolUse Read), through `.claude/scripts/read-guard.sh check`
+**Read by:** `validate-read.sh` (PreToolUse Read), through `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/read-guard.sh check`
 
 > **Priority chain:** `features.read_guard` in `.claude/ccgs/project.local.yaml` →
 > `.claude/ccgs/project.yaml` → default **`on`**.
@@ -2193,7 +2193,7 @@ read is the cost.
 **Values:** a whole number of KB (1 KB = 1,024 bytes)  
 **Default:** `40`  
 **Set by:** `/settings`  
-**Read by:** `validate-read.sh`, through `.claude/scripts/read-guard.sh check`
+**Read by:** `validate-read.sh`, through `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/read-guard.sh check`
 
 > **Priority chain:** `features.read_guard_kb` in `.claude/ccgs/project.local.yaml` →
 > `.claude/ccgs/project.yaml` → default **`40`**. A value that is not a whole number is
@@ -2358,7 +2358,7 @@ and skills read `.claude/ccgs/project.yaml` first; they fall back to the legacy 
 specific key is missing.
 
 Legacy files are deleted only when the user runs
-`.claude/scripts/migrate-v1-config.sh --finalize` (driven by `/adopt`, which
+`C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/migrate-v1-config.sh --finalize` (driven by `/adopt`, which
 detects a v1.0 project automatically at Phase 2g). The cleanup step verifies
 that every legacy file's content has been preserved in `.claude/ccgs/project.yaml` before
 deleting.

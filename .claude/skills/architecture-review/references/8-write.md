@@ -43,7 +43,7 @@ before this run edited them records the old content, and the next run reads
 this run's own edit as `CHANGED`.
 
 ```
-Bash: bash .claude/scripts/review-receipts.sh hash docs/architecture/adr-*.md docs/design/gdd/*.md docs/architecture/tr-registry.yaml docs/architecture/architecture.md docs/engine-reference/[engine]/*.md docs/engine-reference/[engine]/modules/*.md .claude/ccgs/project.yaml .claude/docs/technical-preferences.md docs/consistency-failures.md .claude/skills/architecture-review/SKILL.md .claude/skills/architecture-review/references/*.md
+Bash: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh hash docs/architecture/adr-*.md docs/design/gdd/*.md docs/architecture/tr-registry.yaml docs/architecture/architecture.md docs/engine-reference/[engine]/*.md docs/engine-reference/[engine]/modules/*.md .claude/ccgs/project.yaml .claude/docs/technical-preferences.md docs/consistency-failures.md C:/Users/ishan/.claude/ccgs-studio/.claude/skills/architecture-review/SKILL.md C:/Users/ishan/.claude/ccgs-studio/.claude/skills/architecture-review/references/*.md
 ```
 
 It is the same list as Phase 1a's check, with `[engine]` filled in the same way.
@@ -135,7 +135,7 @@ and keep every entry already in it. Then:
 - **Never** renumber or delete existing entries
 - Update the `last_updated` and `version` fields at the top
 
-After writing, run `bash .claude/scripts/registry.sh validate` and fix every row
+After writing, run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh validate` and fix every row
 about an entry this write added or changed (a DUPLICATE, STATUS or LAYOUT row,
 or a PATH_MISSING row for a path it named) before you go on; name rows about
 other entries to the user rather than fixing them unasked. If the script is

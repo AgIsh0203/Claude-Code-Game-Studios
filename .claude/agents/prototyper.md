@@ -216,10 +216,10 @@ Prototype code must NEVER leak into the production codebase:
 The code is throwaway. The knowledge is permanent.
 
 **Concept prototype** → `docs/prototypes/[name]-concept/REPORT.md`
-Use template: `.claude/docs/templates/prototype-report.md`
+Use template: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/prototype-report.md`
 
 **Vertical slice** → `docs/prototypes/[name]-vertical-slice/REPORT.md`
-Use template: `.claude/docs/templates/vertical-slice-report.md`
+Use template: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/vertical-slice-report.md`
 
 **Spike** → `docs/prototypes/[name]-spike-[date]/SPIKE-NOTE.md`
 No template — brief note: question, YES/NO/PARTIAL result, next action.

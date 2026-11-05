@@ -9,11 +9,11 @@
 
 ## Static Assertions (Structural)
 
-Verified by reading the agent's `.claude/agents/art-director.md` frontmatter:
+Verified by reading the agent's `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/art-director.md` frontmatter:
 
 - [ ] `description:` field is present and domain-specific (references visual identity, art bible, asset standards — not generic)
 - [ ] `tools:` includes Read (which also opens images for visual review) and Write/Edit for the art bible it maintains, and no Bash — `disallowedTools:` blocks it
-- [ ] Model tier is `inherit` — frontmatter `model:` reads exactly `inherit` (tiers: `.claude/docs/model-tiers.md`)
+- [ ] Model tier is `inherit` — frontmatter `model:` reads exactly `inherit` (tiers: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/model-tiers.md`)
 - [ ] Agent definition does not claim authority over UX interaction flows or audio direction
 
 ---

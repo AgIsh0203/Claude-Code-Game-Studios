@@ -68,7 +68,7 @@
 # + quoted strings. PyYAML is NOT required.
 #
 # Usage:
-#   source .claude/hooks/yaml-helper.sh
+#   source C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh
 #   review_mode=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" modes.review_mode)
 #   if [ -z "$review_mode" ]; then
 #     # fall back to legacy .txt
@@ -779,7 +779,7 @@ EOF
 #   DEFAULT IS `on`. A default of `off` would contradict practice: every project
 #   runs with the pipeline active --
 #   and `.claude/ccgs/session-state/active.md` is the documented recovery
-#   checkpoint that `.claude/docs/context-management.md` tells users to rely on.
+#   checkpoint that `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/context-management.md` tells users to rely on.
 #   Shipping `off` as the default would have silently removed crash recovery,
 #   the session archive and the subagent spawn tally from every existing
 #   project. Users who want the checkpoint preview's tokens back (at most ~750
@@ -1420,7 +1420,7 @@ resolve_setting() {
 #   source: engine.name | <legacy path> | detected | unset
 #   exit:   always 0
 #
-# WHY THIS EXISTS. `.claude/docs/directory-structure.md` is explicit that the
+# WHY THIS EXISTS. `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md` is explicit that the
 # code root is not a style preference but a hard toolchain constraint: Unity
 # compiles only `Assets/` and `Packages/`, and UnrealBuildTool discovers modules
 # under `Source/`. `src/` is that table's GODOT row, not a universal path.
@@ -2089,7 +2089,7 @@ hook_warn() {
 # Skills cannot `source` this file in their `` !`cmd` `` bootstrap line. Claude
 # Code permission-checks every injected command before the skill renders, and
 # outside auto mode anything short of "allow" ABORTS the whole invocation --
-# see .claude/docs/config-resolution.md. A `${VAR:-x}` or
+# see C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md. A `${VAR:-x}` or
 # `$( )` in the command fails that check as "Contains expansion" and no grant can
 # approve it; a `source … && resolve_config` compound needs every part approved.
 # `${CLAUDE_SKILL_DIR}` is substituted as text before the check, so one plain
@@ -2118,7 +2118,7 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
     resolve_config)
       shift
       if [ -z "${CLAUDE_PROJECT_DIR:-}" ] || [ ! -f "$CLAUDE_PROJECT_DIR/.claude/ccgs/project.yaml" ]; then
-        _yh_self_root=$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)
+        _yh_self_root=$(cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null && pwd)
         [ -n "$_yh_self_root" ] && CLAUDE_PROJECT_DIR="$_yh_self_root"
       fi
       resolve_config "$@"
@@ -2133,7 +2133,7 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
       # prints its 0 or 1: a caller that appends `; echo $?` to see it builds a
       # compound command that no grant approves.
       _yh_fn="$1"; shift
-      _yh_self_root=$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)
+      _yh_self_root=$(cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null && pwd)
       if [ -z "$_yh_self_root" ] || ! cd "$_yh_self_root"; then
         echo "yaml-helper.sh: cannot find the project root from $0" >&2
         exit 2

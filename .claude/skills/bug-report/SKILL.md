@@ -3,7 +3,7 @@ name: bug-report
 description: "Structured bug report from a description, or analyze code for potential bugs. Reproduction steps, severity."
 argument-hint: "[description] | analyze [path-to-file] | verify [BUG-ID] | close [BUG-ID]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/bug-report/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/skills/bug-report/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -98,7 +98,7 @@ If no argument is provided, ask the user for a bug description before proceeding
 The **Severity** and **Priority** labels use `/bug-triage`'s S and P numbers and
 names, which it parses out of this file. `P4-Won't fix` is its `P4 — Won't fix /
 Deferred` (an accepted risk), not a wishlist. If you change either ladder, change
-`.claude/skills/bug-triage/SKILL.md` too.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/skills/bug-triage/SKILL.md` too.
 
 ---
 
@@ -124,7 +124,7 @@ matches, stop: "No bug [BUG-ID] in `docs/production/qa/bugs/`." Verdict: **BLOCK
 Read that file. Extract the reproduction steps and expected result.
 
 1. **Re-run reproduction steps** — use Grep/Glob to check whether the root cause code path still exists as described. If the fix removed or changed it, note the change.
-2. **Run the related test** — if the bug's system has a test file in the engine's test root (`tests/` Godot, `Assets/Tests/` Unity, `Source/<Module>/Private/Tests/` Unreal — `.claude/docs/directory-structure.md`), run it via Bash with `commands.test` from `.claude/ccgs/project.yaml`, narrowed to the affected suite where the runner allows — never a runner line written from memory, which drops the flags the engine needs (gdUnit4 hangs without `--remote-debug tcp://127.0.0.1:0`) — and report pass/fail. `commands.test` unset → no test ran: name the unset key and go on to step 3.
+2. **Run the related test** — if the bug's system has a test file in the engine's test root (`tests/` Godot, `Assets/Tests/` Unity, `Source/<Module>/Private/Tests/` Unreal — `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md`), run it via Bash with `commands.test` from `.claude/ccgs/project.yaml`, narrowed to the affected suite where the runner allows — never a runner line written from memory, which drops the flags the engine needs (gdUnit4 hangs without `--remote-debug tcp://127.0.0.1:0`) — and report pass/fail. `commands.test` unset → no test ran: name the unset key and go on to step 3.
 3. **Check for regression** — grep the codebase for any new occurrence of the pattern that caused the bug.
 4. **Manual verification** — when no related test ran (none covers the bug — the usual case where `qa.level` waives tests — `commands.test` is unset, or the run did not complete), or the bug's Category is Visual or UI, whose look no automated test checks, ask via `AskUserQuestion`: "Did you play the reproduction steps in [bug file] on a build with the fix? Which build?" —
    `[No longer occurs]` / `[Still occurs]` / `[Not played yet]`.

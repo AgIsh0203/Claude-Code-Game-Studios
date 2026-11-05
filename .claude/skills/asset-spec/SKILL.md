@@ -3,7 +3,7 @@ name: asset-spec
 description: "Per-asset visual specs plus AI generation prompts from GDDs and character profiles. After the art bible."
 argument-hint: "[system:<name> | level:<name> | character:<name>] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/asset-spec/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/asset-spec/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -24,7 +24,7 @@ If no argument is provided, check whether `docs/design/assets/entity-inventory.m
 
 ---
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt). **Note**: actually invoking an external image
 generator (calling an image API) always prompts regardless of
@@ -399,7 +399,7 @@ If any spawned agent returns BLOCKED or cannot complete:
 ## Collaborative Protocol
 
 **Applies in `collaborative` mode (the default).** For `guided` and
-`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+`autonomous` modes, see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` — the rules below
 describe what collaborative mode requires, not universal behavior.
 
 Every phase follows: **Identify → Confirm → Generate → Review → Approve → Write**

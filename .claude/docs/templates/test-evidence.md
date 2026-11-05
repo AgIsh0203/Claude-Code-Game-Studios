@@ -72,7 +72,7 @@ If nothing notable: *No significant observations.*
 A **Visual/Feel** story needs the lead sign-off below — the art-director, or the
 designer who owns the feature — before `/story-done` marks it COMPLETE. A **UI**
 story is closed by the retained screenshot of each screen it touched; a sign-off
-here is welcome but not required (`.claude/docs/coding-standards.md`).
+here is welcome but not required (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md`).
 
 **Solo developers**: you may sign as the lead yourself. The intent is that
 someone deliberately reviews the evidence before marking complete.
@@ -91,6 +91,6 @@ past the sprint review.
 
 ---
 
-*Template: `.claude/docs/templates/test-evidence.md`*
+*Template: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/test-evidence.md`*
 *Used for: Visual/Feel and UI story type evidence records*
 *Location: `docs/production/qa/evidence/[story-slug]-evidence.md`*

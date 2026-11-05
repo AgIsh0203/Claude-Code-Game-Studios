@@ -9,13 +9,13 @@
 # new entry, scoring and prioritizing, reporting, and the "match before
 # appending" check.
 #
-# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in .claude/scripts/").
+# EMITS OBSERVATIONS, NOT A VERDICT (CLAUDE.md, "Helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/").
 # stats prints added and resolved counts and their difference, not the words
 # growing, stable or shrinking; ages are in days, because the register records
 # dates, not sprints. What "more than 3 sprints" is in days, and which items
 # go in the next sprint, stay in the skill.
 #
-# Usage: bash .claude/scripts/debt-register.sh [--root DIR] COMMAND [ARGS]
+# Usage: bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/debt-register.sh [--root DIR] COMMAND [ARGS]
 #   next-id                 the next TD ID: registry.sh's `next-id td`, passed
 #                           through unchanged (the one ID rule in the codebase)
 #   score IMPACT EFFORT     the score of one pair: Low, Med (Medium), High or
@@ -255,7 +255,7 @@ fi
 if [ -n "$ROOT_ARG" ]; then
   cd "$ROOT_ARG" 2>/dev/null || { echo "debt-register: cannot read root $ROOT_ARG" >&2; exit 1; }
 else
-  cd "$HERE/../.." 2>/dev/null || { echo "debt-register: cannot reach the repo root" >&2; exit 1; }
+  cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" 2>/dev/null || { echo "debt-register: cannot reach the repo root" >&2; exit 1; }
 fi
 
 if [ "$CMD" = next-id ]; then

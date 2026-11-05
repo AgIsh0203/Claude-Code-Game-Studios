@@ -44,7 +44,7 @@ None. Asset auditing is a read-only analysis skill; no gates are invoked.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -267,7 +267,7 @@ Fixture defaults.
 **Input:** `/asset-audit`
 
 **Expected behavior:**
-1. Phase 2 cannot resolve the engine or its code root per `.claude/docs/code-root-resolution.md`
+1. Phase 2 cannot resolve the engine or its code root per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`
 2. The skill stops with `NOT ASSESSED — engine unresolved`, naming `/setup-engine`
 3. No asset root is guessed, so the Godot naming patterns are not applied and no section is reported clean
 

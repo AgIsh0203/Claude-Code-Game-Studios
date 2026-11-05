@@ -3,7 +3,7 @@ name: tech-debt
 description: "Track, categorize and prioritize technical debt across the codebase — scans for debt indicators, maintains a register."
 argument-hint: "[scan|add|prioritize|report]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/tech-debt/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/skills/tech-debt/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -15,7 +15,7 @@ model: sonnet
 
 
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -34,7 +34,7 @@ If no subcommand is provided, output usage and stop. Verdict: **FAIL** — missi
 
 ## Phase 2A: Scan Mode
 
-Search the **code root** (resolve per `.claude/docs/code-root-resolution.md`:
+Search the **code root** (resolve per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`:
 `src/`, `Assets/` or `Source/` by engine) for debt indicators:
 
 - `TODO` comments (count and categorize)

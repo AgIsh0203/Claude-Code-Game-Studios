@@ -16,7 +16,7 @@
 #      make .claude/ a root, and the hooks would write .claude/production/
 #   3. CLAUDE_PROJECT_DIR       -> that  (populated in the hook environment),
 #      unless it names a .claude folder, for the same reason as rule 2
-#   4. this script's location   -> <root>/.claude/hooks/../.. by construction
+#   4. this script's location   -> C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/../.. by construction
 # Rule 4 always works and needs no environment at all; rules 1-2 stop it from
 # overriding a caller that legitimately means somewhere else.
 #
@@ -26,7 +26,7 @@ if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" !=
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
 else
-  CCGS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+  CCGS_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
@@ -75,8 +75,8 @@ fi
 # returns empty for a rigor-only project, which would leave the banner showing a
 # stale `lean`.
 REVIEW_MODE=""
-if [ -f ".claude/ccgs/project.yaml" ] && [ -f ".claude/hooks/yaml-helper.sh" ]; then
-    source .claude/hooks/yaml-helper.sh
+if [ -f ".claude/ccgs/project.yaml" ] && [ -f "C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh" ]; then
+    source C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh
     REVIEW_MODE=$(resolve_setting modes.review_mode 2>/dev/null | cut -f1)
 fi
 if [ -z "$REVIEW_MODE" ] && [ -f ".claude/ccgs/review-mode.txt" ]; then
@@ -94,9 +94,9 @@ echo "Review mode: $REVIEW_MODE"
 # Schema validation — surface invalid enum values in
 # .claude/ccgs/project.yaml and .claude/ccgs/project.local.yaml so typos like `automation: chaotic`
 # surface at session start rather than failing inside a skill.
-if [ -f ".claude/hooks/yaml-helper.sh" ]; then
+if [ -f "C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh" ]; then
     if ! type validate_yaml_enum >/dev/null 2>&1; then
-        source .claude/hooks/yaml-helper.sh
+        source C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh
     fi
     # Hard-error guard: .claude/ccgs/project.local.yaml requires a .claude/ccgs/project.yaml base
     if ! BASE_ERR=$(validate_local_yaml_base 2>&1); then
@@ -125,8 +125,8 @@ fi
 # One line when a newer release is out. It reads a cache that a background job
 # refreshes at most once a day, so this hook makes no network call and never
 # waits for one. `updates.check: false` turns it off (effects-map.md).
-if [ -f .claude/hooks/update-check.sh ]; then
-    . .claude/hooks/update-check.sh
+if [ -f C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/update-check.sh ]; then
+    . C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/update-check.sh
     UPDATE_LINE=$(update_check_notice 2>/dev/null)
     if [ -n "$UPDATE_LINE" ]; then
         echo ""
@@ -180,8 +180,8 @@ fi
 # Fixed, as bug-stats.sh counts them. Counting the files themselves reported
 # every closed bug as open.
 BUG_OPEN=""
-if [ -f .claude/scripts/bug-stats.sh ]; then
-    BUG_OPEN=$(bash .claude/scripts/bug-stats.sh --root . tests/playtest production 2>/dev/null \
+if [ -f C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/bug-stats.sh ]; then
+    BUG_OPEN=$(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/bug-stats.sh --root . tests/playtest production 2>/dev/null \
                | awk -F'\t' '$1 == "open" { print $2 }')
 fi
 if [ -n "$BUG_OPEN" ] && [ "$BUG_OPEN" -gt 0 ]; then
@@ -197,8 +197,8 @@ fi
 #
 # Sourcing here is defensive: the two source sites above are both conditional,
 # so by this point the function may or may not exist.
-if [ -f .claude/hooks/yaml-helper.sh ] && ! command -v resolve_code_root >/dev/null 2>&1; then
-    . .claude/hooks/yaml-helper.sh 2>/dev/null
+if [ -f C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh ] && ! command -v resolve_code_root >/dev/null 2>&1; then
+    . C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh 2>/dev/null
 fi
 if command -v resolve_code_root >/dev/null 2>&1; then
     CODE_ROOT=$(resolve_code_root 2>/dev/null | cut -f1)
@@ -262,8 +262,8 @@ fi
 # whose absence the user cannot notice. Show the state unless we positively
 # determined the flag is off.
 STATE_FILE=".claude/ccgs/session-state/active.md"
-if [ -f .claude/hooks/yaml-helper.sh ] && ! command -v session_state_enabled >/dev/null 2>&1; then
-    . .claude/hooks/yaml-helper.sh
+if [ -f C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh ] && ! command -v session_state_enabled >/dev/null 2>&1; then
+    . C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh
 fi
 if [ -f "$STATE_FILE" ] && { ! command -v session_state_enabled >/dev/null 2>&1 || session_state_enabled; }; then
     echo ""
@@ -272,7 +272,7 @@ if [ -f "$STATE_FILE" ] && { ! command -v session_state_enabled >/dev/null 2>&1 
     echo "Read this file to recover context and continue where you left off."
     echo ""
     # The CHECKPOINT region, as the schema in
-    # .claude/docs/templates/session-state.md defines it.
+    # C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/session-state.md defines it.
     #
     # Previewing `tail -20` here while pre-compact took `head -100` put two
     # consumers on opposite ends of one file, so which slice you got
@@ -306,7 +306,7 @@ if [ -f "$STATE_FILE" ] && { ! command -v session_state_enabled >/dev/null 2>&1 
         echo "      Not previewing it: without the closing marker the checkpoint"
         echo "      cannot be told from the narrative, and everything to the end"
         echo "      of the file would be shown as if it were recoverable state."
-        echo "      Re-create from .claude/docs/templates/session-state.md."
+        echo "      Re-create from C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/session-state.md."
         echo "  ... ($TOTAL_LINES total lines — read the full file to continue)"
     elif [ -n "$CHECKPOINT" ]; then
         # active.md is gitignored, so it stays put when you switch branches and
@@ -340,14 +340,14 @@ if [ -f "$STATE_FILE" ] && { ! command -v session_state_enabled >/dev/null 2>&1 
         echo "Quick summary (first 20 lines — no CHECKPOINT block in this file):"
         head -20 "$STATE_FILE" 2>/dev/null
         echo "  ... ($TOTAL_LINES total lines — read the full file to continue)"
-        echo "  NOTE: re-create from .claude/docs/templates/session-state.md so"
+        echo "  NOTE: re-create from C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/session-state.md so"
         echo "        recovery reads a bounded checkpoint instead of a slice."
     fi
-    # Rotation is an OBSERVATION, never an action: helpers in .claude/scripts/
+    # Rotation is an OBSERVATION, never an action: helpers in C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/
     # emit observations, never verdicts (CLAUDE.md). The user decides.
     if [ "${TOTAL_LINES:-0}" -gt 200 ] 2>/dev/null; then
         echo "  Note: $TOTAL_LINES lines. Narrative can be rotated into"
-        echo "        .claude/ccgs/session-logs/ — bash .claude/scripts/rotate-session-state.sh"
+        echo "        .claude/ccgs/session-logs/ — bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/rotate-session-state.sh"
     fi
     echo "=== END SESSION STATE PREVIEW ==="
 fi

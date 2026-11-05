@@ -3,7 +3,7 @@ name: team-live-ops
 description: "Orchestrate the live-ops team — live-ops-designer, economy-designer, analytics-engineer, community-manager, writer — for a season or live event."
 argument-hint: "[season name or event description] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/.claude/skills/team-live-ops/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/skills/team-live-ops/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -24,14 +24,14 @@ In `guided` mode the pipeline advances automatically unless a phase is BLOCKED;
 in `autonomous` mode it runs end to end, recording each phase outcome via
 `log_decision`. Decisions in `automation_always_ask` categories
 (`is_always_ask_category` helper) always prompt regardless of mode. See
-`.claude/docs/automation-modes.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`.
 
 ## Phase 0: Resolve Config
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,team.size,workflow`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 `review_mode` sets director-gate depth, and this pipeline has no director gate:
 no phase below spawns CD-, TD-, PR- or AD-PHASE-GATE, at any `review_mode`. Its
@@ -39,7 +39,7 @@ phase gates are the pipeline's own decision points (defined under `team.size`
 below), and the agents that work at them are team members, not director gates.
 
 `automation` drives the Decision Points note above. See the Decision Points note above and
-`.claude/docs/automation-modes.md` for how each mode changes pipeline behavior.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` for how each mode changes pipeline behavior.
 
 **`team.size`**: which agents are active (orthogonal to review_mode gate-depth and workflow docs).
 - **`individual`** (default): `live-ops-designer` + `economy-designer`. Other agents consulted via these two, not spawned separately.
@@ -213,7 +213,7 @@ usually still there.
 
 If any spawned agent returns BLOCKED, errors, or cannot complete: **surface it
 immediately, don't proceed past a dependency it blocks, and always produce a
-partial report.** A skipped agent's section stays a named gap — never fill it with content of your own. Full procedure: `.claude/docs/error-recovery-protocol.md`.
+partial report.** A skipped agent's section stays a named gap — never fill it with content of your own. Full procedure: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/error-recovery-protocol.md`.
 
 If a BLOCKED state is unresolvable, end with Verdict: **BLOCKED** instead of COMPLETE.
 

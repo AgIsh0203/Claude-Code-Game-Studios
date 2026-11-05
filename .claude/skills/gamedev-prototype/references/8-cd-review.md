@@ -31,7 +31,7 @@ ASSESSED when it could not judge. Apply it to the recommendation:
 - **REJECT** (the core fantasy is not present) → a PROCEED recommendation cannot
   stand. Use `AskUserQuestion` to ask the user to choose `PIVOT` or `KILL`, and run
   Phase 9 for that choice. A PIVOT or KILL recommendation stands.
-- **NOT ASSESSED** (the director lacked an input — `.claude/docs/director-gates.md`)
+- **NOT ASSESSED** (the director lacked an input — `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`)
   → not an approval. Name what was missing; supply it and re-run the gate, or
   record the review as NOT ASSESSED and let the user decide whether the
   recommendation stands unreviewed.

@@ -79,7 +79,7 @@ A failed test suite blocks merging.
 
 The README and this skill's completion summary name the same evidence path —
 `docs/production/qa/evidence/` is where `/smoke-check`, `/test-evidence-review`,
-`/qa-plan` and the evidence table in `.claude/docs/coding-standards.md` read,
+`/qa-plan` and the evidence table in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md` read,
 so a `tests/evidence/` would be a directory nothing reads.
 
 ### `docs/production/qa/evidence/.gitkeep`

@@ -3,7 +3,7 @@ name: settings
 description: "View or change project config — effective merged values, or set locally in .claude/ccgs/project.local.yaml."
 argument-hint: "[key | key=value | --local key=value]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" resolve_setting *), Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" get_yaml_key *), Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" validate_yaml_enum *), Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" validate_enum_value *), Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" is_locally_overridable *), Bash(bash .claude/scripts/config-set.sh *), Bash(grep -B14 '^> ### RESERVED' .claude/docs/effects-map.md), Bash(grep -E '^## ')
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/skills/settings/../../hooks/yaml-helper.sh" resolve_setting *), Bash(bash "*/skills/settings/../../hooks/yaml-helper.sh" get_yaml_key *), Bash(bash "*/skills/settings/../../hooks/yaml-helper.sh" validate_yaml_enum *), Bash(bash "*/skills/settings/../../hooks/yaml-helper.sh" validate_enum_value *), Bash(bash "*/skills/settings/../../hooks/yaml-helper.sh" is_locally_overridable *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/config-set.sh *), Bash(grep -B14 '^> ### RESERVED' C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md), Bash(grep -E '^## ')
 model: sonnet
 ---
 
@@ -17,7 +17,7 @@ settings or change them without manually editing YAML.
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). The approval gates in Phase 4 and
-Phase 5 follow the pattern in `.claude/docs/automation-modes.md`. **Note**:
+Phase 5 follow the pattern in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`. **Note**:
 writing to `.claude/ccgs/project.yaml` is a `schema_changes` decision (a default
 `automation_always_ask` category), so `/settings` confirms config writes even
 in `autonomous` mode unless the user has removed `schema_changes` from their
@@ -64,7 +64,7 @@ also prints its `0` or `1`. Run the call exactly as shown: do not `source` the
 file, wrap it in `cd ... &&` or append `; echo $?`. This skill pre-approves the
 plain form only, and a compound command asks the user every time.
 
-If `.claude/hooks/yaml-helper.sh` is missing, this is not a CCGS project.
+If `C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh` is missing, this is not a CCGS project.
 Report the error and exit.
 
 ## Phase 1b: Reserved-setting detection
@@ -75,14 +75,14 @@ Returning an ordinary success lets a user reasonably believe the behaviour the
 setting describes is now enforced — an accessibility tier being the case that
 motivates this. (The key is not named here on purpose; see the note below.)
 The banner exists only in
-`.claude/docs/effects-map.md`, which someone
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md`, which someone
 configuring their project will never open. A setting that does nothing must never look
 exactly like one that works — `.claude/rules/skill-authoring.md` obligation 3.
 
 Derive the set; do not hardcode it (obligation 5):
 
 ```bash
-grep -B14 '^> ### RESERVED' .claude/docs/effects-map.md | grep -E '^## '
+grep -B14 '^> ### RESERVED' C:/Users/ishan/.claude/ccgs-studio/.claude/docs/effects-map.md | grep -E '^## '
 ```
 
 **Match the banner HEADING (`> ### RESERVED`), never the bare word "RESERVED".**
@@ -315,7 +315,7 @@ When the effective value is empty (key not set anywhere), print just:
    or the key has no enum constraint — proceed.
 
 1b. **Known-key check**: run, from the project root as in Phase 1,
-   `bash .claude/scripts/config-set.sh <key> <value> --dry-run` and read its
+   `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/config-set.sh <key> <value> --dry-run` and read its
    `known` row. If it says `yes`, proceed. If it says `no`, nothing in CCGS reads
    that key, so writing it changes nothing; it is most often a typo. Do not
    write yet: say so, and ask via `AskUserQuestion` with the options
@@ -480,6 +480,6 @@ Examples:
 - `.claude/ccgs/project.local.yaml` is gitignored. These
   overrides never propagate to teammates.
 - For **which value to choose** for a given game type or situation — and when to
-  suggest changing one — see `.claude/docs/settings-guidance.md` (advisory presets
+  suggest changing one — see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/settings-guidance.md` (advisory presets
   + change triggers). `effects-map.md` says what each setting does; that doc says
   which to pick.

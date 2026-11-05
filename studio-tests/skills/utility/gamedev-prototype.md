@@ -17,7 +17,7 @@ JavaScript, `<!-- -->` in HTML and Markdown), and standards are intentionally
 relaxed.
 
 After a one-question-at-a-time debrief, it fills
-`.claude/docs/templates/prototype-report.md`, asks to write
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/prototype-report.md`, asks to write
 `docs/prototypes/[concept-name]-concept/REPORT.md` and add its row to
 `docs/prototypes/index.md` (one ask naming both). Verdicts are **PROCEED / PIVOT / KILL**. PIVOT writes a
 `PIVOT-NOTE.md`; KILL runs a five-item soundness check and appends to
@@ -68,7 +68,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -101,7 +101,7 @@ Fixture defaults.
    file it writes starts with `# PROTOTYPE - NOT FOR PRODUCTION` (GDScript
    comments use `#`; a `//` header would not parse)
 6. Debrief questions are asked one at a time; report drafted from
-   `.claude/docs/templates/prototype-report.md`; "May I write this report to
+   `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/prototype-report.md`; "May I write this report to
    `docs/prototypes/grapple-hook-concept/REPORT.md` and add its row to
    `docs/prototypes/index.md`?"; a row is appended to `docs/prototypes/index.md`
 7. Note "CD-PLAYTEST skipped — Solo mode."; PROCEED routes to `/design-review`,

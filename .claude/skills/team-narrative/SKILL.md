@@ -3,7 +3,7 @@ name: team-narrative
 description: "Orchestrate the narrative team — narrative-director, writer, world-builder, level-designer — for story, world lore, narrative-driven levels."
 argument-hint: "[narrative content description] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/.claude/skills/team-narrative/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/skills/team-narrative/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -23,14 +23,14 @@ In `guided` mode the pipeline advances automatically unless a phase is BLOCKED;
 in `autonomous` mode it runs end to end, recording each phase outcome via
 `log_decision`. Decisions in `automation_always_ask` categories
 (`is_always_ask_category` helper) always prompt regardless of mode. See
-`.claude/docs/automation-modes.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`.
 
 ## Phase 0: Resolve Config
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,team.size`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 `review_mode` sets director-gate depth, and this pipeline has no director gate:
 no phase below spawns CD-, TD-, PR- or AD-PHASE-GATE, at any `review_mode`. Its
@@ -42,7 +42,7 @@ review, not an optional director gate, so `review_mode` never skips it (`team.si
 still decides who runs it — see Phase 4).
 
 `automation` drives the Decision Points note above. See the Decision Points note above and
-`.claude/docs/automation-modes.md` for how each mode changes pipeline behavior.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` for how each mode changes pipeline behavior.
 
 **`team.size`**: which agents are active (orthogonal to review_mode gate-depth and workflow docs).
 - **`individual`** (default): `writer` only; `narrative-director` invoked only on an explicit pillar conflict. Other agents consulted via the writer, not spawned separately.
@@ -158,7 +158,7 @@ Delegate to **level-designer**:
 
 ### Phase 4: Review and Consistency
 Spawn `narrative-director` via `Agent` using gate **ND-CONSISTENCY**
-(`.claude/docs/director-gates/nd-consistency.md`). This phase runs in every review
+(`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/nd-consistency.md`). This phase runs in every review
 mode — it is this pipeline's own review, not an optional director gate. Pass the
 context that gate lists (the Phase 2–3 draft paths, the narrative bible or tone
 guide, the world rules, the affected character and faction profiles) — named
@@ -172,7 +172,7 @@ agent that owns each) or accept them. **REJECT** → do not start Phase 5; the
 contradictions are fixed first. **NOT ASSESSED [missing input]** → name the
 missing input, then supply it and re-run the gate, or carry
 `ND-CONSISTENCY: NOT ASSESSED — [input]` into the report's consistency review
-results; it is never read as APPROVE (`.claude/docs/director-gates.md`).
+results; it is never read as APPROVE (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`).
 
 **At `team.size: individual`** narrative-director is not in the active set, so the
 gate is not spawned. The writer checks the drafts against the same criteria, and
@@ -204,7 +204,7 @@ usually still there.
 
 If any spawned agent returns BLOCKED, errors, or cannot complete: **surface it
 immediately, don't proceed past a dependency it blocks, and always produce a
-partial report.** A skipped agent's section stays a named gap — never fill it with content of your own. Full procedure: `.claude/docs/error-recovery-protocol.md`.
+partial report.** A skipped agent's section stays a named gap — never fill it with content of your own. Full procedure: `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/error-recovery-protocol.md`.
 
 Common blockers:
 - Input file missing (story not found, GDD absent) → redirect to the skill that creates it

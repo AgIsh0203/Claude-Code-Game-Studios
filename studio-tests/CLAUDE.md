@@ -17,10 +17,10 @@ framework. It is self-contained and separate from any game project.
 
 ## Path conventions
 
-- Skill specs: `.claude/ccgs/studio-tests/skills/[category]/[name].md`
-- Agent specs: `.claude/ccgs/studio-tests/agents/[tier]/[name].md`
-- Catalog: `.claude/ccgs/studio-tests/catalog.yaml`
-- Rubric: `.claude/ccgs/studio-tests/quality-rubric.md`
+- Skill specs: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/skills/[category]/[name].md`
+- Agent specs: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/agents/[tier]/[name].md`
+- Catalog: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/catalog.yaml`
+- Rubric: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/quality-rubric.md`
 
 The `spec:` field in `catalog.yaml` is the authoritative path for each skill/agent spec.
 Always read it rather than guessing the path.
@@ -75,8 +75,8 @@ A tier is the directory a spec lives in. The rubric category is the agent's
 
 1. Read `catalog.yaml` to get the `spec:` path and `category:` — from the
    `skills:` entry for a skill, the `agents:` entry for an agent
-2. Read the skill at `.claude/skills/[name]/SKILL.md` and every file in its
-   `references/` folder, or the agent at `.claude/agents/[name].md`
+2. Read the skill at `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/[name]/SKILL.md` and every file in its
+   `references/` folder, or the agent at `C:/Users/ishan/.claude/ccgs-studio/.claude/agents/[name].md`
 3. Read the project `CLAUDE.md` and the files it imports with `@`: every
    subagent receives them, so a rule stated there (for example a redirect in
    `coordination-rules.md`) counts as the skill's or agent's own
@@ -99,7 +99,7 @@ modes:
 
 - A setting the case's Fixture names wins over the block, and an explicit
   sub-knob (`modes.workflow`, `modes.review_mode`, `qa.level`, …) wins over the
-  `rigor` preset (`.claude/docs/config-resolution.md` § Defaults).
+  `rigor` preset (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md` § Defaults).
 - A case that says `.claude/ccgs/project.yaml` sets no `modes` keys, or that there is no
   `.claude/ccgs/project.yaml`, runs without the block: it tests the unset defaults.
 - There is no `.claude/ccgs/project.local.yaml` unless the case names one.

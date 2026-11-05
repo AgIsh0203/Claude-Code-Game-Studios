@@ -51,7 +51,7 @@ There are three tiers of agents:
 
 The tiers are seniority of role. Most agents run on your session's model; the
 agent file's own `model:` line says which do not
-(`.claude/docs/model-tiers.md`).
+(`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/model-tiers.md`).
 
 ### 2. Pick the Right Agent for the Job
 
@@ -176,7 +176,7 @@ Ask yourself: "What department would handle this in a real studio?"
 
 ### 4. Use Templates for New Documents
 
-Templates are in `.claude/docs/templates/`:
+Templates are in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/`:
 
 - `game-design-document.md` -- for new mechanics and systems
 - `architecture-decision-record.md` -- for technical decisions

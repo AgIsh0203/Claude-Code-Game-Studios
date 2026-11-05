@@ -3,7 +3,7 @@ name: localize
 description: "Localization pipeline — find hardcoded strings, extract string tables, cultural review, VO, RTL, enforce string freeze."
 argument-hint: "[scan|extract|validate|status|brief|cultural-review|vo-pipeline|rtl-check|freeze|qa]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/localize/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/skills/localize/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -37,13 +37,13 @@ If no subcommand is provided, output usage and stop. Verdict: **FAIL** — missi
 
 ---
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
 ## Phase 2A: Scan Mode
 
-Search the **code root** (resolve per `.claude/docs/code-root-resolution.md`) for hardcoded user-facing strings. **If the code root is unresolved, report `NOT ASSESSED — code root unresolved` rather than zero hits.** Zero hits from an unresolved root reads as "nothing to localize", which is the failure this guards:
+Search the **code root** (resolve per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`) for hardcoded user-facing strings. **If the code root is unresolved, report `NOT ASSESSED — code root unresolved` rather than zero hits.** Zero hits from an unresolved root reads as "nothing to localize", which is the failure this guards:
 
 - String literals in UI code not wrapped in a localization function (`tr()`, `Tr()`, `NSLocalizedString`, `GetText`, etc.)
 - Concatenated strings that should be parameterized

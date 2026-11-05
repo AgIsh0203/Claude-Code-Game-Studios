@@ -103,8 +103,8 @@ Based on the verdict, suggest specific next steps:
 - **Tests failing?** → delegate to `lead-programmer` or `qa-tester`
 - **No playtest data?** → `/playtest-report`
 - **No playtest sessions beyond the minimum?** → Additional sessions give more reliable signal. 3+ total is recommended before committing the full team. Use `/playtest-report` to structure findings.
-- **No Difficulty Curve doc?** → Author `docs/design/difficulty-curve.md` by hand from the template at `.claude/docs/templates/difficulty-curve.md`. (`/quick-design` is a related session but writes to `docs/design/quick-specs/`, not to this path — use it to think the curve through, then copy the outcome here.)
-- **No player journey map?** → Author `docs/design/player-journey.md` by hand from the template at `.claude/docs/templates/player-journey.md`.
+- **No Difficulty Curve doc?** → Author `docs/design/difficulty-curve.md` by hand from the template at `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/difficulty-curve.md`. (`/quick-design` is a related session but writes to `docs/design/quick-specs/`, not to this path — use it to think the curve through, then copy the outcome here.)
+- **No player journey map?** → Author `docs/design/player-journey.md` by hand from the template at `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/player-journey.md`.
 
 > **Neither of these has a skill that writes it — do not name one.**
 > "`/ux-design` Phase 2b" is the step that *reads* `docs/design/player-journey.md`,

@@ -60,18 +60,18 @@ the first tier requiring architecture artifacts. `creative-director` and
 UX spec set for them to assess.
 
 > **Width is not the same as strictness.** A narrower panel does not soften the
-> verdict: the escalation rule in `.claude/docs/director-gates.md` is unchanged —
+> verdict: the escalation rule in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` is unchanged —
 > the strictest verdict returned by *whoever ran* still wins. Do not infer PASS
 > from a perspective that was never consulted.
 
-Before generating the final verdict, spawn the directors for the resolved tier as **parallel subagents** via `Agent` using the parallel gate protocol from `.claude/docs/director-gates.md`. Issue all the `Agent` calls simultaneously — do not wait for one before starting the next.
+Before generating the final verdict, spawn the directors for the resolved tier as **parallel subagents** via `Agent` using the parallel gate protocol from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`. Issue all the `Agent` calls simultaneously — do not wait for one before starting the next.
 
 **Gate IDs:**
 
-1. **`creative-director`** — gate **CD-PHASE-GATE** (`.claude/docs/director-gates/cd-phase-gate.md`)
-2. **`technical-director`** — gate **TD-PHASE-GATE** (`.claude/docs/director-gates/td-phase-gate.md`)
-3. **`producer`** — gate **PR-PHASE-GATE** (`.claude/docs/director-gates/pr-phase-gate.md`)
-4. **`art-director`** — gate **AD-PHASE-GATE** (`.claude/docs/director-gates/ad-phase-gate.md`)
+1. **`creative-director`** — gate **CD-PHASE-GATE** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/cd-phase-gate.md`)
+2. **`technical-director`** — gate **TD-PHASE-GATE** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/td-phase-gate.md`)
+3. **`producer`** — gate **PR-PHASE-GATE** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/pr-phase-gate.md`)
+4. **`art-director`** — gate **AD-PHASE-GATE** (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/ad-phase-gate.md`)
 
 Pass to each the target phase name, the resolved `workflow` tier, the target
 gate's required and recommended artifacts at the resolved tier (the loaded gate

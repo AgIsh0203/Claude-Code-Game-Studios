@@ -25,7 +25,7 @@ the override is not offered. Name each such check and what would let it run.
 After the yes, write both stage files with one command (quote a two-word stage):
 
 ```bash
-bash .claude/scripts/set-stage.sh "<new-stage>"
+bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/set-stage.sh "<new-stage>"
 ```
 
 It sets `project.stage` in `.claude/ccgs/project.yaml`: it edits the `stage:` line, adds a
@@ -50,7 +50,7 @@ the user's yes. Any other non-zero exit: report the message and stop.
 ### 6.3 Rigor-fit check (advisory — never affects the verdict)
 
 After the stage advance is confirmed, apply the raise trigger in
-`.claude/docs/settings-guidance.md § 4`: if the new stage is **Production** (or
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/settings-guidance.md § 4`: if the new stage is **Production** (or
 later) while the resolved `modes.workflow` is `minimal` (the `rigor: minimal`
 posture, from the config block above), add one line:
 

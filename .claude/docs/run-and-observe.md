@@ -5,7 +5,7 @@ player can see. Used by `/dev-story` (Phase 6) and `/story-done` (Phase 3).
 **A parse check is not a run, and a story nobody looked at does not close.**
 This file explains how to look.
 
-`.claude/docs/coding-standards.md` is the authority for *what* evidence a story
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md` is the authority for *what* evidence a story
 needs. This file is the procedure for *producing* the visual half of it.
 
 ## The rule
@@ -41,7 +41,7 @@ engine has a native way.
    `docs/production/epics/core/story-003-light-pickup.md`. Reference the image from
    the evidence doc. A screenshot that was taken and discarded is an
    assertion, not evidence. Beside it, stamp the files it proves:
-   `bash .claude/scripts/review-receipts.sh hash <each file the story changed> > docs/production/qa/evidence/[story-slug]/stamp.txt`.
+   `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-receipts.sh hash <each file the story changed> > docs/production/qa/evidence/[story-slug]/stamp.txt`.
    A later edit to one of them then shows the evidence as older than the code.
 6. **Report** one `Run result:` line in the implementation summary — vocabulary
    below.

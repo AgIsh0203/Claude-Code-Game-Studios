@@ -1,0 +1,11 @@
+{
+  "name": "ccgs-local",
+  "owner": { "name": "AgIsh0203" },
+  "plugins": [
+    {
+      "name": "ccgs",
+      "source": "./.claude",
+      "description": "Claude Code Game Studios, ProjectI fork, as a local plugin"
+    }
+  ]
+}

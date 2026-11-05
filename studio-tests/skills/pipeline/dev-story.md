@@ -57,7 +57,7 @@ step at `standard`/`full`.
 
 Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
 `modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
+Fixture says otherwise. Rules: `C:/Users/ishan/.claude/ccgs-studio/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -328,7 +328,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 3. Verification runs `commands.smoke` and reports its exit code
 4. Before launching, globs `Assets/**/ScreenshotOnArg.cs`, finds none and asks
    "May I write `Assets/Scripts/ScreenshotOnArg.cs`?"; on yes writes the script
-   verbatim from `.claude/docs/run-and-observe.md`
+   verbatim from `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/run-and-observe.md`
 5. Launches the built player with `--scene`/`--screenshot` and prints
    `Run result: OBSERVED — …` with the retained path
 
@@ -352,7 +352,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 **Input:** `/dev-story docs/production/epics/[slug]/story-001-[slug].md`
 
 **Expected behavior:**
-1. The code root cannot be resolved (`.claude/docs/code-root-resolution.md`: no
+1. The code root cannot be resolved (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`: no
    `engine.name`, no legacy `Engine:` value, no single unambiguous root in the tree)
 2. No source file is written, and the output says the code root is unresolved
 

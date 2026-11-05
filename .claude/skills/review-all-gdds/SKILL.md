@@ -3,7 +3,7 @@ name: review-all-gdds
 description: "Holistic cross-GDD review — contradictions between systems, dominant strategies, economic imbalance, cognitive overload, pillar drift."
 argument-hint: "[focus: full | consistency | design-theory | since-last-review]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/review-all-gdds/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/review-scope.sh*)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/skills/review-all-gdds/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/review-scope.sh*)
 model: opus
 ---
 
@@ -31,7 +31,7 @@ completeness. This skill reviews the *relationships* between all GDDs.
 - Before `/create-architecture` begins (architecture built on inconsistent GDDs
   inherits those inconsistencies)
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -46,7 +46,7 @@ Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
 
 ---
 
-**`workflow`** per GDD (per `.claude/docs/workflow-modes.md`): each GDD validates
+**`workflow`** per GDD (per `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`): each GDD validates
 against its effective tier — the project value, overridden per system by the
 `system_overrides` row for that system when the block lists one. At `full`, validate all 8
 sections across all GDDs. At `standard`, validate the 5 required sections;
@@ -120,14 +120,14 @@ usually still there.
 If any spawned agent returns BLOCKED, errors, or fails to complete: **surface it
 immediately, don't proceed past a dependency it blocks, and always produce a
 partial report** (retry scope here = fewer GDDs / single-system). Full procedure:
-`.claude/docs/error-recovery-protocol.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/error-recovery-protocol.md`.
 
 ---
 
 ## Collaborative Protocol
 
 **In `collaborative` mode (the default).** For `guided` and `autonomous` modes,
-see `.claude/docs/automation-modes.md`. In `autonomous` mode the
+see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`. In `autonomous` mode the
 PASS/CONCERNS/FAIL verdict is still printed and logged — only the closing
 handoff widget is skipped.
 

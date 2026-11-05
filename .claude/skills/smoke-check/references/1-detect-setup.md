@@ -7,7 +7,7 @@
 
 Before running anything, understand the environment:
 
-0. **Config coherence**: run `bash .claude/scripts/project-coherence.sh`.
+0. **Config coherence**: run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/project-coherence.sh`.
 
    It compares what `.claude/ccgs/project.yaml` declares against the real project file, the
    installed engine binary, and the files `commands.*` name. This runs first
@@ -22,7 +22,7 @@ Before running anything, understand the environment:
 
 1. **Test framework check**: verify that **game** test files exist — not merely
    that `tests/` does. Check the engine's **test root** (from step 3; the table
-   is in `.claude/docs/directory-structure.md` — Godot `tests/unit/` and
+   is in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md` — Godot `tests/unit/` and
    `tests/integration/`, Unity `Assets/Tests/`, Unreal
    `Source/*/Private/Tests/`) and `tests/smoke/` for actual test files. A
    **test file** is one the engine's test runner executes — a `*_test.gd` suite,

@@ -4,7 +4,7 @@
 
 Runs before any commit that modifies files under the code root — `src/`
 (Godot), `Assets/` (Unity) or `Source/` (Unreal); see
-`.claude/docs/code-root-resolution.md`.
+`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/code-root-resolution.md`.
 
 ## Purpose
 
@@ -21,7 +21,7 @@ values that should be data-driven.
 
 # The code root depends on the engine; resolve it the way the shipped commit
 # check does. An unresolved root is reported, never guessed as src/.
-. "$(git rev-parse --show-toplevel)/.claude/hooks/yaml-helper.sh"
+. "C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh"
 CODE_ROOT=$(resolve_code_root | cut -f1)
 if [ -z "$CODE_ROOT" ]; then
     echo "SKIPPED: no code root (set engine.name in .claude/ccgs/project.yaml) — code checks did not run."

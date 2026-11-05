@@ -283,7 +283,7 @@ Ask: "May I create the skeleton file at `docs/design/ux/[filename].md`?" — exc
 
 ### Skeleton for Accessibility Requirements
 
-Section list mirrors `.claude/docs/templates/accessibility-requirements.md` — if
+Section list mirrors `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/accessibility-requirements.md` — if
 the template gains or loses a section, this skeleton follows it, not the reverse.
 
 ```markdown

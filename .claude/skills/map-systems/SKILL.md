@@ -3,7 +3,7 @@ name: map-systems
 description: "Decompose a concept into individual systems, map dependencies, prioritize design order, create the systems index."
 argument-hint: "[next | system-name] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Agent, Bash(bash "*/.claude/skills/map-systems/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Agent, Bash(bash "*/skills/map-systems/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -12,7 +12,7 @@ model: sonnet
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,docs.density,project.stage`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
-defaults in `.claude/docs/config-resolution.md`.
+defaults in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/config-resolution.md`.
 
 # Map Systems
 
@@ -29,10 +29,10 @@ Two modes:
   from the index and hand off to `/design-system` (Phase 6).
 
 
-See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+See `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
 
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt). In collaborative mode the
 system list, dependency, priority and write approvals are separate questions:
@@ -51,7 +51,7 @@ every section you author.
 > paragraph per system at `balanced`, plus relationship analysis at `thorough` —
 > and in the `## Dependency Map` layer notes. **Do not add a column to the
 > enumeration table** — it is a fixed contract in
-> `.claude/docs/templates/systems-index.md`, and its consumers
+> `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/systems-index.md`, and its consumers
 > (`/design-system` §6 and §7, `/create-epics`) are written against the columns it
 > defines. Widening it is a schema change, not a formatting choice.
 >
@@ -65,7 +65,7 @@ every section you author.
 > template defines.
 > At `terse`, the table plus a one-paragraph `## Overview` is the whole output.
 
-**`workflow`** (see `.claude/docs/workflow-modes.md`):
+**`workflow`** (see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`):
 - `full` / `standard` — required before `/design-system` (systems must be mapped
   before per-system GDDs are authored).
 - `minimal` — not required (the game brief replaces the systems index). Can
@@ -202,7 +202,7 @@ dependencies I'm missing or that should be removed?"
 - `lean` → skip (not a PHASE-GATE). Note: "TD-SYSTEM-BOUNDARY skipped — Lean mode." Proceed to priority assignment.
 - `full` → spawn as normal.
 
-**After dependency mapping is approved, spawn `technical-director` via `Agent` using gate TD-SYSTEM-BOUNDARY (`.claude/docs/director-gates/td-system-boundary.md`) before proceeding to priority assignment.**
+**After dependency mapping is approved, spawn `technical-director` via `Agent` using gate TD-SYSTEM-BOUNDARY (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/td-system-boundary.md`) before proceeding to priority assignment.**
 
 Pass: the dependency graph (each system → what it depends on), layer assignments, bottleneck systems, and any circular dependencies with their proposed resolutions.
 
@@ -262,7 +262,7 @@ both, and cites the pillar it serves:
 - `lean` → skip (not a PHASE-GATE). Note: "PR-SCOPE skipped — Lean mode." Proceed to Step 4c.
 - `full` → spawn as normal.
 
-**After priorities are approved, spawn `producer` via `Agent` using gate PR-SCOPE (`.claude/docs/director-gates/pr-scope.md`) before writing the index.**
+**After priorities are approved, spawn `producer` via `Agent` using gate PR-SCOPE (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/pr-scope.md`) before writing the index.**
 
 Pass the gate's fields from the index: the full vision scope (every system in the index), the MVP definition (the MVP tier's systems), the scope tiers (system count per milestone tier, with estimated implementation volume — system count × average complexity), the stated project timeline as the timeline estimate, and team size.
 
@@ -291,7 +291,7 @@ This is the order the team should write GDDs in.
 
 ### Step 5a: Draft the Document
 
-Using the template at `.claude/docs/templates/systems-index.md`, populate the
+Using the template at `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/systems-index.md`, populate the
 systems index with all data from Phases 2-4:
 - Fill the enumeration table
 - Fill the dependency map
@@ -312,7 +312,7 @@ Present a summary of the document:
 "yes."
 
 **At `automation: guided`** — a **new** index gets the same "May I write …?"
-question, because `.claude/docs/automation-modes.md` has `guided` ask "May I
+question, because `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` has `guided` ask "May I
 write?" for new files. When the index already exists, present the summary above,
 name the destination (`docs/GDD.md`), and write the update without
 waiting for an explicit "yes". Say what you wrote afterwards.
@@ -322,7 +322,7 @@ waiting for an explicit "yes". Say what you wrote afterwards.
 - `lean` → skip (not a PHASE-GATE). Note: "CD-SYSTEMS skipped — Lean mode." Proceed to Step 5c.
 - `full` → spawn as normal.
 
-**After the systems index is written, spawn `creative-director` via `Agent` using gate CD-SYSTEMS (`.claude/docs/director-gates/cd-systems.md`).**
+**After the systems index is written, spawn `creative-director` via `Agent` using gate CD-SYSTEMS (`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates/cd-systems.md`).**
 
 Pass: systems index path; game pillars and core fantasy — from `docs/GDD.md`, or at `minimal` the pitch and "what they feel" line of `docs/GDD.md`, which has no pillars; the priority tier assignments for every tier (MVP / Vertical Slice / Alpha / Full Vision); and the high-risk and bottleneck systems from the dependency map.
 
@@ -332,7 +332,7 @@ concern applies to — e.g. `> **Creative Director Note** (MVP): …`.
 `templates/systems-index.md` has a Priority Tiers *definition table*, not a
 section per tier, so there is no "top of the tier section" to write to — do not
 direct the writer to one. If NOT ASSESSED [missing input], it is not an APPROVE
-(`.claude/docs/director-gates.md`): name what was missing, then supply it and
+(`C:/Users/ishan/.claude/ccgs-studio/.claude/docs/director-gates.md`): name what was missing, then supply it and
 re-run the gate, or ask before recording `> **Creative Director Note**:
 CD-SYSTEMS NOT ASSESSED — [input]` in the same place.
 
@@ -416,7 +416,7 @@ After any individual GDD is completed:
 ## Collaborative Protocol
 
 **Applies in `collaborative` mode (the default).** For `guided` and
-`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+`autonomous` modes, see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md` — the rules below
 describe what collaborative mode requires, not universal behavior.
 
 This skill follows the collaborative design principle at every phase:

@@ -3,7 +3,7 @@ name: consistency-check
 description: "Scan GDDs against the entity registry for cross-document conflicts. Grep-first approach targets conflicting sections, different stats."
 argument-hint: "[full | since-last-review | entity:<name> | item:<name>]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/consistency-check/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *), Bash(bash .claude/scripts/registry.sh validate*)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/skills/consistency-check/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *), Bash(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh validate*)
 model: sonnet
 ---
 
@@ -34,11 +34,11 @@ catches too late.
 
 ---
 
-Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+Every `AskUserQuestion` call follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
-**`workflow`** (see `.claude/docs/workflow-modes.md`), applied per GDD at its
+**`workflow`** (see `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/workflow-modes.md`), applied per GDD at its
 **effective** tier — the `system_overrides` row for that GDD's system (its
 filename stem) when the block lists one, else the project value:
 - `full` — full entity-registry cross-check against all GDD sections.
@@ -299,7 +299,7 @@ Only add entries that appear in more than one GDD (true cross-system facts).
 **Never delete registry entries.** Set `status: deprecated` if an entry is removed
 from all GDDs.
 
-After writing, run `bash .claude/scripts/registry.sh validate` and fix every row
+After writing, run `bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh validate` and fix every row
 about an entry this write added or changed (a DUPLICATE, STATUS or LAYOUT row,
 or a PATH_MISSING row for a path it named) before the verdict; name rows about
 other entries to the user rather than fixing them unasked. If the script is

@@ -151,5 +151,5 @@ without reading another document — `/story-done` closes HUD stories against
 them. Cover at least: safe-zone margins on every target platform, the correct
 elements in each gameplay context above, the visual budget (screen share in
 exploration and in combat), one accessibility criterion for the committed tier,
-and notification queueing. Section 12 of `.claude/docs/templates/hud-design.md`
+and notification queueing. Section 12 of `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/templates/hud-design.md`
 has worked examples.

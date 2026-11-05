@@ -16,7 +16,7 @@
 #      make .claude/ a root, and the hooks would write .claude/production/
 #   3. CLAUDE_PROJECT_DIR       -> that  (populated in the hook environment),
 #      unless it names a .claude folder, for the same reason as rule 2
-#   4. this script's location   -> <root>/.claude/hooks/../.. by construction
+#   4. this script's location   -> C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/../.. by construction
 # Rule 4 always works and needs no environment at all; rules 1-2 stop it from
 # overriding a caller that legitimately means somewhere else.
 #
@@ -26,7 +26,7 @@ if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" !=
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
 else
-  CCGS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+  CCGS_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
@@ -596,7 +596,7 @@ fi
 # Check design documents for the sections REQUIRED AT THIS PROJECT'S TIER.
 #
 # Demanding all 8 sections unconditionally would contradict
-# .claude/docs/coding-standards.md and workflow-modes.md: the required count is
+# C:/Users/ishan/.claude/ccgs-studio/.claude/docs/coding-standards.md and workflow-modes.md: the required count is
 # a function of `modes.workflow` -- 8 at `full`, 5 (+ conditional Formulas) at
 # `standard`, and no GDD requirement at all at `minimal`. A jam project on the
 # recommended `minimal` tier was being warned about six sections its own
@@ -611,8 +611,8 @@ fi
 # workflow tier silently stayed at its "standard" fallback, and the GDD section
 # check stopped scaling with the tier.
 _VC_HELPER=0
-if [ -f .claude/hooks/yaml-helper.sh ]; then
-    . .claude/hooks/yaml-helper.sh 2>/dev/null || true
+if [ -f C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh ]; then
+    . C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh 2>/dev/null || true
     command -v resolve_setting >/dev/null 2>&1 && _VC_HELPER=1
 fi
 
@@ -751,7 +751,7 @@ fi
 # --- resolve the code root before either scan below ------------------------
 #
 # Both scans used to be hardcoded to `^src/gameplay/` and `^src/`. Per
-# .claude/docs/directory-structure.md, `src/` is the GODOT row of the code-root
+# C:/Users/ishan/.claude/ccgs-studio/.claude/docs/directory-structure.md, `src/` is the GODOT row of the code-root
 # table -- Unity compiles only `Assets/`, Unreal builds only from `Source/`. So
 # on two of the three supported engines both greps matched nothing on every
 # commit, both checks silently did not run, and the hook exited 0. A scan that

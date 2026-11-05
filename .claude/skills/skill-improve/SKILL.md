@@ -3,7 +3,7 @@ name: skill-improve
 description: "Improve a skill via a test-fix-retest loop — static checks, targeted fixes, keep or revert on score change."
 argument-hint: "[skill-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/skill-improve/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/skills/skill-improve/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
@@ -13,7 +13,7 @@ model: sonnet
 
 **Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
 `.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
-every file write follows `.claude/docs/automation-modes.md`
+every file write follows `C:/Users/ishan/.claude/ccgs-studio/.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
@@ -38,13 +38,13 @@ Usage: /skill-improve [skill-name]
 Example: /skill-improve tech-debt
 ```
 
-Verify `.claude/skills/[name]/SKILL.md` exists. If not, stop with:
+Verify `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/[name]/SKILL.md` exists. If not, stop with:
 "Skill '[name]' not found."
 
 Glob `CCGS Skill Testing Framework/catalog.yaml`. When it exists, say so first:
-"`CCGS Skill Testing Framework/` was renamed `.claude/ccgs/studio-tests/` in 1.2.0, and this
-skill reads only `.claude/ccgs/studio-tests/`. Move any specs you wrote there; UPGRADING.md
-(v1.1.3 → v1.2.0, `.claude/ccgs/studio-tests/`) says how." Then go on.
+"`CCGS Skill Testing Framework/` was renamed `C:/Users/ishan/.claude/ccgs-studio/studio-tests/` in 1.2.0, and this
+skill reads only `C:/Users/ishan/.claude/ccgs-studio/studio-tests/`. Move any specs you wrote there; UPGRADING.md
+(v1.1.3 → v1.2.0, `C:/Users/ishan/.claude/ccgs-studio/studio-tests/`) says how." Then go on.
 
 ---
 
@@ -69,7 +69,7 @@ If baseline is 0 FAILs and 0 WARNs, note it and proceed to Phase 2b.
 
 ### Phase 2b: Category Baseline
 
-Look up the skill's `category:` field in `.claude/ccgs/studio-tests/catalog.yaml`.
+Look up the skill's `category:` field in `C:/Users/ishan/.claude/ccgs-studio/studio-tests/catalog.yaml`.
 
 If no `category:` field is found, display:
 "Category: not yet assigned — skipping category checks."
@@ -97,7 +97,7 @@ NOT ASSESSED — stop:
 
 ## Phase 3: Diagnose
 
-Read the full skill: `.claude/skills/[name]/SKILL.md` and every file in its `references/` folder,
+Read the full skill: `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/[name]/SKILL.md` and every file in its `references/` folder,
 if it has one — the longest skills keep each phase there. Name the file each
 gap is in.
 
@@ -132,7 +132,7 @@ rewrite sections that are passing. In a skill with a `references/` folder, a
 fix to a phase's steps goes in that phase's `references/` file, not back into
 `SKILL.md`; the question below then names each file the fix changes.
 
-Ask: "May I write this improved version to `.claude/skills/[name]/SKILL.md`?"
+Ask: "May I write this improved version to `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/[name]/SKILL.md`?"
 
 If the user says no, stop here.
 
@@ -143,7 +143,7 @@ If the user says no, stop here.
 Record the current content of each file the fix changes — the exact text, kept
 in this conversation — so Phase 6 can restore it.
 
-Write the improved skill to `.claude/skills/[name]/SKILL.md`, and to each
+Write the improved skill to `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/[name]/SKILL.md`, and to each
 `references/` file the fix changes.
 
 Re-run `/skill-test static [name]` and record the new static score — measured by that run, never stated from the edit.
@@ -175,7 +175,7 @@ Show a summary of what was fixed in each dimension.
 **If combined score is the same or worse:**
 Report: "Combined score did not improve."
 Show what changed and why it may not have helped.
-Ask: "May I restore `.claude/skills/[name]/SKILL.md` to the content it had before this run?"
+Ask: "May I restore `C:/Users/ishan/.claude/ccgs-studio/.claude/skills/[name]/SKILL.md` to the content it had before this run?"
 — naming every file Phase 5 wrote.
 If yes: write the content recorded in Phase 5 back to each file with Write; if no, leave the files as written. Never
 `git checkout` it — that returns the last *committed* version and discards any edits

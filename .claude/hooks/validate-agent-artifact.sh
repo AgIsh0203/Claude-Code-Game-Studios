@@ -16,7 +16,7 @@
 #      make .claude/ a root, and the hooks would write .claude/production/
 #   3. CLAUDE_PROJECT_DIR       -> that  (populated in the hook environment),
 #      unless it names a .claude folder, for the same reason as rule 2
-#   4. this script's location   -> <root>/.claude/hooks/../.. by construction
+#   4. this script's location   -> C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/../.. by construction
 # Rule 4 always works and needs no environment at all; rules 1-2 stop it from
 # overriding a caller that legitimately means somewhere else.
 #
@@ -26,7 +26,7 @@ if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" !=
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
 else
-  CCGS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+  CCGS_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
@@ -44,7 +44,7 @@ fi
 # "Write your full output to `...`" in the prompt whose path is not a template
 # placeholder ([path], <path>, {path}, or a path holding one) is the contract.
 # A subagent whose prompt names no path is not checked. The existence check is
-# `.claude/scripts/write-guard.sh artifact`, its helper twin.
+# `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh artifact`, its helper twin.
 #
 # Exit behavior:
 #   exit 0 always = advisory (it warns, never blocks; additionalContext on
@@ -97,8 +97,8 @@ _VA_P=$(LC_ALL=C awk 'BEGIN { BINMODE = 3 }
     exit
   }' "$_VA_T")
 [ -n "$_VA_P" ] || exit 0
-[ -f .claude/scripts/write-guard.sh ] || va_say "Artifact check did not run for subagent $_VA_TYPE: the helper .claude/scripts/write-guard.sh is missing."
-case "$(bash .claude/scripts/write-guard.sh --root . artifact "$_VA_P" 2>/dev/null)" in
+[ -f C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh ] || va_say "Artifact check did not run for subagent $_VA_TYPE: the helper C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh is missing."
+case "$(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/write-guard.sh --root . artifact "$_VA_P" 2>/dev/null)" in
   *"	missing") ;;
   *) exit 0 ;;
 esac

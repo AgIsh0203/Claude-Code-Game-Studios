@@ -16,7 +16,7 @@
 #      make .claude/ a root, and the hooks would write .claude/production/
 #   3. CLAUDE_PROJECT_DIR       -> that  (populated in the hook environment),
 #      unless it names a .claude folder, for the same reason as rule 2
-#   4. this script's location   -> <root>/.claude/hooks/../.. by construction
+#   4. this script's location   -> C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/../.. by construction
 # Rule 4 always works and needs no environment at all; rules 1-2 stop it from
 # overriding a caller that legitimately means somewhere else.
 #
@@ -26,7 +26,7 @@ if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" !=
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
 else
-  CCGS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+  CCGS_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
@@ -37,9 +37,9 @@ fi
 # the values the file's header lists. It runs BEFORE the write, the only point
 # where the old file can still be compared with the new content.
 #
-# The logic is `.claude/scripts/registry.sh compare`, its helper twin; this hook
+# The logic is `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh compare`, its helper twin; this hook
 # reads the payload and rebuilds the new content through
-# `.claude/scripts/hook-input.sh`, then calls it. A skill that writes a registry
+# `C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/hook-input.sh`, then calls it. A skill that writes a registry
 # runs `registry.sh validate` itself after writing, because hooks do not run on
 # every tool that runs the skills.
 #
@@ -60,19 +60,19 @@ case "$INPUT" in
   *) exit 0 ;;
 esac
 
-[ -f .claude/hooks/yaml-helper.sh ] && . .claude/hooks/yaml-helper.sh 2>/dev/null
+[ -f C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh ] && . C:/Users/ishan/.claude/ccgs-studio/.claude/hooks/yaml-helper.sh 2>/dev/null
 vr_warn() {
   if command -v hook_warn >/dev/null 2>&1; then hook_warn PreToolUse "$1"
   else printf '%s\n' "$1" >&2; fi
   exit 0
 }
 for _vr_s in hook-input.sh registry.sh; do
-  [ -f ".claude/scripts/$_vr_s" ] || vr_warn "Registry check skipped: the helper .claude/scripts/$_vr_s is missing, so the write goes ahead unchecked."
+  [ -f "C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/$_vr_s" ] || vr_warn "Registry check skipped: the helper C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/$_vr_s is missing, so the write goes ahead unchecked."
 done
 
 _VR_NEW=$(mktemp 2>/dev/null) || exit 0
 trap 'rm -f "$_VR_NEW"' EXIT
-_VR_IN=$(printf '%s' "$INPUT" | bash .claude/scripts/hook-input.sh --root . --new "$_VR_NEW" 2>/dev/null)
+_VR_IN=$(printf '%s' "$INPUT" | bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/hook-input.sh --root . --new "$_VR_NEW" 2>/dev/null)
 vr_row() { printf '%s\n' "$_VR_IN" | awk -F '\t' -v k="$1" '$1 == k { print $2; exit }'; }
 REL_PATH=$(vr_row path)
 [ "$(vr_row where)" = inside ] || exit 0
@@ -85,7 +85,7 @@ case "$REL_PATH" in
   *) exit 0 ;;
 esac
 
-_VR_VALIDATE="run bash .claude/scripts/registry.sh validate after writing and fix what it reports"
+_VR_VALIDATE="run bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh validate after writing and fix what it reports"
 vr_skip() { vr_warn "Registry check skipped for $REL_PATH: $1. The write goes ahead; $_VR_VALIDATE."; }
 _VR_TOOL=$(vr_row tool)
 case "$_VR_TOOL" in Write|Edit) ;; *) vr_skip "the hook rebuilds Write and Edit only, not $_VR_TOOL" ;; esac
@@ -97,7 +97,7 @@ case "$(vr_row new)" in
   *) vr_skip "the new content could not be rebuilt" ;;
 esac
 
-_VR_OUT=$(bash .claude/scripts/registry.sh compare "$REG" "$REL_PATH" "$_VR_NEW" 2>/dev/null)
+_VR_OUT=$(bash C:/Users/ishan/.claude/ccgs-studio/.claude/scripts/registry.sh compare "$REG" "$REL_PATH" "$_VR_NEW" 2>/dev/null)
 
 # At most this many names per rule in the warning: a longer list buries the
 # point, and validate prints them all.
