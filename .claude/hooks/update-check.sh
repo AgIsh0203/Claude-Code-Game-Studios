@@ -13,7 +13,7 @@
 #     Asks GitHub for the latest release and writes the cache. Run in the
 #     background by update_check_notice; safe to run by hand.
 #
-# Off when `updates.check: false` (project.local.yaml first, then project.yaml;
+# Off when `updates.check: false` (.claude/ccgs/project.local.yaml first, then .claude/ccgs/project.yaml;
 # see effects-map.md) or when the CI environment variable is set: nobody reads a
 # session-start line in CI, and a fresh runner has no cache to stop it asking
 # GitHub on every run.
@@ -22,10 +22,10 @@
 # for the refresh only.
 
 # THE VERSION OF THE FRAMEWORK THESE FILES BELONG TO. Bumped at every release,
-# with framework.version in the template's project.yaml.
+# with framework.version in the template's .claude/ccgs/project.yaml.
 #
 # Not framework.version itself: that is the project's file, and an upgrade
-# that keeps your project.yaml leaves it on the old number (UPGRADING.md says
+# that keeps your .claude/ccgs/project.yaml leaves it on the old number (UPGRADING.md says
 # so), which would announce the release you already have. This file is replaced
 # with the rest of .claude/hooks/ on every upgrade, so its number is the
 # framework actually installed.
@@ -66,14 +66,14 @@ _update_check_newer() {
   return 1
 }
 
-# 0 unless updates.check is false. project.local.yaml first (it is a personal
-# setting), then project.yaml. A value other than true or false is skipped, as
+# 0 unless updates.check is false. .claude/ccgs/project.local.yaml first (it is a personal
+# setting), then .claude/ccgs/project.yaml. A value other than true or false is skipped, as
 # resolve_setting skips it, and the session-start schema check names it.
 # awk, not get_effective_yaml_key: that starts Python twice per session start.
 _update_check_enabled() {
   local f v root="${_YH_ROOT:-.}"
   [ -n "${CI:-}" ] && return 1
-  for f in "$root/project.local.yaml" "$root/project.yaml"; do
+  for f in "$root/.claude/ccgs/project.local.yaml" "$root/.claude/ccgs/project.yaml"; do
     [ -f "$f" ] || continue
     v=$(awk '
       /^updates:[[:space:]]*(#.*)?$/ { inu=1; next }
@@ -170,7 +170,7 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
   # Run directly, work from the project root, in session-start.sh's order: a
   # cwd that is a project root wins, then CLAUDE_PROJECT_DIR, then this file's
   # own location. Sourced, it leaves the caller's directory alone.
-  if [ -f "project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
+  if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
     CCGS_ROOT="$PWD"
   elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
     CCGS_ROOT="$CLAUDE_PROJECT_DIR"

@@ -8,6 +8,8 @@ model: sonnet
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Asset Audit
 
 ## Measuring file sizes and formats requires Bash
@@ -58,7 +60,7 @@ the two happened — a reader cannot tell from a green result.
 
 ## Phase 1: Read Standards
 
-Read the art bible's Asset Standards section (`design/art/art-bible.md`) and any
+Read the art bible's Asset Standards section (`docs/design/art/art-bible.md`) and any
 asset standards in the relevant design docs — size budgets and format rules come
 from there. The naming patterns are the ones in Phase 3 below, unless the art
 bible states its own. Read the art bible by section: find the heading with
@@ -73,7 +75,7 @@ Asset Standards section sets budgets, formats and the naming convention.
 
 ## Phase 2: Scan Asset Directories
 
-Assets live under the engine's asset root: `assets/` on Godot, `Assets/` on
+Assets live under the engine's asset root: `Content/` on Godot, `Assets/` on
 Unity, `Content/` on Unreal. Resolve the engine and its code root per
 `.claude/docs/code-root-resolution.md`; that code root is the one Phase 3's
 orphan and missing-asset searches read. If it is unresolved, stop:
@@ -81,8 +83,8 @@ orphan and missing-asset searches read. If it is unresolved, stop:
 
 Scan the asset root using Glob:
 
-- **Godot** — `assets/art/**/*`, `assets/audio/**/*`, `assets/vfx/**/*`,
-  `assets/shaders/**/*`, `assets/data/**/*`
+- **Godot** — `Content/art/**/*`, `Content/audio/**/*`, `Content/vfx/**/*`,
+  `Content/shaders/**/*`, `Content/data/**/*`
 - **Unity** — `Assets/**/*`, leaving out scripts (`*.cs`, `*.asmdef`) and `*.meta` files
 - **Unreal** — `Content/**/*.uasset` and `Content/**/*.umap`
 

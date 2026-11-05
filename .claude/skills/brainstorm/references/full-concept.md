@@ -4,7 +4,7 @@
 Phase 4 Pillars and boundaries · Phase 5 Player types · Phase 6 Scope and feasibility · Phase 7
 Write the concept · Phase 8 Next steps
 
-The output is `design/gdd/game-concept.md`, written from the game-concept template SKILL.md names.
+The output is `docs/GDD.md`, written from the game-concept template SKILL.md names.
 Ask at each phase; never generate the whole concept silently. You facilitate, the user decides.
 Write the analysis in your reply first, then ask with short option labels.
 
@@ -12,7 +12,7 @@ Write the analysis in your reply first, then ask with short option labels.
 
 1. The text typed after the skill name may hold a genre or theme hint (`roguelike`, `cozy
    farming`). `open` or nothing: start from scratch.
-2. If `design/gdd/game-concept.md` or `design/gdd/game-pillars.md` exists, read it by section (find
+2. If `docs/GDD.md` or `docs/GDD.md` exists, read it by section (find
    the headings with the Grep tool with pattern `^#` in content mode, then read those ranges)
    and resume or build on it instead of restarting.
 
@@ -150,7 +150,7 @@ one-line visual rule, 2-3 supporting principles with design tests, and the colou
 The Core Identity table's Estimated Scope matches the full-vision timeline in Scope Tiers: write
 "Large (X–Y months, solo)" or "Large (X–Y months, team of N)", not "Large".
 
-Ask, as its own question: "Game concept is ready. May I write it to `design/gdd/game-concept.md`?"
+Ask, as its own question: "Game concept is ready. May I write it to `docs/GDD.md`?"
 `Yes — write it` / `Not yet — revise a section first`. Write only on an explicit yes to this
 question. A revision: ask which section (`Elevator Pitch` / `Core Fantasy & Unique Hook` /
 `Pillars` / `Core Loop` / `MVP Definition` / `Scope Tiers` / `Risks` / `Something else — I'll
@@ -160,7 +160,7 @@ describe`), show it before and after, then ask "Ready to write the updated conce
 - `guided`: ask once, apply the revision and write.
 - `autonomous`: do not ask; write and log the decision.
 
-Write the file, creating folders as needed. Never write `design/game-brief.md` at this tier.
+Write the file, creating folders as needed. Never write `docs/GDD.md` at this tier.
 
 ## Phase 8: Next steps
 
@@ -170,7 +170,7 @@ List every step, in order.
 1. `/setup-engine`: configure the engine and its version-aware reference docs
 2. `/art-bible`: the visual identity, before any GDD. Required before the Technical Setup gate at
    `full`; at `standard` only when the game has visual-asset stories
-3. `/design-review design/gdd/game-concept.md`: check the concept is complete
+3. `/design-review docs/GDD.md`: check the concept is complete
 4. The `creative-director` agent: refine the pillars
 5. `/map-systems`: the systems, their dependencies and priorities, in the systems index
 6. `/design-system`: one GDD per system from step 5
@@ -182,7 +182,7 @@ List every step, in order.
 
 **Prototype-first** (the core mechanic is unproven):
 1. `/setup-engine`
-2. `/prototype [core mechanic]`: is it fun, in a day at most, throwaway code
+2. `/gamedev-prototype [core mechanic]`: is it fun, in a day at most, throwaway code
 3. PROCEED: `/art-bible`, then design-first steps 5-10 with what the prototype taught
 4. PIVOT: `/brainstorm` again with the learnings
 5. After design and architecture, `/vertical-slice` before committing to sprints
@@ -191,5 +191,5 @@ Then a summary: the pitch, pillars, primary player type, engine preference, bigg
 file path. End with the line `Verdict: COMPLETE — game concept written.`
 
 If the conversation is getting long before Phase 7, say that anything not yet written to
-`design/gdd/game-concept.md` lives only in this conversation, and write the concept before a fresh
+`docs/GDD.md` lives only in this conversation, and write the concept before a fresh
 session.

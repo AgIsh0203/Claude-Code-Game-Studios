@@ -8,6 +8,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash 
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,automation_always_ask,workflow,qa.level,gate_level,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
@@ -23,7 +25,7 @@ deviations from the GDD, the ADRs and the story's own scope are reported as fact
 and the story is marked Complete only on the user's yes.
 
 **Writes, after the user's yes:** the story file (`Status`, `Last Updated`, a
-`## Completion Notes` section) and its `production/sprint-status.yaml` entry;
+`## Completion Notes` section) and its `docs/production/sprint-status.yaml` entry;
 `docs/tech-debt-register.md` only when the user picks that option. The session
 checkpoint is written at the end of every run, whatever the verdict.
 **Next:** the next story (Phase 8).
@@ -50,14 +52,14 @@ Checklist (copy it and tick as you go):
 **Which story.** The text typed after the skill name, with any `--review <mode>`
 pair removed, is the story path. With nothing typed:
 
-1. The checkpoint in `production/session-state/active.md`: its **Current task**
+1. The checkpoint in `.claude/ccgs/session-state/active.md`: its **Current task**
    line, when it names a story.
 2. Else the stories in progress: `bash .claude/scripts/story-facts.sh --all`, rows
    whose state is `IN_REVIEW` or `IN_PROGRESS`. Several: ask "Which story are we
    closing?" with one option per story.
-3. None: ask for the path. When `production/epics/` holds no story file at all,
+3. None: ask for the path. When `docs/production/epics/` holds no story file at all,
    stop:
-   "No stories found in `production/epics/` — run `/create-stories [epic-slug]` to make them (at `standard` and `full`, run `/create-epics` first if there is no epic yet)."
+   "No stories found in `docs/production/epics/` — run `/create-stories [epic-slug]` to make them (at `standard` and `full`, run `/create-epics` first if there is no epic yet)."
 
 **Its facts.** `bash .claude/scripts/story-facts.sh <story-path>` gives the status,
 type, layer, TR-IDs, ADRs, criteria count, test-evidence status and dependencies.
@@ -65,7 +67,7 @@ Then read the story in full: the criteria text, the Test Evidence path, `## File
 Out of Scope.
 
 **Tier.** `workflow` for the story's system, keyed on the GDD filename stem of its
-`GDD:` path (`design/gdd/<stem>.md` → `<stem>`; the `[system]` of its TR-ID only
+`GDD:` path (`docs/design/gdd/<stem>.md` → `<stem>`; the `[system]` of its TR-ID only
 when there is no GDD path): that system's `system_overrides` row if there is one,
 else the project value.
 
@@ -95,7 +97,7 @@ By the tier. Read every document by section, never whole.
   entry's text below (the anchor keeps `TR-combat-001` from matching
   `TR-combat-0010`; `\s*` takes a Windows line ending). Never use text quoted in the
   story; the GDD's Acceptance Criteria and Detailed Design
-  (`bash .claude/scripts/md-section.sh extract design/gdd/<file>.md "Acceptance Criteria"`,
+  (`bash .claude/scripts/md-section.sh extract docs/design/gdd/<file>.md "Acceptance Criteria"`,
   then the same for `"Detailed Design"`; exit 3: try `"Detailed Rules"`, the design
   standard's name for the same section);
   each ADR's status with `bash .claude/scripts/adr-status.sh <ADR ids>`, then its
@@ -123,7 +125,7 @@ Take each acceptance criterion in turn:
   Yes — passes / No — fails / Not tested yet. `Not tested yet` is UNTESTED, and
   keeps the verdict at best NOT ASSESSED until someone checks it.
 - **Seen on screen:** a criterion about something visible is covered by a retained
-  image under `production/qa/evidence/[story-slug]/` (`[story-slug]`: the story
+  image under `docs/production/qa/evidence/[story-slug]/` (`[story-slug]`: the story
   file's name without `.md`) that you opened and saw it in.
   Never describe an image you have not opened; a checkpoint's `Run result:
   OBSERVED — <text>` is `/dev-story`'s description, to quote as such.
@@ -137,7 +139,7 @@ Then map each criterion to what covers it: a test under the test root, a
 | Criterion | Covered by | Status |
 |-----------|------------|--------|
 | AC-1: [text] | tests/unit/[system]/[file]::[test] | COVERED |
-| AC-2: [text] | production/qa/evidence/[slug]/01-[what].png | COVERED |
+| AC-2: [text] | docs/production/qa/evidence/[slug]/01-[what].png | COVERED |
 | AC-3: [text] | — | UNTESTED |
 ```
 
@@ -152,14 +154,14 @@ say so: `Test evidence: waived at qa.level minimal`.
 - **Logic:** the exact path in the story's Test Evidence section, else anywhere
   under `tests/unit/[system]/`.
 - **Integration:** the same under `tests/integration/[system]/`, else a playtest
-  record naming this story in `production/qa/playtests/` (`/playtest-report`
+  record naming this story in `docs/production/qa/playtests/` (`/playtest-report`
   writes them there).
 - **UI:** a UI story is satisfied by the retained screenshot of each screen touched,
-  under `production/qa/evidence/`. No evidence doc or sign-off needed.
+  under `docs/production/qa/evidence/`. No evidence doc or sign-off needed.
 - **Visual/Feel:** the screenshot, and a Visual/Feel story also needs the sign-off:
-  `production/qa/evidence/[story-slug]-evidence.md` with every sign-off row
+  `docs/production/qa/evidence/[story-slug]-evidence.md` with every sign-off row
   `[x] Approved` (one person may sign every role).
-- **Config/Data:** a `production/qa/smoke-*.md` report; none: "No smoke check
+- **Config/Data:** a `docs/production/qa/smoke-*.md` report; none: "No smoke check
   report found. Run `/smoke-check`."
 - **No Type:** advisory: "Story Type not declared. Add `Type:` to the story header."
 
@@ -168,7 +170,7 @@ in the notes. Name what is missing and where it goes. An evidence doc with no im
 beside it is not evidence: a described check is an assertion.
 
 **Is the evidence older than its code?** For a retained image, run
-`bash .claude/scripts/review-receipts.sh check production/qa/evidence/[story-slug]/stamp.txt`.
+`bash .claude/scripts/review-receipts.sh check docs/production/qa/evidence/[story-slug]/stamp.txt`.
 Each `CHANGED:` or `GONE:` file: "[file] changed after the evidence was captured —
 re-capture it." `RECEIPT: NONE`: "no stamp — whether the evidence is older than the
 code cannot be told". Report these lines; they never change the verdict.
@@ -212,7 +214,7 @@ Read the `review_gate` line above.
 
 - **`skill-gates=skip`:** no agent. Note `QL-TEST-COVERAGE skipped — [Solo | Lean]
   mode` and `LP-CODE-REVIEW skipped — [Solo | Lean] mode`. In `lean` mode, ask: "Did
-  you run `/code-review` on the implemented files?" Options: Yes — it passed or was
+  you run `/gamedev-code-review` on the implemented files?" Options: Yes — it passed or was
   approved with suggestions / No — skipping review for this story / No — I'll run
   it before the sprint close-out. The answer sets Reviewed by.
 - **`skill-gates=run`:** read `references/review-gates.md` and
@@ -220,7 +222,7 @@ Read the `review_gate` line above.
   it.
 
 **Reviewed by** is never blank: `lead-programmer` when LP-CODE-REVIEW ran;
-`/code-review (you said you ran it; not verified here)` for the lean Yes; `self, no
+`/gamedev-code-review (you said you ran it; not verified here)` for the lean Yes; `self, no
 independent review` in solo mode, for either No, and when no implementation file
 exists yet.
 
@@ -290,7 +292,7 @@ close.
    ```
 3. "Close and log as tech debt": read `references/tech-debt-row.md` and add one
    row per advisory deviation.
-4. `production/sprint-status.yaml`, when it exists: this story's entry gets
+4. `docs/production/sprint-status.yaml`, when it exists: this story's entry gets
    `status: done` and `completed: [date]`, and the top-level `updated` gets today.
    The close answer covers it.
 5. Print a suggested commit: `git add [the changed code and test files] [story path]`
@@ -301,7 +303,7 @@ fix a failing criterion yourself: report it and ask what to do.
 
 ## Phase 8: Next story, checkpoint, close
 
-**The next story.** With no sprint plan in `production/sprints/` (always at
+**The next story.** With no sprint plan in `docs/production/sprints/` (always at
 `workflow: minimal`): Run `bash .claude/scripts/story-status.sh` after the close, so
 this story's new status is in it. It prints the unfinished stories in route order;
 do not re-rank them. The first `In Review` story is next (the first `IN_REVIEW`

@@ -3,9 +3,11 @@ name: playtest-report
 description: "Structured playtest report template, or turn existing playtest notes into structured feedback."
 argument-hint: "[new|analyze path-to-notes] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/playtest-report/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/playtest-report/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation`
 
@@ -131,7 +133,7 @@ Present the categorized list, then route:
 - **Design changes:** "Run `/propagate-design-change [path]` on the affected design document to find downstream impacts before making changes."
 - **Balance adjustments:** "Run `/balance-check [system]` to verify the full balance picture before tuning values."
 - **Bugs:** "Use `/bug-report` to formally track these."
-- **Polish items:** "Add to the polish backlog in `production/` when the team reaches that phase."
+- **Polish items:** "Add to the polish backlog in `docs/production/` when the team reaches that phase."
 
 ---
 
@@ -145,9 +147,9 @@ Present the categorized list, then route:
 After categorising findings, spawn `creative-director` via `Agent` using gate **CD-PLAYTEST** (`.claude/docs/director-gates/cd-playtest.md`).
 
 Pass: the structured report content, game pillars and core fantasy (from
-`design/gdd/game-concept.md`), the specific hypothesis being tested. **If
+`docs/GDD.md`), the specific hypothesis being tested. **If
 `game-concept.md` does not exist** — expected at `minimal`, where
-`design/game-brief.md` replaces it — the brief has no pillars: pass its
+`docs/GDD.md` replaces it — the brief has no pillars: pass its
 one-sentence pitch and its "Who it's for / what they feel" line instead, and say
 they stand in for pillars. If neither document exists, say so in the prompt:
 *"No pillars available — assess against the hypothesis alone."* A director gate
@@ -159,7 +161,7 @@ Present the creative director's assessment before saving the report. If CONCERNS
 
 ## Phase 4: Save Report
 
-Ask: "May I write this playtest report to `production/qa/playtests/playtest-[date]-[tester].md`?"
+Ask: "May I write this playtest report to `docs/production/qa/playtests/playtest-[date]-[tester].md`?"
 
 If yes, write the file, creating the directory if needed.
 

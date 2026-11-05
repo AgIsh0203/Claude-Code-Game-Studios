@@ -20,6 +20,6 @@ These become the contracts programmers implement against.
 exists and has not changed signature in the target engine version.
 
 Get user approval on the API boundaries, then record them in
-`production/session-state/active.md`; they are written at Phase 7.
+`.claude/ccgs/session-state/active.md`; they are written at Phase 7.
 
 ---

@@ -81,5 +81,5 @@ Verified by reading the agent's `.claude/agents/systems-designer.md` frontmatter
 - Progression curve design (XP curves, level-up scaling) is not covered — a dedicated case should be added.
 - Economy model review (resource generation and sink rates, inflation prevention) is not covered.
 - Status effect interaction matrix (stacking rules, priority, immunity interactions) is not covered.
-- Registry awareness (checking `design/registry/entities.yaml` before defining a cross-system value) is not covered.
+- Registry awareness (checking `docs/design/registry/entities.yaml` before defining a cross-system value) is not covered.
 - Cross-system formula dependency review (e.g., crafting formula that feeds into combat formula) is not covered — deferred to integration tests.

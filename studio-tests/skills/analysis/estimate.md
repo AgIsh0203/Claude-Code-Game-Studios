@@ -5,8 +5,8 @@
 `/estimate [task-description]` estimates the effort for one task. It reads the
 task description from the argument (asking for clarification first if it is too
 vague to estimate), the project context from `CLAUDE.md`, and any related GDD in
-`design/gdd/` (Phase 1). It scans the affected code for complexity, integration
-points and test coverage, and reads `production/sprints/` for similar completed
+`docs/design/gdd/` (Phase 1). It scans the affected code for complexity, integration
+points and test coverage, and reads `docs/production/sprints/` for similar completed
 tasks and historical velocity (Phase 2). It analyzes code complexity, scope and
 risk (Phase 3), then prints an estimate (Phase 4): a Complexity Assessment
 table, an Effort Estimate in days for Optimistic / Expected / Pessimistic
@@ -38,9 +38,9 @@ None. Estimation is an advisory informational skill; no gates are invoked.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -50,18 +50,18 @@ Fixture defaults.
 ### Case 1: Happy Path — Clear task in a documented system with existing patterns
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, so the code root is `src/`
-- `design/gdd/combat.md` documents melee hit detection
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, so the code root is `src/`
+- `docs/design/gdd/combat.md` documents melee hit detection
 - `src/combat/` holds the melee attack code; similar collision code already exists there
-- `production/sprints/sprint-003.md` through `sprint-005.md` record completed combat tasks
+- `docs/production/sprints/sprint-003.md` through `sprint-005.md` record completed combat tasks
 
 **Input:** `/estimate Add hitbox detection to melee attacks`
 
 **Expected behavior:**
 1. Skill restates the task; the description is specific enough, so no clarification is asked
-2. Skill reads `design/gdd/combat.md` because the task relates to a documented system
+2. Skill reads `docs/design/gdd/combat.md` because the task relates to a documented system
 3. Skill scans `src/combat/` for affected files, integration points and existing tests
-4. Skill reads `production/sprints/` for similar completed tasks and velocity
+4. Skill reads `docs/production/sprints/` for similar completed tasks and velocity
 5. Output follows the Phase 4 template: Complexity Assessment, Effort Estimate (Optimistic / Expected / Pessimistic, in days), Recommended budget, Confidence, Risk Factors, Dependencies, Suggested Breakdown with a Total, Notes and Assumptions
 6. Recommended budget equals the Expected figure; all figures are in half-day increments
 7. A brief summary gives the recommended budget, the confidence level and the single biggest risk
@@ -81,24 +81,24 @@ Fixture defaults.
 ### Case 2: High Uncertainty — New subsystem, no architecture decided
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`
 - `src/` holds no source files for an online or matchmaking subsystem
-- `design/gdd/online.md` describes the lobby with open "TBD" requirements, and says the networking approach (transport, host model) is not yet decided
+- `docs/design/gdd/online.md` describes the lobby with open "TBD" requirements, and says the networking approach (transport, host model) is not yet decided
 
 **Input:** `/estimate Implement online lobby matchmaking`
 
 **Expected behavior:**
-1. Skill reads `design/gdd/online.md` and finds the unresolved requirements and the undecided networking approach
+1. Skill reads `docs/design/gdd/online.md` and finds the unresolved requirements and the undecided networking approach
 2. Code scan finds no existing subsystem; "Existing patterns available" is No
 3. Risk Factors table lists the specific unknowns: the networking approach the GDD leaves undecided, new technology, unclear requirements
 4. Confidence is Low, with the drivers explained
-5. Phase 5 recommends a time-boxed spike via `/prototype` before committing
+5. Phase 5 recommends a time-boxed spike via `/gamedev-prototype` before committing
 6. No files are written
 
 **Assertions:**
 - [ ] Confidence is Low when the task has an undecided approach, no existing code and TBD requirements
 - [ ] The Risk Factors table names the specific unknowns driving the uncertainty
-- [ ] Output recommends a time-boxed `/prototype` spike before committing
+- [ ] Output recommends a time-boxed `/gamedev-prototype` spike before committing
 - [ ] No files are written
 
 ---
@@ -106,9 +106,9 @@ Fixture defaults.
 ### Case 3: No Sprint Velocity Data — Estimate still produced, gap stated
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`; `src/core/` holds the inventory code the save touches
-- `design/gdd/save-load.md` documents the save system clearly
-- `production/sprints/` is empty — no historical sprints
+- `.claude/ccgs/project.yaml`: `engine.name: godot`; `src/core/` holds the inventory code the save touches
+- `docs/design/gdd/save-load.md` documents the save system clearly
+- `docs/production/sprints/` is empty — no historical sprints
 
 **Input:** `/estimate Implement save and load of player inventory`
 
@@ -131,7 +131,7 @@ Fixture defaults.
 ### Case 4: Vague Task — Clarification before estimating
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`
 - Project has GDDs and source code under `src/`; sprint history exists
 
 **Input:** `/estimate make combat feel better`
@@ -153,7 +153,7 @@ Fixture defaults.
 ### Case 5: Gate Compliance — No gate; estimates are informational
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `modes.review_mode: full`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `modes.review_mode: full`
 - Task relates to a documented system with medium complexity; its code is under `src/`
 
 **Input:** `/estimate Add item pickup with inventory stacking`
@@ -175,11 +175,11 @@ Fixture defaults.
 ## Protocol Compliance
 
 - [ ] Reads the task argument, project context and any related GDD before estimating
-- [ ] Reads `production/sprints/` for similar tasks and velocity when available
+- [ ] Reads `docs/production/sprints/` for similar tasks and velocity when available
 - [ ] Produces an effort range (Optimistic / Expected / Pessimistic days), not a single number
 - [ ] Does not write any files
 - [ ] No director gates are invoked
-- [ ] Ends with Phase 5 next steps matched to the result (`/prototype` for Low confidence, `/create-stories` for tasks over 10 days, `/sprint-plan update` to schedule)
+- [ ] Ends with Phase 5 next steps matched to the result (`/gamedev-prototype` for Low confidence, `/create-stories` for tasks over 10 days, `/sprint-plan update` to schedule)
 
 ---
 

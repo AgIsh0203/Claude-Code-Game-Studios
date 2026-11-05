@@ -19,7 +19,7 @@ No gate IDs assigned.
 ## Test Cases
 
 ### Case 1: In-domain request — appropriate output
-**Input:** The UX spec at `design/ux/inventory-flow.md` defines five slot states: default, hover, selected, empty-slot, locked-slot. Request: "Implement the inventory screen from the UX spec in `design/ux/inventory-flow.md`."
+**Input:** The UX spec at `docs/design/ux/inventory-flow.md` defines five slot states: default, hover, selected, empty-slot, locked-slot. Request: "Implement the inventory screen from the UX spec in `docs/design/ux/inventory-flow.md`."
 **Expected behavior:**
 - Reads the UX spec before producing any code
 - Produces implementation using the project's configured UI framework (UI Toolkit, UGUI, UMG, or Godot Control nodes)
@@ -74,6 +74,6 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- Inventory implementation (Case 1) should have a retained screenshot of each screen touched in `production/qa/evidence/`
+- Inventory implementation (Case 1) should have a retained screenshot of each screen touched in `docs/production/qa/evidence/`
 - Animation coordination (Case 3) confirms the agent does not invent feel parameters without a spec
 - Ambiguous spec (Case 4) verifies the agent routes spec gaps back to the authoring agent rather than guessing

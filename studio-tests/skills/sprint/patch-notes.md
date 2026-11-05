@@ -6,17 +6,17 @@
 player-facing patch notes. Before reading any history it classifies recent
 commits as Game or Framework / maintenance (Unclear counts as Framework), uses
 only the Game commits, and says how many of how many it used. It gathers change
-data from `production/releases/[version]/changelog.md`, the version's entry in
+data from `docs/production/releases/[version]/changelog.md`, the version's entry in
 `docs/CHANGELOG.md`, and — as a fallback — `git log` from the previous release
 tag. It checks for a tone guide (`.claude/docs/technical-preferences.md`,
-`docs/PATCH-NOTES-STYLE.md`, `design/community/tone-guide.md`) and a patch-notes
+`docs/PATCH-NOTES-STYLE.md`, `docs/design/community/tone-guide.md`) and a patch-notes
 template (`docs/patch-notes-template.md`,
 `.claude/docs/templates/patch-notes-template.md`), removes internal-only
 changes, and translates the rest into player language in Brief, Detailed
 (default) or Full style — or in the template's structure when one exists, saying
 which template it used. No director gates are used. The skill asks "May I write
 these patch notes to `docs/patch-notes/[version].md`, and an archive copy to
-`production/releases/[version]/patch-notes.md`?" — naming both files — and on
+`docs/production/releases/[version]/patch-notes.md`?" — naming both files — and on
 approval writes both. Verdicts:
 COMPLETE (notes generated and saved) or BLOCKED (no changelog data and no git
 history, or no Game commit in the history).
@@ -43,9 +43,9 @@ None. Patch notes generation is a fast compilation task; no gates are invoked.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -76,7 +76,7 @@ Fixture defaults.
    names)
 6. Skill presents the notes with a count of changes by category and the list of
    excluded internal changes
-7. Skill asks "May I write these patch notes to `docs/patch-notes/v0.4.0.md`, and an archive copy to `production/releases/v0.4.0/patch-notes.md`?"
+7. Skill asks "May I write these patch notes to `docs/patch-notes/v0.4.0.md`, and an archive copy to `docs/production/releases/v0.4.0/patch-notes.md`?"
 8. User approves; both files are written; verdict COMPLETE
 
 **Assertions:**
@@ -91,7 +91,7 @@ Fixture defaults.
 ### Case 2: No Changelog File — Falls back to git history
 
 **Fixture:**
-- Neither `production/releases/v0.4.0/changelog.md` nor `docs/CHANGELOG.md` exists
+- Neither `docs/production/releases/v0.4.0/changelog.md` nor `docs/CHANGELOG.md` exists
 - Tag `v0.3.0` exists; the range `v0.3.0..HEAD` holds 6 Game commits and 2
   Framework / maintenance commits (one touching a hook, one touching CI)
 
@@ -122,7 +122,7 @@ Fixture defaults.
 **Fixture:**
 - `docs/CHANGELOG.md` has a `v0.4.0` entry with player-facing items; git history
   holds the matching Game commits
-- `design/community/tone-guide.md` exists with guidance: "upbeat, encouraging tone; avoid passive voice"
+- `docs/design/community/tone-guide.md` exists with guidance: "upbeat, encouraging tone; avoid passive voice"
 - `docs/PATCH-NOTES-STYLE.md` does not exist and
   `.claude/docs/technical-preferences.md` has no tone, voice or style fields
 - No patch-notes template exists
@@ -131,14 +131,14 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Skill reads the changelog entry
-2. Skill checks the three tone sources and finds `design/community/tone-guide.md`
+2. Skill checks the three tone sources and finds `docs/design/community/tone-guide.md`
 3. Skill extracts the guide's instructions and applies them to the language and
    framing of the notes, in place of the built-in default tone
 4. Structure stays the built-in Detailed style
 5. Skill presents the notes, asks "May I write", writes on approval
 
 **Assertions:**
-- [ ] Skill checks the tone sources in Phase 2b, including `design/community/tone-guide.md`
+- [ ] Skill checks the tone sources in Phase 2b, including `docs/design/community/tone-guide.md`
 - [ ] The tone guide's instructions are applied in place of the built-in default tone
 - [ ] Entries use active voice ("Fixed a crash when…", "You can now…"), not passive ("A crash was fixed")
 - [ ] Tone guidance changes wording only — the output structure is still the Detailed style
@@ -179,7 +179,7 @@ Fixture defaults.
 **Fixture:**
 - `docs/CHANGELOG.md` has a `v0.4.0` entry with player-facing items; git history
   holds the matching Game commits
-- `project.yaml` sets `modes.review_mode: full`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full`
 
 **Input:** `/patch-notes v0.4.0`
 
@@ -205,8 +205,8 @@ Fixture defaults.
 - `git log --oneline -20` shows 20 commits, all touching the framework or
   tooling — subjects such as "fix: session-start hook timeout", "docs: skill
   catalog", "ci: cache the test runner" — and none names a game system in
-  `design/` or the code root
-- Neither `production/releases/v0.4.0/changelog.md` nor `docs/CHANGELOG.md` exists
+  `docs/design/` or the code root
+- Neither `docs/production/releases/v0.4.0/changelog.md` nor `docs/CHANGELOG.md` exists
 
 **Input:** `/patch-notes v0.4.0`
 
@@ -228,7 +228,7 @@ Fixture defaults.
 ### Case 7: No Changelog Data — No changelog and no git history
 
 **Fixture:**
-- Neither `production/releases/v0.4.0/changelog.md` nor `docs/CHANGELOG.md` exists
+- Neither `docs/production/releases/v0.4.0/changelog.md` nor `docs/CHANGELOG.md` exists
 - The project directory is not a git repository, so `git log` returns nothing
 
 **Input:** `/patch-notes v0.4.0`
@@ -252,7 +252,7 @@ Fixture defaults.
 ## Protocol Compliance
 
 - [ ] Runs the provenance check before reading history, uses only Game commits, and says how many were used
-- [ ] Reads the version's changelog entry (`production/releases/[version]/changelog.md`, `docs/CHANGELOG.md`) before falling back to `git log`
+- [ ] Reads the version's changelog entry (`docs/production/releases/[version]/changelog.md`, `docs/CHANGELOG.md`) before falling back to `git log`
 - [ ] Filters entries to player-facing items only, and lists the excluded internal changes for review
 - [ ] Rewrites entries in plain language without internal IDs
 - [ ] Always asks "May I write" before writing patch notes

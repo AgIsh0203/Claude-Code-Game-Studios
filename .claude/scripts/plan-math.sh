@@ -2,7 +2,7 @@
 # plan-math.sh — the date and percentage arithmetic planning skills do by
 # hand: days between two dates, a percentage with a zero guard, the sprint file
 # for a sprint number in any form, and the current sprint's progress from
-# production/sprint-status.yaml.
+# docs/production/sprint-status.yaml.
 #
 # Replaces the arithmetic a sprint or milestone planning step would otherwise
 # do by hand.
@@ -17,9 +17,9 @@
 #   pct PART WHOLE [--places N]
 #                           PART / WHOLE * 100, rounded half up to N places
 #                           (default 0); a WHOLE of 0 prints - and says so
-#   sprint N|latest         the production/sprints/ file for sprint N, written
+#   sprint N|latest         the docs/production/sprints/ file for sprint N, written
 #                           3, 03, 003 or sprint-3; latest is the highest number
-#   progress                the current sprint, from production/sprint-status.yaml
+#   progress                the current sprint, from docs/production/sprint-status.yaml
 #   --today D               the date "today" means (default: today's date)
 #   --root DIR              the project; defaults to the repo this script is in
 #   -h, --help              this text
@@ -169,9 +169,9 @@ if [ "$CMD" = sprint ]; then
   case "$want" in latest) ;; ''|*[!0-9]*) usage "sprint takes a number (3, 03, 003, sprint-3) or latest" ;; esac
   # Only sprint-<digits>.md is a sprint plan: retrospectives and reviews that
   # share the folder (sprint-3-retrospective.md) are not.
-  LIST=$(find production/sprints -maxdepth 1 -type f -name 'sprint-[0-9]*.md' 2>/dev/null \
+  LIST=$(find docs/production/sprints -maxdepth 1 -type f -name 'sprint-[0-9]*.md' 2>/dev/null \
          | awk '{ b = $0; sub(/^.*\//, "", b) } b ~ /^sprint-[0-9]+\.md$/ { n = b; gsub(/[^0-9]/, "", n); print (n + 0) "\t" $0 }' | sort -n)
-  [ -n "$LIST" ] || { echo "plan-math: no production/sprints/sprint-N.md files" >&2; exit 3; }
+  [ -n "$LIST" ] || { echo "plan-math: no docs/production/sprints/sprint-N.md files" >&2; exit 3; }
   if [ "$want" = latest ]; then want=$(printf '%s\n' "$LIST" | tail -1 | cut -f1); else want=$((10#$want)); fi
   HITS=$(printf '%s\n' "$LIST" | awk -F'\t' -v w="$want" '$1 == w { print $2 }')
   n=$(printf '%s' "$HITS" | awk 'NF' | wc -l | tr -d ' ')
@@ -185,7 +185,7 @@ if [ "$CMD" = sprint ]; then
 fi
 
 # progress
-YAML="production/sprint-status.yaml"
+YAML="docs/production/sprint-status.yaml"
 [ -f "$YAML" ] || { echo "plan-math: no $YAML" >&2; exit 3; }
 TODAY="$TODAY" awk "$AWK_LIB"'
   BEGIN { BINMODE = 3 }

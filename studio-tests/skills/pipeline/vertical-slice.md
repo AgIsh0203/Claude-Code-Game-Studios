@@ -5,17 +5,17 @@
 `/vertical-slice [--review full|lean|solo]` is the Pre-Production validation
 build: one complete [start → challenge → resolution] loop at near-production
 quality, answering a falsifiable question about player experience *and* build
-feasibility. It reads the concept (`design/gdd/game-concept.md`, or
-`design/game-brief.md` at `rigor: minimal`), the systems index, the architecture
+feasibility. It reads the concept (`docs/GDD.md`, or
+`docs/GDD.md` at `rigor: minimal`), the systems index, the architecture
 and the control manifest, defines the validation question and a 3–5 minute scope,
-asks to record the plan in `production/session-state/active.md`, then asks "May I
-create the vertical slice directory at `prototypes/[concept-name]-vertical-slice/`
+asks to record the plan in `.claude/ccgs/session-state/active.md`, then asks "May I
+create the vertical slice directory at `docs/prototypes/[concept-name]-vertical-slice/`
 and begin implementation?". Every slice file starts with a
 `VERTICAL SLICE - NOT FOR PRODUCTION` header in that file's own comment syntax.
 
 After a one-question-at-a-time debrief it writes
-`prototypes/[concept-name]-vertical-slice/REPORT.md` (from
-`.claude/docs/templates/vertical-slice-report.md`) and a `prototypes/index.md`
+`docs/prototypes/[concept-name]-vertical-slice/REPORT.md` (from
+`.claude/docs/templates/vertical-slice-report.md`) and a `docs/prototypes/index.md`
 row, one ask naming both. Verdicts are **PROCEED / PIVOT / KILL**, plus
 **NOT ASSESSED** when nobody has played the loop through from scratch — ranked
 above PROCEED and below PIVOT and KILL, and never recorded as PROCEED. The verdict
@@ -29,7 +29,7 @@ stories, sprint and gate list. In `full` review mode `creative-director` reviews
 CONCERNS go to the user (Revise / Accept / Discuss); REJECT means PROCEED cannot
 stand — the user chooses PIVOT or KILL and the report records the director's
 reason. PIVOT writes a `PIVOT-NOTE.md`; KILL runs a five-item soundness check and
-appends to `prototypes/GRAVEYARD.md`.
+appends to `docs/prototypes/GRAVEYARD.md`.
 
 ---
 
@@ -41,7 +41,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: PROCEED, PIVOT, KILL, NOT ASSESSED
 - [ ] Contains "May I" language before creating the slice directory and before writing REPORT.md, PIVOT-NOTE.md and GRAVEYARD.md
-- [ ] Has a next-step handoff per verdict (PROCEED → `/create-epics`, `/create-stories`, `/sprint-plan`, `/gate-check production`; PIVOT → `/design-system`, `/architecture-decision`, `/vertical-slice`; KILL → `/brainstorm` or `/prototype`)
+- [ ] Has a next-step handoff per verdict (PROCEED → `/create-epics`, `/create-stories`, `/sprint-plan`, `/gate-check production`; PIVOT → `/design-system`, `/architecture-decision`, `/vertical-slice`; KILL → `/brainstorm` or `/gamedev-prototype`)
 - [ ] Documents CD-PLAYTEST: spawned in `full`, skipped with a note in `lean`/`solo`
 
 ---
@@ -50,14 +50,14 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 - **Full mode**: CD-PLAYTEST — `creative-director` receives the REPORT.md content,
   the validation question and the pillars and core fantasy (from
-  `design/gdd/game-concept.md`, or the pitch and "what they feel" line from
-  `design/game-brief.md`). APPROVE → the recommendation stands; CONCERNS → shown
+  `docs/GDD.md`, or the pitch and "what they feel" line from
+  `docs/GDD.md`). APPROVE → the recommendation stands; CONCERNS → shown
   with the recommendation, and the user decides (Revise / Accept / Discuss);
   REJECT → a PROCEED cannot stand: the user chooses PIVOT or KILL, and REPORT.md
   records the director's reason (a PIVOT or KILL stands); NOT ASSESSED [missing
   input] → neither backs nor overturns the recommendation: the input is supplied
   and the gate re-run, or `CD-PLAYTEST: NOT ASSESSED — [input]` is recorded. Any
-  change to REPORT.md and its `prototypes/index.md` row is asked first. When the
+  change to REPORT.md and its `docs/prototypes/index.md` row is asked first. When the
   slice's own verdict is NOT ASSESSED the gate is skipped: "CD-PLAYTEST skipped —
   the slice has not been played yet."
 - **Lean mode**: skipped — "CD-PLAYTEST skipped — Lean mode."
@@ -67,9 +67,9 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -79,13 +79,13 @@ Fixture defaults.
 ### Case 1: Happy Path — slice built, played unaided, PROCEED
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `engine.language: GDScript`,
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `engine.language: GDScript`,
   `modes.review_mode: solo`, `modes.workflow: standard` (pinned: unset resolves
   to minimal, which routes PROCEED to `/create-stories` and `/dev-story` instead
   of the step 7 list)
-- `design/gdd/game-concept.md` (core fantasy, pillars), `design/gdd/systems-index.md`,
+- `docs/GDD.md` (core fantasy, pillars), `docs/GDD.md`,
   `docs/architecture/architecture.md` and `docs/architecture/control-manifest.md`
-  exist; `prototypes/` has no `ember-trail-vertical-slice/`
+  exist; `docs/prototypes/` has no `ember-trail-vertical-slice/`
 - In the debrief the player finished the loop unaided, reached the first meaningful
   action in 40 seconds, felt the core fantasy and hit no fun blocker; the user
   answers PROCEED
@@ -96,16 +96,16 @@ Fixture defaults.
 1. Reads the concept, systems index, architecture and manifest; states a
    validation question covering player experience AND build feasibility
 2. Presents a 3–5 minute scope and the build plan; the confirmation names
-   `production/session-state/active.md`, and the checkpoint is written there
+   `.claude/ccgs/session-state/active.md`, and the checkpoint is written there
 3. Asks "May I create the vertical slice directory at
-   `prototypes/ember-trail-vertical-slice/` and begin implementation?"; every
+   `docs/prototypes/ember-trail-vertical-slice/` and begin implementation?"; every
    GDScript file it writes starts with `# VERTICAL SLICE - NOT FOR PRODUCTION`
 4. Iterates with the user until the loop is playable, then asks for the
    from-scratch playthrough and puts the six debrief questions one at a time
 5. Drafts the report from `.claude/docs/templates/vertical-slice-report.md` with a
    day-by-day velocity log; asks "May I write this report to
-   `prototypes/ember-trail-vertical-slice/REPORT.md` and add its row to
-   `prototypes/index.md`?"; writes both
+   `docs/prototypes/ember-trail-vertical-slice/REPORT.md` and add its row to
+   `docs/prototypes/index.md`?"; writes both
 6. Notes "CD-PLAYTEST skipped — Solo mode."
 7. PROCEED routes to `/create-epics layer:foundation`, `/create-epics layer:core`,
    `/create-stories`, `/sprint-plan` and `/gate-check production`
@@ -115,7 +115,7 @@ Fixture defaults.
 - [ ] Scope is confirmed, and the checkpoint ask names `active.md`, before any slice file is written
 - [ ] The directory ask comes before any slice file; each GDScript file's header is a `#` comment, never `//`
 - [ ] The debrief questions are asked one at a time, after the from-scratch playthrough
-- [ ] REPORT.md and the `prototypes/index.md` row are written only after one ask naming both; the row records PROCEED
+- [ ] REPORT.md and the `docs/prototypes/index.md` row are written only after one ask naming both; the row records PROCEED
 - [ ] The formal stage step is `/gate-check production` (Pre-Production → Production), not `/gate-check pre-production`
 
 ---
@@ -137,10 +137,10 @@ Fixture defaults.
 3. The user picks PIVOT; REPORT.md is written, after its ask, with verdict PIVOT
    and the NO named
 4. The PIVOT route runs: the two carry-forward questions, one at a time, then "May I
-   write this to `prototypes/ember-trail-vertical-slice/PIVOT-NOTE.md`?"
+   write this to `docs/prototypes/ember-trail-vertical-slice/PIVOT-NOTE.md`?"
 
 **Assertions:**
-- [ ] PROCEED is not written to REPORT.md or `prototypes/index.md` while a validation item is NO
+- [ ] PROCEED is not written to REPORT.md or `docs/prototypes/index.md` while a validation item is NO
 - [ ] The user, not the skill, chooses between PIVOT and KILL
 - [ ] The report names the failed validation item
 - [ ] PIVOT-NOTE.md is written only after its ask, with what worked, what failed and what the next slice should prove
@@ -184,7 +184,7 @@ Fixture defaults.
 1. The Phase 5 playthrough does not happen, so the verdict is NOT ASSESSED, with
    the reason
 2. REPORT.md, after its ask, records the velocity log and NOT ASSESSED; the
-   `prototypes/index.md` row records NOT ASSESSED
+   `docs/prototypes/index.md` row records NOT ASSESSED
 3. CD-PLAYTEST is not spawned: "CD-PLAYTEST skipped — the slice has not been
    played yet."
 4. Next steps: finish the playthrough and debrief from the `active.md` checkpoint,
@@ -203,7 +203,7 @@ Fixture defaults.
 
 **Fixture:**
 - A slice has been debriefed with a PROCEED recommendation and REPORT.md written;
-  `modes.review_mode: full`; `design/gdd/game-concept.md` holds the pillars
+  `modes.review_mode: full`; `docs/GDD.md` holds the pillars
 - Run A: CD-PLAYTEST returns REJECT — the core fantasy is not present. Asked PIVOT
   or KILL, the user picks KILL; no playtest session showed an emotional high
   point, and this is the third slice attempt on the concept
@@ -217,10 +217,10 @@ Fixture defaults.
 **Expected behavior:**
 1. Run A: the REJECT is read as the gate's word, not as a slice verdict. PROCEED
    cannot stand: the skill asks the user to choose PIVOT or KILL; the user picks
-   KILL; after "May I update `prototypes/[concept-name]-vertical-slice/REPORT.md`
-   and its `prototypes/index.md` row?" both record KILL and REPORT.md records the
+   KILL; after "May I update `docs/prototypes/[concept-name]-vertical-slice/REPORT.md`
+   and its `docs/prototypes/index.md` row?" both record KILL and REPORT.md records the
    director's reason. Phase 8's KILL route runs: two checklist items apply, so the
-   KILL is sound, and it asks "May I append this to `prototypes/GRAVEYARD.md`?"
+   KILL is sound, and it asks "May I append this to `docs/prototypes/GRAVEYARD.md`?"
 2. Run B: the concerns are shown beside PROCEED with `Revise the recommendation` /
    `Accept with noted concerns` / `Discuss further`; on Accept, PROCEED stands and,
    after the update ask, REPORT.md records the concerns
@@ -234,19 +234,19 @@ Fixture defaults.
 - [ ] Run A: the GRAVEYARD.md entry is appended only after its ask, with a specific kill reason
 - [ ] Run B: the user decides; the recommendation changes only if the user revises it
 - [ ] Run C: NOT ASSESSED is not treated as APPROVE
-- [ ] Every REPORT.md / `prototypes/index.md` update follows an ask naming both
+- [ ] Every REPORT.md / `docs/prototypes/index.md` update follows an ask naming both
 
 ---
 
 ### Case 6: Minimal workflow — PROCEED routes to stories and the velocity feeds the brief
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `engine.language: GDScript`,
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `engine.language: GDScript`,
   `modes.workflow: minimal`, `modes.review_mode: solo` (pinned: this case tests the
   `minimal` PROCEED route, the opposite of Case 1)
-- `design/game-brief.md` holds the pitch, a "what they feel" line and a build order
-  of three features; there is no `design/gdd/game-concept.md`, no sprint plan and no
-  `production/sprints/`
+- `docs/GDD.md` holds the pitch, a "what they feel" line and a build order
+  of three features; there is no `docs/GDD.md`, no sprint plan and no
+  `docs/production/sprints/`
 - In the debrief the player finished the loop unaided, reached the first meaningful
   action in 40 seconds, felt the core fantasy and hit no fun blocker; the user
   answers PROCEED
@@ -265,20 +265,20 @@ Fixture defaults.
    steps are not offered as the next steps
 
 **Assertions:**
-- [ ] The workflow is resolved from `project.yaml` (`modes.workflow: minimal`), not assumed from the rigor preset alone
+- [ ] The workflow is resolved from `.claude/ccgs/project.yaml` (`modes.workflow: minimal`), not assumed from the rigor preset alone
 - [ ] PROCEED's next steps are `/create-stories` then `/dev-story`
 - [ ] `/create-epics` and `/sprint-plan` are not recommended as next steps at `minimal`
 - [ ] The velocity log is tied to the brief's build order, and no sprint plan is referenced or created
-- [ ] REPORT.md and the `prototypes/index.md` row still record PROCEED after one ask naming both
+- [ ] REPORT.md and the `docs/prototypes/index.md` row still record PROCEED after one ask naming both
 
 ---
 
 ## Protocol Compliance
 
 - [ ] Reads the concept (or the brief at `minimal`) before defining the validation question
-- [ ] Confirms scope before building; asks before recording the plan in `active.md` and before creating `prototypes/[concept-name]-vertical-slice/`
-- [ ] Keeps slice files under `prototypes/`, each with the `VERTICAL SLICE - NOT FOR PRODUCTION` header in its own comment syntax
-- [ ] Asks before writing REPORT.md (with its `prototypes/index.md` row), PIVOT-NOTE.md, GRAVEYARD.md and any post-gate report update
+- [ ] Confirms scope before building; asks before recording the plan in `active.md` and before creating `docs/prototypes/[concept-name]-vertical-slice/`
+- [ ] Keeps slice files under `docs/prototypes/`, each with the `VERTICAL SLICE - NOT FOR PRODUCTION` header in its own comment syntax
+- [ ] Asks before writing REPORT.md (with its `docs/prototypes/index.md` row), PIVOT-NOTE.md, GRAVEYARD.md and any post-gate report update
 - [ ] Never records PROCEED after a NO validation item, and never for a slice nobody has played
 - [ ] Applies the review mode before CD-PLAYTEST and prints the skip note when skipped
 - [ ] Ends with the per-verdict next steps

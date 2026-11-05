@@ -6,13 +6,13 @@
 ## 6. Update Stage on PASS
 
 When the verdict is **PASS** and the user confirms they want to advance, write the
-new stage to BOTH `project.yaml` and the legacy `production/stage.txt`.
+new stage to BOTH `.claude/ccgs/project.yaml` and the legacy `.claude/ccgs/stage.txt`.
 
 **On CONCERNS, the user may override — explicitly.** Do not offer the stage
 write by default. If the user asks to advance anyway, list every concern and
 ask: "The gate returned CONCERNS. Accept these risks — [list] — and may I update
-`project.stage` in `project.yaml` to '[stage]' (and the legacy
-`production/stage.txt`)?" Only on an explicit yes, add the `### Accepted Risks`
+`project.stage` in `.claude/ccgs/project.yaml` to '[stage]' (and the legacy
+`.claude/ccgs/stage.txt`)?" Only on an explicit yes, add the `### Accepted Risks`
 section to the gate report (each concern, accepted by the user, with the date)
 and write the stage as below. **A FAIL is never overridden into a stage change, and
 neither is NOT ASSESSED** — the blockers must be fixed, or the missing input
@@ -28,10 +28,10 @@ After the yes, write both stage files with one command (quote a two-word stage):
 bash .claude/scripts/set-stage.sh "<new-stage>"
 ```
 
-It sets `project.stage` in `project.yaml`: it edits the `stage:` line, adds a
+It sets `project.stage` in `.claude/ccgs/project.yaml`: it edits the `stage:` line, adds a
 `project:` block after `framework:` when there is none, or creates the file from
-the minimal template when there is no `project.yaml`. It keeps comments, other
-keys and line endings. It also writes the legacy `production/stage.txt`, so hooks
+the minimal template when there is no `.claude/ccgs/project.yaml`. It keeps comments, other
+keys and line endings. It also writes the legacy `.claude/ccgs/stage.txt`, so hooks
 that have not migrated still work, then reads both files back. It never seeds
 `modes.review_mode`: `modes.rigor` supplies that, and an explicit value would pin
 the review mode whatever the project's rigor.
@@ -41,11 +41,11 @@ the review mode whatever the project's rigor.
 Show its `stage_yaml` and `stage_txt` rows. Exit 0 means both files hold the new
 stage. Exit 4 means they disagree after writing: report the discrepancy to the
 user and stop, because a split stage indicator corrupts future auto-detection.
-Exit 5 means `project.yaml` has a layout the script will not edit (`project:` as
-a one-line value): nothing was written, so say so and edit `project.yaml` with
+Exit 5 means `.claude/ccgs/project.yaml` has a layout the script will not edit (`project:` as
+a one-line value): nothing was written, so say so and edit `.claude/ccgs/project.yaml` with
 the user's yes. Any other non-zero exit: report the message and stop.
 
-**Always ask before writing**: "Gate passed. May I update `project.stage` in `project.yaml` to 'Production' (and the legacy `production/stage.txt`)?" — on an accepted CONCERNS override, the explicit yes above is that ask.
+**Always ask before writing**: "Gate passed. May I update `project.stage` in `.claude/ccgs/project.yaml` to 'Production' (and the legacy `.claude/ccgs/stage.txt`)?" — on an accepted CONCERNS override, the explicit yes above is that ask.
 
 ### 6.3 Rigor-fit check (advisory — never affects the verdict)
 

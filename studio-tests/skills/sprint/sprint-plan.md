@@ -3,22 +3,22 @@
 ## Skill Summary
 
 `/sprint-plan` (`new`, `update` or `status`) plans a sprint from the story
-backlog. It globs `production/epics/**/story-*.md`, greps their status lines and
+backlog. It globs `docs/production/epics/**/story-*.md`, greps their status lines and
 plans from the stories marked `Ready`, as many as `story_granularity` allows; it
 reads the previous sprint (identified from the injected Existing Sprints listing)
-for velocity and carryover, and the milestone in `production/milestones/` and
+for velocity and carryover, and the milestone in `docs/production/milestones/` and
 GDDs for context when they exist. For `new` it numbers the sprint one past the
 highest `sprint-NNN.md` in the listing and presents a draft with Must Have /
 Should Have / Nice to Have task tables and a Carryover from Previous Sprint table
 (every not-Complete story of the previous sprint, listed there only) before any
-write, and prepares `production/sprint-status.yaml` alongside it. The review
+write, and prepares `docs/production/sprint-status.yaml` alongside it. The review
 mode comes from the injected config block, `--review` overriding it for one run;
 the skill never asks for one and never writes `modes.review_mode` or
-`production/review-mode.txt`. In full review mode the PR-SPRINT producer gate
+`.claude/ccgs/review-mode.txt`. In full review mode the PR-SPRINT producer gate
 reviews the draft; in lean and solo modes the gate is skipped with a note. A QA
 plan check runs in every mode. The skill asks "May I write the
-sprint plan to `production/sprints/sprint-NNN.md` and
-`production/sprint-status.yaml`?" before persisting. Verdicts: COMPLETE (both
+sprint plan to `docs/production/sprints/sprint-NNN.md` and
+`docs/production/sprint-status.yaml`?" before persisting. Verdicts: COMPLETE (both
 files written) or BLOCKED (no stories found, or write declined).
 
 ---
@@ -49,9 +49,9 @@ REALISTIC.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -62,35 +62,35 @@ Fixture defaults.
 
 **Fixture:**
 - The injected Existing Sprints listing shows `sprint-001.md` and `sprint-002.md`
-- `production/milestones/milestone-02.md` exists
-- 5 stories under `production/epics/` across 2 epics have `Status: Ready`
-- `project.yaml` sets `modes.review_mode: full` and
+- `docs/production/milestones/milestone-02.md` exists
+- 5 stories under `docs/production/epics/` across 2 epics have `Status: Ready`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full` and
   `modes.story_granularity: balanced` (6–10 stories per sprint)
-- `production/qa/qa-plan-sprint-003.md` exists
+- `docs/production/qa/qa-plan-sprint-003.md` exists
 - The producer returns REALISTIC
 
 **Input:** `/sprint-plan new`
 
 **Expected behavior:**
 1. Skill reads the milestone and the previous sprint (sprint-002)
-2. Skill globs `production/epics/**/story-*.md`, greps the status lines, and
+2. Skill globs `docs/production/epics/**/story-*.md`, greps the status lines, and
    plans all 5 `Ready` stories — fewer than `balanced` allows, so the backlog is
    the limit
 3. Skill numbers the new sprint 003 (sprint-002 is the highest in the listing)
    and presents the draft without asking to write
 4. Skill spawns PR-SPRINT with the story list, capacity, carryover and milestone
    constraints; presents the REALISTIC assessment
-5. QA plan check finds `production/qa/qa-plan-sprint-003.md` and notes it
-6. Skill asks "May I write the sprint plan to `production/sprints/sprint-003.md`
-   and `production/sprint-status.yaml`?"
+5. QA plan check finds `docs/production/qa/qa-plan-sprint-003.md` and notes it
+6. Skill asks "May I write the sprint plan to `docs/production/sprints/sprint-003.md`
+   and `docs/production/sprint-status.yaml`?"
 7. User approves; both files are written; verdict COMPLETE
 
 **Assertions:**
-- [ ] Stories come from `production/epics/**/story-*.md` via the status grep, and only `Ready` stories are planned
+- [ ] Stories come from `docs/production/epics/**/story-*.md` via the status grep, and only `Ready` stories are planned
 - [ ] All 5 `Ready` stories are planned — `balanced` allows 6–10, so none is held back
 - [ ] Sprint draft is shown before any write prompt or gate invocation
 - [ ] PR-SPRINT gate is invoked in full mode after the draft is presented
-- [ ] "May I write" prompt names both `production/sprints/sprint-003.md` (next after sprint-002) and `production/sprint-status.yaml`
+- [ ] "May I write" prompt names both `docs/production/sprints/sprint-003.md` (next after sprint-002) and `docs/production/sprint-status.yaml`
 - [ ] Verdict is COMPLETE after both files are written
 
 ---
@@ -98,8 +98,8 @@ Fixture defaults.
 ### Case 2: Blocked Path — No stories in the backlog
 
 **Fixture:**
-- `production/epics/` contains no story files (`production/epics/**/story-*.md` matches nothing)
-- No `--review` flag, no `modes.review_mode` in `project.yaml`, no `production/review-mode.txt`
+- `docs/production/epics/` contains no story files (`docs/production/epics/**/story-*.md` matches nothing)
+- No `--review` flag, no `modes.review_mode` in `.claude/ccgs/project.yaml`, no `.claude/ccgs/review-mode.txt`
 
 **Input:** `/sprint-plan new`
 
@@ -107,17 +107,17 @@ Fixture defaults.
 1. Phase 0 takes the review mode from the injected config block — with nothing
    configured, the `modes.rigor` value — and asks no review-depth question
 2. Phase 1's glob returns nothing; skill outputs "No stories found under
-   `production/epics/`. Run `/create-stories` first (at `standard`/`full`,
+   `docs/production/epics/`. Run `/create-stories` first (at `standard`/`full`,
    `/create-epics` before it)."
 3. Skill stops without inventing work items; verdict BLOCKED
 4. No gate is invoked and nothing is written
 
 **Assertions:**
 - [ ] Verdict is BLOCKED
-- [ ] Output contains "No stories found under `production/epics/`" and recommends `/create-stories`
+- [ ] Output contains "No stories found under `docs/production/epics/`" and recommends `/create-stories`
 - [ ] No sprint draft is produced from invented work items
 - [ ] PR-SPRINT gate is NOT invoked
-- [ ] No review-depth question is asked, and no write happens — `project.yaml` gains no `modes.review_mode` and no `production/review-mode.txt` is created
+- [ ] No review-depth question is asked, and no write happens — `.claude/ccgs/project.yaml` gains no `modes.review_mode` and no `.claude/ccgs/review-mode.txt` is created
 
 ---
 
@@ -125,8 +125,8 @@ Fixture defaults.
 
 **Fixture:**
 - 8 `Ready` stories estimated at 16 days in total; available capacity is 10 days
-- `project.yaml` sets `modes.review_mode: full` and `modes.story_granularity: balanced`
-- A QA plan for the sprint exists in `production/qa/`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full` and `modes.story_granularity: balanced`
+- A QA plan for the sprint exists in `docs/production/qa/`
 - The producer returns CONCERNS: the sprint is overloaded
 
 **Input:** `/sprint-plan new`
@@ -143,7 +143,7 @@ Fixture defaults.
 **Assertions:**
 - [ ] CONCERNS from PR-SPRINT surfaces through `AskUserQuestion` ([A] Proceed / [B] Adjust scope / [C] Extend timeline) before any write
 - [ ] On [B], the revised plan is re-presented before write approval
-- [ ] The revised sprint (not the original) is written, and `production/sprint-status.yaml` lists the revised stories
+- [ ] The revised sprint (not the original) is written, and `docs/production/sprint-status.yaml` lists the revised stories
 - [ ] Verdict is COMPLETE after revision and write
 
 ---
@@ -151,11 +151,11 @@ Fixture defaults.
 ### Case 4: Lean Mode — PR-SPRINT skipped, QA plan check still runs
 
 **Fixture:**
-- 4 `Ready` stories under `production/epics/`
-- `project.yaml` sets `modes.rigor: standard` and pins no review mode (no
-  `modes.review_mode`, no `production/review-mode.txt`, no `--review`), so the
+- 4 `Ready` stories under `docs/production/epics/`
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard` and pins no review mode (no
+  `modes.review_mode`, no `.claude/ccgs/review-mode.txt`, no `--review`), so the
   injected block reads `review_mode: lean (rigor:standard)`
-- No QA plan for this sprint exists in `production/qa/`
+- No QA plan for this sprint exists in `docs/production/qa/`
 
 **Input:** `/sprint-plan new`
 
@@ -175,7 +175,7 @@ Fixture defaults.
 - [ ] Output contains "PR-SPRINT skipped — Lean mode."
 - [ ] The QA plan check still runs in lean mode — the missing QA plan is surfaced explicitly with the [A]/[B] choice, not passed silently
 - [ ] User approval is still required before the write (gate skip ≠ approval skip)
-- [ ] The resolved `lean` is used without a review-depth question, and the write names only the sprint plan and `production/sprint-status.yaml` — `project.yaml` gains no `modes.review_mode` and no `production/review-mode.txt` is created
+- [ ] The resolved `lean` is used without a review-depth question, and the write names only the sprint plan and `docs/production/sprint-status.yaml` — `.claude/ccgs/project.yaml` gains no `modes.review_mode` and no `.claude/ccgs/review-mode.txt` is created
 - [ ] Verdict is COMPLETE after the write
 
 ---
@@ -184,12 +184,12 @@ Fixture defaults.
 
 **Fixture:**
 - The injected Existing Sprints listing shows `sprint-002.md` as the latest sprint
-- `production/sprint-status.yaml` still holds sprint 2; 2 of its stories are not
+- `docs/production/sprint-status.yaml` still holds sprint 2; 2 of its stories are not
   `done`: one `in-progress`, and one `ready-for-dev` that was never started (its
   story file says `Status: Ready`)
 - 5 other stories have `Status: Ready`
-- `project.yaml` sets `modes.review_mode: full` and `modes.story_granularity: balanced`
-- A QA plan for the sprint exists in `production/qa/`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full` and `modes.story_granularity: balanced`
+- A QA plan for the sprint exists in `docs/production/qa/`
 
 **Input:** `/sprint-plan new`
 
@@ -202,8 +202,8 @@ Fixture defaults.
    Sprint" table with a reason and a new estimate — the unstarted one there
    only, although its story file says `Ready`
 4. The carryover is passed to PR-SPRINT with the proposed story list
-5. Skill asks "May I write the sprint plan to `production/sprints/sprint-003.md`
-   and `production/sprint-status.yaml`?" and writes on approval; the new yaml
+5. Skill asks "May I write the sprint plan to `docs/production/sprints/sprint-003.md`
+   and `docs/production/sprint-status.yaml`?" and writes on approval; the new yaml
    lists the 2 carryover stories alongside the 5 new ones
 
 **Assertions:**
@@ -211,7 +211,7 @@ Fixture defaults.
 - [ ] The 2 unfinished stories appear in the "Carryover from Previous Sprint" table with Reason and New Estimate — not silently dropped
 - [ ] The unstarted sprint-002 story appears only under Carryover — not again in Must Have / Should Have / Nice to Have, although its status is `Ready`
 - [ ] The carryover is passed to the PR-SPRINT gate
-- [ ] The written `production/sprint-status.yaml` lists the 2 carryover stories with their previous priority and current status (`in-progress`, `ready-for-dev`)
+- [ ] The written `docs/production/sprint-status.yaml` lists the 2 carryover stories with their previous priority and current status (`in-progress`, `ready-for-dev`)
 
 ---
 
@@ -220,8 +220,8 @@ Fixture defaults.
 **Fixture:**
 - The injected Existing Sprints listing shows `sprint-002.md` as the latest sprint
 - 9 `Ready` stories estimated at 20 days in total; available capacity is 10 days
-- `project.yaml` sets `modes.review_mode: full` and `modes.story_granularity: balanced`
-- A QA plan for the sprint exists in `production/qa/`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full` and `modes.story_granularity: balanced`
+- A QA plan for the sprint exists in `docs/production/qa/`
 - The producer returns UNREALISTIC and names 4 stories to defer
 
 **Input:** `/sprint-plan new`
@@ -238,7 +238,7 @@ Fixture defaults.
 - [ ] UNREALISTIC does not end the run, and the original plan is never written — the selection is revised first
 - [ ] The 4 named stories are deferred to Should Have or Nice to Have, not dropped from the plan
 - [ ] The revised plan is re-presented before the "May I write" prompt
-- [ ] The written `production/sprint-status.yaml` carries the deferred stories as `should-have` or `nice-to-have` with `status: backlog`
+- [ ] The written `docs/production/sprint-status.yaml` carries the deferred stories as `should-have` or `nice-to-have` with `status: backlog`
 - [ ] Verdict is COMPLETE after the write
 
 ---
@@ -247,8 +247,8 @@ Fixture defaults.
 
 **Fixture:**
 - 5 `Ready` stories, none with its `Estimate` filled in
-- `project.yaml` sets `modes.review_mode: full` and `modes.story_granularity: balanced`
-- A QA plan for the sprint exists in `production/qa/`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full` and `modes.story_granularity: balanced`
+- A QA plan for the sprint exists in `docs/production/qa/`
 - The producer returns NOT ASSESSED — the stories carry no estimates
 - Asked for estimates, the user has none yet and goes ahead
 
@@ -274,8 +274,8 @@ Fixture defaults.
 ## Protocol Compliance
 
 - [ ] Shows the draft sprint before invoking PR-SPRINT or asking to write
-- [ ] Always asks "May I write" before writing, naming both the sprint file and `production/sprint-status.yaml`
-- [ ] Never asks for a review depth and never writes `modes.review_mode` or `production/review-mode.txt` — the resolved value (or `--review`) is used
+- [ ] Always asks "May I write" before writing, naming both the sprint file and `docs/production/sprint-status.yaml`
+- [ ] Never asks for a review depth and never writes `modes.review_mode` or `.claude/ccgs/review-mode.txt` — the resolved value (or `--review`) is used
 - [ ] PR-SPRINT gate only runs in full mode
 - [ ] Skip message appears in lean and solo mode output
 - [ ] The QA plan check runs in every review mode

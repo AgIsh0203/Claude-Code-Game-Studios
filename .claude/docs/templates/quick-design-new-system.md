@@ -22,7 +22,7 @@ implement without asking questions.]
 |------|---------|-------|----------|-----------|
 | [name] | [value] | [min–max] | [feel/curve/gate] | [why this default] |
 
-All values must live in `assets/data/[appropriate-file].json`, not hardcoded.
+All values must live in `Content/data/[appropriate-file].json`, not hardcoded.
 
 ## Acceptance Criteria
 
@@ -33,7 +33,7 @@ All values must live in `assets/data/[appropriate-file].json`, not hardcoded.
 
 ## Systems Index
 
-This system is not currently in `design/gdd/systems-index.md`.
+This system is not currently in `docs/GDD.md`.
 [If it should be added: suggest which layer and priority tier.]
 [If it is too small to track: state "This system is below systems-index
 tracking threshold — quick spec is sufficient."]

@@ -9,7 +9,7 @@ Before running anything, understand the environment:
 
 0. **Config coherence**: run `bash .claude/scripts/project-coherence.sh`.
 
-   It compares what `project.yaml` declares against the real project file, the
+   It compares what `.claude/ccgs/project.yaml` declares against the real project file, the
    installed engine binary, and the files `commands.*` name. This runs first
    because two of its checks are about *this skill's own inputs*: a
    `commands.test` naming a runner that does not exist, or a `commands.build`
@@ -59,8 +59,8 @@ Before running anything, understand the environment:
 2. **CI check**: check whether `.github/workflows/` contains a workflow file
    referencing tests. Note in the report whether CI is configured.
 
-3. **Engine detection**: read `engine.name` from `project.yaml`; if that key
-   is absent or empty (including when `project.yaml` has no `engine:` block),
+3. **Engine detection**: read `engine.name` from `.claude/ccgs/project.yaml`; if that key
+   is absent or empty (including when `.claude/ccgs/project.yaml` has no `engine:` block),
    fall back to the `Engine:` value in `.claude/docs/technical-preferences.md`
    (a `[TO BE CONFIGURED]` value means not configured). Store this for test
    command selection in Phase 2.
@@ -78,12 +78,12 @@ Before running anything, understand the environment:
    runner is not available (Phase 2) — on Godot,
    `NOT ASSESSED — Godot executable not found (commands.test, engine.path, PATH)`.
 
-4. **Smoke test list**: check whether `production/qa/smoke-tests.md` or
+4. **Smoke test list**: check whether `docs/production/qa/smoke-tests.md` or
    `tests/smoke/` exists. If a smoke test list is found, load it for use in
    Phase 4. If neither exists, smoke tests will be drawn from the current QA
    plan (Phase 4 fallback).
 
-5. **QA plan check**: glob `production/qa/qa-plan-*.md` and take the most
+5. **QA plan check**: glob `docs/production/qa/qa-plan-*.md` and take the most
    recently modified file. If found, note the path — it will be used in
    Phase 3 and Phase 4. If not found, note: "No QA plan found. Run
    `/qa-plan sprint` before smoke-checking for best results." (At `workflow: minimal`,

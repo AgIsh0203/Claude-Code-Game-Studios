@@ -61,9 +61,9 @@ Agent by prefix: `CD-` creative-director · `TD-` technical-director ·
 
 Review intensity controls whether gates run.
 
-**Global config**: `modes.review_mode` in `project.yaml` — one word: `full`,
-`lean`, or `solo`. Legacy fallback: `production/review-mode.txt` (single line,
-same values); `project.yaml` wins when both are present. `/start` never writes
+**Global config**: `modes.review_mode` in `.claude/ccgs/project.yaml` — one word: `full`,
+`lean`, or `solo`. Legacy fallback: `.claude/ccgs/review-mode.txt` (single line,
+same values); `.claude/ccgs/project.yaml` wins when both are present. `/start` never writes
 it: left unset, it follows `modes.rigor` (`minimal` → `solo`, `standard` →
 `lean`, `full` → `full`). Set it explicitly only with
 `/settings modes.review_mode=<value>`.
@@ -91,7 +91,7 @@ The value is already resolved — skills call
 `` !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode` ``
 (with the matching `allowed-tools` grant — see `config-resolution.md`)
 and read `review_mode` from the emitted block. Do **not** re-derive it here. The
-full chain (`project.local.yaml` → `project.yaml` → `production/review-mode.txt`
+full chain (`.claude/ccgs/project.local.yaml` → `.claude/ccgs/project.yaml` → `.claude/ccgs/review-mode.txt`
 → `modes.rigor` expansion, `standard`→`lean`), its defaults and its failure modes are specified in
 `.claude/docs/config-resolution.md`, and covered by the config test suite.
 
@@ -168,7 +168,7 @@ After a gate resolves, record the verdict in the relevant document's status head
 ```
 
 For phase gates, record in `docs/architecture/architecture.md` or
-`production/session-state/active.md` as appropriate.
+`.claude/ccgs/session-state/active.md` as appropriate.
 
 ---
 

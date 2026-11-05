@@ -2,7 +2,7 @@
 
 **Type**: [Tweak / Addition]
 **System**: [System name]
-**GDD Reference**: `design/gdd/[filename].md`
+**GDD Reference**: `docs/design/gdd/[filename].md`
 **Date**: [today]
 
 ## Change Summary
@@ -16,7 +16,7 @@ Reference the relevant MDA aesthetic or player feedback if applicable.]
 
 ## Design Delta
 
-Current GDD says (quoting `design/gdd/[filename].md`, [section]):
+Current GDD says (quoting `docs/design/gdd/[filename].md`, [section]):
 
 > [exact quote of the relevant rule or description]
 

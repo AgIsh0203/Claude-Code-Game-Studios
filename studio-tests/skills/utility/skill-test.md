@@ -17,15 +17,15 @@
   something only Claude Code provides, by feature, the same way; given an agent
   name, it reports only those observations, with no verdict. Writes nothing.
 - **spec** `[skill-or-agent-name]`: resolves the name through
-  `studio-tests/catalog.yaml`, reads the file and the spec at the
+  `.claude/ccgs/studio-tests/catalog.yaml`, reads the file and the spec at the
   entry's `spec:` path, plus `CLAUDE.md` and every file it imports with `@path`,
   and marks each assertion — the spec's Static Assertions included, for a skill
   as for an agent — PASS / PARTIAL / FAIL / NOT ASSESSED. Case and Overall
   Verdicts are the worst result beneath them (FAIL, PARTIAL, NOT ASSESSED,
   PASS). It then asks "May I write these results to
-  `studio-tests/results/…` and update `catalog.yaml`?"
+  `.claude/ccgs/studio-tests/results/…` and update `catalog.yaml`?"
 - **category** `[name | all]`: scores the skill or agent against its section of
-  `studio-tests/quality-rubric.md` (PASS / FAIL / WARN per
+  `.claude/ccgs/studio-tests/quality-rubric.md` (PASS / FAIL / WARN per
   metric) and asks "May I update `catalog.yaml` …?" before recording it.
 - **audit** (also the no-argument default): coverage table of every skill and
   every catalogued agent. Writes nothing and issues no verdict.
@@ -54,9 +54,9 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -122,7 +122,7 @@ Fixture defaults.
 
 **Fixture:**
 - `catalog.yaml` lists `gate-check` under `skills:` with
-  `spec: studio-tests/skills/gate/gate-check.md`
+  `spec: .claude/ccgs/studio-tests/skills/gate/gate-check.md`
 - The sandbox's copy of that spec is the live one (9 test cases and a Static
   Assertions list) with one Static Assertion added: "Balance values link to
   their source formula or rationale" — met only by
@@ -149,8 +149,8 @@ Fixture defaults.
 5. Each case gets a Case Verdict; the report ends with an Overall Verdict, the
    worst result across the static assertions, the cases and Protocol Compliance
 6. Skill asks "May I write these results to
-   `studio-tests/results/skill-test-spec-gate-check-[date].md`
-   and update `studio-tests/catalog.yaml`?"; on decline nothing is written
+   `.claude/ccgs/studio-tests/results/skill-test-spec-gate-check-[date].md`
+   and update `.claude/ccgs/studio-tests/catalog.yaml`?"; on decline nothing is written
 
 **Assertions:**
 - [ ] The spec path comes from the catalog `spec:` field
@@ -179,7 +179,7 @@ Fixture defaults.
 2. Skill globs `.claude/skills/*/SKILL.md` for skills and reads the catalog's
    `agents:` section for agents
 3. For each skill: Has Spec (from the catalog `spec:` path, or a glob under
-   `studio-tests/skills/`), last static/category dates and
+   `.claude/ccgs/studio-tests/skills/`), last static/category dates and
    results, category, priority
 4. Separate SKILLS and AGENTS tables, a Top 5 Priority Gaps list, and the lines
    `Skill coverage: 73/74 specs (99%)` and `Agent coverage: 49/49 specs (100%)`
@@ -198,7 +198,7 @@ Fixture defaults.
 ### Case 5: Category Mode — Gate Skill Evaluated Against Quality Rubric
 
 **Fixture:**
-- `studio-tests/quality-rubric.md` has a `### gate` section with
+- `.claude/ccgs/studio-tests/quality-rubric.md` has a `### gate` section with
   metrics G1–G5
 - `catalog.yaml` gives `gate-check` `category: gate`
 - `.claude/skills/gate-check/SKILL.md` meets every metric except G2 — Director
@@ -212,7 +212,7 @@ Fixture defaults.
 2. Skill reads the skill and the `CLAUDE.md` context, and evaluates G1–G5
 3. Each metric is marked PASS, FAIL or WARN; G2 is FAIL with a quoted Gap line
 4. Report ends `Verdict: FAIL (1 failure, 0 warnings)` and a Fix line
-5. Skill asks "May I update `studio-tests/catalog.yaml` to record
+5. Skill asks "May I update `.claude/ccgs/studio-tests/catalog.yaml` to record
    this category check (`last_category`, `last_category_result`) for gate-check?"
 
 **Assertions:**
@@ -227,7 +227,7 @@ Fixture defaults.
 
 **Fixture:**
 - `catalog.yaml` lists `creative-director` under `agents:` with
-  `spec: studio-tests/agents/directors/creative-director.md`
+  `spec: .claude/ccgs/studio-tests/agents/directors/creative-director.md`
 - `.claude/agents/creative-director.md` declares `model: opus`; there is no
   `.claude/skills/creative-director/`
 - The spec asserts "Model tier is `opus`"
@@ -314,7 +314,7 @@ Fixture defaults.
 **Fixture:**
 - `catalog.yaml` gives `some-skill` `category: tooling` — a category added to
   the catalog before its rubric section was written
-- `studio-tests/quality-rubric.md` has no `tooling` section
+- `.claude/ccgs/studio-tests/quality-rubric.md` has no `tooling` section
 
 **Input:** `/skill-test category some-skill`
 
@@ -338,7 +338,7 @@ Fixture defaults.
   that each say "Read `references/N-name.md` now and follow it". It holds no verdict
   keyword, no ask-before-write language and no next-step handoff itself
 - `.claude/skills/split-skill/references/2-report.md` holds `Verdict: **COMPLETE**`,
-  the line "May I write this report to `production/qa/report.md`?" and a closing
+  the line "May I write this report to `docs/production/qa/report.md`?" and a closing
   "Next step: `/gate-check`"; `references/1-gather.md` holds only instructions
 - Run A: as above. Run B: the same skill, except `argument-hint:` is missing from
   `SKILL.md` and appears only in a frontmatter-style block at the top of

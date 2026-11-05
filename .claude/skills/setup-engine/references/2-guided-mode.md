@@ -17,11 +17,11 @@ If no engine is specified, run an interactive engine selection process:
 Read the design artifact for the resolved tier (see **Tier awareness** above), by
 section: find the headings you need with the Grep tool (pattern `^#`, content
 mode) and Read those ranges with offset and limit:
-- **`standard` / `full`**: read `design/gdd/game-concept.md` if it exists —
+- **`standard` / `full`**: read `docs/GDD.md` if it exists —
   extract genre, scope, platform targets, art style, team size, and the engine
   preference `/brainstorm` recorded (an engine the user named, or "undecided":
   `/brainstorm` never recommends one, so the recommendation is made here).
-- **`minimal`**: read `design/game-brief.md` if it exists — extract genre,
+- **`minimal`**: read `docs/GDD.md` if it exists — extract genre,
   scope, platform, and art direction from its fields. Its absence is **expected**
   at `minimal` (the brief is authored *after* engine setup in the minimal path), so
   do not treat a missing brief as a gap — proceed straight to guided selection.

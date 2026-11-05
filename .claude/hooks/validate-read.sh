@@ -3,7 +3,7 @@
 # --- work from the project root ----------------------------------------------
 # Same precedence as validate-write.sh (see there for why): a cwd that is a
 # project root wins, then CLAUDE_PROJECT_DIR, then this script's location.
-if [ -f "project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
+if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
   CCGS_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
@@ -16,8 +16,8 @@ fi
 # of a design doc over the size bar, and answers with the doc's headings by
 # line, so the retry reads the section it needs. One refused read costs a turn;
 # the read it stops can cost tens of thousands of tokens, and a ranged read
-# always passes, so nothing can get stuck behind it. Watched: design/,
-# docs/architecture/, production/session-state/; the bar is
+# always passes, so nothing can get stuck behind it. Watched: docs/design/,
+# docs/architecture/, .claude/ccgs/session-state/; the bar is
 # features.read_guard_kb (40 KB); features.read_guard: off turns it off.
 #
 # The logic is `.claude/scripts/read-guard.sh check`, its helper twin; this

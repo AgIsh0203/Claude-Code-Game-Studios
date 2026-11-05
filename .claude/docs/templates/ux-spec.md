@@ -8,7 +8,7 @@
 > **Journey Phase(s)**: [from context]
 > **Screen / Flow Name**: [Short identifier used in code and tickets — e.g., `InventoryScreen`, `NewGameFlow`]
 > **Platform Target**: [target platforms and input methods from 2h]
-> **Related GDDs**: [Links to the GDD sections that generated this UI requirement — e.g., `design/gdd/inventory.md § UI Requirements`]
+> **Related GDDs**: [Links to the GDD sections that generated this UI requirement — e.g., `docs/design/gdd/inventory.md § UI Requirements`]
 > **Related ADRs**: [Any architectural decisions that constrain this screen — e.g., `ADR-0012: UI Framework Selection`]
 > **Related UX Specs**: [Sibling and parent screens — e.g., `pause-menu.md`, `settings.md`]
 > **Accessibility Tier**: Basic | Standard | Comprehensive | Exemplary
@@ -281,7 +281,7 @@ behind a tab, a scroll or a button — in that order, with the reason for each.]
 
 [To be designed]
 
-> Project-wide standards live in `design/accessibility-requirements.md` — consult it
+> Project-wide standards live in `docs/design/accessibility-requirements.md` — consult it
 > before filling this section so you do not duplicate or contradict project-level
 > commitments.
 >

@@ -21,8 +21,8 @@
 #          [--name-regex ERE] [--files]
 #   --root DIR          the project; defaults to the repo this script is in
 #   --engine E          godot, unity or unreal (default: engine.name from
-#                       project.local.yaml, then project.yaml, as content-count.sh)
-#   --category C        keep one category: on godot a folder of assets/ (art,
+#                       .claude/ccgs/project.local.yaml, then .claude/ccgs/project.yaml, as content-count.sh)
+#   --category C        keep one category: on godot a folder of Content/ (art,
 #                       audio, vfx, shaders or data); on unity and unreal the
 #                       first folder under the asset root (any case)
 #   --budget KEY=SIZE   a size budget in bytes, or with a K (1024) or M
@@ -42,8 +42,8 @@
 #   -h, --help          this text
 #
 # What is scanned (the skill's Phase 2):
-#   godot   assets/art, assets/audio, assets/vfx, assets/shaders, assets/data
-#           (other folders of assets/ are counted as outside_scope, not scanned)
+#   godot   Content/art, Content/audio, Content/vfx, Content/shaders, Content/data
+#           (other folders of Content/ are counted as outside_scope, not scanned)
 #   unity   Assets/, leaving out scripts (.cs, .asmdef) and .meta files
 #   unreal  Content/*.uasset and Content/*.umap
 # Left out on every engine: .gitkeep placeholders. Left out on godot: .import
@@ -86,7 +86,7 @@
 # an ORPHAN when no other file names its path. A path ending in / is a folder
 # prefix (DYNAMIC prefix): it covers every asset below it, and the row says how
 # many. A path with % or * or ? is a built name (DYNAMIC pattern) and covers
-# nothing. A reference to a file under assets/ that does not exist is MISSING,
+# nothing. A reference to a file under Content/ that does not exist is MISSING,
 # with the first place it appears and how many places name it. Both need at
 # least one .gd, .cs or .gdshader file under src/ (the skill: no code to
 # search means not assessed), and run only on godot: on unity and unreal most
@@ -94,7 +94,7 @@
 # for them is defined here.
 #
 # Output: TSV, in this order.
-#   engine <name> <source: flag, project.yaml, ...>, root <dir> present|absent,
+#   engine <name> <source: flag, .claude/ccgs/project.yaml, ...>, root <dir> present|absent,
 #   category_filter <name> (with --category), scanned <n>, outside_scope <n> <note>
 #   (godot), excluded <kind> <n> per kind, category <name> <n> per category
 #   (godot: art, audio, vfx, shaders, data; others: by name, `-` for files
@@ -207,7 +207,7 @@ else
 fi
 
 # ----------------------------------------------------------------------- engine
-# engine.name from project.local.yaml, then project.yaml, read by the shared
+# engine.name from .claude/ccgs/project.local.yaml, then .claude/ccgs/project.yaml, read by the shared
 # yaml-get.awk as content-count.sh reads it; only when neither names one,
 # project-state.sh's legacy fallback decides.
 if [ -n "$ENGINE_ARG" ]; then
@@ -215,7 +215,7 @@ if [ -n "$ENGINE_ARG" ]; then
 else
   RAW=""; ESRC=""
   [ -f "$HERE/yaml-get.awk" ] || { echo "asset-scan: $HERE/yaml-get.awk is missing; pass --engine" >&2; exit 1; }
-  for yf in project.local.yaml project.yaml; do
+  for yf in .claude/ccgs/project.local.yaml .claude/ccgs/project.yaml; do
     if [ -z "$RAW" ] && [ -f "$yf" ]; then
       RAW=$(YG_PATH=engine.name awk -f "$HERE/yaml-get.awk" "$yf")
       [ -z "$RAW" ] || ESRC="$yf"
@@ -228,11 +228,11 @@ else
 fi
 if [ -z "$RAW" ] || [ "$RAW" = "-" ]; then
   printf 'engine\t-\tunset\n'
-  echo "asset-scan: no engine is set (engine.name in project.yaml); pass --engine" >&2
+  echo "asset-scan: no engine is set (engine.name in .claude/ccgs/project.yaml); pass --engine" >&2
   exit 3
 fi
 LOW=$(printf '%s' "$RAW" | tr '[:upper:]' '[:lower:]')
-# The asset root per engine is the skill's Phase 2: assets/ on Godot, Assets/ on
+# The asset root per engine is the skill's Phase 2: Content/ on Godot, Assets/ on
 # Unity, Content/ on Unreal.
 case "$LOW" in
   godot) ENG=godot; ROOTDIR=assets ;;
@@ -283,7 +283,7 @@ CLASS=$(printf '%s\n' "$ALLF" | ENG="$ENG" CATF="$CATF" awk '
     else if (eng == "unreal" && ext != "uasset" && ext != "umap") reason = "not .uasset or .umap"
     if (reason != "") { print "X\t" reason; next }
     if (eng == "godot") {
-      # The skill scans five folders of assets/; the rest is counted, not scanned.
+      # The skill scans five folders of Content/; the rest is counted, not scanned.
       s = seg[2]
       if (n < 3 || (s != "art" && s != "audio" && s != "vfx" && s != "shaders" && s != "data")) { print "O\t" p; next }
       cat = s
@@ -456,7 +456,7 @@ fi
     nodata = (scanned == 0) ? ("no assets under " rootdir) : ""
     if (catf != "") printf "category_filter\t%s\n", catf
     printf "scanned\t%d\n", scanned
-    if (eng == "godot") printf "outside_scope\t%d\tfiles under assets/ outside art, audio, vfx, shaders and data\n", nout
+    if (eng == "godot") printf "outside_scope\t%d\tfiles under Content/ outside art, audio, vfx, shaders and data\n", nout
     if (eng == "godot") { nx = split(".import .uid .gitkeep", xl, " ") }
     else if (eng == "unity") { nx = split(".meta .cs .asmdef .gitkeep", xl, " ") }
     else { nx = 2; xl[1] = "not .uasset or .umap"; xl[2] = ".gitkeep" }
@@ -521,8 +521,8 @@ fi
       if (nodata != "") {
         printf "check\tart_pattern\tnot_run\t%s\ncheck\taudio_pattern\tnot_run\t%s\n", nodata, nodata
       } else {
-        printf "check\tart_pattern\tnot_checkable\t%d files under assets/art; the category and size values are not defined and the examples disagree\n", nart
-        printf "check\taudio_pattern\tnot_checkable\t%d files under assets/audio; the category values are not defined and the name may hold any number of words\n", naud
+        printf "check\tart_pattern\tnot_checkable\t%d files under Content/art; the category and size values are not defined and the examples disagree\n", nart
+        printf "check\taudio_pattern\tnot_checkable\t%d files under Content/audio; the category values are not defined and the name may hold any number of words\n", naud
       }
     }
     printf "check\tpot\t%s\t%s\n", potst, potd

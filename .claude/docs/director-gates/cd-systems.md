@@ -8,8 +8,8 @@ Agent: `creative-director` | Model tier: Opus | Domain: Vision, pillars, player 
 complete system set before GDD authoring begins
 
 **Context to pass**:
-- Systems index path (`design/gdd/systems-index.md`)
-- Game pillars and core fantasy (from `design/gdd/game-concept.md`; if there is no `design/gdd/game-concept.md`, the pitch and "what they feel" line of `design/game-brief.md`, which has no pillars)
+- Systems index path (`docs/GDD.md`)
+- Game pillars and core fantasy (from `docs/GDD.md`; if there is no `docs/GDD.md`, the pitch and "what they feel" line of `docs/GDD.md`, which has no pillars)
 - Priority tier assignments (MVP / Vertical Slice / Alpha / Full Vision)
 - Any high-risk or bottleneck systems identified in the dependency map
 

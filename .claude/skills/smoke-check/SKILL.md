@@ -3,9 +3,11 @@ name: smoke-check
 description: "Critical-path smoke gate before QA hand-off — runs the automated suite. A failed check means the build is not QA-ready."
 argument-hint: "[sprint | quick | --platform pc|console|mobile|all]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(bash "*/.claude/skills/smoke-check/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/project-coherence.sh*), Bash(command -v *), Bash(uname -s), Bash(godot --headless --path . --import), Bash(timeout 900 godot --headless *), Bash(timeout 1800 godot --headless *), Bash(grep -q 'com.unity.test-framework' Packages/manifest.json), Bash(echo present), Bash(echo ABSENT)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/smoke-check/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/project-coherence.sh*), Bash(command -v *), Bash(uname -s), Bash(godot --headless --path . --import), Bash(timeout 900 godot --headless *), Bash(timeout 1800 godot --headless *), Bash(grep -q 'com.unity.test-framework' Packages/manifest.json), Bash(echo present), Bash(echo ABSENT)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,qa.level,testing.strict`
 
@@ -19,7 +21,7 @@ report.
 The rule is simple: **a build that fails smoke check does not go to QA.**
 Handing a broken build to QA wastes their time and demoralises the team.
 
-**Output:** `production/qa/smoke-[date].md`
+**Output:** `docs/production/qa/smoke-[date].md`
 
 ---
 

@@ -56,7 +56,7 @@ Verified by reading the agent's `.claude/agents/creative-director.md` frontmatte
 - [ ] Does not claim to own implementation decisions
 
 ### Case 5: Context pass — uses provided context
-**Scenario:** Agent receives a gate context block that includes the game pillars document (`design/gdd/game-pillars.md`) and a new system GDD for review. The pillars document defines "player authorship," "consequence permanence," and "world responsiveness" as the three core pillars. Request is tagged CD-GDD-ALIGN.
+**Scenario:** Agent receives a gate context block that includes the game pillars document (`docs/GDD.md`) and a new system GDD for review. The pillars document defines "player authorship," "consequence permanence," and "world responsiveness" as the three core pillars. Request is tagged CD-GDD-ALIGN.
 **Expected:** Assessment uses the exact pillar vocabulary from the provided document, not generic creative heuristics. Any approval or concern is tied back to one or more of the three named pillars.
 **Assertions:**
 - [ ] Uses the exact pillar names from the provided context document
@@ -65,7 +65,7 @@ Verified by reading the agent's `.claude/agents/creative-director.md` frontmatte
 - [ ] Does not reference pillars not present in the provided document
 
 ### Case 6: Missing gate input — NOT ASSESSED
-**Scenario:** A complete, internally consistent system GDD is submitted with its Player Fantasy section, but no game pillars: the context gives none, and none of `design/gdd/game-concept.md`, `design/gdd/game-pillars.md` or `design/game-brief.md` exists. Request is tagged CD-GDD-ALIGN.
+**Scenario:** A complete, internally consistent system GDD is submitted with its Player Fantasy section, but no game pillars: the context gives none, and none of `docs/GDD.md`, `docs/GDD.md` or `docs/GDD.md` exists. Request is tagged CD-GDD-ALIGN.
 **Expected:** Returns `CD-GDD-ALIGN: NOT ASSESSED`, naming the game pillars as the input it could not read. Alignment with pillars nobody supplied cannot be judged, so no alignment verdict is given.
 **Assertions:**
 - [ ] Verdict token is `CD-GDD-ALIGN: NOT ASSESSED` — not APPROVE, although nothing in the GDD itself looks wrong

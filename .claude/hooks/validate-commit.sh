@@ -10,7 +10,7 @@
 # information and must win: a caller sitting inside another project means that
 # project, not this one. Resolving to the script's own location first would
 # override them. So, in order:
-#   1. cwd holds project.yaml   -> cwd   (a project root)
+#   1. cwd holds .claude/ccgs/project.yaml   -> cwd   (a project root)
 #   2. cwd holds .claude/       -> cwd   (a project root not yet configured),
 #      unless cwd is itself named .claude: a stray .claude/.claude/ would
 #      make .claude/ a root, and the hooks would write .claude/production/
@@ -21,7 +21,7 @@
 # overriding a caller that legitimately means somewhere else.
 #
 # NOT an upward search: that resolves a nested project to its parent's config.
-if [ -f "project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
+if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
   CCGS_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
@@ -232,7 +232,7 @@ done
 # also commits every modified tracked file, and `git commit <path>` commits the
 # named paths' WORKING copies, staged or not -- both read from the working tree
 # (WT_FILES). core.quotePath=false: without it a non-ASCII path comes back
-# quoted ("assets/data/caf\303\251.json") and no pattern below matched it.
+# quoted ("Content/data/caf\303\251.json") and no pattern below matched it.
 _GIT="git -c core.quotePath=false"
 COMMIT_ARGS=" ${COMMIT_SEG#*[[:space:]]commit}"
 INDEX_FILES=$($_GIT diff --cached --name-only 2>/dev/null)
@@ -241,7 +241,7 @@ if printf '%s' "$COMMIT_ARGS" | grep -qE '[[:space:]](-[ABDEGHIJKLMNOPQRTUVWXYZb
     WT_FILES=$($_GIT diff --name-only 2>/dev/null)
 fi
 # Pathspecs after the `commit` word. ANY pathspec takes working copies -- `.`,
-# `-- .`, a folder, a glob, `:/` -- not only a literal assets/ path, and a
+# `-- .`, a folder, a glob, `:/` -- not only a literal Content/ path, and a
 # message or an -F file is not one. So Python tokenises the command as a shell
 # would (shlex; COMMIT_SEG was split at quotes and cannot say where `-m "a b"`
 # ends) and git expands the pathspecs. Without Python only literal data paths
@@ -293,7 +293,7 @@ REDIR = re.compile(r"^[<>]+&?$|^&>+$")  # >, >>, >&, <, <<, &>: a redirection op
 COMMIT_ARG = {"--message", "--file", "--reuse-message", "--reedit-message", "--fixup", "--squash",
               "--author", "--date", "--template", "--cleanup", "--trailer", "--pathspec-from-file"}
 def words(line):
-    if PS:  # git reads assets/data/x.json as assets\data\x.json
+    if PS:  # git reads Content/data/x.json as assets\data\x.json
         line = line.replace("\\", "/")
     try:
         lx = shlex.shlex(line, posix=True, punctuation_chars=True)
@@ -430,7 +430,7 @@ fi
 WT_FILES=$(printf '%s\n' "$WT_FILES" | grep -v '^$' | sort -u)
 # A project in a subfolder of a larger repository (game/ in a monorepo): git
 # names every path above from the repository's top level, and every check below
-# matches from the PROJECT root (^assets/, ^design/gdd/, the code root) and
+# matches from the PROJECT root (^Content/, ^docs/design/gdd/, the code root) and
 # reads files relative to it. Unconverted, nothing matched and the commit went
 # through unchecked. Keep this project's paths with the prefix dropped; files
 # outside the project are not ours to check. "" at the top level.
@@ -491,8 +491,8 @@ trap '[ -n "$TMP_DESIGN" ] && rm -f "$TMP_DESIGN"' EXIT
 # starves again at a larger file count. Batch it, or it returns.
 #
 # WHERE DATA LIVES is engine-specific, like the code root: Godot keeps it in
-# assets/data/, Unity under Assets/ (Assets/Data/, Assets/Game/Data/), Unreal
-# under Content/. Anchored to ^assets/data/ alone, this -- the hook's only
+# Content/data/, Unity under Assets/ (Assets/Data/, Assets/Game/Data/), Unreal
+# under Content/. Anchored to ^Content/data/ alone, this -- the hook's only
 # blocking check -- never fired on Unity or Unreal. It stays inside the asset
 # roots so an editor's JSON-with-comments (.vscode/settings.json) never blocks.
 # ---------------------------------------------------------------------------
@@ -616,12 +616,12 @@ if [ -f .claude/hooks/yaml-helper.sh ]; then
     command -v resolve_setting >/dev/null 2>&1 && _VC_HELPER=1
 fi
 
-# design/gdd/ also holds governance and registry files that are not system
+# docs/design/gdd/ also holds governance and registry files that are not system
 # GDDs and have none of these sections, so they warned on every commit (#133).
 # Skip the names not_a_system_gdd() skips in gdd-structure-check.sh and
 # review-scope.sh; keep the three lists the same. Only top-level files count as
-# system GDDs: archive/ and reviews/ copies under design/gdd/ are not checked.
-DESIGN_FILES=$(echo "$STAGED" | grep -E '^design/gdd/[^/]+\.md$' \
+# system GDDs: archive/ and reviews/ copies under docs/design/gdd/ are not checked.
+DESIGN_FILES=$(echo "$STAGED" | grep -E '^docs/design/gdd/[^/]+\.md$' \
   | grep -vE '/(game-concept|systems-index|game-pillars|gdd-cross-review-[^/]*|gameplay-tags|fixture-swap-ledger|entity-registry|sound-bible)\.md$')
 if [ -n "$DESIGN_FILES" ]; then
     WORKFLOW="standard"
@@ -776,7 +776,7 @@ fi
 # docs-only or config-only commit stays quiet and the notice keeps its meaning.
 if [ -z "$CODE_ROOT" ]; then
     if echo "$STAGED" | grep -qiE '\.(gd|cs|cpp|cc|hpp|h|c|py|js|ts|rs|java|kt|lua|gdshader|shader|hlsl)$'; then
-        WARNINGS="$WARNINGS\nSKIPPED: source files are staged but no code root could be resolved (engine.name unset, and the tree does not name one unambiguously). The hardcoded-value and TODO-owner scans did NOT run. Run /setup-engine, or set engine.name in project.yaml."
+        WARNINGS="$WARNINGS\nSKIPPED: source files are staged but no code root could be resolved (engine.name unset, and the tree does not name one unambiguously). The hardcoded-value and TODO-owner scans did NOT run. Run /setup-engine, or set engine.name in .claude/ccgs/project.yaml."
     fi
 fi
 

@@ -8,7 +8,7 @@ It runs only when the user types it (`disable-model-invocation: true`). The flow
 1. **Assess severity** (S1 Critical / S2 High / S3 or lower, on `/bug-triage`'s scale) and confirm it with
    `AskUserQuestion`; S3 or lower stops with `Verdict: **REDIRECTED**`.
 2. **Hotfix record** — asks "May I write this to
-   `production/hotfixes/hotfix-[date]-[short-name].md`?"
+   `docs/production/hotfixes/hotfix-[date]-[short-name].md`?"
 3. **Branch** — checks for a git repo, then asks before running
    `git checkout -b hotfix/[short-name] [base-ref]`. `[base-ref]` is the
    release the bug is in: its tag on `main`, or its `release/*` branch if one
@@ -32,7 +32,7 @@ It runs only when the user types it (`disable-model-invocation: true`). The flow
    question) and a post-incident review (recorded with the incident-response
    template — `/retrospective` has no incident mode).
 
-Targeted tests run with `commands.test` from `project.yaml`; when it is unset or
+Targeted tests run with `commands.test` from `.claude/ccgs/project.yaml`; when it is unset or
 no test covers the system, the hotfix record says `Tests: NOT RUN — [reason]`.
 A `/team-qa` pass that returns NOT APPROVED or BLOCKED is handled like a
 smoke-check FAIL. S1 is `/bug-triage`'s definition: crash, data loss, or
@@ -65,9 +65,9 @@ choose the QA scope.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -80,14 +80,14 @@ Fixture defaults.
 - Git repository; the live build is the release tag `v1.2.0` on `main`, and no
   `release/*` branch exists (the trunk default)
 - Bug in `src/gameplay/arena.gd` (crash on boss arena entry);
-  `production/qa/bugs/BUG-0031.md` exists with `**Status**: Open`
+  `docs/production/qa/bugs/BUG-0031.md` exists with `**Status**: Open`
 - All three sign-offs return APPROVE; `qa-lead` picks a smoke check, which returns PASS
 
 **Input:** `/hotfix BUG-0031`
 
 **Expected behavior:**
 1. Assesses S1 and confirms via `AskUserQuestion`; user picks `[A] S1 (Critical)`
-2. Asks "May I write this to `production/hotfixes/hotfix-[date]-boss-arena-crash.md`?" and writes it
+2. Asks "May I write this to `docs/production/hotfixes/hotfix-[date]-boss-arena-crash.md`?" and writes it
 3. Runs `git rev-parse --is-inside-work-tree`, asks "Ready to create hotfix branch
    'hotfix/boss-arena-crash' from v1.2.0?", and runs
    `git checkout -b hotfix/boss-arena-crash v1.2.0` only after `[A] Yes — create branch`
@@ -97,7 +97,7 @@ Fixture defaults.
 7. Asks "Hotfix validated and approved. Merge to `main`, tag v1.2.1 and deploy?"
    (no release branch is named — none exists); user picks `[A]`
 8. Merges to `main`, tags `v1.2.1` on the fixed build, and confirms the fix is on `main`
-9. Asks "May I update `production/qa/bugs/BUG-0031.md` …?" before setting it to
+9. Asks "May I update `docs/production/qa/bugs/BUG-0031.md` …?" before setting it to
    `Fixed — Pending Verification`, then prints "Hotfix Deployed: boss-arena-crash"
    with `Tag: v1.2.1` and `Next: /bug-report verify`
 
@@ -141,7 +141,7 @@ Fixture defaults.
 ### Case 3: Release Branch — Deploy approval holds even in autonomous mode
 
 **Fixture:**
-- `project.yaml` sets `modes.automation: autonomous`
+- `.claude/ccgs/project.yaml` sets `modes.automation: autonomous`
 - The live release `v1.3.0` has a `release/1.3` branch, cut to stabilise it for
   certification; the hotfix branch was started from `release/1.3`
 - An S2 fix has all three APPROVE sign-offs and a smoke check PASS
@@ -189,7 +189,7 @@ Fixture defaults.
 ### Case 5: Director Gate Check — Producer sign-off, and NOT ASSESSED QA is not a pass
 
 **Fixture:**
-- `project.yaml`: `modes.rigor: standard` (so a project with no game tests gets NOT ASSESSED, not WAIVED)
+- `.claude/ccgs/project.yaml`: `modes.rigor: standard` (so a project with no game tests gets NOT ASSESSED, not WAIVED)
 - S1 fix implemented; all three sign-offs APPROVE
 - `qa-lead` picks a smoke check; `/smoke-check` returns `NOT ASSESSED — no game tests found`
 

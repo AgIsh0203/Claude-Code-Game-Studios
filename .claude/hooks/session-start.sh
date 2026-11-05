@@ -10,7 +10,7 @@
 # information and must win: a caller sitting inside another project means that
 # project, not this one. Resolving to the script's own location first would
 # override them. So, in order:
-#   1. cwd holds project.yaml   -> cwd   (a project root)
+#   1. cwd holds .claude/ccgs/project.yaml   -> cwd   (a project root)
 #   2. cwd holds .claude/       -> cwd   (a project root not yet configured),
 #      unless cwd is itself named .claude: a stray .claude/.claude/ would
 #      make .claude/ a root, and the hooks would write .claude/production/
@@ -21,7 +21,7 @@
 # overriding a caller that legitimately means somewhere else.
 #
 # NOT an upward search: that resolves a nested project to its parent's config.
-if [ -f "project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
+if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
   CCGS_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
@@ -68,19 +68,19 @@ if [ -n "$BRANCH" ]; then
 fi
 
 # Resolve review_mode the same way skills do: resolve_setting applies the FULL
-# chain (project.local.yaml -> project.yaml -> legacy review-mode.txt -> modes.rigor
+# chain (.claude/ccgs/project.local.yaml -> .claude/ccgs/project.yaml -> legacy review-mode.txt -> modes.rigor
 # expansion -> default). modes.review_mode is rigor-fronted and locally overridable,
 # so only resolve_setting reflects both a rigor-derived value (a project that set
 # only `rigor: minimal` shows `solo`) and a local override. get_effective_yaml_key
 # returns empty for a rigor-only project, which would leave the banner showing a
 # stale `lean`.
 REVIEW_MODE=""
-if [ -f "project.yaml" ] && [ -f ".claude/hooks/yaml-helper.sh" ]; then
+if [ -f ".claude/ccgs/project.yaml" ] && [ -f ".claude/hooks/yaml-helper.sh" ]; then
     source .claude/hooks/yaml-helper.sh
     REVIEW_MODE=$(resolve_setting modes.review_mode 2>/dev/null | cut -f1)
 fi
-if [ -z "$REVIEW_MODE" ] && [ -f "production/review-mode.txt" ]; then
-    REVIEW_MODE=$(head -1 production/review-mode.txt 2>/dev/null | tr -d '[:space:]')
+if [ -z "$REVIEW_MODE" ] && [ -f ".claude/ccgs/review-mode.txt" ]; then
+    REVIEW_MODE=$(head -1 .claude/ccgs/review-mode.txt 2>/dev/null | tr -d '[:space:]')
 fi
 # With nothing configured, rigor defaults to `minimal`, which resolves
 # review_mode to `solo` -- what every skill runs. `lean` here named a review
@@ -92,30 +92,30 @@ echo ""
 echo "Review mode: $REVIEW_MODE"
 
 # Schema validation — surface invalid enum values in
-# project.yaml and project.local.yaml so typos like `automation: chaotic`
+# .claude/ccgs/project.yaml and .claude/ccgs/project.local.yaml so typos like `automation: chaotic`
 # surface at session start rather than failing inside a skill.
 if [ -f ".claude/hooks/yaml-helper.sh" ]; then
     if ! type validate_yaml_enum >/dev/null 2>&1; then
         source .claude/hooks/yaml-helper.sh
     fi
-    # Hard-error guard: project.local.yaml requires a project.yaml base
+    # Hard-error guard: .claude/ccgs/project.local.yaml requires a .claude/ccgs/project.yaml base
     if ! BASE_ERR=$(validate_local_yaml_base 2>&1); then
         echo ""
         echo "[!] $BASE_ERR"
     fi
-    if [ -f "project.yaml" ]; then
-        SCHEMA_ERRORS=$(validate_yaml_enum project.yaml 2>&1)
+    if [ -f ".claude/ccgs/project.yaml" ]; then
+        SCHEMA_ERRORS=$(validate_yaml_enum .claude/ccgs/project.yaml 2>&1)
         if [ -n "$SCHEMA_ERRORS" ]; then
             echo ""
-            echo "[!] project.yaml schema errors:"
+            echo "[!] .claude/ccgs/project.yaml schema errors:"
             echo "$SCHEMA_ERRORS" | sed 's/^/    /'
         fi
     fi
-    if [ -f "project.local.yaml" ]; then
-        SCHEMA_ERRORS=$(validate_yaml_enum project.local.yaml 2>&1)
+    if [ -f ".claude/ccgs/project.local.yaml" ]; then
+        SCHEMA_ERRORS=$(validate_yaml_enum .claude/ccgs/project.local.yaml 2>&1)
         if [ -n "$SCHEMA_ERRORS" ]; then
             echo ""
-            echo "[!] project.local.yaml schema errors:"
+            echo "[!] .claude/ccgs/project.local.yaml schema errors:"
             echo "$SCHEMA_ERRORS" | sed 's/^/    /'
         fi
     fi
@@ -135,7 +135,7 @@ if [ -f .claude/hooks/update-check.sh ]; then
 fi
 
 # --- Stage source agreement ---
-# `project.stage` in project.yaml is authoritative; production/stage.txt is a
+# `project.stage` in .claude/ccgs/project.yaml is authoritative; .claude/ccgs/stage.txt is a
 # legacy mirror kept for unmigrated hooks. Twelve consumers read the mirror --
 # including detect-gaps.sh and yaml-helper.sh -- so when the two disagree, part
 # of the system acts on one stage and part on the other, silently.
@@ -146,17 +146,17 @@ fi
 # observations, never verdicts (CLAUDE.md).
 STAGE_YAML=""
 STAGE_TXT=""
-if [ -f "project.yaml" ] && command -v get_yaml_key >/dev/null 2>&1; then
-    STAGE_YAML=$(get_yaml_key project.yaml project.stage 2>/dev/null)
+if [ -f ".claude/ccgs/project.yaml" ] && command -v get_yaml_key >/dev/null 2>&1; then
+    STAGE_YAML=$(get_yaml_key .claude/ccgs/project.yaml project.stage 2>/dev/null)
 fi
-if [ -f "production/stage.txt" ]; then
-    STAGE_TXT=$(head -1 production/stage.txt 2>/dev/null | tr -d '\r' | sed 's/[[:space:]]*$//')
+if [ -f ".claude/ccgs/stage.txt" ]; then
+    STAGE_TXT=$(head -1 .claude/ccgs/stage.txt 2>/dev/null | tr -d '\r' | sed 's/[[:space:]]*$//')
 fi
 if [ -n "$STAGE_YAML" ] && [ -n "$STAGE_TXT" ] && [ "$STAGE_YAML" != "$STAGE_TXT" ]; then
     echo ""
     echo "[!] Stage sources disagree:"
-    echo "      project.yaml  project.stage : $STAGE_YAML   (authoritative)"
-    echo "      production/stage.txt        : $STAGE_TXT   (legacy mirror)"
+    echo "      .claude/ccgs/project.yaml  project.stage : $STAGE_YAML   (authoritative)"
+    echo "      .claude/ccgs/stage.txt        : $STAGE_TXT   (legacy mirror)"
     echo "    Twelve consumers read the mirror, so part of the system is acting on"
     echo "    each value. Only /gate-check should change a stage (on a PASS, or a"
     echo "    CONCERNS whose risks you accepted) — do not hand-edit either file to"
@@ -164,14 +164,14 @@ if [ -n "$STAGE_YAML" ] && [ -n "$STAGE_TXT" ] && [ "$STAGE_YAML" != "$STAGE_TXT
 fi
 
 # Current sprint (find most recent sprint file)
-LATEST_SPRINT=$(ls -t production/sprints/sprint-*.md 2>/dev/null | head -1)
+LATEST_SPRINT=$(ls -t docs/production/sprints/sprint-*.md 2>/dev/null | head -1)
 if [ -n "$LATEST_SPRINT" ]; then
     echo ""
     echo "Active sprint: $(basename "$LATEST_SPRINT" .md)"
 fi
 
 # Current milestone
-LATEST_MILESTONE=$(ls -t production/milestones/*.md 2>/dev/null | head -1)
+LATEST_MILESTONE=$(ls -t docs/production/milestones/*.md 2>/dev/null | head -1)
 if [ -n "$LATEST_MILESTONE" ]; then
     echo "Active milestone: $(basename "$LATEST_MILESTONE" .md)"
 fi
@@ -224,12 +224,12 @@ fi
 
 # --- engine reference vs configured engine -----------------------------------
 # /setup-engine is the only thing that rewrites CLAUDE.md's ENGINE-REFERENCE-IMPORT
-# line. Edit engine.name in project.yaml by hand and the import keeps loading the
+# line. Edit engine.name in .claude/ccgs/project.yaml by hand and the import keeps loading the
 # previous engine's reference as project instructions -- every session, silently.
 # An OBSERVATION, never an action (CLAUDE.md): it reports, the user decides.
 # Printed BEFORE the session state: hook output past 10,000 characters is cut
 # to a preview, so a warning below a long checkpoint could be lost.
-if [ -f project.yaml ] && [ -f CLAUDE.md ]; then
+if [ -f .claude/ccgs/project.yaml ] && [ -f CLAUDE.md ]; then
     ERI=$(grep -m1 -E '^@docs/engine-reference/[a-z]+/VERSION\.md' CLAUDE.md 2>/dev/null \
           | sed -n 's|^@docs/engine-reference/\([a-z]*\)/VERSION\.md.*|\1|p')
     # engine.name, not the first `name:` line: `project.name: Marrow` above the
@@ -238,11 +238,11 @@ if [ -f project.yaml ] && [ -f CLAUDE.md ]; then
     CFG=$(awk '/^engine:/ { e = 1; next } e && /^[^[:space:]#]/ { exit }
                e && /^[[:space:]]+name:/ { sub(/^[[:space:]]+name:[[:space:]]*/, ""); gsub(/["'"'"']/, "");
                                            split($0, w, /[[:space:]#]/); print w[1]; exit }' \
-          project.yaml 2>/dev/null | tr '[:upper:]' '[:lower:]')
+          .claude/ccgs/project.yaml 2>/dev/null | tr '[:upper:]' '[:lower:]')
     if [ -n "$ERI" ] && [ -n "$CFG" ] && [ "$ERI" != "$CFG" ]; then
         echo ""
         echo "!! ENGINE REFERENCE MISMATCH"
-        echo "   project.yaml engine.name : $CFG"
+        echo "   .claude/ccgs/project.yaml engine.name : $CFG"
         echo "   CLAUDE.md imports        : docs/engine-reference/$ERI/VERSION.md"
         echo "   Every session is loading the $ERI reference on a $CFG project."
         echo "   Fix: re-run /setup-engine, or edit the ENGINE-REFERENCE-IMPORT line."
@@ -261,7 +261,7 @@ fi
 # would silently suppress the recovery checkpoint -- the one piece of output
 # whose absence the user cannot notice. Show the state unless we positively
 # determined the flag is off.
-STATE_FILE="production/session-state/active.md"
+STATE_FILE=".claude/ccgs/session-state/active.md"
 if [ -f .claude/hooks/yaml-helper.sh ] && ! command -v session_state_enabled >/dev/null 2>&1; then
     . .claude/hooks/yaml-helper.sh
 fi
@@ -347,7 +347,7 @@ if [ -f "$STATE_FILE" ] && { ! command -v session_state_enabled >/dev/null 2>&1 
     # emit observations, never verdicts (CLAUDE.md). The user decides.
     if [ "${TOTAL_LINES:-0}" -gt 200 ] 2>/dev/null; then
         echo "  Note: $TOTAL_LINES lines. Narrative can be rotated into"
-        echo "        production/session-logs/ — bash .claude/scripts/rotate-session-state.sh"
+        echo "        .claude/ccgs/session-logs/ — bash .claude/scripts/rotate-session-state.sh"
     fi
     echo "=== END SESSION STATE PREVIEW ==="
 fi

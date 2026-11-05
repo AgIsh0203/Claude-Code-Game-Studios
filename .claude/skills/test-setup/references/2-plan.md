@@ -22,7 +22,7 @@ tests/
  instead — Unity Assets/Tests/EditMode|PlayMode/, Unreal
  Source/<Module>/Private/Tests/ — because neither compiles code in tests/]
 
-production/qa/
+docs/production/qa/
   evidence/       — Screenshot and manual test sign-off records
 
 [Engine-specific files — see per-engine details below]

@@ -10,8 +10,8 @@ Agent: `art-director` | Model tier: session (inherit) | Domain: Visual identity,
 - Target phase name and the resolved `workflow` tier
 - The target gate's required and recommended artifacts at the resolved tier (from `/gate-check`'s loaded gate file)
 - List of all art/visual artifacts present (file paths)
-- Visual identity anchor from `design/gdd/game-concept.md` (if present; if there is no `design/gdd/game-concept.md`, the "Art & audio direction" line of `design/game-brief.md`)
-- Art bible path if it exists (`design/art/art-bible.md`)
+- Visual identity anchor from `docs/GDD.md` (if present; if there is no `docs/GDD.md`, the "Art & audio direction" line of `docs/GDD.md`)
+- Art bible path if it exists (`docs/design/art/art-bible.md`)
 
 **Prompt**:
 > "Review the current project state for [target phase] gate readiness from a visual

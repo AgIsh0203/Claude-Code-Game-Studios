@@ -14,10 +14,10 @@ Data, Overall Assessment, and Top 3 Priorities.
 
 Findings are sorted into four buckets and routed: design changes to
 `/propagate-design-change [path]`, balance adjustments to `/balance-check
-[system]`, bugs to `/bug-report`, polish items to the `production/` backlog. In
+[system]`, bugs to `/bug-report`, polish items to the `docs/production/` backlog. In
 `full` review mode the skill spawns `creative-director` for gate **CD-PLAYTEST**;
 in `lean` and `solo` it skips the gate with a note. It then asks "May I write
-this playtest report to `production/qa/playtests/playtest-[date]-[tester].md`?".
+this playtest report to `docs/production/qa/playtests/playtest-[date]-[tester].md`?".
 Verdict is **COMPLETE**.
 
 ---
@@ -48,9 +48,9 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -60,14 +60,14 @@ Fixture defaults.
 ### Case 1: Happy Path — Analyze Notes, Findings Routed by Bucket
 
 **Fixture:**
-- `production/qa/notes/session-01.md` holds one tester's notes: "framerate
+- `docs/production/qa/notes/session-01.md` holds one tester's notes: "framerate
   drops every time the forest area loads", "I could not work out how to open
   the first door", and "the second boss hits far too hard"
-- `design/gdd/` holds the tutorial and combat GDDs; the tutorial GDD says the
+- `docs/design/gdd/` holds the tutorial and combat GDDs; the tutorial GDD says the
   first door teaches the interact key
 - Review mode: `solo`
 
-**Input:** `/playtest-report analyze production/qa/notes/session-01.md`
+**Input:** `/playtest-report analyze docs/production/qa/notes/session-01.md`
 
 **Expected behavior:**
 1. Skill reads the notes and cross-references the design documents
@@ -77,14 +77,14 @@ Fixture defaults.
 4. Routing: `/propagate-design-change` on the tutorial GDD, `/balance-check` for
    combat, `/bug-report` for the framerate drop
 5. Skill notes "CD-PLAYTEST skipped — Solo mode." and asks "May I write this
-   playtest report to `production/qa/playtests/playtest-[date]-[tester].md`?"
+   playtest report to `docs/production/qa/playtests/playtest-[date]-[tester].md`?"
 6. On approval the file is written; verdict is COMPLETE
 
 **Assertions:**
 - [ ] The framerate drop appears in the Bugs Encountered table, not under Gameplay Flow
 - [ ] Findings are presented in the four buckets (design, balance, bug, polish)
 - [ ] Each bucket is routed to its named skill (`/propagate-design-change`, `/balance-check`, `/bug-report`)
-- [ ] "May I write" names `production/qa/playtests/playtest-[date]-[tester].md` before writing
+- [ ] "May I write" names `docs/production/qa/playtests/playtest-[date]-[tester].md` before writing
 - [ ] Verdict is COMPLETE
 
 ---
@@ -116,19 +116,19 @@ Fixture defaults.
 ### Case 3: Observation Conflicts With Design Intent
 
 **Fixture:**
-- `design/gdd/crafting.md` states crafting is a core loop players engage with
+- `docs/design/gdd/crafting.md` states crafting is a core loop players engage with
   every session
-- `production/qa/notes/session-02.md` records that the tester never opened the
+- `docs/production/qa/notes/session-02.md` records that the tester never opened the
   crafting menu in 40 minutes
 - Review mode: `solo`
 
-**Input:** `/playtest-report analyze production/qa/notes/session-02.md`
+**Input:** `/playtest-report analyze docs/production/qa/notes/session-02.md`
 
 **Expected behavior:**
-1. Skill reads the notes and cross-references `design/gdd/crafting.md`
+1. Skill reads the notes and cross-references `docs/design/gdd/crafting.md`
 2. Skill flags the observation as conflicting with design intent
 3. Phase 3 puts it in the "Design changes needed" bucket
-4. Routing names `/propagate-design-change` on `design/gdd/crafting.md`
+4. Routing names `/propagate-design-change` on `docs/design/gdd/crafting.md`
 5. Report saved after the "May I write" ask; verdict COMPLETE
 
 **Assertions:**
@@ -143,10 +143,10 @@ Fixture defaults.
 
 **Fixture:**
 - Review mode: `full`
-- Neither `design/gdd/game-concept.md` nor `design/game-brief.md` exists
-- `production/qa/notes/session-03.md` holds playtest notes
+- Neither `docs/GDD.md` nor `docs/GDD.md` exists
+- `docs/production/qa/notes/session-03.md` holds playtest notes
 
-**Input:** `/playtest-report analyze production/qa/notes/session-03.md`
+**Input:** `/playtest-report analyze docs/production/qa/notes/session-03.md`
 
 **Expected behavior:**
 1. Skill structures and categorises the findings
@@ -167,12 +167,12 @@ Fixture defaults.
 ### Case 5: Director Gate — CD-PLAYTEST by Review Mode
 
 **Fixture:**
-- `design/gdd/game-concept.md` exists with pillars
-- `production/qa/notes/session-04.md` holds playtest notes
+- `docs/GDD.md` exists with pillars
+- `docs/production/qa/notes/session-04.md` holds playtest notes
 - Run three times: `--review full`, `--review lean`, `--review solo`
 - In the full run, `creative-director` returns CONCERNS
 
-**Input:** `/playtest-report analyze production/qa/notes/session-04.md --review [mode]`
+**Input:** `/playtest-report analyze docs/production/qa/notes/session-04.md --review [mode]`
 
 **Expected behavior:**
 1. Full: after Phase 3 categorisation, `creative-director` is spawned for
@@ -198,7 +198,7 @@ Fixture defaults.
 - [ ] Findings are categorised into design / balance / bug / polish and routed to the named follow-up
 - [ ] Applies the review mode before spawning CD-PLAYTEST and prints the skip note when skipped
 - [ ] Presents the director's assessment (full mode) before asking to save
-- [ ] Asks "May I write this playtest report to `production/qa/playtests/playtest-[date]-[tester].md`?" before writing
+- [ ] Asks "May I write this playtest report to `docs/production/qa/playtests/playtest-[date]-[tester].md`?" before writing
 - [ ] Ends with verdict COMPLETE and next steps (`/design-review`, `/bug-triage`)
 
 ---
@@ -209,7 +209,7 @@ Fixture defaults.
   assessment section is added) and is not separately tested; APPROVE only adds
   an approval note. NOT ASSESSED (the director lacked an input) adds the section
   naming what was missing and is never read as an approval; not separately tested.
-- At `modes.workflow: minimal`, where `design/game-brief.md` replaces
+- At `modes.workflow: minimal`, where `docs/GDD.md` replaces
   `game-concept.md`, the brief has no pillars: its one-sentence pitch and "Who
   it's for / what they feel" line are passed in their place; not separately tested.
 - Video or screenshot attachments are not tested; the report is text only.

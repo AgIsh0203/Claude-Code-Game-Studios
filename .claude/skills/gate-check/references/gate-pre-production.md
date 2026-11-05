@@ -7,8 +7,8 @@
 
 **Required Artifacts:**
 - [ ] Engine chosen (CLAUDE.md Technology Stack is not `[CHOOSE]`)
-- [ ] Project config populated (`project.yaml` has engine/naming/performance set, or legacy `.claude/docs/technical-preferences.md` populated)
-- [ ] Art bible exists at `design/art/art-bible.md` with at least Sections 1–4 (Visual Identity Foundation)
+- [ ] Project config populated (`.claude/ccgs/project.yaml` has engine/naming/performance set, or legacy `.claude/docs/technical-preferences.md` populated)
+- [ ] Art bible exists at `docs/design/art/art-bible.md` with at least Sections 1–4 (Visual Identity Foundation)
 - [ ] At least 3 Architecture Decision Records in `docs/architecture/` covering
       Foundation-layer systems (scene management, event architecture, save/load)
 - [ ] Engine reference docs exist in `docs/engine-reference/[engine]/`
@@ -18,8 +18,8 @@
 - [ ] Master architecture document exists at `docs/architecture/architecture.md`
 - [ ] Architecture traceability index exists at `docs/architecture/requirements-traceability.md`
 - [ ] `/architecture-review` has been run (a review report file exists in `docs/architecture/`)
-- [ ] `design/accessibility-requirements.md` exists with accessibility tier committed
-- [ ] `design/ux/interaction-patterns.md` exists (pattern library initialized, even if minimal)
+- [ ] `docs/design/accessibility-requirements.md` exists with accessibility tier committed
+- [ ] `docs/design/ux/interaction-patterns.md` exists (pattern library initialized, even if minimal)
 
 **Which `/architecture-review` report counts.** Read the `Mode:` line of each
 `docs/architecture/architecture-review-*.md`, and for each item below use the

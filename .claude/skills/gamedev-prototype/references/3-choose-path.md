@@ -1,6 +1,6 @@
-# /prototype — Phase 3: Choose the Prototype Path
+# /gamedev-prototype — Phase 3: Choose the Prototype Path
 
-> Part of `/prototype`. `SKILL.md` names when to read this file; the settings it
+> Part of `/gamedev-prototype`. `SKILL.md` names when to read this file; the settings it
 > resolved and the rules under its later headings still apply here.
 
 ## Phase 3: Choose the Prototype Path
@@ -87,7 +87,7 @@ multi-turn collaborative loop:
 reaching a playable state, stop. The scope is too large or the question is wrong.
 Reframe the hypothesis and simplify aggressively, or switch to Paper path.
 
-**Output:** A minimal runnable engine project in `prototypes/[name]-concept/`.
+**Output:** A minimal runnable engine project in `docs/prototypes/[name]-concept/`.
 
 **Lighter alternative — Love2D (Lua):** If the project engine (Godot, Unity, Unreal)
 feels too heavy to stand up for a throwaway build, consider Love2D — a minimal 2D

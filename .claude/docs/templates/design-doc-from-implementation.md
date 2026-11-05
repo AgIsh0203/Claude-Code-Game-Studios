@@ -214,7 +214,7 @@ and mark it `[inferred — confirm]` until they do.]
 **Related Skills**:
 - `/balance-check` — Validate formulas and progression
 - `/architecture-decision` — Document technical decisions
-- `/code-review` — Ensure code matches clarified design
+- `/gamedev-code-review` — Ensure code matches clarified design
 
 ---
 

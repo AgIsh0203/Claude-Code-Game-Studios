@@ -22,11 +22,11 @@ auto-advancing stage and must respect the three review modes.
 
 | Metric | PASS criteria |
 |---|---|
-| **G1 — Review mode read** | Skill reads `review_mode` (and `workflow`) from its resolved config block — `modes.review_mode`, the legacy `production/review-mode.txt`, else the `modes.rigor` value — before deciding which directors to spawn |
+| **G1 — Review mode read** | Skill reads `review_mode` (and `workflow`) from its resolved config block — `modes.review_mode`, the legacy `.claude/ccgs/review-mode.txt`, else the `modes.rigor` value — before deciding which directors to spawn |
 | **G2 — Director panel width** | Unless `solo`, the PHASE-GATE panel runs in parallel at the width `modes.workflow` sets — `minimal` PR only, `standard` TD + PR, `full` all 4 (CD, TD, PR, AD) — and the output names the perspectives a narrower panel left out |
 | **G3 — Lean mode: PHASE-GATE only** | In `lean` mode, only `*-PHASE-GATE` gates run; inline gates (CD-PILLARS, TD-ARCHITECTURE, etc.) are skipped |
 | **G4 — Solo mode: no directors** | In `solo` mode, no director gates spawn; each is noted as "skipped — Solo mode" |
-| **G5 — No auto-advance** | Skill never writes `project.stage` in `project.yaml`, or the legacy `production/stage.txt`, without explicit user confirmation via a "May I" question |
+| **G5 — No auto-advance** | Skill never writes `project.stage` in `.claude/ccgs/project.yaml`, or the legacy `.claude/ccgs/stage.txt`, without explicit user confirmation via a "May I" question |
 
 ---
 
@@ -150,7 +150,7 @@ They have a PR-SPRINT or PR-MILESTONE gate at specific mode thresholds.
 
 | Metric | PASS criteria |
 |---|---|
-| **SP1 — Reads sprint/milestone state** | Skill reads `production/sprints/` or `production/milestones/` before producing output |
+| **SP1 — Reads sprint/milestone state** | Skill reads `docs/production/sprints/` or `docs/production/milestones/` before producing output |
 | **SP2 — Correct sprint gate** | PR-SPRINT (for planning) or PR-MILESTONE (for milestone review) gate runs in `full` mode, skips in `lean`/`solo` |
 | **SP3 — Structured output** | Output uses a consistent structure (velocity table, risk list, action items) rather than free prose |
 | **SP4 — No auto-commit** | Skill never writes sprint files or milestone records without "May I write" |

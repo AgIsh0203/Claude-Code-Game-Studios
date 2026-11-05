@@ -3,14 +3,16 @@ name: content-audit
 description: "Audit GDD content counts against what's implemented — planned vs built."
 argument-hint: "[system-name | --summary | (no arg = full audit)]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/content-audit/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/content-audit/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys workflow,automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -21,7 +23,7 @@ Resolved above — use as-is. No block → defaults in `.claude/docs/config-reso
 
 > Resolve `modes.workflow` before auditing: this skill's tier-dependent behaviour
 > ("audit only specs in the required sections") follows the resolved tier, never
-> an assumed one. When a required input such as `design/gdd/systems-index.md` is
+> an assumed one. When a required input such as `docs/GDD.md` is
 > absent, report
 > **`NOT ASSESSED — NO DATA`** rather than computing a gap percentage (which
 > divides by zero when nothing is specified).
@@ -56,7 +58,7 @@ not a filled-in report.** Check first, and stop if the check fails.
    reads the template next.
 4. If **every** required input is ABSENT, stop and report
    **`NOT ASSESSED — NO DATA`** as the whole verdict, naming what was missing and
-   which skill produces it (`/map-systems` for `design/gdd/systems-index.md`, `/design-system` for the GDDs).
+   which skill produces it (`/map-systems` for `docs/GDD.md`, `/design-system` for the GDDs).
 
 **A verdict of `NOT ASSESSED` is a success.** It is the correct, useful answer to
 "what does the data say?" when there is no data. The failure mode this prevents is
@@ -73,22 +75,22 @@ the two happened — a reader cannot tell from a green result.
 
 ## Phase 1 — Context Gathering
 
-1. **Read `design/gdd/systems-index.md`** for the full list of systems, their
+1. **Read `docs/GDD.md`** for the full list of systems, their
    categories, and MVP/priority tier. Read it by section: find the headings you need
    with the Grep tool (pattern `^#`, content mode) and Read those ranges with
    offset and limit.
 
-2. **Registry-first count**: If `design/registry/entities.yaml` exists, read it
+2. **Registry-first count**: If `docs/design/registry/entities.yaml` exists, read it
    first. Its `entities` and `items` sections are the cross-GDD named content
    the audit is counting, already distilled with a `source:` GDD per entry:
    ```
-   Grep pattern="^  - name:" path="design/registry/entities.yaml" output_mode="content" -A 2
+   Grep pattern="^  - name:" path="docs/design/registry/entities.yaml" output_mode="content" -A 2
    ```
    `- name:` appears in all four registry sections; keep only the names whose
    `-A 2` context shows they sit under `entities:` or `items:` (the named
    content this audit counts — not `formulas:`/`constants:`). Use those as the
    **planned** named-content set without full-reading the GDDs that own them.
-   **If `design/registry/entities.yaml` does not exist or has no entries** (it
+   **If `docs/design/registry/entities.yaml` does not exist or has no entries** (it
    ships as an empty stub until `/design-system` populates it), skip this step
    and rely on the GDD scan below — behaviour is unchanged, only more expensive.
 
@@ -97,12 +99,12 @@ the two happened — a reader cannot tell from a green result.
 
    a. Which GDDs carry a Summary (the denominator / fail-open check):
    ```
-   Grep pattern="^## Summary" glob="design/gdd/*.md" output_mode="files_with_matches"
+   Grep pattern="^## Summary" glob="docs/design/gdd/*.md" output_mode="files_with_matches"
    ```
 
    b. Which GDDs actually declare content counts (the narrowing step):
    ```
-   Grep pattern="[0-9]+[[:space:]]+(enemies|enemy types|levels|areas|maps|stages|items|weapons|equipment|abilities|skills|spells|cutscenes|conversations|dialogue scenes|bosses|quests)|(enemy|item|weapon|ability|level) types:" glob="design/gdd/*.md" output_mode="files_with_matches"
+   Grep pattern="[0-9]+[[:space:]]+(enemies|enemy types|levels|areas|maps|stages|items|weapons|equipment|abilities|skills|spells|cutscenes|conversations|dialogue scenes|bosses|quests)|(enemy|item|weapon|ability|level) types:" glob="docs/design/gdd/*.md" output_mode="files_with_matches"
    ```
 
    > **Keep the two scans separate.** `## Summary` matches every compliant GDD,
@@ -111,7 +113,7 @@ the two happened — a reader cannot tell from a green result.
    > content nouns step 5 actually extracts.
 
    **Fail open on a missing Summary.** Establish the denominator: glob
-   `design/gdd/*.md` and count **N**. **Scan (a)** matching fewer than N means
+   `docs/design/gdd/*.md` and count **N**. **Scan (a)** matching fewer than N means
    those GDDs predate `## Summary` — never treat an absent Summary as a system
    out of scope; a zero-match (a) means "no GDD carries a Summary yet", not "no
    auditable content". Full-read the unmatched in-scope GDDs.
@@ -156,48 +158,48 @@ For each content type found in Phase 1, scan the relevant directories to count
 what has been implemented. Use Glob and Grep to locate files.
 
 **On Unreal, content lives in `Content/`** — maps and data assets both — and the
-code root (`Source/<Module>/`) holds only C++. So on Unreal, every `assets/…` glob
+code root (`Source/<Module>/`) holds only C++. So on Unreal, every `Content/…` glob
 below also runs under `Content/` (`*.uasset` in place of the data extensions),
 and levels are `Content/**/*.umap`. Skipping this finds zero levels on every
 Unreal project and reports them NOT STARTED.
 
 **On Unity, content lives under `Assets/`** (compare the case exactly —
 `.claude/docs/code-root-resolution.md`), and rarely in a `data/` folder. So on
-Unity every `assets/…` glob below also runs under `Assets/`, without requiring
+Unity every `Content/…` glob below also runs under `Assets/`, without requiring
 a `data/` segment — for items, `Assets/**/items/**`, `Assets/**/Items/**` and
 `Assets/**/*Item*.asset` — and data files include `.asset` (ScriptableObjects)
 and `.prefab`. Skipping this finds zero items, abilities, quests and dialogue
 on a Unity project and reports them NOT STARTED.
 
 **Levels / Areas / Maps:**
-- Glob `assets/**/*.tscn`, `assets/**/*.unity`, `assets/**/*.umap`
+- Glob `Content/**/*.tscn`, `Content/**/*.unity`, `Content/**/*.umap`
 - Glob the **code root** for scene files: `*.tscn` (Godot), `*.unity` (Unity); on Unreal, `Content/**/*.umap` instead (above). Resolve the root per `.claude/docs/code-root-resolution.md`. **If the code root is unresolved, report `NOT ASSESSED — code root unresolved` rather than zero hits.**
 - Look for scene files in subdirectories named `levels/`, `areas/`, `maps/`,
   `worlds/`, `stages/`
 - Count unique files that appear to be level/scene definitions (not UI scenes)
 
 **Enemies / Characters / NPCs:**
-- Glob `assets/data/**/enemies/**`, `assets/data/**/characters/**`
+- Glob `Content/data/**/enemies/**`, `Content/data/**/characters/**`
 - Glob `<code root>/**/enemies/**`, `<code root>/**/characters/**`
 - Look for `.json`, `.tres`, `.asset`, `.yaml` data files defining entity stats
 - Look for scene/prefab files in character subdirectories
 
 **Items / Equipment / Loot:**
-- Glob `assets/data/**/items/**`, `assets/data/**/equipment/**`,
-  `assets/data/**/loot/**`
+- Glob `Content/data/**/items/**`, `Content/data/**/equipment/**`,
+  `Content/data/**/loot/**`
 - Look for `.json`, `.tres`, `.asset` data files
 
 **Abilities / Skills / Spells:**
-- Glob `assets/data/**/abilities/**`, `assets/data/**/skills/**`,
-  `assets/data/**/spells/**`
+- Glob `Content/data/**/abilities/**`, `Content/data/**/skills/**`,
+  `Content/data/**/spells/**`
 - Look for `.json`, `.tres`, `.asset` data files
 
 **Dialogue / Conversations / Cutscenes:**
-- Glob `assets/**/*.dialogue`, `assets/**/*.csv`, `assets/**/*.ink`
-- Grep for dialogue data files in `assets/data/`
+- Glob `Content/**/*.dialogue`, `Content/**/*.csv`, `Content/**/*.ink`
+- Grep for dialogue data files in `Content/data/`
 
 **Quests / Missions:**
-- Glob `assets/data/**/quests/**`, `assets/data/**/missions/**`
+- Glob `Content/data/**/quests/**`, `Content/data/**/missions/**`
 - Look for `.json`, `.yaml` definition files
 
 **Engine-specific notes (acknowledge in the report):**
@@ -273,7 +275,7 @@ If yes, write the file:
 ## Per-System Breakdown
 
 ### [System Name]
-- **GDD**: `design/gdd/[file].md`
+- **GDD**: `docs/design/gdd/[file].md`
 - **Content types audited**: [list]
 - **Notes**: [any caveats about scan accuracy for this system]
 

@@ -2,7 +2,7 @@
 
 > **Date**: [YYYY-MM-DD]
 > **Prototype Path**: [HTML / Engine / Paper]
-> **Concept File**: design/gdd/game-concept.md, or design/game-brief.md (if either exists)
+> **Concept File**: docs/GDD.md, or docs/GDD.md (if either exists)
 
 ---
 
@@ -70,7 +70,7 @@ directly where possible.]
 > targeting feel specifically before committing to GDDs.
 
 **Next steps:**
-1. `/design-review design/gdd/game-concept.md`
+1. `/design-review docs/GDD.md`
 2. `/gate-check`
 3. `/map-systems`
 4. `/design-system [mechanic]` (use learnings in Tuning Knobs and Formulas sections)
@@ -84,7 +84,7 @@ to adjust. Be specific about what to change, not just that something needs chang
 
 **Pivot direction:** [What to try differently]
 **What to keep:** [What worked and should be preserved]
-**Next step:** `/prototype [revised-concept]`
+**Next step:** `/gamedev-prototype [revised-concept]`
 
 ---
 
@@ -110,5 +110,5 @@ This report is the deliverable; no further action needed on this concept.]
 
 ---
 
-> *Prototype code location: `prototypes/[concept-name]-concept/`*
+> *Prototype code location: `docs/prototypes/[concept-name]-concept/`*
 > *This code is throwaway. Never refactor into production.*

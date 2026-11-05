@@ -3,11 +3,11 @@
 ## Skill Summary
 
 `/map-systems` decomposes a game concept into a systems index. It reads
-`design/gdd/game-concept.md` (at `minimal`, `design/game-brief.md`) and the pillars,
+`docs/GDD.md` (at `minimal`, `docs/GDD.md`) and the pillars,
 enumerates explicit and implicit systems, maps dependencies into layers
 (Foundation → Core → Feature → Presentation → Polish), assigns priority tiers
 (MVP / Vertical Slice / Alpha / Full Vision), derives a design order, and writes
-`design/gdd/systems-index.md` from `.claude/docs/templates/systems-index.md` after
+`docs/GDD.md` from `.claude/docs/templates/systems-index.md` after
 approval. Each collaborative phase ends with an `AskUserQuestion`.
 
 Three director gates run in sequence, each in its own phase:
@@ -27,7 +27,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED
-- [ ] Contains "May I write" collaborative protocol language (for `design/gdd/systems-index.md`)
+- [ ] Contains "May I write" collaborative protocol language (for `docs/GDD.md`)
 - [ ] Has a next-step handoff at the end (`/design-system`)
 - [ ] Documents three gates at their phases: TD-SYSTEM-BOUNDARY (Phase 3), PR-SCOPE (Phase 4), CD-SYSTEMS (Phase 5, after the write)
 
@@ -64,9 +64,9 @@ In `solo` mode the same three notes appear with "Solo mode."
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -76,18 +76,18 @@ Fixture defaults.
 ### Case 1: Happy Path — Concept decomposed and index written in full review mode
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: standard`, `modes.review_mode: full`
-- `design/gdd/game-concept.md` exists with Core Mechanics naming combat and an
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`, `modes.review_mode: full`
+- `docs/GDD.md` exists with Core Mechanics naming combat and an
   inventory, and an MVP Definition section
-- `design/gdd/game-pillars.md` exists with 2 pillars
-- No `design/gdd/systems-index.md` exists yet
+- `docs/GDD.md` exists with 2 pillars
+- No `docs/GDD.md` exists yet
 - TD-SYSTEM-BOUNDARY returns APPROVE, PR-SCOPE returns REALISTIC, CD-SYSTEMS
   returns APPROVE
 
 **Input:** `/map-systems`
 
 **Expected behavior:**
-1. Reads the concept and pillars; globs `design/gdd/*.md`
+1. Reads the concept and pillars; globs `docs/design/gdd/*.md`
 2. Presents systems by category — name, category, one-sentence description,
    explicit or implicit (e.g. combat implies health, damage calculation, hit
    detection, combat UI) — and asks about missing / combined / unneeded systems
@@ -100,18 +100,18 @@ Fixture defaults.
    approval spawns PR-SCOPE
 6. Presents the summary (counts by category, MVP count, first 3 in design order,
    high-risk items) and asks "May I write the systems index to
-   `design/gdd/systems-index.md`?"
+   `docs/GDD.md`?"
 7. Writes the index, then spawns CD-SYSTEMS with the index path, pillars/core
    fantasy, every tier's system assignments and the high-risk and bottleneck
    systems
-8. Updates `production/session-state/active.md`; Verdict: COMPLETE; offers
+8. Updates `.claude/ccgs/session-state/active.md`; Verdict: COMPLETE; offers
    `/design-system [first-system-in-order]`
 
 **Assertions:**
 - [ ] Implicit systems are inferred and labelled implicit, with the reason given
 - [ ] TD-SYSTEM-BOUNDARY spawns after the dependency map is approved and before priorities are presented, and is passed the full dependency graph — not a summary
 - [ ] PR-SCOPE spawns after priorities are approved and before the write ask
-- [ ] "May I write the systems index to `design/gdd/systems-index.md`?" is asked and nothing is written before approval
+- [ ] "May I write the systems index to `docs/GDD.md`?" is asked and nothing is written before approval
 - [ ] CD-SYSTEMS spawns only after the index is written, and receives all four tiers and the high-risk systems — not the MVP list alone
 - [ ] The Systems Enumeration table keeps the template's columns (`# / System Name / Category / Priority / Status / Design Doc / Depends On`) — no added column
 - [ ] `active.md` is updated and the verdict is COMPLETE
@@ -121,8 +121,8 @@ Fixture defaults.
 ### Case 2: Failure Path — No game concept found
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: standard`
-- Neither `design/gdd/game-concept.md` nor `design/game-brief.md` exists
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`
+- Neither `docs/GDD.md` nor `docs/GDD.md` exists
 
 **Input:** `/map-systems`
 
@@ -136,7 +136,7 @@ Fixture defaults.
 - [ ] The "No game concept found" message is printed
 - [ ] Skill recommends `/brainstorm` as the next action
 - [ ] No systems enumeration is presented and no gate is spawned
-- [ ] No `design/gdd/systems-index.md` is created and Verdict COMPLETE is not emitted
+- [ ] No `docs/GDD.md` is created and Verdict COMPLETE is not emitted
 
 ---
 
@@ -144,7 +144,7 @@ Fixture defaults.
 
 **Fixture:**
 - Game concept and pillars exist; no index yet
-- `project.yaml`: `modes.workflow: standard`, `modes.review_mode: full`
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`, `modes.review_mode: full`
 - TD-SYSTEM-BOUNDARY returns APPROVE, PR-SCOPE returns REALISTIC
 - CD-SYSTEMS returns CONCERNS: an MVP system implied by the core fantasy is missing
 - At the CONCERNS question the user picks `Accept — record them in the index`
@@ -174,9 +174,9 @@ Fixture defaults.
 ### Case 4: Edge Case — Systems index already exists
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: standard`
-- `design/gdd/game-concept.md` exists
-- `design/gdd/systems-index.md` already exists with 8 systems, 3 of them designed
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`
+- `docs/GDD.md` exists
+- `docs/GDD.md` already exists with 8 systems, 3 of them designed
 
 **Input:** `/map-systems`
 
@@ -200,7 +200,7 @@ Fixture defaults.
 
 **Fixture (lean mode):**
 - Game concept exists
-- `project.yaml`: `modes.workflow: standard`, `modes.review_mode: lean`
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`, `modes.review_mode: lean`
 
 **Lean mode expected behavior:**
 1. Systems, dependencies and priorities are presented and approved as in Case 1
@@ -217,7 +217,7 @@ Fixture defaults.
 - [ ] `active.md` is updated and Verdict: COMPLETE is printed even though CD-SYSTEMS was skipped
 
 **Fixture (solo mode):**
-- Same concept, `project.yaml`: `modes.workflow: standard`, `modes.review_mode: full`
+- Same concept, `.claude/ccgs/project.yaml`: `modes.workflow: standard`, `modes.review_mode: full`
 - Input: `/map-systems --review solo`
 
 **Solo mode expected behavior:**
@@ -233,21 +233,21 @@ Fixture defaults.
 ### Case 6: Guided mode — a new index is still asked for; an update is not
 
 **Fixture (new index):**
-- `project.yaml`: `modes.workflow: standard`, `modes.review_mode: solo`,
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`, `modes.review_mode: solo`,
   `modes.automation: guided`
-- Game concept exists; no `design/gdd/systems-index.md`
+- Game concept exists; no `docs/GDD.md`
 
 **Fixture (update):**
-- Same, but `design/gdd/systems-index.md` exists and the user chose "Update the
+- Same, but `docs/GDD.md` exists and the user chose "Update the
   index with new systems"
 
 **Input (both fixtures):** `/map-systems`
 
 **Expected behavior:**
 1. New index: after the summary, asks "May I write the systems index to
-   `design/gdd/systems-index.md`?" and writes only after yes — `guided` asks
+   `docs/GDD.md`?" and writes only after yes — `guided` asks
    "May I write?" for new files
-2. Update: presents the summary, names `design/gdd/systems-index.md`, writes the
+2. Update: presents the summary, names `docs/GDD.md`, writes the
    update without waiting for an explicit yes, and says what it wrote
 
 **Assertions:**
@@ -259,7 +259,7 @@ Fixture defaults.
 ### Case 7: Director Gate — TD-SYSTEM-BOUNDARY returns REJECT
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: standard`, `modes.review_mode: full`
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`, `modes.review_mode: full`
 - Game concept and pillars exist; no index yet
 - TD-SYSTEM-BOUNDARY returns REJECT: two systems share one responsibility and
   must be merged
@@ -284,7 +284,7 @@ Fixture defaults.
 
 - [ ] Reads the game concept (or brief at `minimal`) and pillars before any decomposition
 - [ ] `AskUserQuestion` at enumeration, dependencies, priorities and the write
-- [ ] "May I write the systems index to `design/gdd/systems-index.md`?" asked before writing — at `collaborative`, and at `guided` for a new index
+- [ ] "May I write the systems index to `docs/GDD.md`?" asked before writing — at `collaborative`, and at `guided` for a new index
 - [ ] CD-SYSTEMS's CONCERNS reach the written index only through the user's choice; TD-SYSTEM-BOUNDARY's CONCERNS are noted inline in the index
 - [ ] Gates run sequentially at their own phases in full mode, never before their inputs exist
 - [ ] Skipped gates noted by name and mode in lean/solo output

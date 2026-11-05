@@ -12,7 +12,7 @@ needs. This file is the procedure for *producing* the visual half of it.
 
 Every story that changes something player-observable is **launched and observed
 before it closes**, and the observation is a **retained screenshot** in
-`production/qa/evidence/`. Compiling proves the code loads. Tests prove the
+`docs/production/qa/evidence/`. Compiling proves the code loads. Tests prove the
 logic. Neither proves the text fits in the box.
 
 The agent can see images: Claude Code's `Read` tool renders a PNG. The whole
@@ -22,7 +22,7 @@ engine has a native way.
 ## The procedure
 
 1. **Launch windowed** at a fixed resolution — `1280x720` unless the project
-   says otherwise — using `commands.run` from `project.yaml`. Never the
+   says otherwise — using `commands.run` from `.claude/ccgs/project.yaml`. Never the
    headless / batch / null-RHI flag: those exist to *skip* rendering.
 2. **Launch straight into the scene or map the story touched.** A feature that
    is only reachable through the main menu and three clicks is a feature the
@@ -34,14 +34,14 @@ engine has a native way.
    criteria. Clipped text, an overflowing panel, a missing element, the wrong
    colour — these are defects, and this is the only step that finds them.
 5. **Retain.** Capture straight into the story's evidence folder, so nothing
-   needs copying: `mkdir -p production/qa/evidence/[story-slug]`, then pass
-   `production/qa/evidence/[story-slug]/[NN]-[what-it-shows].png` as the capture
+   needs copying: `mkdir -p docs/production/qa/evidence/[story-slug]`, then pass
+   `docs/production/qa/evidence/[story-slug]/[NN]-[what-it-shows].png` as the capture
    path (Godot adds its frame number to the name). `[story-slug]` is the story
    file's name without `.md`: `story-003-light-pickup` for
-   `production/epics/core/story-003-light-pickup.md`. Reference the image from
+   `docs/production/epics/core/story-003-light-pickup.md`. Reference the image from
    the evidence doc. A screenshot that was taken and discarded is an
    assertion, not evidence. Beside it, stamp the files it proves:
-   `bash .claude/scripts/review-receipts.sh hash <each file the story changed> > production/qa/evidence/[story-slug]/stamp.txt`.
+   `bash .claude/scripts/review-receipts.sh hash <each file the story changed> > docs/production/qa/evidence/[story-slug]/stamp.txt`.
    A later edit to one of them then shows the evidence as older than the code.
 6. **Report** one `Run result:` line in the implementation summary — vocabulary
    below.
@@ -191,7 +191,7 @@ Exactly one of three shapes, in the implementation summary:
 
 - **`Run result: OBSERVED — <what was on screen, one line>`** with the retained
   path. *"Shop panel renders, all 6 slots inside the frame, prices legible at
-  720p — `production/qa/evidence/shop-panel/01-shop-open.png`."*
+  720p — `docs/production/qa/evidence/shop-panel/01-shop-open.png`."*
 - **`Run result: NOT VERIFIED — <reason>`**. Engine binary not found,
   `commands.run` unset, launch crashed, screenshot empty. This is a **blocker**
   at the default gate level for Visual/Feel and UI stories, not a note — a
@@ -229,7 +229,7 @@ not is a story that will be marked `NOT VERIFIED` every time.
 ## Finding the engine
 
 None of the three engines installs onto `PATH` on Windows. `engine.path` in
-`project.yaml` is where the editor lives; resolve it before concluding "no
+`.claude/ccgs/project.yaml` is where the editor lives; resolve it before concluding "no
 engine on this machine". Absence of a path is not absence of an engine.
 
 ---

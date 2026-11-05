@@ -12,8 +12,8 @@ After completing the review and writing approved files, present:
 2. **Pre-gate checklist**: Check whether these exist via Glob and mark each ✅ or ❌:
    - the engine's test root — `tests/unit/` and `tests/integration/` (Godot), `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` (Unity), `Source/<Module>/Private/Tests/` (Unreal) — if ❌: run `/test-setup`
    - `.github/workflows/tests.yml` — if ❌: run `/test-setup`
-   - `design/accessibility-requirements.md` — if ❌: run `/ux-design`
-   - `design/ux/interaction-patterns.md` — if ❌: run `/ux-design`
+   - `docs/design/accessibility-requirements.md` — if ❌: run `/ux-design`
+   - `docs/design/ux/interaction-patterns.md` — if ❌: run `/ux-design`
    Present ❌ items as required steps before gate-check. Do not offer `/gate-check`
    as an option if any item is ❌ — offer the missing skill to run instead.
 3. **Rerun trigger**: "Re-run `/architecture-review` after each new ADR is written

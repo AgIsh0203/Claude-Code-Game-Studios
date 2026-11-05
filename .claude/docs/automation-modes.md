@@ -30,15 +30,15 @@ mode-aware AskUserQuestion pattern below at each gated site.
 
 ```
 Resolve automation mode (once, store for the run):
-1. Read `modes.automation` from `project.local.yaml` (if present) → use that
-2. Else read `modes.automation` from `project.yaml` → use that value
+1. Read `modes.automation` from `.claude/ccgs/project.local.yaml` (if present) → use that
+2. Else read `modes.automation` from `.claude/ccgs/project.yaml` → use that value
 3. Else → default to `collaborative`
 
 Pattern reference: `.claude/docs/automation-modes.md`.
 ```
 
 This resolution is automatic via `get_effective_yaml_key modes.automation` —
-the helper deep-merges project.local.yaml on top of project.yaml.
+the helper deep-merges .claude/ccgs/project.local.yaml on top of .claude/ccgs/project.yaml.
 
 **At each AskUserQuestion site**, follow the pattern table in §Universal
 Rules below. The skill author labels each decision as **major** or **minor**
@@ -89,7 +89,7 @@ the right rule.
 - No "May I write?" prompts — writes directly
 - Picks the recommended option for every decision without presenting alternatives
 - All decisions logged via `log_decision` (helper in yaml-helper.sh) to
-  `production/session-logs/decision-log.md`
+  `.claude/ccgs/session-logs/decision-log.md`
 - User reviews decision log post-session to audit choices made
 
 ### Every mode: a question with no answer
@@ -140,7 +140,7 @@ the mode rules.
 
 Even in `autonomous` mode, certain decision categories ALWAYS trigger
 `AskUserQuestion`. The configured list lives at
-`modes.automation_always_ask` in `project.yaml`.
+`modes.automation_always_ask` in `.claude/ccgs/project.yaml`.
 
 **Default** (when unset): `[scope_changes, file_deletions, schema_changes]`.
 
@@ -158,7 +158,7 @@ active reports rule violations the project never asked for.
 |----------|----------------------------------------|
 | `scope_changes` | Cutting a feature, slipping a deadline, splitting/merging an epic, removing acceptance criteria |
 | `file_deletions` | Removing a story, deleting a GDD, removing a system, removing a test file |
-| `schema_changes` | Changes to project.yaml, story template, control manifest, ADR template, GDD template |
+| `schema_changes` | Changes to .claude/ccgs/project.yaml, story template, control manifest, ADR template, GDD template |
 | `architecture_decisions` | New ADR creation, ADR replacement, system boundary changes |
 | `version_bumps` | Engine version change, framework version bump, dependency major version change |
 | `external_calls` | Invoking external APIs (asset gen, AI services) when in autonomous mode |
@@ -206,7 +206,7 @@ When `autonomous` mode skips an `AskUserQuestion`, the skill calls
 **Category:** [scope_changes | file_deletions | schema_changes | … or "minor"]
 ```
 
-Written to `production/session-logs/decision-log.md` (append-only, never
+Written to `.claude/ccgs/session-logs/decision-log.md` (append-only, never
 truncated, created if absent). The user reviews the log post-session to
 audit choices made.
 
@@ -244,9 +244,9 @@ The most common categorization mistake is treating a data-file append as a
 `schema_changes` decision:
 
 - **Appending facts to a registry or index** — e.g.
-  `design/registry/entities.yaml`, `design/gdd/systems-index.md` — is
+  `docs/design/registry/entities.yaml`, `docs/GDD.md` — is
   **`minor`**. It adds data without altering a *template*.
-- **`schema_changes`** means editing the *structure* of `project.yaml` or a
+- **`schema_changes`** means editing the *structure* of `.claude/ccgs/project.yaml` or a
   template (story / ADR / GDD / control-manifest template). These are
   always-ask.
 - **When genuinely unsure** between `minor` and an always-ask category,

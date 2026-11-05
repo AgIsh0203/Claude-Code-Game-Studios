@@ -19,8 +19,8 @@
 #
 #   get_effective_yaml_key <dotted.path>
 #   get_effective_yaml_array <dotted.path>
-#     Convenience wrappers that read project.local.yaml first, then
-#     fall back to project.yaml. Per-leaf override (local wins) —
+#     Convenience wrappers that read .claude/ccgs/project.local.yaml first, then
+#     fall back to .claude/ccgs/project.yaml. Per-leaf override (local wins) —
 #     sibling keys are read independently from their own files, so the
 #     effective config has deep-merge semantics across leaves.
 #
@@ -33,7 +33,7 @@
 #     enum errors are the critical-path block per the spec.
 #
 #   validate_local_yaml_base
-#     Hard-error guard per spec: project.local.yaml requires a project.yaml
+#     Hard-error guard per spec: .claude/ccgs/project.local.yaml requires a .claude/ccgs/project.yaml
 #     base. Returns 1 with error on stderr if local exists without base.
 #     Uses CWD-relative paths.
 #
@@ -58,7 +58,7 @@
 #     schema_changes.
 #
 #   log_decision <skill> <point> <options> <chosen> <reason> <category>
-#     Append a decision-log entry to production/session-logs/decision-log.md.
+#     Append a decision-log entry to .claude/ccgs/session-logs/decision-log.md.
 #     Creates the file and directory if absent. Used by skills in
 #     autonomous mode to record decisions that would otherwise have
 #     been AskUserQuestion prompts.
@@ -69,10 +69,10 @@
 #
 # Usage:
 #   source .claude/hooks/yaml-helper.sh
-#   review_mode=$(get_yaml_key "$_YH_ROOT/project.yaml" modes.review_mode)
+#   review_mode=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" modes.review_mode)
 #   if [ -z "$review_mode" ]; then
 #     # fall back to legacy .txt
-#     review_mode=$(cat production/review-mode.txt 2>/dev/null || echo lean)
+#     review_mode=$(cat .claude/ccgs/review-mode.txt 2>/dev/null || echo lean)
 #   fi
 
 # Resolve a working Python interpreter once per shell, cache the result.
@@ -423,16 +423,16 @@ for item in cur:
 PYEOF
 }
 
-# Guard: project.local.yaml requires a project.yaml base.
+# Guard: .claude/ccgs/project.local.yaml requires a .claude/ccgs/project.yaml base.
 # Per spec (effects-map.md "Creation and error handling"), the local file
-# has no meaning without a base — it only overrides values from project.yaml.
+# has no meaning without a base — it only overrides values from .claude/ccgs/project.yaml.
 # Prints a hard-error message to stderr and returns 1 if the orphan case
 # is detected. Returns 0 otherwise (including when neither file exists).
 # Uses CWD-relative paths — callers cd into the project root first.
 # --- project root resolution -------------------------------------------------
 #
 # Config paths must NOT be resolved against the bare current working directory.
-# Run a skill or hook from a subdirectory that way and project.yaml is
+# Run a skill or hook from a subdirectory that way and .claude/ccgs/project.yaml is
 # unfindable, so EVERY setting resolves to empty -- silently, because the guard
 # that reports a missing base cannot find its files either. From the repo root
 # `modes.rigor` returns `full`; from `src/` it would return nothing.
@@ -442,24 +442,24 @@ PYEOF
 # sourceable everywhere and functional only at the root.
 #
 # PRECEDENCE IS LOAD-BEARING, in this order:
-#   1. cwd holds project.yaml         -> cwd
-#   2. cwd holds project.local.yaml   -> cwd
+#   1. cwd holds .claude/ccgs/project.yaml         -> cwd
+#   2. cwd holds .claude/ccgs/project.local.yaml   -> cwd
 #   3. CLAUDE_PROJECT_DIR has a base  -> that directory
 #   4. nothing found                  -> cwd (unchanged behaviour)
 #
 # AN UPWARD WALK WAS IMPLEMENTED AND REMOVED, and the reason is worth keeping.
 # The intent was a fallback needing no environment variable: climb until an
-# ancestor has project.yaml. It resolves the wrong tree. A project that has a
-# legacy production/review-mode.txt and no project.yaml, sitting anywhere below
-# another project, reads the OUTER project's project.local.yaml one directory
+# ancestor has .claude/ccgs/project.yaml. It resolves the wrong tree. A project that has a
+# legacy .claude/ccgs/review-mode.txt and no .claude/ccgs/project.yaml, sitting anywhere below
+# another project, reads the OUTER project's .claude/ccgs/project.local.yaml one directory
 # up instead of its own legacy file -- the wrong answer, returned silently.
 #
 # That is not a test-harness artifact. Any real project nested inside another
-# repo that happens to carry a project.yaml would silently inherit the outer
+# repo that happens to carry a .claude/ccgs/project.yaml would silently inherit the outer
 # project's settings, which is the same silent-wrong-answer class this whole fix
 # exists to remove. A fallback that guesses is worse than one that is absent:
 # rule 4 leaves an unconfigured directory reading its own legacy files, which is
-# exactly what a project without project.yaml should do.
+# exactly what a project without .claude/ccgs/project.yaml should do.
 #
 # CLAUDE_PROJECT_DIR is populated in both the hook environment and the
 # skill-bootstrap environment, so rule 3 covers every way this framework
@@ -468,18 +468,18 @@ PYEOF
 # 1 and 2 come FIRST deliberately. A project nested inside another one must read
 # ITSELF, and an ambient CLAUDE_PROJECT_DIR would otherwise point it at the
 # outer tree. Rule 2 covers the case that is easiest to lose: a directory with a
-# project.local.yaml and deliberately NO base must still raise the hard error
+# .claude/ccgs/project.local.yaml and deliberately NO base must still raise the hard error
 # for a missing base. Without it, an upward walk finds an ancestor's
-# project.yaml and that error silently stops firing.
+# .claude/ccgs/project.yaml and that error silently stops firing.
 #
 # Sets a variable rather than echoing a path: a $( ) per lookup would add a
 # subshell to every one of validate_yaml_enum's 23 calls, and per-lookup cost of
 # that kind is what pushes a hook past its 10s timeout.
 _yaml_helper_set_root() {
   _YH_ROOT="."
-  [ -f "$_YH_ROOT/project.yaml" ] && return 0
-  [ -f "$_YH_ROOT/project.local.yaml" ] && return 0
-  if [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -f "$CLAUDE_PROJECT_DIR/project.yaml" ]; then
+  [ -f "$_YH_ROOT/.claude/ccgs/project.yaml" ] && return 0
+  [ -f "$_YH_ROOT/.claude/ccgs/project.local.yaml" ] && return 0
+  if [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -f "$CLAUDE_PROJECT_DIR/.claude/ccgs/project.yaml" ]; then
     _YH_ROOT="$CLAUDE_PROJECT_DIR"; return 0
   fi
   return 0
@@ -487,28 +487,28 @@ _yaml_helper_set_root() {
 
 validate_local_yaml_base() {
   _yaml_helper_set_root
-  if [ -f "$_YH_ROOT/project.local.yaml" ] && [ ! -f "$_YH_ROOT/project.yaml" ]; then
-    echo "project.local.yaml exists but project.yaml is missing — run /start to create one. Local overrides require a base." >&2
+  if [ -f "$_YH_ROOT/.claude/ccgs/project.local.yaml" ] && [ ! -f "$_YH_ROOT/.claude/ccgs/project.yaml" ]; then
+    echo ".claude/ccgs/project.local.yaml exists but .claude/ccgs/project.yaml is missing — run /start to create one. Local overrides require a base." >&2
     return 1
   fi
   return 0
 }
 
-# Per-leaf deep-merge: read project.local.yaml first (if present),
-# fall back to project.yaml. Each leaf is resolved independently from
+# Per-leaf deep-merge: read .claude/ccgs/project.local.yaml first (if present),
+# fall back to .claude/ccgs/project.yaml. Each leaf is resolved independently from
 # its own file, so sibling keys at the same nesting level naturally
-# come through from project.yaml when project.local.yaml only overrides
+# come through from .claude/ccgs/project.yaml when .claude/ccgs/project.local.yaml only overrides
 # specific leaves.
 get_effective_yaml_key() {
   _yaml_helper_set_root
   local path="$1"
   if [ -z "$path" ]; then return 0; fi
   local val=""
-  if [ -f "$_YH_ROOT/project.local.yaml" ]; then
-    val=$(get_yaml_key "$_YH_ROOT/project.local.yaml" "$path")
+  if [ -f "$_YH_ROOT/.claude/ccgs/project.local.yaml" ]; then
+    val=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.local.yaml" "$path")
   fi
-  if [ -z "$val" ] && [ -f "$_YH_ROOT/project.yaml" ]; then
-    val=$(get_yaml_key "$_YH_ROOT/project.yaml" "$path")
+  if [ -z "$val" ] && [ -f "$_YH_ROOT/.claude/ccgs/project.yaml" ]; then
+    val=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" "$path")
   fi
   printf '%s' "$val"
 }
@@ -518,11 +518,11 @@ get_effective_yaml_array() {
   local path="$1"
   if [ -z "$path" ]; then return 0; fi
   local val=""
-  if [ -f "$_YH_ROOT/project.local.yaml" ]; then
-    val=$(get_yaml_array "$_YH_ROOT/project.local.yaml" "$path")
+  if [ -f "$_YH_ROOT/.claude/ccgs/project.local.yaml" ]; then
+    val=$(get_yaml_array "$_YH_ROOT/.claude/ccgs/project.local.yaml" "$path")
   fi
-  if [ -z "$val" ] && [ -f "$_YH_ROOT/project.yaml" ]; then
-    val=$(get_yaml_array "$_YH_ROOT/project.yaml" "$path")
+  if [ -z "$val" ] && [ -f "$_YH_ROOT/.claude/ccgs/project.yaml" ]; then
+    val=$(get_yaml_array "$_YH_ROOT/.claude/ccgs/project.yaml" "$path")
   fi
   printf '%s' "$val"
 }
@@ -561,8 +561,8 @@ updates.check::true|false"
 # The boolean keys above are enumerated for the same reason the string keys are:
 # `resolve_setting` validates every hop and DROPS a value that fails, so a key
 # absent from this table accepts anything. Before they were listed,
-# `testing.strict.logic: maybe` in project.local.yaml passed validation and won
-# over an explicit `true` in project.yaml -- and `/story-done` treats the gate as
+# `testing.strict.logic: maybe` in .claude/ccgs/project.local.yaml passed validation and won
+# over an explicit `true` in .claude/ccgs/project.yaml -- and `/story-done` treats the gate as
 # BLOCKING only when the value is `true`, so a typo silently downgraded a
 # blocking test gate to advisory with no error. `performance.enforce` was
 # already enumerated and correctly rejected garbage, which is exactly the
@@ -584,7 +584,7 @@ updates.check::true|false"
 #
 #   validate_local_scope [<file>]
 #     The location check the value checks above cannot do: names keys in
-#     project.local.yaml that are NOT locally overridable, which resolution
+#     .claude/ccgs/project.local.yaml that are NOT locally overridable, which resolution
 #     silently ignores. One line per key on stderr; returns 1 if any found.
 #     Warns, never reconciles. Defined below is_locally_overridable.
 
@@ -623,7 +623,7 @@ EOF
 }
 
 # validate_local_scope [<file>]
-#   Names the keys in project.local.yaml that resolution will NEVER read,
+#   Names the keys in .claude/ccgs/project.local.yaml that resolution will NEVER read,
 #   because they are not on the whitelist above. One line per key on stderr;
 #   returns 1 if any were found, 0 otherwise.
 #
@@ -638,12 +638,12 @@ EOF
 #   unguarded, and hand-editing is what the file is for.
 #
 #   WARNS, NEVER RECONCILES — the same shape as the stage-mirror check.
-#   It does not edit project.local.yaml, does not begin honouring
+#   It does not edit .claude/ccgs/project.local.yaml, does not begin honouring
 #   the key, and does not alter resolution. A locked setting is locked
 #   because it changes which artifacts exist on disk, so a helper that
 #   "helpfully" applied one would let two developers' checkouts diverge —
 #   precisely what the whitelist exists to prevent. The fix belongs to the
-#   user: move the key to project.yaml, or delete it.
+#   user: move the key to .claude/ccgs/project.yaml, or delete it.
 #
 #   The parser below is a third copy of the one in get_yaml_key and
 #   validate_yaml_enum. That duplication is deliberate and matches the
@@ -653,9 +653,9 @@ EOF
 validate_local_scope() {
   local file="${1:-}"
   # Default to the PROJECT ROOT's local file, not the working directory's: run
-  # from src/, a bare `project.local.yaml` names a file that is not there, and
+  # from src/, a bare `.claude/ccgs/project.local.yaml` names a file that is not there, and
   # the check passes because it found nothing to check.
-  if [ -z "$file" ]; then _yaml_helper_set_root; file="$_YH_ROOT/project.local.yaml"; fi
+  if [ -z "$file" ]; then _yaml_helper_set_root; file="$_YH_ROOT/.claude/ccgs/project.local.yaml"; fi
   [ -f "$file" ] || return 0
   if ! _yaml_helper_resolve_python; then return 0; fi
   local found key rc=0
@@ -666,10 +666,10 @@ path_file, allowed_table = sys.argv[1], sys.argv[2]
 allowed = set(l.strip() for l in allowed_table.splitlines() if l.strip())
 
 # File metadata, not settings -- effects-map.md lists `schema_version` and
-# `framework.*` under "Locked to project.yaml" with the reason "File metadata,
+# `framework.*` under "Locked to .claude/ccgs/project.yaml" with the reason "File metadata,
 # not preferences". They are not preferences, so "you cannot override this
 # preference locally" is the wrong complaint about them: nothing was dropped
-# and nothing needs moving. This repo's own project.local.yaml carries
+# and nothing needs moving. This repo's own .claude/ccgs/project.local.yaml carries
 # `schema_version: 1`, which is how the false positive was caught -- the check
 # was written against a hand-made fixture and only run against the real file
 # afterwards, where it immediately flagged a correct file.
@@ -763,7 +763,7 @@ PYEOF
   [ -n "$found" ] || return 0
   while IFS= read -r key; do
     [ -z "$key" ] && continue
-    echo "$file: \`$key\` is not locally overridable — ignored, not applied. Move it to project.yaml (or delete it); see the whitelist in yaml-helper.sh." >&2
+    echo "$file: \`$key\` is not locally overridable — ignored, not applied. Move it to .claude/ccgs/project.yaml (or delete it); see the whitelist in yaml-helper.sh." >&2
     rc=1
   done <<EOF
 $found
@@ -778,7 +778,7 @@ EOF
 #
 #   DEFAULT IS `on`. A default of `off` would contradict practice: every project
 #   runs with the pipeline active --
-#   and `production/session-state/active.md` is the documented recovery
+#   and `.claude/ccgs/session-state/active.md` is the documented recovery
 #   checkpoint that `.claude/docs/context-management.md` tells users to rely on.
 #   Shipping `off` as the default would have silently removed crash recovery,
 #   the session archive and the subagent spawn tally from every existing
@@ -793,7 +793,7 @@ session_state_enabled() {
   local f v
   # The root, not the working directory (builtins only -- no added spawn).
   _yaml_helper_set_root
-  for f in "$_YH_ROOT/project.local.yaml" "$_YH_ROOT/project.yaml"; do
+  for f in "$_YH_ROOT/.claude/ccgs/project.local.yaml" "$_YH_ROOT/.claude/ccgs/project.yaml"; do
     [ -f "$f" ] || continue
     v=$(awk '
       /^features:[[:space:]]*$/ { inf=1; next }
@@ -824,8 +824,8 @@ validate_yaml_enum() {
   #
   # Calling `get_yaml_key` once per enum -- 23 calls -- spawns a Python
   # interpreter each time (see get_yaml_key). At ~214ms of process startup on
-  # Windows that is ~4.9s per config file, and with project.yaml plus
-  # project.local.yaml it puts session-start.sh over its 10s hook timeout,
+  # Windows that is ~4.9s per config file, and with .claude/ccgs/project.yaml plus
+  # .claude/ccgs/project.local.yaml it puts session-start.sh over its 10s hook timeout,
   # killing it mid-write so the recovery checkpoint never reaches context.
   #
   # A bash pre-filter that skips lookups for keys ABSENT from the file is
@@ -1158,7 +1158,7 @@ log_decision() {
   local chosen="$4"
   local reason="$5"
   local category="$6"
-  local logfile="$_YH_ROOT/production/session-logs/decision-log.md"
+  local logfile="$_YH_ROOT/.claude/ccgs/session-logs/decision-log.md"
   mkdir -p "$(dirname "$logfile")"
   if [ ! -f "$logfile" ]; then
     printf '# Decision Log\n\nAppend-only audit trail of decisions made in autonomous mode.\n' > "$logfile"
@@ -1183,7 +1183,7 @@ EOF
 # WHY THIS EXISTS
 #   Every skill that reads a setting needs the same deterministic fallback chain
 #   ("1. If --review passed -> use that; 2. Else read modes.review_mode from
-#   project.yaml; 3. Else production/review-mode.txt; 4. Else lean"). Written out
+#   .claude/ccgs/project.yaml; 3. Else .claude/ccgs/review-mode.txt; 4. Else lean"). Written out
 #   in each SKILL.md, a model would re-interpret that prose on every invocation.
 #   resolve_config computes the same answer once, deterministically -- and
 #   testably, which prose never was.
@@ -1261,7 +1261,7 @@ _yaml_helper_rigor_value() {
   [ "$path" = "modes.rigor" ] && return 0
 
   # Resolve rigor WITHOUT resolve_setting, to keep the recursion impossible.
-  [ -f "$_YH_ROOT/project.yaml" ] && level=$(get_yaml_key "$_YH_ROOT/project.yaml" modes.rigor)
+  [ -f "$_YH_ROOT/.claude/ccgs/project.yaml" ] && level=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" modes.rigor)
   if [ -n "$level" ] && ! validate_enum_value modes.rigor "$level" 2>/dev/null; then level=""; fi
   [ -z "$level" ] && level=$(get_yaml_default modes.rigor)
   [ -z "$level" ] && return 0
@@ -1284,7 +1284,7 @@ EOF
 _yaml_helper_rigor_level() {
   _yaml_helper_set_root
   local level=""
-  [ -f "$_YH_ROOT/project.yaml" ] && level=$(get_yaml_key "$_YH_ROOT/project.yaml" modes.rigor)
+  [ -f "$_YH_ROOT/.claude/ccgs/project.yaml" ] && level=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" modes.rigor)
   if [ -n "$level" ] && ! validate_enum_value modes.rigor "$level" 2>/dev/null; then level=""; fi
   [ -z "$level" ] && level=$(get_yaml_default modes.rigor)
   printf '%s' "$level"
@@ -1292,13 +1292,13 @@ _yaml_helper_rigor_level() {
 
 # Plain-text legacy mirrors — the read side of the dual-write contract.
 _yaml_helper_legacy_files="\
-modes.review_mode::production/review-mode.txt
-project.stage::production/stage.txt"
+modes.review_mode::.claude/ccgs/review-mode.txt
+project.stage::.claude/ccgs/stage.txt"
 
-# Which keys consult project.local.yaml DURING RESOLUTION.
+# Which keys consult .claude/ccgs/project.local.yaml DURING RESOLUTION.
 #
 # This list MUST equal the `/settings --local` write whitelist. If resolution
-# consults project.local.yaml for a narrower set than /settings will write to
+# consults .claude/ccgs/project.local.yaml for a narrower set than /settings will write to
 # it, `/settings --local modes.review_mode=solo` writes a value that /settings
 # accepts and displays, and that every skill then ignores. A write
 # list and a read list that disagree is not a design; it is a bug with a
@@ -1364,7 +1364,7 @@ get_legacy_key() {
 
 # Resolve one setting through the full chain.
 #   prints: "<value>\t<source>"
-#   source: project.local.yaml | project.yaml | <legacy path> | default | unset
+#   source: .claude/ccgs/project.local.yaml | .claude/ccgs/project.yaml | <legacy path> | default | unset
 #   exit:   always 0
 #
 # Enum-invalid values FALL THROUGH rather than winning — a typo degrades to the
@@ -1376,16 +1376,16 @@ resolve_setting() {
   if [ -z "$path" ]; then printf '\tunset'; return 0; fi
   local val="" src="" legacy=""
 
-  if _yaml_helper_in_local_read_scope "$path" && [ -f "$_YH_ROOT/project.local.yaml" ]; then
-    val=$(get_yaml_key "$_YH_ROOT/project.local.yaml" "$path")
+  if _yaml_helper_in_local_read_scope "$path" && [ -f "$_YH_ROOT/.claude/ccgs/project.local.yaml" ]; then
+    val=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.local.yaml" "$path")
     if [ -n "$val" ] && ! validate_enum_value "$path" "$val" 2>/dev/null; then val=""; fi
-    [ -n "$val" ] && src="project.local.yaml"
+    [ -n "$val" ] && src=".claude/ccgs/project.local.yaml"
   fi
 
-  if [ -z "$val" ] && [ -f "$_YH_ROOT/project.yaml" ]; then
-    val=$(get_yaml_key "$_YH_ROOT/project.yaml" "$path")
+  if [ -z "$val" ] && [ -f "$_YH_ROOT/.claude/ccgs/project.yaml" ]; then
+    val=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" "$path")
     if [ -n "$val" ] && ! validate_enum_value "$path" "$val" 2>/dev/null; then val=""; fi
-    [ -n "$val" ] && src="project.yaml"
+    [ -n "$val" ] && src=".claude/ccgs/project.yaml"
   fi
 
   if [ -z "$val" ]; then
@@ -1399,7 +1399,7 @@ resolve_setting() {
   fi
 
   # Rigor expansion sits BELOW every explicit source and ABOVE the terminal
-  # default. That ordering is the back-compat guarantee: a project.yaml that
+  # default. That ordering is the back-compat guarantee: a .claude/ccgs/project.yaml that
   # already sets docs.density resolves exactly as it did before rigor existed.
   if [ -z "$val" ]; then
     val=$(_yaml_helper_rigor_value "$path")
@@ -1447,17 +1447,17 @@ resolve_code_root() {
   local ename="" src="" root="" legacy="" found="" d n=0
 
   # 1. The configured engine, through the normal chain.
-  if [ -f "$_YH_ROOT/project.local.yaml" ]; then
-    ename=$(get_yaml_key "$_YH_ROOT/project.local.yaml" engine.name 2>/dev/null)
-    [ -n "$ename" ] && src="project.local.yaml"
+  if [ -f "$_YH_ROOT/.claude/ccgs/project.local.yaml" ]; then
+    ename=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.local.yaml" engine.name 2>/dev/null)
+    [ -n "$ename" ] && src=".claude/ccgs/project.local.yaml"
   fi
-  if [ -z "$ename" ] && [ -f "$_YH_ROOT/project.yaml" ]; then
-    ename=$(get_yaml_key "$_YH_ROOT/project.yaml" engine.name 2>/dev/null)
+  if [ -z "$ename" ] && [ -f "$_YH_ROOT/.claude/ccgs/project.yaml" ]; then
+    ename=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" engine.name 2>/dev/null)
     [ -n "$ename" ] && src="engine.name"
   fi
 
   # 2. The legacy mirror. `/setup-engine` wrote an `Engine:` line here before
-  #    project.yaml existed, and workflow-catalog's `engine-setup` step still
+  #    .claude/ccgs/project.yaml existed, and workflow-catalog's `engine-setup` step still
   #    accepts it as an `any_of` alternative — so a v1.0 project that never
   #    migrated resolves rather than falling through to "unset".
   legacy="$_YH_ROOT/.claude/docs/technical-preferences.md"
@@ -1480,9 +1480,9 @@ resolve_code_root() {
 
   # 3. No usable engine value — believe the tree, but only if it is unambiguous.
   #    Names are compared exactly, against the directory listing: `[ -d Assets ]`
-  #    is also true for Godot's own `assets/` on a case-insensitive filesystem
-  #    (Windows, default macOS), which made src/ + assets/ "ambiguous" and a lone
-  #    assets/ a Unity project.
+  #    is also true for Godot's own `Content/` on a case-insensitive filesystem
+  #    (Windows, default macOS), which made src/ + Content/ "ambiguous" and a lone
+  #    Content/ a Unity project.
   if [ -z "$root" ]; then
     for d in "$_YH_ROOT"/*/; do
       d="${d%/}"; d="${d##*/}"
@@ -1583,8 +1583,8 @@ PYEOF
 #
 #   resolve_config [<system>]
 #
-# ALWAYS exits 0 and ALWAYS emits a complete block — a missing project.yaml,
-# malformed YAML, an orphan project.local.yaml or a missing Python interpreter
+# ALWAYS exits 0 and ALWAYS emits a complete block — a missing .claude/ccgs/project.yaml,
+# malformed YAML, an orphan .claude/ccgs/project.local.yaml or a missing Python interpreter
 # each degrade to defaults and surface on the notes: line rather than producing
 # a truncated block a skill might half-read.
 #   resolve_config [--keys k1,k2,...] [<system>]
@@ -1609,27 +1609,27 @@ resolve_config() {
   if ! _yaml_helper_resolve_python; then
     notes="NO PYTHON INTERPRETER — YAML unreadable; legacy files and defaults only"
   fi
-  if [ ! -f "$_YH_ROOT/project.yaml" ]; then
-    notes="${notes:+$notes; }project.yaml absent — defaults in use"
-  elif [ ! -s "$_YH_ROOT/project.yaml" ]; then
-    # An EMPTY project.yaml resolves to defaults; unannounced it is
+  if [ ! -f "$_YH_ROOT/.claude/ccgs/project.yaml" ]; then
+    notes="${notes:+$notes; }.claude/ccgs/project.yaml absent — defaults in use"
+  elif [ ! -s "$_YH_ROOT/.claude/ccgs/project.yaml" ]; then
+    # An EMPTY .claude/ccgs/project.yaml resolves to defaults; unannounced it is
     # indistinguishable from a healthy fully-defaulted project. Absence is
     # announced one line above; emptiness is the more suspicious state of the two
     # (a truncated write, an interrupted /setup-engine) and was the silent one.
-    notes="${notes:+$notes; }project.yaml is EMPTY — defaults in use; if you configured this project, the file did not survive"
+    notes="${notes:+$notes; }.claude/ccgs/project.yaml is EMPTY — defaults in use; if you configured this project, the file did not survive"
   fi
   local orphan
   orphan=$(validate_local_yaml_base 2>&1) || notes="${notes:+$notes; }$orphan"
 
   # Collect enum complaints from both files so a typo is visible, not silent.
-  # Every file below is named under $_YH_ROOT. A bare `project.yaml` is the
+  # Every file below is named under $_YH_ROOT. A bare `.claude/ccgs/project.yaml` is the
   # WORKING directory's, so run from src/ these checks found no file and
   # reported nothing, while the values above them resolved from the root.
   # A repeated key is not "ignored": its blocks were merged and read. Those
   # lines are split off so the suffix does not contradict them. Bash only, and
   # only when something was reported -- this runs in every skill bootstrap.
   local enum_err dup_lines="" bad_lines="" l
-  enum_err=$(validate_yaml_enum "$_YH_ROOT/project.yaml" 2>&1 >/dev/null)
+  enum_err=$(validate_yaml_enum "$_YH_ROOT/.claude/ccgs/project.yaml" 2>&1 >/dev/null)
   if [ -n "$enum_err" ]; then
     while IFS= read -r l; do
       case "$l" in
@@ -1642,8 +1642,8 @@ EOF
     [ -n "$dup_lines" ] && notes="${notes:+$notes; }$dup_lines"
     [ -n "$bad_lines" ] && notes="${notes:+$notes; }$bad_lines — ignored, chain continued"
   fi
-  if [ -f "$_YH_ROOT/project.local.yaml" ]; then
-    enum_err=$(validate_yaml_enum "$_YH_ROOT/project.local.yaml" 2>&1 >/dev/null)
+  if [ -f "$_YH_ROOT/.claude/ccgs/project.local.yaml" ]; then
+    enum_err=$(validate_yaml_enum "$_YH_ROOT/.claude/ccgs/project.local.yaml" 2>&1 >/dev/null)
     [ -n "$enum_err" ] && notes="${notes:+$notes; }local: $(echo "$enum_err" | tr '\n' ';' | sed 's/;$//')"
     # Locked keys in the local file. Separate from the enum check
     # above because their VALUES are legal — it is the location that is not, so
@@ -1653,16 +1653,16 @@ EOF
     # full remedy sentence per key for direct callers, and three copies of it
     # would cost more of this block than every resolved value put together.
     local scope_err scope_keys
-    scope_err=$(validate_local_scope "$_YH_ROOT/project.local.yaml" 2>&1 >/dev/null)
+    scope_err=$(validate_local_scope "$_YH_ROOT/.claude/ccgs/project.local.yaml" 2>&1 >/dev/null)
     if [ -n "$scope_err" ]; then
       scope_keys=$(printf '%s\n' "$scope_err" | sed -n 's/.*`\([^`]*\)`.*/\1/p' | paste -sd, - | sed 's/,/, /g')
-      notes="${notes:+$notes; }local: not locally overridable, ignored — $scope_keys (move to project.yaml or delete)"
+      notes="${notes:+$notes; }local: not locally overridable, ignored — $scope_keys (move to .claude/ccgs/project.yaml or delete)"
     fi
   fi
 
   # For a skill reading 1-2 knobs the block's framing would cost more than the
   # inline chain it replaced, so bare lines are emitted instead -- "automation:
-  # guided (project.local.yaml)" is self-describing without a banner.
+  # guided (.claude/ccgs/project.local.yaml)" is self-describing without a banner.
   local nkeys=0
   if [ -n "$want" ]; then
     nkeys=$(printf '%s' "$want" | tr ',' '\n' | grep -c '[a-z]')
@@ -1711,15 +1711,15 @@ EOF
     fi
   fi
 
-  # engine: project.yaml only. No markdown reader is built here — skills keep
+  # engine: .claude/ccgs/project.yaml only. No markdown reader is built here — skills keep
   # their existing technical-preferences.md fallback prose, and forbidden
   # patterns / allowed libraries never migrate at all.
   local ename eversion
   if _rc_want engine; then
-    ename=$(get_yaml_key "$_YH_ROOT/project.yaml" engine.name 2>/dev/null)
-    eversion=$(get_yaml_key "$_YH_ROOT/project.yaml" engine.version 2>/dev/null)
+    ename=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" engine.name 2>/dev/null)
+    eversion=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" engine.version 2>/dev/null)
     if [ -n "$ename" ]; then
-      echo "engine: $ename${eversion:+ $eversion} (project.yaml)"
+      echo "engine: $ename${eversion:+ $eversion} (.claude/ccgs/project.yaml)"
     else
       echo "engine: unset (fall back to .claude/docs/technical-preferences.md)"
     fi
@@ -1730,23 +1730,23 @@ EOF
   #
   # Each value is validated before it counts: get_effective_yaml_key printed an
   # invalid value (`logic: maybe`) as the value while the notes line said it was
-  # ignored. Local first (the keys are locally overridable), then project.yaml,
+  # ignored. Local first (the keys are locally overridable), then .claude/ccgs/project.yaml,
   # then the scalar shorthand (`testing.strict: true`), each checked against
   # true|false. Not resolve_setting: that adds a rigor lookup per type, and
   # testing.strict is neither rigor-fronted nor defaulted -- five more
   # interpreter spawns for nothing. validate_enum_value is bash only.
   local ts_out="" k tv ts_all
   if _rc_want testing.strict; then
-    ts_all=$(get_yaml_key "$_YH_ROOT/project.yaml" testing.strict 2>/dev/null)
+    ts_all=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" testing.strict 2>/dev/null)
     if [ -n "$ts_all" ] && ! validate_enum_value testing.strict.logic "$ts_all" 2>/dev/null; then ts_all=""; fi
     for k in logic integration visual ui config; do
       tv=""
-      if [ -f "$_YH_ROOT/project.local.yaml" ]; then
-        tv=$(get_yaml_key "$_YH_ROOT/project.local.yaml" "testing.strict.$k" 2>/dev/null)
+      if [ -f "$_YH_ROOT/.claude/ccgs/project.local.yaml" ]; then
+        tv=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.local.yaml" "testing.strict.$k" 2>/dev/null)
         if [ -n "$tv" ] && ! validate_enum_value "testing.strict.$k" "$tv" 2>/dev/null; then tv=""; fi
       fi
       if [ -z "$tv" ]; then
-        tv=$(get_yaml_key "$_YH_ROOT/project.yaml" "testing.strict.$k" 2>/dev/null)
+        tv=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" "testing.strict.$k" 2>/dev/null)
         if [ -n "$tv" ] && ! validate_enum_value "testing.strict.$k" "$tv" 2>/dev/null; then tv=""; fi
       fi
       [ -z "$tv" ] && tv="$ts_all"
@@ -1778,7 +1778,7 @@ EOF
   #      provenance tag someone started and never finished. The key is on the
   #      `/settings --local` whitelist and the docs stress that a teammate's
   #      stricter local setting "is meant to bite on their machine only", so
-  #      "did this FAIL come from the project or from my own project.local.yaml"
+  #      "did this FAIL come from the project or from my own .claude/ccgs/project.local.yaml"
   #      is exactly the question the line has to answer.
   local pe
   if _rc_want performance.enforce; then
@@ -1801,15 +1801,15 @@ EOF
   # checklist a single-platform jam project once received.
   #
   # Through resolve_setting, as performance.enforce above. get_effective_yaml_key
-  # let a hand-edited project.local.yaml win although platform.* is locked, and
+  # let a hand-edited .claude/ccgs/project.local.yaml win although platform.* is locked, and
   # printed an invalid value (`banana`) as the value while the notes line said
-  # it was ignored. Only project.yaml can set it, so any other source -- there is
+  # it was ignored. Only .claude/ccgs/project.yaml can set it, so any other source -- there is
   # no default to fall to -- leaves it unset and the skill asks.
   local ct cs
   if _rc_want cert_tier || _rc_want platform.cert_tier; then
     ct=$(resolve_setting platform.cert_tier)
     cs="${ct#*$(printf '\t')}"; ct="${ct%%$(printf '\t')*}"
-    if [ -n "$ct" ] && [ "$cs" = "project.yaml" ]; then
+    if [ -n "$ct" ] && [ "$cs" = ".claude/ccgs/project.yaml" ]; then
       echo "platform.cert_tier: $ct ($cs)"
     else
       echo "platform.cert_tier: (unset -- ask which platforms are in scope)"
@@ -1820,11 +1820,11 @@ EOF
   # second call. A named <system> is echoed explicitly for convenience.
   local so_keys so_out="" sk sv
   if _rc_want system_overrides; then
-    so_keys=$(get_yaml_child_keys "$_YH_ROOT/project.yaml" workflow_overrides.system_overrides 2>/dev/null)
+    so_keys=$(get_yaml_child_keys "$_YH_ROOT/.claude/ccgs/project.yaml" workflow_overrides.system_overrides 2>/dev/null)
     if [ -n "$so_keys" ]; then
       while IFS= read -r sk; do
         [ -z "$sk" ] && continue
-        sv=$(get_yaml_key "$_YH_ROOT/project.yaml" "workflow_overrides.system_overrides.$sk" 2>/dev/null)
+        sv=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" "workflow_overrides.system_overrides.$sk" 2>/dev/null)
         [ -n "$sv" ] && so_out="$so_out $sk=$sv"
       done <<EOF
 $so_keys
@@ -1833,7 +1833,7 @@ EOF
     echo "system_overrides:${so_out:- none}"
   fi
   if [ -n "$system" ]; then
-    sv=$(get_yaml_key "$_YH_ROOT/project.yaml" "workflow_overrides.system_overrides.$system" 2>/dev/null)
+    sv=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" "workflow_overrides.system_overrides.$system" 2>/dev/null)
     if [ -n "$sv" ]; then
       echo "workflow[$system]: $sv (system_overrides)"
     else
@@ -1870,7 +1870,7 @@ EOF
   local tp_src=".claude/docs/technical-preferences.md"
 
   # gate_level: the gate level per story type, as coding-standards.md's table
-  # defines it: testing.strict.<type> (project.local.yaml, then project.yaml),
+  # defines it: testing.strict.<type> (.claude/ccgs/project.local.yaml, then .claude/ccgs/project.yaml),
   # then the legacy plain `testing.strict: true|false`, then the default
   # (blocking, except config/data: advisory). /smoke-check's own unset default
   # for config is blocking (a build-health gate), so it is named beside config
@@ -1878,19 +1878,19 @@ EOF
   # testing.strict line above, and that line's notes name it.
   local gl_all gl_out="" gk gv gsrc
   if _rc_named gate_level; then
-    gl_all=$(get_yaml_key "$_YH_ROOT/project.yaml" testing.strict 2>/dev/null)
+    gl_all=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" testing.strict 2>/dev/null)
     if [ -n "$gl_all" ] && ! validate_enum_value testing.strict.logic "$gl_all" 2>/dev/null; then gl_all=""; fi
     for gk in logic integration visual ui config; do
       gv=""; gsrc=""
-      if [ -f "$_YH_ROOT/project.local.yaml" ]; then
-        gv=$(get_yaml_key "$_YH_ROOT/project.local.yaml" "testing.strict.$gk" 2>/dev/null)
+      if [ -f "$_YH_ROOT/.claude/ccgs/project.local.yaml" ]; then
+        gv=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.local.yaml" "testing.strict.$gk" 2>/dev/null)
         if [ -n "$gv" ] && ! validate_enum_value "testing.strict.$gk" "$gv" 2>/dev/null; then gv=""; fi
-        [ -n "$gv" ] && gsrc="project.local.yaml"
+        [ -n "$gv" ] && gsrc=".claude/ccgs/project.local.yaml"
       fi
       if [ -z "$gv" ]; then
-        gv=$(get_yaml_key "$_YH_ROOT/project.yaml" "testing.strict.$gk" 2>/dev/null)
+        gv=$(get_yaml_key "$_YH_ROOT/.claude/ccgs/project.yaml" "testing.strict.$gk" 2>/dev/null)
         if [ -n "$gv" ] && ! validate_enum_value "testing.strict.$gk" "$gv" 2>/dev/null; then gv=""; fi
-        [ -n "$gv" ] && gsrc="project.yaml"
+        [ -n "$gv" ] && gsrc=".claude/ccgs/project.yaml"
       fi
       if [ -z "$gv" ] && [ -n "$gl_all" ]; then gv="$gl_all"; gsrc="testing.strict"; fi
       case "$gv" in
@@ -1906,16 +1906,16 @@ EOF
     echo "gate_level:$gl_out"
   fi
 
-  # engine_values: engine.name, .version and .language from project.yaml, each
+  # engine_values: engine.name, .version and .language from .claude/ccgs/project.yaml, each
   # falling back to technical-preferences.md, the record a v1.0 project that
   # never migrated still has. Its Engine line holds name and version together
   # ("Godot 4.6", "Unreal Engine 5.4"): the last word is the version when it
-  # starts with a digit. Locked keys, so project.local.yaml is not read.
+  # starts with a digit. Locked keys, so .claude/ccgs/project.local.yaml is not read.
   local ev_name ev_ver ev_lang ev_line ev_ns ev_vs ev_ls
   if _rc_named engine_values || _rc_named specialists; then
-    ev_name=$(_rc_yaml "$_YH_ROOT/project.yaml" engine.name); ev_ns="project.yaml"
-    ev_ver=$(_rc_yaml "$_YH_ROOT/project.yaml" engine.version); ev_vs="project.yaml"
-    ev_lang=$(_rc_yaml "$_YH_ROOT/project.yaml" engine.language); ev_ls="project.yaml"
+    ev_name=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" engine.name); ev_ns=".claude/ccgs/project.yaml"
+    ev_ver=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" engine.version); ev_vs=".claude/ccgs/project.yaml"
+    ev_lang=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" engine.language); ev_ls=".claude/ccgs/project.yaml"
     if [ -z "$ev_name" ] || [ -z "$ev_ver" ]; then
       ev_line=$(_rc_tp Engine)
       if [ -n "$ev_line" ]; then
@@ -1936,7 +1936,7 @@ EOF
 
   # specialists: the agents a skill starts for engine work. primary is derived
   # from the engine (Godot -> godot-specialist), else the legacy Primary line.
-  # code, shader, ui and additional come from project.yaml's specialists block;
+  # code, shader, ui and additional come from .claude/ccgs/project.yaml's specialists block;
   # a member set to null is UNSET, never an agent name. Only when the block is
   # absent do they fall back to technical-preferences.md (the v1.0 migration
   # writes the whole block, with null for each member it did not know).
@@ -1950,12 +1950,12 @@ EOF
     esac
     sp_psrc="engine.name"
     if [ -z "$sp_primary" ]; then sp_primary=$(_rc_tp Primary); sp_psrc="$tp_src"; fi
-    if [ -n "$(get_yaml_child_keys "$_YH_ROOT/project.yaml" specialists 2>/dev/null)" ]; then
-      sp_src="project.yaml"
-      sp_code=$(_rc_yaml "$_YH_ROOT/project.yaml" specialists.code)
-      sp_shader=$(_rc_yaml "$_YH_ROOT/project.yaml" specialists.shader)
-      sp_ui=$(_rc_yaml "$_YH_ROOT/project.yaml" specialists.ui)
-      sp_add=$(get_yaml_array "$_YH_ROOT/project.yaml" specialists.additional 2>/dev/null \
+    if [ -n "$(get_yaml_child_keys "$_YH_ROOT/.claude/ccgs/project.yaml" specialists 2>/dev/null)" ]; then
+      sp_src=".claude/ccgs/project.yaml"
+      sp_code=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" specialists.code)
+      sp_shader=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" specialists.shader)
+      sp_ui=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" specialists.ui)
+      sp_add=$(get_yaml_array "$_YH_ROOT/.claude/ccgs/project.yaml" specialists.additional 2>/dev/null \
                | awk '$0 != "" && $0 != "null" && $0 != "~"' | paste -sd, - | sed 's/,/, /g')
     else
       sp_src="$tp_src"
@@ -1984,7 +1984,7 @@ EOF
     echo "review_gate: skill-gates=$rg_skill phase-gates=$rg_phase (review_mode ${rg:-solo}, $rgs; a --review flag overrides)"
   fi
 
-  # input_methods: the set of supported input methods, derived from project.yaml's
+  # input_methods: the set of supported input methods, derived from .claude/ccgs/project.yaml's
   # platform block: keyboard/mouse when PC or Web is a target, gamepad and touch
   # when their support is Full or Partial (Full | Partial | None, in any case:
   # `full` is how every other value in the file is written), plus the primary
@@ -1992,14 +1992,14 @@ EOF
   # Keyboard & Mouse is keyboard/mouse, Controller or Joypad is gamepad,
   # Touchscreen is touch; any other primary input is added as written, in lower
   # case. Without a platform block, technical-preferences.md's explicit Input
-  # Methods line. Locked keys, so project.local.yaml is not read.
+  # Methods line. Locked keys, so .claude/ccgs/project.local.yaml is not read.
   local im_set="" im_t im_g im_to im_p im_pl
   if _rc_named input_methods; then
-    if [ -n "$(get_yaml_child_keys "$_YH_ROOT/project.yaml" platform 2>/dev/null)" ]; then
-      im_t=$(get_yaml_array "$_YH_ROOT/project.yaml" platform.targets 2>/dev/null | tr '[:upper:]' '[:lower:]')
-      im_g=$(_rc_yaml "$_YH_ROOT/project.yaml" platform.gamepad_support)
-      im_to=$(_rc_yaml "$_YH_ROOT/project.yaml" platform.touch_support)
-      im_p=$(_rc_yaml "$_YH_ROOT/project.yaml" platform.primary_input)
+    if [ -n "$(get_yaml_child_keys "$_YH_ROOT/.claude/ccgs/project.yaml" platform 2>/dev/null)" ]; then
+      im_t=$(get_yaml_array "$_YH_ROOT/.claude/ccgs/project.yaml" platform.targets 2>/dev/null | tr '[:upper:]' '[:lower:]')
+      im_g=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" platform.gamepad_support)
+      im_to=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" platform.touch_support)
+      im_p=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" platform.primary_input)
       printf '%s\n' "$im_t" | grep -qxE 'pc|web' && im_set="keyboard/mouse"
       case "$im_g" in [Ff][Uu][Ll][Ll]|[Pp][Aa][Rr][Tt][Ii][Aa][Ll]) im_set="${im_set:+$im_set, }gamepad" ;; esac
       case "$im_to" in [Ff][Uu][Ll][Ll]|[Pp][Aa][Rr][Tt][Ii][Aa][Ll]) im_set="${im_set:+$im_set, }touch" ;; esac
@@ -2013,32 +2013,32 @@ EOF
       if [ -n "$im_pl" ]; then
         case ", $im_set," in *", $im_pl,"*) ;; *) im_set="${im_set:+$im_set, }$im_pl" ;; esac
       fi
-      echo "input_methods: ${im_set:-none} (project.yaml platform; primary: ${im_p:-unset})"
+      echo "input_methods: ${im_set:-none} (.claude/ccgs/project.yaml platform; primary: ${im_p:-unset})"
     else
       im_set=$(_rc_tp "Input Methods"); im_p=$(_rc_tp "Primary Input")
       if [ -n "$im_set" ]; then
         echo "input_methods: $im_set ($tp_src; primary: ${im_p:-unset})"
       else
-        echo "input_methods: unset (no platform block in project.yaml, no Input Methods line)"
+        echo "input_methods: unset (no platform block in .claude/ccgs/project.yaml, no Input Methods line)"
       fi
     fi
   fi
 
   # perf_budgets: the four committed performance budgets, each spelled out in
   # full (the dead-settings audit matches whole dotted keys). Locked keys, so
-  # project.yaml only: a budget in project.local.yaml is reported on notes as
+  # .claude/ccgs/project.yaml only: a budget in .claude/ccgs/project.local.yaml is reported on notes as
   # not locally overridable and never applied, like every other locked key.
   local pb_out="" pb_v
   if _rc_named perf_budgets; then
-    pb_v=$(_rc_yaml "$_YH_ROOT/project.yaml" performance.target_framerate)
+    pb_v=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" performance.target_framerate)
     pb_out="$pb_out target_framerate=${pb_v:-unset}"
-    pb_v=$(_rc_yaml "$_YH_ROOT/project.yaml" performance.frame_budget_ms)
+    pb_v=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" performance.frame_budget_ms)
     pb_out="$pb_out frame_budget_ms=${pb_v:-unset}"
-    pb_v=$(_rc_yaml "$_YH_ROOT/project.yaml" performance.draw_call_limit)
+    pb_v=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" performance.draw_call_limit)
     pb_out="$pb_out draw_call_limit=${pb_v:-unset}"
-    pb_v=$(_rc_yaml "$_YH_ROOT/project.yaml" performance.memory_ceiling_mb)
+    pb_v=$(_rc_yaml "$_YH_ROOT/.claude/ccgs/project.yaml" performance.memory_ceiling_mb)
     pb_out="$pb_out memory_ceiling_mb=${pb_v:-unset}"
-    echo "perf_budgets:$pb_out (project.yaml)"
+    echo "perf_budgets:$pb_out (.claude/ccgs/project.yaml)"
   fi
 
   if [ "$bare" = "1" ]; then
@@ -2102,11 +2102,11 @@ hook_warn() {
 # one through the Bash tool with a narrow grant. Every name added here widens
 # what a skill grant can reach, so only read-only lookups belong in that list.
 #
-# ROOT. Run from a subdirectory, the skill shell's cwd has no project.yaml and
+# ROOT. Run from a subdirectory, the skill shell's cwd has no .claude/ccgs/project.yaml and
 # $CLAUDE_PROJECT_DIR is the launch directory, not the repo root, so
 # rules 1-3 of _yaml_helper_set_root all miss. This file's own location is the
 # one anchor that cannot drift: hooks/ sits two levels below the root. It only
-# fills CLAUDE_PROJECT_DIR when that has no project.yaml, so rules 1-2 (cwd
+# fills CLAUDE_PROJECT_DIR when that has no .claude/ccgs/project.yaml, so rules 1-2 (cwd
 # first, for nested projects) keep their precedence.
 #
 # resolve_config, and a usage error, ALWAYS exit 0: a non-zero exit from an
@@ -2117,7 +2117,7 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
   case "${1:-}" in
     resolve_config)
       shift
-      if [ -z "${CLAUDE_PROJECT_DIR:-}" ] || [ ! -f "$CLAUDE_PROJECT_DIR/project.yaml" ]; then
+      if [ -z "${CLAUDE_PROJECT_DIR:-}" ] || [ ! -f "$CLAUDE_PROJECT_DIR/.claude/ccgs/project.yaml" ]; then
         _yh_self_root=$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)
         [ -n "$_yh_self_root" ] && CLAUDE_PROJECT_DIR="$_yh_self_root"
       fi
@@ -2127,7 +2127,7 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
       # Read-only lookups, run as `bash <path>/yaml-helper.sh <function> <args>`,
       # so a skill can pre-approve them with one narrow grant. A `(cd ... && source
       # ... && fn)` call matches no specific grant. Runs from the
-      # project root, as that form did, so project.yaml arguments resolve from a
+      # project root, as that form did, so .claude/ccgs/project.yaml arguments resolve from a
       # subfolder too; keeps the function's exit status (validate_enum_value and
       # is_locally_overridable answer with it). is_locally_overridable also
       # prints its 0 or 1: a caller that appends `; echo $?` to see it builds a

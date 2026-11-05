@@ -17,11 +17,11 @@ Before reading any full document, use Grep to extract `## Summary` sections
 from all GDD files:
 
 ```
-Grep pattern="## Summary" glob="design/gdd/*.md" output_mode="content" -A 5
+Grep pattern="## Summary" glob="docs/design/gdd/*.md" output_mode="content" -A 5
 ```
 
 **Fail open on a missing Summary.** Establish the denominator: glob
-`design/gdd/*.md` and count **N**. A scan matching fewer than N means those GDDs
+`docs/design/gdd/*.md` and count **N**. A scan matching fewer than N means those GDDs
 predate `## Summary` — never treat an absent Summary as a system out of scope.
 A zero-match scan means "no GDD carries a Summary yet", not "nothing to review".
 This review is holistic and loads its in-scope GDDs regardless (see Phase 1c);
@@ -58,7 +58,7 @@ reads. Only proceed to L1 for the `CHANGED` set plus the GDDs named on the
 Before full-reading any GDD, check for the entity registry:
 
 ```
-Read path="design/registry/entities.yaml"
+Read path="docs/design/registry/entities.yaml"
 ```
 
 If the registry exists and has entries, use it as a **pre-built conflict
@@ -75,11 +75,11 @@ Run `/consistency-check` after this review to populate the registry."
 
 Read whole (small, and every part is used):
 
-1. `design/gdd/game-concept.md` — game vision, core loop, MVP definition (or
-   `design/game-brief.md`, the one-page brief that replaces it at `rigor: minimal` —
+1. `docs/GDD.md` — game vision, core loop, MVP definition (or
+   `docs/GDD.md`, the one-page brief that replaces it at `rigor: minimal` —
    pitch, core loop, MVP list)
-2. `design/gdd/game-pillars.md` if it exists — design pillars and anti-pillars
-3. `design/gdd/systems-index.md` — authoritative system list, layers, dependencies, status
+2. `docs/GDD.md` if it exists — design pillars and anti-pillars
+3. `docs/GDD.md` — authoritative system list, layers, dependencies, status
 
 Read each document by section: find the headings with the Grep tool (pattern `^#`,
 content mode) and Read those ranges with offset and limit. A document read whole
@@ -89,7 +89,7 @@ Then, for **every in-scope system GDD**, load the sections this review actually
 consumes — **not the whole file**:
 
 ```
-Grep pattern="^## (Dependencies|Detailed Rules|Detailed Design|Formulas|Tuning Knobs|Acceptance Criteria|Player Fantasy)" glob="design/gdd/*.md" output_mode="content" -A 40
+Grep pattern="^## (Dependencies|Detailed Rules|Detailed Design|Formulas|Tuning Knobs|Acceptance Criteria|Player Fantasy)" glob="docs/design/gdd/*.md" output_mode="content" -A 40
 ```
 
 That list is not a guess — it is exactly the union the Parallel Execution

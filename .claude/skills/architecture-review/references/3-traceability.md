@@ -70,14 +70,14 @@ Requirements Traceability Matrix (RTM).
 
 ### Step 3b-1 — Load stories
 
-Glob `production/epics/**/*.md` (excluding EPIC.md index files) to establish the
+Glob `docs/production/epics/**/*.md` (excluding EPIC.md index files) to establish the
 denominator. Then collect the fields with **targeted section greps, not a full
 read of each story** — the same two-grep form `/test-evidence-review` uses for
 this identical extraction:
 
 ```
-Grep pattern="## Test Evidence" glob="production/epics/**/story-*.md" output_mode="content" -A 8
-Grep pattern="TR-" glob="production/epics/**/story-*.md" output_mode="content"
+Grep pattern="## Test Evidence" glob="docs/production/epics/**/story-*.md" output_mode="content" -A 8
+Grep pattern="TR-" glob="docs/production/epics/**/story-*.md" output_mode="content"
 ```
 
 - **TR-ID** — from the second grep.

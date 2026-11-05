@@ -16,9 +16,9 @@ budget is uncommitted or a phase did not run). Phase 0 resolves `review_mode`,
 no programmer is active and the report names the optimisation list as handed to
 `/dev-story`; `small` adds sound-designer, qa-tester and engine-programmer (the full
 pipeline); `studio` keeps that set and adds an adversarial pass. Each agent writes a
-date-stamped report to a named path under `production/polish/` under the bounded
+date-stamped report to a named path under `docs/production/polish/` under the bounded
 write exception (no per-write prompt), and the orchestrator states that nothing
-reads `production/polish/` yet. The code, shader, audio and asset changes of
+reads `docs/production/polish/` yet. The code, shader, audio and asset changes of
 Phases 2–4 are outside that exception: one ask covers the whole set. Uses
 `AskUserQuestion` at each phase transition. Engine-programmer is spawned
 conditionally only when Phase 1 identifies engine-level root causes.
@@ -32,8 +32,8 @@ conditionally only when Phase 1 identifies engine-level root causes.
 - [ ] Contains verdict keywords: READY FOR RELEASE, NOT ASSESSED, NEEDS MORE WORK — and states that NOT ASSESSED ranks above READY FOR RELEASE and below NEEDS MORE WORK
 - [ ] Contains "File Write Protocol" section
 - [ ] File writes are delegated to sub-agents — orchestrator does not write files directly
-- [ ] Names a destination per agent under `production/polish/`: `[area]-report-[date].md` (performance-analyst), `[area]-render-notes-[date].md` (technical-artist), `[area]-engine-fixes-[date].md` (engine-programmer), `[area]-tool-fixes-[date].md` (tools-programmer), `[area]-audio-notes-[date].md` (sound-designer), `[area]-verification-[date].md` (qa-tester)
-- [ ] Sub-agents write those named `production/` paths without a per-write prompt (bounded exception), and must ask for any write outside it; implementation files (code, shaders, audio, assets) are outside it — each agent lists the files it will create or change, and the skill asks once for the set before any is written — one ask for the whole Phase 2–4 set, never one per phase
+- [ ] Names a destination per agent under `docs/production/polish/`: `[area]-report-[date].md` (performance-analyst), `[area]-render-notes-[date].md` (technical-artist), `[area]-engine-fixes-[date].md` (engine-programmer), `[area]-tool-fixes-[date].md` (tools-programmer), `[area]-audio-notes-[date].md` (sound-designer), `[area]-verification-[date].md` (qa-tester)
+- [ ] Sub-agents write those named `docs/production/` paths without a per-write prompt (bounded exception), and must ask for any write outside it; implementation files (code, shaders, audio, assets) are outside it — each agent lists the files it will create or change, and the skill asks once for the set before any is written — one ask for the whole Phase 2–4 set, never one per phase
 - [ ] The `small` and `studio` sets include `engine-programmer`; at `individual` no programmer is active and the report names the optimisation list as handed to `/dev-story`
 - [ ] Defines a phase gate as a decision point the pipeline itself lists, whatever the `automation` mode, and claims no director spawn at phase gates
 - [ ] Has a next-step handoff at the end (references `/release-checklist`, `/sprint-plan update`, `/gate-check`)
@@ -50,9 +50,9 @@ conditionally only when Phase 1 identifies engine-level root causes.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -64,7 +64,7 @@ Fixture defaults.
 **Fixture:**
 - Resolved config block: `team.size: small`, `automation: collaborative`
 - Feature exists and is functionally complete (e.g., `combat` system)
-- Performance budgets are defined in `project.yaml` (`performance.target_framerate: 60`, `performance.frame_budget_ms: 16.6`, `performance.draw_call_limit: 2000`, `performance.memory_ceiling_mb: 2048`)
+- Performance budgets are defined in `.claude/ccgs/project.yaml` (`performance.target_framerate: 60`, `performance.frame_budget_ms: 16.6`, `performance.draw_call_limit: 2000`, `performance.memory_ceiling_mb: 2048`)
 - No frame budget violations exist before polishing begins
 - No audio events are missing; VFX assets are complete
 - No regressions are introduced by polish changes
@@ -73,18 +73,18 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Before any spawn, one line announces the active set for `team.size: small` (the full pipeline)
-2. Phase 1: performance-analyst is spawned; profiles the combat system, measures frame budget, checks memory usage; writes `production/polish/combat-report-[date].md` showing all metrics within budget
+2. Phase 1: performance-analyst is spawned; profiles the combat system, measures frame budget, checks memory usage; writes `docs/production/polish/combat-report-[date].md` showing all metrics within budget
 3. `AskUserQuestion` presents performance report; user approves before Phases 2, 3, and 4 begin
 4. Phase 2: the report's optimisation list holds only minor rendering items (e.g., draw call batching), owned by technical-artist, so they join its Phase 3 brief; no engine-level root cause was identified, so engine-programmer is not spawned; performance-analyst changes no code
 5. Phases 3 and 4 are launched in parallel alongside Phase 2:
-   - Phase 3: technical-artist reviews VFX for quality, optimizes particle systems, adds screen shake and visual juice; writes `production/polish/combat-render-notes-[date].md`
-   - Phase 4: sound-designer reviews audio events for completeness, checks mix levels, adds ambient audio layers; writes `production/polish/combat-audio-notes-[date].md`
+   - Phase 3: technical-artist reviews VFX for quality, optimizes particle systems, adds screen shake and visual juice; writes `docs/production/polish/combat-render-notes-[date].md`
+   - Phase 4: sound-designer reviews audio events for completeness, checks mix levels, adds ambient audio layers; writes `docs/production/polish/combat-audio-notes-[date].md`
    - The agents changing shaders, VFX or assets first list the files; one `AskUserQuestion` covers the whole Phase 2–4 set, and nothing is edited before the yes
 6. All three parallel phases complete; `AskUserQuestion` presents results; user approves before Phase 5 begins
-7. Phase 5: qa-tester runs edge case tests, soak tests, stress tests, and regression tests; all pass; writes `production/polish/combat-verification-[date].md`
+7. Phase 5: qa-tester runs edge case tests, soak tests, stress tests, and regression tests; all pass; writes `docs/production/polish/combat-verification-[date].md`
 8. `AskUserQuestion` presents test results; user approves before Phase 6
 9. Phase 6: orchestrator collects all results; compares before/after performance metrics against budgets; all metrics pass
-10. The report says the `production/polish/` files are a record that nothing in the repo reads yet
+10. The report says the `docs/production/polish/` files are a record that nothing in the repo reads yet
 11. Verdict: READY FOR RELEASE
 
 **Assertions:**
@@ -96,10 +96,10 @@ Fixture defaults.
 - [ ] performance-analyst edits no code, shader or asset in any phase
 - [ ] Implementation files of Phases 2–4 are listed by each agent and asked for in one `AskUserQuestion` for the whole set — not once per phase — before any is edited
 - [ ] qa-tester (Phase 5) is not launched until the parallel phases complete and user approves
-- [ ] Each agent writes to its named `production/polish/[area]-…-[date].md` path without a per-write prompt, and the orchestrator confirms the file exists before treating the phase as done
+- [ ] Each agent writes to its named `docs/production/polish/[area]-…-[date].md` path without a per-write prompt, and the orchestrator confirms the file exists before treating the phase as done
 - [ ] Phase 6 verdict is based on comparison of metrics against defined budgets
 - [ ] Summary report includes: before/after performance metrics, visual polish changes, audio polish changes, test results
-- [ ] Summary states that nothing reads `production/polish/` yet
+- [ ] Summary states that nothing reads `docs/production/polish/` yet
 - [ ] No files are written by the orchestrator directly
 - [ ] Verdict is READY FOR RELEASE
 
@@ -172,7 +172,7 @@ Fixture defaults.
 1. Phase 1: performance-analyst profiles the environment; identifies frame budget violation; root cause analysis points to engine-level rendering pipeline (spatial indexer traversal overhead)
 2. Phase 1 output explicitly classifies the root cause as engine-level
 3. `AskUserQuestion` presents the performance report including the engine-level root cause; user approves before Phase 2
-4. Phase 2: engine-programmer (in the `small` set) is spawned for the engine-level rendering item on the optimisation list, writing `production/polish/open-world-engine-fixes-[date].md`; performance-analyst writes no code
+4. Phase 2: engine-programmer (in the `small` set) is spawned for the engine-level rendering item on the optimisation list, writing `docs/production/polish/open-world-engine-fixes-[date].md`; performance-analyst writes no code
 5. Phases 3 and 4 also run in parallel with Phase 2 (visual and audio polish); engine-programmer lists the engine files it will change along with the other agents' files, and one ask covers the set
 6. engine-programmer addresses the spatial indexer traversal after the yes; provides profiler validation showing the fix reduces overhead
 7. Phase 5: qa-tester runs regression tests including tests for the engine-level change
@@ -203,7 +203,7 @@ Fixture defaults.
 **Expected behavior:**
 1. Phases 1–4 complete; polish changes include a shader optimization from technical-artist
 2. Phase 5: qa-tester runs regression tests and detects "Item highlight glow on hover no longer renders — regression introduced by shader optimization in Phase 3"
-3. qa-tester writes its findings to `production/polish/inventory-ui-verification-[date].md` (no per-write prompt) and returns the regression as a CONCERNS/BLOCKED line in its return contract
+3. qa-tester writes its findings to `docs/production/polish/inventory-ui-verification-[date].md` (no per-write prompt) and returns the regression as a CONCERNS/BLOCKED line in its return contract
 4. The orchestrator confirms the verification file exists, then at the Phase 5 → Phase 6 transition writes qa-tester's full analysis in conversation — naming the broken behavior and the Phase 3 shader change that caused it — and captures the decision via `AskUserQuestion` with qa-tester's proposals as options
 5. Phase 6: the regression is listed among remaining issues with severity and a recommendation
 6. Verdict: NEEDS MORE WORK
@@ -212,7 +212,7 @@ Fixture defaults.
 **Assertions:**
 - [ ] Regression is surfaced before Phase 6 sign-off
 - [ ] The specific broken behavior and the responsible change are both named in the report
-- [ ] qa-tester's findings are written to `production/polish/inventory-ui-verification-[date].md` without a separate approval prompt
+- [ ] qa-tester's findings are written to `docs/production/polish/inventory-ui-verification-[date].md` without a separate approval prompt
 - [ ] `AskUserQuestion` at the Phase 5 → 6 transition presents the regression and qa-tester's proposed resolutions as selectable options
 - [ ] Phase 6 lists the regression as a remaining issue with severity
 - [ ] Verdict is NEEDS MORE WORK when a regression is present and unresolved
@@ -224,7 +224,7 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: small`, `automation: collaborative`
-- `project.yaml` sets none of `performance.target_framerate`, `performance.frame_budget_ms`, `performance.draw_call_limit` or `performance.memory_ceiling_mb`, and no design doc states a budget for the area
+- `.claude/ccgs/project.yaml` sets none of `performance.target_framerate`, `performance.frame_budget_ms`, `performance.draw_call_limit` or `performance.memory_ceiling_mb`, and no design doc states a budget for the area
 - Feature being polished: `main-menu`; every phase completes, and qa-tester finds no regressions
 
 **Input:** `/team-polish main-menu`
@@ -233,7 +233,7 @@ Fixture defaults.
 1. Phase 1: performance-analyst profiles the menu via `/perf-profile`; each metric is reported as measured but `NOT ASSESSED` — no committed budget — never as within budget or with headroom against a placeholder such as 16.67 ms
 2. Phases 2–5 run normally; nothing is found over budget and there are no regressions
 3. Phase 6: no known problem, but the budget comparison could not run, so the verdict is NOT ASSESSED — not READY FOR RELEASE — and the report names each unset `performance.*` key
-4. Next Steps: commit the budgets in `project.yaml` and re-run `/team-polish`; `/release-checklist` is not offered as the next step
+4. Next Steps: commit the budgets in `.claude/ccgs/project.yaml` and re-run `/team-polish`; `/release-checklist` is not offered as the next step
 
 **Assertions:**
 - [ ] Verdict is NOT ASSESSED, not READY FOR RELEASE
@@ -248,16 +248,16 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: individual`, `automation: collaborative`
-- Budgets committed in `project.yaml` (as in Case 1)
+- Budgets committed in `.claude/ccgs/project.yaml` (as in Case 1)
 - Feature being polished: `crafting-menu`; Phase 1 finds a draw-call overrun owned by technical-artist and a script hot path in the crafting logic owned by gameplay-programmer — no engine-level root cause
 
 **Input:** `/team-polish crafting-menu`
 
 **Expected behavior:**
 1. The active-set line names performance-analyst + technical-artist; the not-spawned line names sound-designer, qa-tester, engine-programmer and tools-programmer
-2. Phase 1: performance-analyst writes `production/polish/crafting-menu-report-[date].md` with the optimisation list, each item naming its owner
+2. Phase 1: performance-analyst writes `docs/production/polish/crafting-menu-report-[date].md` with the optimisation list, each item naming its owner
 3. Phase 2: no programmer is active, so no agent implements the script item — performance-analyst does not implement it either; the draw-call item joins technical-artist's Phase 3 brief
-4. The report lists the gameplay-programmer item under "Optimisation list handed to `/dev-story`: `production/polish/crafting-menu-report-[date].md`"
+4. The report lists the gameplay-programmer item under "Optimisation list handed to `/dev-story`: `docs/production/polish/crafting-menu-report-[date].md`"
 5. Phase 6: audio polish and hardening did not run; if the script hot path keeps a metric over budget the verdict is NEEDS MORE WORK, otherwise NOT ASSESSED
 6. Next Steps: implement the handed-off items with `/dev-story`, then re-run `/team-polish`
 
@@ -273,8 +273,8 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `workflow: minimal` (from `modes.rigor: minimal`), `team.size: small` (pinned so the full pipeline runs), `automation: collaborative`
-- `design/game-brief.md` exists with a build order; no `production/sprints/` folder
-- Budgets committed in `project.yaml` (as in Case 1)
+- `docs/GDD.md` exists with a build order; no `docs/production/sprints/` folder
+- Budgets committed in `.claude/ccgs/project.yaml` (as in Case 1)
 - Feature being polished: `particle-storm`, set up as in Case 2: after optimisation the cost is 9ms against a 6ms budget
 
 **Input:** `/team-polish particle-storm`
@@ -303,7 +303,7 @@ Fixture defaults.
 - [ ] performance-analyst produces the optimisation list and never implements it; an item whose owner is not active is named as handed to `/dev-story`
 - [ ] Phase 2–4 implementation files are asked for once, as a set — not once per phase
 - [ ] No files are written by the orchestrator directly — all writes are delegated to sub-agents
-- [ ] Sub-agents skip the per-write prompt only for their named `production/polish/` paths; any other write requires a "May I write" ask
+- [ ] Sub-agents skip the per-write prompt only for their named `docs/production/polish/` paths; any other write requires a "May I write" ask
 - [ ] A phase whose named artifact is missing on disk is treated as failed, not done
 - [ ] BLOCKED status from any agent is surfaced immediately — not silently skipped
 - [ ] A partial report is always produced when some agents complete and others block

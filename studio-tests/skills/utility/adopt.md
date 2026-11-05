@@ -10,13 +10,13 @@ after explicit user approval via `AskUserQuestion`.
 
 The resolved `workflow` tier scopes the audit: `full` requires all 8 GDD sections,
 `standard` requires 5 (+ Formulas for numeric systems), and `minimal` — the
-default, since `modes.rigor` defaults to `minimal` — audits `design/game-brief.md`
+default, since `modes.rigor` defaults to `minimal` — audits `docs/GDD.md`
 instead and checks any existing GDD only advisorily, and the plan prescribes no
 infrastructure bootstrap (`/architecture-review`, `/create-control-manifest`,
 `/sprint-plan`, `/gate-check` are not on the minimal path). Fixtures that exercise the
-GDD and ADR audits therefore set `modes.rigor: full` in `project.yaml`.
+GDD and ADR audits therefore set `modes.rigor: full` in `.claude/ccgs/project.yaml`.
 
-A v1.0 project (no `project.yaml`, legacy config with real values) is migrated
+A v1.0 project (no `.claude/ccgs/project.yaml`, legacy config with real values) is migrated
 only by `.claude/scripts/migrate-v1-config.sh` — `--dry-run` first, the real run
 after an ask naming the files it writes, and `--finalize` left until the user
 has read the migration report. `/adopt` never writes a review mode; it reports
@@ -49,9 +49,9 @@ None. `/adopt` is a brownfield audit utility. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -61,9 +61,9 @@ Fixture defaults.
 ### Case 1: Happy Path — All GDDs compliant, no BLOCKING or HIGH gaps
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: full`, `project.stage`, and `engine.name`,
+- `.claude/ccgs/project.yaml` sets `modes.rigor: full`, `project.stage`, and `engine.name`,
   `engine.version`, `engine.language`, `engine.rendering`, `engine.physics`
-- `design/gdd/` contains 3 GDD files; each has all 8 required sections with content
+- `docs/design/gdd/` contains 3 GDD files; each has all 8 required sections with content
   and a valid `> **Status**:` field
 - `docs/architecture/adr-0001.md` exists with `## Status`, `## ADR Dependencies`,
   `## Engine Compatibility`, `## GDD Requirements Addressed` and `## Performance Implications`
@@ -96,7 +96,7 @@ Fixture defaults.
 - [ ] Gap counts show `BLOCKING: 0` and `HIGH: 0`, and the project is reported template-compatible
 - [ ] `AskUserQuestion` is used before writing the adoption plan
 - [ ] Adoption plan file is written to `docs/adoption-plan-[date].md`
-- [ ] `modes.review_mode` is not written to `project.yaml` and `production/review-mode.txt` is not created — the review mode is reported, never pinned
+- [ ] `modes.review_mode` is not written to `.claude/ccgs/project.yaml` and `.claude/ccgs/review-mode.txt` is not created — the review mode is reported, never pinned
 - [ ] Phase 7 asks "No blocking gaps — this project is template-compatible. What next?" via `AskUserQuestion`
 
 ---
@@ -104,8 +104,8 @@ Fixture defaults.
 ### Case 2: Non-Compliant Documents — GDDs missing sections, BLOCKING and HIGH gaps
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: full` and configures the engine
-- `design/gdd/` contains 2 GDD files:
+- `.claude/ccgs/project.yaml` sets `modes.rigor: full` and configures the engine
+- `docs/design/gdd/` contains 2 GDD files:
   - `combat.md` — missing `## Acceptance Criteria` and `## Formulas` sections
   - `movement.md` — all 8 sections present
 - One ADR (`adr-0001.md`) is missing `## Status` section
@@ -145,7 +145,7 @@ Fixture defaults.
 ### Case 3: Mixed State — Some docs compliant, some not, partial report
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: full` and configures engine, naming and performance
+- `.claude/ccgs/project.yaml` sets `modes.rigor: full` and configures engine, naming and performance
 - 4 GDD files: 2 fully compliant, 2 with gaps (one missing Tuning Knobs, one missing Formulas)
 - ADRs: 3 files — 2 compliant, 1 missing `## ADR Dependencies`
 - Stories: 5 files — 3 have TR-ID references, 2 do not
@@ -180,8 +180,8 @@ Fixture defaults.
 ### Case 4: No Artifacts Found — Fresh project, guidance to run /start
 
 **Fixture:**
-- Repository has no files in `design/gdd/`, `docs/architecture/`, `production/epics/`
-- No `project.stage` in `project.yaml` and no `production/stage.txt`
+- Repository has no files in `docs/design/gdd/`, `docs/architecture/`, `docs/production/epics/`
+- No `project.stage` in `.claude/ccgs/project.yaml` and no `.claude/ccgs/stage.txt`
 - No source code: none of `src/`, `Assets/` or `Source/` exists
 - No game-concept.md, no game-brief.md, no systems-index.md
 
@@ -207,15 +207,15 @@ Fixture defaults.
 ### Case 5: Director Gate Check — No gate; minimal tier scopes the audit to the brief
 
 **Fixture:**
-- `project.yaml` configures the engine and has no `modes` block (`workflow`
+- `.claude/ccgs/project.yaml` configures the engine and has no `modes` block (`workflow`
   resolves to `minimal`)
-- `design/game-brief.md` exists
-- `design/gdd/combat.md` exists and is missing `## Acceptance Criteria`
+- `docs/GDD.md` exists
+- `docs/design/gdd/combat.md` exists and is missing `## Acceptance Criteria`
 
 **Input:** `/adopt`
 
 **Expected behavior:**
-1. Phase 2 audits `design/game-brief.md`; GDDs, ADRs and UX specs are not expected
+1. Phase 2 audits `docs/GDD.md`; GDDs, ADRs and UX specs are not expected
 2. `combat.md` is checked at the `standard` bar advisorily — its missing Acceptance
    Criteria is reported as informational, not as a HIGH gap
 3. The plan does not prescribe the infrastructure bootstrap: its Step 3 says in
@@ -226,7 +226,7 @@ Fixture defaults.
 6. No `/gate-check` is invoked during the skill run
 
 **Assertions:**
-- [ ] `design/game-brief.md` is audited
+- [ ] `docs/GDD.md` is audited
 - [ ] Absent ADRs and UX specs are not reported as gaps
 - [ ] `combat.md`'s missing Acceptance Criteria is not counted in the HIGH total
 - [ ] The plan prescribes none of `/architecture-review`, `/create-control-manifest`, `/sprint-plan` or `/gate-check` — none is on the minimal path
@@ -238,31 +238,31 @@ Fixture defaults.
 ### Case 6: v1.0 Project — Converter run, never hand-migrated
 
 **Fixture:**
-- No `project.yaml` at the repo root
-- `production/stage.txt` reads `Production`; `.claude/docs/technical-preferences.md`
+- No `.claude/ccgs/project.yaml` at the repo root
+- `.claude/ccgs/stage.txt` reads `Production`; `.claude/docs/technical-preferences.md`
   has `- **Engine**: Godot 4.6` and a filled naming section
-- `design/gdd/` holds GDDs; no `production/migration-report.md`
+- `docs/design/gdd/` holds GDDs; no `.claude/ccgs/migration-report.md`
 
 **Input:** `/adopt`
 
 **Expected behavior:**
-1. Phase 2g identifies a v1.0 project needing migration (no `project.yaml`,
+1. Phase 2g identifies a v1.0 project needing migration (no `.claude/ccgs/project.yaml`,
    legacy files with real, migratable values)
 2. It runs `bash .claude/scripts/migrate-v1-config.sh --dry-run` during the
-   audit (the dry run writes nothing) — it does not hand-write `project.yaml`
+   audit (the dry run writes nothing) — it does not hand-write `.claude/ccgs/project.yaml`
 3. The migration is classified BLOCKING in Phase 3 and heads the plan, which
    reports what the dry run listed
 4. After the plan, Phase 7 offers the migration first: it asks "May I run the
-   converter? It writes `project.yaml` and `production/migration-report.md`."
+   converter? It writes `.claude/ccgs/project.yaml` and `.claude/ccgs/migration-report.md`."
    and runs it without `--dry-run` only after approval
-5. It tells the user to read `production/migration-report.md` before running
+5. It tells the user to read `.claude/ccgs/migration-report.md` before running
    `bash .claude/scripts/migrate-v1-config.sh --finalize`, and does not run
    `--finalize` itself before the user has read the report
 
 **Assertions:**
 - [ ] `--dry-run` runs before any real migration, and its output is reported
-- [ ] `project.yaml` is written only by the converter, after the ask naming `project.yaml` and `production/migration-report.md` is approved
-- [ ] `--finalize` is not run before the user has read `production/migration-report.md`
+- [ ] `.claude/ccgs/project.yaml` is written only by the converter, after the ask naming `.claude/ccgs/project.yaml` and `.claude/ccgs/migration-report.md` is approved
+- [ ] `--finalize` is not run before the user has read `.claude/ccgs/migration-report.md`
 - [ ] The migration is a BLOCKING item, first in the plan
 - [ ] No legacy file is deleted during the run
 

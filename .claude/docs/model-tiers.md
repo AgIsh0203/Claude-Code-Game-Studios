@@ -75,8 +75,8 @@ model. 19 are pinned:
   `ue-blueprint-specialist`, `ue-gas-specialist`, `ue-replication-specialist`,
   `ue-umg-specialist`, `unity-addressables-specialist`,
   `unity-dots-specialist`, `unity-shader-specialist`, `unity-ui-specialist`.
-  `/dev-story` and `/code-review` spawn the sub-specialists named in
-  `project.yaml`'s `specialists` block (which `/setup-engine` writes); `/team-ui` spawns
+  `/dev-story` and `/gamedev-code-review` spawn the sub-specialists named in
+  `.claude/ccgs/project.yaml`'s `specialists` block (which `/setup-engine` writes); `/team-ui` spawns
   `unity-ui-specialist` and `ue-umg-specialist`; `/team-release` spawns
   `devops-engineer` and `community-manager`, and `/team-live-ops` spawns
   `community-manager`.

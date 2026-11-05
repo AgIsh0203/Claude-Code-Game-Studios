@@ -4,9 +4,9 @@
 
 `/balance-check [system-name|path-to-data-file]` identifies the balance domain
 (combat, economy, progression, loot, or a data file given directly), reads the
-domain's data files from `assets/data/` and `design/balance/`, then reads the
-intended values — from `design/registry/entities.yaml` first (its `constants:` and
-`formulas:` blocks), and from the system's GDD in `design/gdd/` for anything the
+domain's data files from `Content/data/` and `docs/design/balance/`, then reads the
+intended values — from `docs/design/registry/entities.yaml` first (its `constants:` and
+`formulas:` blocks), and from the system's GDD in `docs/design/gdd/` for anything the
 registry does not supply. It compares every data value with its target — a
 registry constant's `value`, a registry formula's `output_range`, or the GDD's
 range — then runs domain-specific checks, and prints a report with
@@ -17,7 +17,7 @@ Inputs it cannot find make the affected section `NOT ASSESSED — NO DATA`, nami
 the missing source and `/design-system`, never an estimate; a value with no
 target is listed as `no stated range — not judged`. After the report, an
 `AskUserQuestion` offers [A] fix now, [B] save the report to
-`design/balance/balance-check-[system]-[date].md`, [C] stop; it writes only on
+`docs/design/balance/balance-check-[system]-[date].md`, [C] stop; it writes only on
 [B]. No director gates are invoked. Health Summary, first match wins: CRITICAL
 ISSUES, CONCERNS, NOT ASSESSED, HEALTHY.
 
@@ -43,9 +43,9 @@ None. Balance check is an analysis skill; no gates are invoked in any review mod
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -55,19 +55,19 @@ Fixture defaults.
 ### Case 1: Happy Path — All balance values within their intended ranges
 
 **Fixture:**
-- `assets/data/combat-balance.json` exists with 6 stat values
-- `design/registry/entities.yaml` has no entries (the shipped empty stub)
-- `design/gdd/combat-system.md` gives an expected range for all 6 stats
+- `Content/data/combat-balance.json` exists with 6 stat values
+- `docs/design/registry/entities.yaml` has no entries (the shipped empty stub)
+- `docs/design/gdd/combat-system.md` gives an expected range for all 6 stats
 - All 6 values fall inside their ranges; no degenerate strategy exists
 
 **Input:** `/balance-check combat`
 
 **Expected behavior:**
 1. Skill identifies the Combat domain from the argument
-2. Skill reads `assets/data/combat-balance.json` (and any combat files in `design/balance/`)
+2. Skill reads `Content/data/combat-balance.json` (and any combat files in `docs/design/balance/`)
 3. Registry has no entries, so the skill uses the GDD alone for the intended ranges
 4. Each of the 6 values is compared with its GDD range and none falls outside; the combat checks find no dominant option
-5. Report lists `assets/data/combat-balance.json` and `design/gdd/combat-system.md` under Data Sources Analyzed; the Outliers Detected table has no rows
+5. Report lists `Content/data/combat-balance.json` and `docs/design/gdd/combat-system.md` under Data Sources Analyzed; the Outliers Detected table has no rows
 6. Health Summary is HEALTHY
 7. Phase 6 `AskUserQuestion` offers [A] / [B] / [C]; nothing is written before the user chooses
 
@@ -83,8 +83,8 @@ Fixture defaults.
 ### Case 2: Outlier — Player damage far above its intended range
 
 **Fixture:**
-- `assets/data/combat-balance.json` has `player_damage_base: 140`
-- `design/gdd/combat-system.md` gives `player_damage_base` an expected range of 90–110
+- `Content/data/combat-balance.json` has `player_damage_base: 140`
+- `docs/design/gdd/combat-system.md` gives `player_damage_base` an expected range of 90–110
 - All other stats are within range
 
 **Input:** `/balance-check combat`
@@ -108,9 +108,9 @@ Fixture defaults.
 ### Case 3: No Design Targets — Data exists but no GDD or registry defines the ranges
 
 **Fixture:**
-- `assets/data/economy-balance.yaml` exists with 10 plain stat values (prices and rates, no faucet/sink loop the data alone could show)
-- `design/registry/entities.yaml` has no entries
-- No GDD in `design/gdd/` covers the economy
+- `Content/data/economy-balance.yaml` exists with 10 plain stat values (prices and rates, no faucet/sink loop the data alone could show)
+- `docs/design/registry/entities.yaml` has no entries
+- No GDD in `docs/design/gdd/` covers the economy
 
 **Input:** `/balance-check economy`
 
@@ -124,7 +124,7 @@ Fixture defaults.
 **Assertions:**
 - [ ] Skill does not fabricate expected ranges when neither the registry nor a GDD supplies them
 - [ ] The affected sections are marked `NOT ASSESSED — NO DATA` rather than shown as empty tables
-- [ ] Output names the missing design source (economy GDD in `design/gdd/`, empty `design/registry/entities.yaml`) and `/design-system`
+- [ ] Output names the missing design source (economy GDD in `docs/design/gdd/`, empty `docs/design/registry/entities.yaml`) and `/design-system`
 - [ ] Health Summary is NOT ASSESSED — not HEALTHY, and not CONCERNS, since nothing was found wrong
 
 ---
@@ -132,14 +132,14 @@ Fixture defaults.
 ### Case 4: Registry First — The registry value overrides a contradicting GDD
 
 **Fixture:**
-- `design/registry/entities.yaml` `constants:` lists `player_damage_base` with `value: 100`, `unit: damage`, `source: design/gdd/combat-system.md` (a registry constant carries a value, not a range)
-- `design/gdd/combat-system.md` still says `player_damage_base` range 100–130 (stale)
-- `assets/data/combat-balance.json` has `player_damage_base: 125`
+- `docs/design/registry/entities.yaml` `constants:` lists `player_damage_base` with `value: 100`, `unit: damage`, `source: docs/design/gdd/combat-system.md` (a registry constant carries a value, not a range)
+- `docs/design/gdd/combat-system.md` still says `player_damage_base` range 100–130 (stale)
+- `Content/data/combat-balance.json` has `player_damage_base: 125`
 
 **Input:** `/balance-check combat`
 
 **Expected behavior:**
-1. Skill greps `design/registry/entities.yaml` (`^  - name:` with context) before reading the GDD
+1. Skill greps `docs/design/registry/entities.yaml` (`^  - name:` with context) before reading the GDD
 2. The target for `player_damage_base` is the registry constant's `value`, 100, not the GDD's range
 3. 125 differs from the registry value 100, so `player_damage_base` appears in the Outliers Detected table with Expected Range 100 (the registry value) and Actual 125 — although it sits inside the stale GDD range
 4. The GDD is still read for any value the registry does not list
@@ -149,7 +149,7 @@ Fixture defaults.
 - [ ] The registry is read before the GDD
 - [ ] `player_damage_base` is judged against the registry value (100), not the GDD range (100–130)
 - [ ] `player_damage_base: 125` is reported as an outlier
-- [ ] Data Sources Analyzed includes `design/registry/entities.yaml`
+- [ ] Data Sources Analyzed includes `docs/design/registry/entities.yaml`
 
 ---
 
@@ -157,7 +157,7 @@ Fixture defaults.
 
 **Fixture:**
 - Combat data, registry and GDD exist; 1 stat is slightly outside its range
-- `project.yaml`: `modes.review_mode: full`
+- `.claude/ccgs/project.yaml`: `modes.review_mode: full`
 - `modes.automation` resolves to `collaborative`
 
 **Input:** `/balance-check` (no argument)
@@ -166,14 +166,14 @@ Fixture defaults.
 1. Skill asks the user which system to check; user answers "combat"
 2. Skill reads data and design targets and prints the report
 3. No director gate is invoked
-4. After the report, `AskUserQuestion` offers [A] fix now, [B] save to `design/balance/balance-check-combat-[date].md`, [C] stop
-5. On [B]: the report is written to `design/balance/balance-check-combat-[YYYY-MM-DD].md` (directory created if needed), the write is confirmed, and the skill ends with "Re-run `/balance-check` after fixes to verify."
+4. After the report, `AskUserQuestion` offers [A] fix now, [B] save to `docs/design/balance/balance-check-combat-[date].md`, [C] stop
+5. On [B]: the report is written to `docs/design/balance/balance-check-combat-[YYYY-MM-DD].md` (directory created if needed), the write is confirmed, and the skill ends with "Re-run `/balance-check` after fixes to verify."
 6. On [C]: nothing is written; open issues are summarized and the same re-run line ends the output
 
 **Assertions:**
 - [ ] With no argument, the skill asks which system to check before reading data
 - [ ] No director gate is invoked in any review mode
-- [ ] The report is presented before the save option, and the save option names `design/balance/balance-check-[system]-[date].md`
+- [ ] The report is presented before the save option, and the save option names `docs/design/balance/balance-check-[system]-[date].md`
 - [ ] Option [B] writes to that path with the date in YYYY-MM-DD form; option [C] writes nothing
 - [ ] Both [B] and [C] end with "Re-run `/balance-check` after fixes to verify."
 
@@ -182,9 +182,9 @@ Fixture defaults.
 ### Case 6: Orphan Stat — A data value no GDD or registry defines
 
 **Fixture:**
-- `assets/data/combat-balance.json` holds 6 stats plus `legacy_armor_mult: 1.5`
-- `design/registry/entities.yaml` has no entries
-- `design/gdd/combat-system.md` gives a range for the 6 stats and nothing for `legacy_armor_mult`
+- `Content/data/combat-balance.json` holds 6 stats plus `legacy_armor_mult: 1.5`
+- `docs/design/registry/entities.yaml` has no entries
+- `docs/design/gdd/combat-system.md` gives a range for the 6 stats and nothing for `legacy_armor_mult`
 - The 6 stats are inside their ranges; no degenerate strategy exists
 
 **Input:** `/balance-check combat`
@@ -208,7 +208,7 @@ Fixture defaults.
 - [ ] Compares every data value with its target (registry constant `value`, registry formula `output_range`, or GDD range); a value outside it is an Outliers Detected row, a value with none is `no stated range — not judged`
 - [ ] Outliers Detected table uses the columns Item/Value, Expected Range, Actual, Issue; Recommendations uses Priority, Issue, Suggested Fix, Impact
 - [ ] A section whose inputs are absent is `NOT ASSESSED — NO DATA`, never estimated, and names the missing source and `/design-system`
-- [ ] Writes only when the user picks the save option, and only to `design/balance/balance-check-[system]-[date].md`
+- [ ] Writes only when the user picks the save option, and only to `docs/design/balance/balance-check-[system]-[date].md`
 - [ ] No director gates are invoked
 - [ ] Health Summary, first match: CRITICAL ISSUES, CONCERNS, NOT ASSESSED, HEALTHY — HEALTHY only when every value was judged against a stated target
 

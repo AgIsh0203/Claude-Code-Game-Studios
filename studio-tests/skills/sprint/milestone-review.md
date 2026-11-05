@@ -3,12 +3,12 @@
 ## Skill Summary
 
 `/milestone-review` reviews a milestone's progress from its definition in
-`production/milestones/` (when one exists) and the sprint reports in
-`production/sprints/`: feature completeness, quality metrics, code health, risk,
+`docs/production/milestones/` (when one exists) and the sprint reports in
+`docs/production/sprints/`: feature completeness, quality metrics, code health, risk,
 velocity, scope recommendations and a Go/No-Go recommendation (NOT ASSESSED /
 GO / CONDITIONAL GO / NO-GO). Blocked stories and their blockers come from
-`production/sprint-status.yaml` and the story files, open bugs from
-`production/qa/bugs/`. Before producing any report it records each input as
+`docs/production/sprint-status.yaml` and the story files, open bugs from
+`docs/production/qa/bugs/`. Before producing any report it records each input as
 FOUND or ABSENT; a section whose inputs are absent reads
 `NOT ASSESSED — NO DATA`, and if every required input is absent it stops with
 that as the whole verdict. In full review mode it spawns `producer` with the
@@ -16,7 +16,7 @@ PR-MILESTONE gate before the Go/No-Go recommendation is generated; the
 producer's verdict (ON TRACK / AT RISK / OFF TRACK) is shown inline, and AT RISK
 or OFF TRACK raises an `AskUserQuestion` on how to frame the recommendation. In
 lean and solo modes the gate is skipped with a note. The skill asks "May I write
-this to `production/milestones/[milestone-name]-review.md`?" before persisting.
+this to `docs/production/milestones/[milestone-name]-review.md`?" before persisting.
 Verdicts: COMPLETE (review saved), BLOCKED (write declined), or
 `NOT ASSESSED — NO DATA` (no inputs at all).
 
@@ -49,9 +49,9 @@ recommends GO.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -61,14 +61,14 @@ Fixture defaults.
 ### Case 1: Happy Path — Nearly complete milestone with one deferred feature
 
 **Fixture:**
-- `production/milestones/milestone-03.md` exists (milestone-definition template)
+- `docs/production/milestones/milestone-03.md` exists (milestone-definition template)
   with 8 features in its Feature List
 - 7 features have `Status: Complete`
 - 1 feature has `Status: Deferred` (deferred to milestone-04)
-- `production/sprints/sprint-007.md` through `sprint-009.md` exist with the
+- `docs/production/sprints/sprint-007.md` through `sprint-009.md` exist with the
   headings `/sprint-plan` writes
-- The features' stories exist under `production/epics/`; none is `Blocked`
-- `project.yaml` sets `modes.review_mode: full`
+- The features' stories exist under `docs/production/epics/`; none is `Blocked`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full`
 - The producer returns ON TRACK
 
 **Input:** `/milestone-review milestone-03`
@@ -84,14 +84,14 @@ Fixture defaults.
 4. The producer's ON TRACK verdict is shown inline in the Go/No-Go section; no
    framing question is asked
 5. Skill presents the review and asks "May I write this to
-   `production/milestones/milestone-03-review.md`?"
+   `docs/production/milestones/milestone-03-review.md`?"
 6. User approves; file is written; verdict COMPLETE
 
 **Assertions:**
 - [ ] The deferred feature is not listed under Fully Complete and is not counted as complete in the completion percentage (7 of 8)
 - [ ] PR-MILESTONE is spawned in full mode before the Go/No-Go recommendation, with completion percentage and blocked story count passed
 - [ ] The producer's ON TRACK verdict appears inline in the Go/No-Go section, and no framing `AskUserQuestion` is raised (only AT RISK and OFF TRACK raise one)
-- [ ] Skill asks "May I write" before writing, naming `production/milestones/milestone-03-review.md`
+- [ ] Skill asks "May I write" before writing, naming `docs/production/milestones/milestone-03-review.md`
 - [ ] Verdict is COMPLETE after the write
 
 ---
@@ -99,13 +99,13 @@ Fixture defaults.
 ### Case 2: Blocked Milestone — Producer returns OFF TRACK
 
 **Fixture:**
-- `production/milestones/milestone-03.md` lists 5 features
+- `docs/production/milestones/milestone-03.md` lists 5 features
 - 2 features have `Status: Complete`
 - 3 features have `Status: Blocked`; each has one story under
-  `production/epics/[its epic]/` whose file carries `> **Status**: Blocked` and
+  `docs/production/epics/[its epic]/` whose file carries `> **Status**: Blocked` and
   a `BLOCKED:` note naming its blocker
-- Sprint reports exist in `production/sprints/`; they name no blockers
-- `project.yaml` sets `modes.review_mode: full`
+- Sprint reports exist in `docs/production/sprints/`; they name no blockers
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full`
 - The producer returns OFF TRACK
 
 **Input:** `/milestone-review milestone-03`
@@ -135,10 +135,10 @@ Fixture defaults.
 ### Case 3: Full Mode — PR-MILESTONE returns AT RISK over scope drift
 
 **Fixture:**
-- `production/milestones/milestone-03.md` lists 6 complete features, 2 of which
+- `docs/production/milestones/milestone-03.md` lists 6 complete features, 2 of which
   were not in the original definition (added mid-milestone)
-- Sprint reports exist in `production/sprints/`
-- `project.yaml` sets `modes.review_mode: full`
+- Sprint reports exist in `docs/production/sprints/`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full`
 - The producer returns AT RISK, citing the 2 added features as scope drift and
   listing mitigations
 
@@ -165,12 +165,12 @@ Fixture defaults.
 ### Case 4: Edge Case — No milestone definition and no sprint data
 
 **Fixture:**
-- `production/milestones/` does not exist
-- `production/sprints/` does not exist
-- `production/risk-register/` does not exist
+- `docs/production/milestones/` does not exist
+- `docs/production/sprints/` does not exist
+- `docs/production/risk-register/` does not exist
 - No source files exist under the code root
-- No story files, no `production/sprint-status.yaml` and no `production/qa/bugs/`
-- `project.yaml` sets `modes.review_mode: full`
+- No story files, no `docs/production/sprint-status.yaml` and no `docs/production/qa/bugs/`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full`
 
 **Input:** `/milestone-review current`
 
@@ -194,10 +194,10 @@ Fixture defaults.
 ### Case 5: Lean/Solo Mode — PR-MILESTONE gate skipped
 
 **Fixture:**
-- `production/milestones/milestone-03.md` lists 5 features, all `Status: Complete`
-- Sprint reports exist in `production/sprints/`
-- `production/qa/bugs/` does not exist — no bug has been filed with `/bug-report`
-- `project.yaml` sets `modes.review_mode: solo`
+- `docs/production/milestones/milestone-03.md` lists 5 features, all `Status: Complete`
+- Sprint reports exist in `docs/production/sprints/`
+- `docs/production/qa/bugs/` does not exist — no bug has been filed with `/bug-report`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: solo`
 
 **Input:** `/milestone-review milestone-03`
 
@@ -207,7 +207,7 @@ Fixture defaults.
    read `NOT ASSESSED — NO DATA`
 3. PR-MILESTONE is skipped; output notes "PR-MILESTONE skipped — Solo mode."
 4. The Go/No-Go section is presented without a producer verdict
-5. Skill asks "May I write this to `production/milestones/milestone-03-review.md`?"
+5. Skill asks "May I write this to `docs/production/milestones/milestone-03-review.md`?"
 6. User approves; review file is written; verdict COMPLETE
 
 **Assertions:**
@@ -223,9 +223,9 @@ Fixture defaults.
 ### Case 6: Lean Mode from Rigor — PR-MILESTONE skipped with the Lean note
 
 **Fixture:**
-- `production/milestones/milestone-03.md` lists 4 features, all `Status: Complete`
-- Sprint reports exist in `production/sprints/`
-- `project.yaml` sets `modes.rigor: standard` and pins no review mode, so the
+- `docs/production/milestones/milestone-03.md` lists 4 features, all `Status: Complete`
+- Sprint reports exist in `docs/production/sprints/`
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard` and pins no review mode, so the
   injected block reads `review_mode: lean (rigor:standard)`
 
 **Input:** `/milestone-review milestone-03`
@@ -248,11 +248,11 @@ Fixture defaults.
 ### Case 7: Gate returns NOT ASSESSED — Never GO
 
 **Fixture:**
-- `production/milestones/milestone-03.md` lists 5 features, all `Status: Complete`,
+- `docs/production/milestones/milestone-03.md` lists 5 features, all `Status: Complete`,
   but gives no Target Date
-- Sprint reports exist in `production/sprints/`; the stories exist under
-  `production/epics/` and none is `Blocked`
-- `project.yaml` sets `modes.review_mode: full`
+- Sprint reports exist in `docs/production/sprints/`; the stories exist under
+  `docs/production/epics/` and none is `Blocked`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full`
 - The producer returns NOT ASSESSED — no target date to judge against
 - Asked for the date, the user has none to give
 
@@ -286,7 +286,7 @@ Fixture defaults.
 
 ## Coverage Notes
 
-- `production/milestones/` absent while sprint reports exist (the skill says so
+- `docs/production/milestones/` absent while sprint reports exist (the skill says so
   and reviews against the sprint reports alone) is not tested.
 - `current` selection skipping files that end `-review.md` is not tested.
 - The declined-write path (verdict BLOCKED) is not tested.

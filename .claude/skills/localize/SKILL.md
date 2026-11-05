@@ -3,9 +3,11 @@ name: localize
 description: "Localization pipeline — find hardcoded strings, extract string tables, cultural review, VO, RTL, enforce string freeze."
 argument-hint: "[scan|extract|validate|status|brief|cultural-review|vo-pipeline|rtl-check|freeze|qa]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/localize/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/localize/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
 
@@ -52,7 +54,7 @@ Search for localization anti-patterns:
 
 - Date/time formatting not using locale-aware functions
 - Number formatting without locale awareness (`1,000` vs `1.000`)
-- Text embedded in images or textures (flag asset files in `assets/`)
+- Text embedded in images or textures (flag asset files in `Content/`)
 - Strings that assume left-to-right text direction (positional layout, string assembly order)
 - Gender/plurality assumptions baked into string logic (must use plural forms or gender tokens)
 - Hardcoded punctuation (e.g. `"You won!"` — exclamation styles vary by locale)
@@ -64,7 +66,7 @@ Report all findings with file paths and line numbers. This mode is read-only —
 ## Phase 2B: Extract Mode
 
 - Scan all source files for localized string references
-- Compare against the existing string table in `assets/data/strings/`
+- Compare against the existing string table in `Content/data/strings/`
 - Generate new entries for strings not yet keyed
 - Suggest key names following the convention: `[category].[subcategory].[description]`
   - Example: `ui.hud.health_label`, `dialogue.npc.merchant.greeting`, `menu.main.play_button`
@@ -76,7 +78,7 @@ Report all findings with file paths and line numbers. This mode is read-only —
 
 Output a diff of new strings to add to the string table.
 
-Present the diff to the user. Ask: "May I write these new entries to `assets/data/strings/strings-en.json`?"
+Present the diff to the user. Ask: "May I write these new entries to `Content/data/strings/strings-en.json`?"
 
 If yes, write only the diff (new entries), not a full replacement. Verdict: **COMPLETE** — strings extracted and written.
 
@@ -84,7 +86,7 @@ If yes, write only the diff (new entries), not a full replacement. Verdict: **CO
 
 ## Phase 2C: Validate Mode
 
-Read all string table files in `assets/data/strings/`. For each locale, check:
+Read all string table files in `Content/data/strings/`. For each locale, check:
 
 - **Completeness** — key exists in source (en) but no translation for this locale
 - **Placeholder mismatches** — source has `{name}` but translation omits it or adds extras
@@ -116,7 +118,7 @@ String freeze: [Active / Not yet called / Lifted]
 
 > **Every cell above is a count you must take from the string table — including
 > the source row.** Do not pre-fill the source locale as `100%`: that asserts a
-> result before counting, and on a project with no `assets/data/strings/` it
+> result before counting, and on a project with no `Content/data/strings/` it
 > produces a coverage report for a table that does not exist. If the string table
 > is absent, the whole status output is
 > **`NOT ASSESSED — no string table found`**, not a matrix of zeros with a
@@ -140,13 +142,13 @@ Generate a translator context briefing document. This document is sent to the
 external translation team or localisation vendor alongside the string table export.
 
 Read:
-- `design/gdd/` — extract game genre, tone, setting, character names. Read the
+- `docs/design/gdd/` — extract game genre, tone, setting, character names. Read the
   GDDs by section: find the headings you need with the Grep tool (pattern `^#`,
   content mode) and Read those ranges with offset and limit.
-- `assets/data/strings/strings-en.json` — the source string table
-- Any existing lore or narrative documents in `design/narrative/`
+- `Content/data/strings/strings-en.json` — the source string table
+- Any existing lore or narrative documents in `docs/story/`
 
-Generate `production/localization/translator-brief-[locale]-[date].md`:
+Generate `docs/production/localization/translator-brief-[locale]-[date].md`:
 
 ```markdown
 # Translator Brief — [Game Name] — [Locale]
@@ -191,13 +193,13 @@ Direct questions to: [placeholder for user/team contact]
 Delivery format: JSON, same schema as strings-en.json
 ```
 
-Ask: "May I write this translator brief to `production/localization/translator-brief-[locale]-[date].md`?"
+Ask: "May I write this translator brief to `docs/production/localization/translator-brief-[locale]-[date].md`?"
 
 ---
 
 ## Phase 2F: Cultural Review Mode
 
-Spawn `localization-lead` via `Agent`. Ask them to audit the following for cultural sensitivity across the target locales (read from `assets/data/strings/` and `assets/`):
+Spawn `localization-lead` via `Agent`. Ask them to audit the following for cultural sensitivity across the target locales (read from `Content/data/strings/` and `Content/`):
 
 ### Content Areas to Review
 
@@ -234,7 +236,7 @@ Present findings as a table:
 
 BLOCKING = must fix before shipping that locale. ADVISORY = recommend change. NOTE = informational only.
 
-Ask: "May I write this cultural review report to `production/localization/cultural-review-[date].md`?"
+Ask: "May I write this cultural review report to `docs/production/localization/cultural-review-[date].md`?"
 
 ---
 
@@ -249,9 +251,9 @@ Manage the voice-over localization process. Determine the sub-task from the argu
 
 ### VO Pipeline: Scan
 
-Read `assets/data/strings/` and `design/narrative/`. Identify:
+Read `Content/data/strings/` and `docs/story/`. Identify:
 - All dialogue lines (keys matching `dialogue.*`) with source text
-- Lines already recorded (audio file exists in `assets/audio/vo/`)
+- Lines already recorded (audio file exists in `Content/audio/vo/`)
 - Lines not yet recorded
 
 Output a recording manifest:
@@ -274,18 +276,18 @@ Generate a recording script document for each character, grouped by scene. Inclu
 - Emotion/direction note for each line (`[Warm, welcoming]`, `[Annoyed, clipped]`)
 - Any lines that are responses in a conversation (provide context: "Player just said X")
 
-Ask: "May I write the VO recording scripts to `production/localization/vo-scripts-[locale]-[date].md`?"
+Ask: "May I write the VO recording scripts to `docs/production/localization/vo-scripts-[locale]-[date].md`?"
 
 ### VO Pipeline: Validate
 
-Glob `assets/audio/vo/[locale]/` for all `.wav`/`.ogg` files. Cross-reference against the VO manifest. Report:
+Glob `Content/audio/vo/[locale]/` for all `.wav`/`.ogg` files. Cross-reference against the VO manifest. Report:
 - Missing files (line in script, no audio file)
 - Extra files (audio file exists, no matching string key)
 - Naming convention violations
 
 ### VO Pipeline: Integrate
 
-Grep the code root for VO audio references. Verify each referenced path exists in `assets/audio/vo/[locale]/`. Report broken references.
+Grep the code root for VO audio references. Verify each referenced path exists in `Content/audio/vo/[locale]/`. Report broken references.
 
 ---
 
@@ -294,7 +296,7 @@ Grep the code root for VO audio references. Verify each referenced path exists i
 Right-to-left languages (Arabic, Hebrew, Persian, Urdu) require layout mirroring beyond
 just translating text. This mode validates the implementation.
 
-Determine the engine: read `engine.name` from `project.yaml`; if that key is absent or empty (including when `project.yaml` has no `engine:` block), fall back to `.claude/docs/technical-preferences.md`. Then check:
+Determine the engine: read `engine.name` from `.claude/ccgs/project.yaml`; if that key is absent or empty (including when `.claude/ccgs/project.yaml` has no `engine:` block), fall back to `.claude/docs/technical-preferences.md`. Then check:
 
 **Layout mirroring**
 - Is RTL layout enabled in the engine? (Godot: `Control.layout_direction`, Unity: `RTL Support` package, Unreal: text direction flags)
@@ -321,7 +323,7 @@ Grep patterns to check:
 
 Report findings. Flag BLOCKING issues (content unreadable without fix) vs ADVISORY (cosmetic improvements).
 
-Ask: "May I write this RTL check report to `production/localization/rtl-check-[date].md`?"
+Ask: "May I write this RTL check report to `docs/production/localization/rtl-check-[date].md`?"
 
 ---
 
@@ -332,7 +334,7 @@ without the source changing under the translators.
 
 ### freeze call
 
-Check current freeze status in `production/localization/freeze-status.md` (if it exists).
+Check current freeze status in `docs/production/localization/freeze-status.md` (if it exists).
 
 If already frozen:
 > "String freeze is currently ACTIVE (called [date]). [N] strings have been added or modified since freeze. These are freeze violations — they require re-translation or an approved freeze lift."
@@ -350,10 +352,10 @@ Pre-Freeze Checklist
 ```
 
 Use `AskUserQuestion`:
-- Prompt: "Call string freeze now? This writes `production/localization/freeze-status.md` (Status: ACTIVE) and locks the source table."
+- Prompt: "Call string freeze now? This writes `docs/production/localization/freeze-status.md` (Status: ACTIVE) and locks the source table."
 - Options: `[A] Yes — call string freeze now` / `[B] No — I still have strings to add`
 
-If [A]: Write `production/localization/freeze-status.md`:
+If [A]: Write `docs/production/localization/freeze-status.md`:
 
 ```markdown
 # String Freeze Status
@@ -386,7 +388,7 @@ completeness) — this is a structured playthrough-based quality check.
 
 Spawn `localization-lead` via `Agent` with:
 - The target locale(s) to QA
-- The list of all screens/flows in the game (from `design/gdd/` or `/content-audit` output)
+- The list of all screens/flows in the game (from `docs/design/gdd/` or `/content-audit` output)
 - The current `/localize validate` report
 - The cultural review report (if it exists)
 
@@ -430,7 +432,7 @@ CONDITIONS** if conditions remain; else **PASS**. NOT ASSESSED outranks both
 pass values — an unplayed locale has not passed — and ranks below FAIL, so an
 open BLOCKING finding is never buried behind it.
 
-Ask: "May I write this localization QA report to `production/localization/loc-qa-[locale]-[date].md`?"
+Ask: "May I write this localization QA report to `docs/production/localization/loc-qa-[locale]-[date].md`?"
 
 **Gate integration**: At `workflow: full`, the Polish → Release gate requires a PASS or PASS WITH CONDITIONS verdict for every translated locale being shipped (recommended at `standard`; dropped at `minimal`). A FAIL blocks release for that locale only — other locales may still proceed if their QA passes. A NOT ASSESSED locale has not passed: its QA did not run.
 

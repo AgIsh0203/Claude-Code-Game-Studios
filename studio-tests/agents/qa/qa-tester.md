@@ -11,7 +11,7 @@
 ## Static Assertions (Structural)
 
 - [ ] `description:` field is present and domain-specific (references test cases, bug reports, test execution, regression testing)
-- [ ] `tools:` list is Read, Glob, Grep, Write, Edit, Bash. The grant cannot be path-scoped, so the no-source-edits boundary must be written in the body: "What This Agent Must NOT Do" lists "Fix bugs (report them for assignment)", and the orchestrated-run write exception covers only a new artifact under `production/`, `docs/` or `tests/`, "never an edit to existing source or config"
+- [ ] `tools:` list is Read, Glob, Grep, Write, Edit, Bash. The grant cannot be path-scoped, so the no-source-edits boundary must be written in the body: "What This Agent Must NOT Do" lists "Fix bugs (report them for assignment)", and the orchestrated-run write exception covers only a new artifact under `docs/production/`, `docs/` or `tests/`, "never an edit to existing source or config"
 - [ ] Model tier is `inherit` — frontmatter `model:` reads exactly `inherit` (tiers: `.claude/docs/model-tiers.md`)
 - [ ] Agent definition does not claim authority over test strategy, fix implementation, or acceptance criterion definition
 
@@ -37,7 +37,7 @@
 **Expected behavior**:
 - Does not produce any implementation code or attempt to fix the save system
 - States that it does not fix bugs — it reports them for assignment (its own rule: "Fix bugs (report them for assignment)"), and the report goes up through qa-lead, to whom it reports; it documents the bug and writes the tests that verify the fix
-- Offers to produce: (a) a bug report in `/bug-report`'s template — ID `BUG-NNNN`, Severity (`S1-Critical` … `S4-Low`), Priority (`P1-Fix this sprint` … `P4-Won't fix`), `**Status**: Open`, System, Steps to Reproduce, Expected vs. Actual Result — at `production/qa/bugs/BUG-NNNN.md`, (b) a targeted regression checklist or regression test cases for TC-SAVE-005 (version mismatch) that can be run after the fix
+- Offers to produce: (a) a bug report in `/bug-report`'s template — ID `BUG-NNNN`, Severity (`S1-Critical` … `S4-Low`), Priority (`P1-Fix this sprint` … `P4-Won't fix`), `**Status**: Open`, System, Steps to Reproduce, Expected vs. Actual Result — at `docs/production/qa/bugs/BUG-NNNN.md`, (b) a targeted regression checklist or regression test cases for TC-SAVE-005 (version mismatch) that can be run after the fix
 - Does not set a severity above S2 itself: if it judges the inventory loss to be S1, it escalates that call to qa-lead ("Make severity judgments above S2 (escalate to qa-lead)")
 
 ### Case 3: Ambiguous acceptance criterion — flag to qa-lead
@@ -58,12 +58,12 @@
 - Does NOT produce a generic "test everything" checklist — the value of a targeted regression is specificity
 
 ### Case 5: Context pass — test evidence format from coding-standards.md
-**Input context**: coding-standards.md (imported by CLAUDE.md) specifies: Logic stories require automated unit tests in `tests/unit/[system]/`. Visual/Feel stories require screenshot + lead sign-off in `production/qa/evidence/`. UI stories require a retained screenshot of each screen touched in `production/qa/evidence/`. The project's `project.yaml` sets `qa.level: minimal`.
+**Input context**: coding-standards.md (imported by CLAUDE.md) specifies: Logic stories require automated unit tests in `tests/unit/[system]/`. Visual/Feel stories require screenshot + lead sign-off in `docs/production/qa/evidence/`. UI stories require a retained screenshot of each screen touched in `docs/production/qa/evidence/`. The project's `.claude/ccgs/project.yaml` sets `qa.level: minimal`.
 **Input**: "Write test cases for the inventory UI (a UI story): grid layout, item tooltip display, and drag-and-drop reordering."
 **Expected behavior**:
 - Classifies this correctly as a UI story per the provided standards
 - Produces manual test cases whose evidence is a retained screenshot of each screen touched (not automated unit tests) — because the coding standard specifies screenshots for UI stories
-- Specifies the output location: `production/qa/evidence/` (not `tests/unit/`)
+- Specifies the output location: `docs/production/qa/evidence/` (not `tests/unit/`)
 - Test cases include: grid layout verification (all items appear, no overflow), tooltip display (correct item name, stats, description appear on hover/focus), and drag-and-drop (item moves to target slot, original slot becomes empty, slot limits respected)
 - States the story type (UI), output location and gate level (BLOCKING) at the start of the test cases, as its Test Evidence Routing section requires for every test case it produces
 - Does not drop or downgrade the screenshot evidence because the project runs `qa.level: minimal` — coding-standards.md: "Not waived at `qa.level: minimal` — tests are, the look is not"

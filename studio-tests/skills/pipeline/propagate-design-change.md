@@ -58,9 +58,9 @@ and the Verdict line.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -70,18 +70,18 @@ Fixture defaults.
 ### Case 1: Happy Path — GDD formula change affects one of two referencing ADRs
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: full`, `modes.review_mode: lean`
-- `design/gdd/combat.md` has an uncommitted edit to a damage formula in its
+- `.claude/ccgs/project.yaml`: `modes.workflow: full`, `modes.review_mode: lean`
+- `docs/design/gdd/combat.md` has an uncommitted edit to a damage formula in its
   Formulas section
 - `docs/architecture/` has 4 ADRs; ADR-0003 and ADR-0005 list `combat.md` in
   `## GDD Requirements Addressed`; ADR-0003's decision assumed the old formula,
   ADR-0005's decision does not depend on it
 - `docs/architecture/requirements-traceability.md` exists
 
-**Input:** `/propagate-design-change design/gdd/combat.md`
+**Input:** `/propagate-design-change docs/design/gdd/combat.md`
 
 **Expected behavior:**
-1. Verifies the file exists; runs `git diff HEAD -- design/gdd/combat.md` and
+1. Verifies the file exists; runs `git diff HEAD -- docs/design/gdd/combat.md` and
    derives the changed sections from the hunks
 2. Prints the Change Summary (changed / unchanged sections, key changes)
 3. Globs the ADRs (N = 4), greps the requirement tables and the `combat`
@@ -110,12 +110,12 @@ Fixture defaults.
 ### Case 2: Zero matches — "no impact" versus "cannot trace"
 
 **Fixture (tables present):**
-- `project.yaml`: `modes.workflow: full`
-- `design/gdd/combat.md` has an uncommitted edit
+- `.claude/ccgs/project.yaml`: `modes.workflow: full`
+- `docs/design/gdd/combat.md` has an uncommitted edit
 - 3 ADRs, each with a `## GDD Requirements Addressed` section, none naming
   `combat.md` in the table or in prose
 
-**Input (both fixtures):** `/propagate-design-change design/gdd/combat.md`
+**Input (both fixtures):** `/propagate-design-change docs/design/gdd/combat.md`
 
 **Expected behavior (tables present):**
 1. Both scans return 0 with N = 3
@@ -143,16 +143,16 @@ Fixture defaults.
 ### Case 3: Edge Case — Empty diff on a GDD with history
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: full`
-- `design/gdd/combat.md` is committed, has no uncommitted changes, and was not
+- `.claude/ccgs/project.yaml`: `modes.workflow: full`
+- `docs/design/gdd/combat.md` is committed, has no uncommitted changes, and was not
   touched by the last commit
 
-**Input:** `/propagate-design-change design/gdd/combat.md`
+**Input:** `/propagate-design-change docs/design/gdd/combat.md`
 
 **Expected behavior:**
-1. `git diff HEAD -- design/gdd/combat.md` is empty
-2. `git diff HEAD~1 HEAD -- design/gdd/combat.md` is also empty
-3. Reports "no uncommitted or last-commit changes to `design/gdd/combat.md`" and
+1. `git diff HEAD -- docs/design/gdd/combat.md` is empty
+2. `git diff HEAD~1 HEAD -- docs/design/gdd/combat.md` is also empty
+3. Reports "no uncommitted or last-commit changes to `docs/design/gdd/combat.md`" and
    asks which revision to propagate
 4. Does not report "no impact" and does not scan ADRs before a revision is chosen
 
@@ -167,19 +167,19 @@ Fixture defaults.
 ### Case 4: Edge Case — No argument provided
 
 **Fixture:**
-- Multiple GDDs exist in `design/gdd/`
+- Multiple GDDs exist in `docs/design/gdd/`
 
 **Input:** `/propagate-design-change` (no argument)
 
 **Expected behavior:**
 1. Skill detects no argument is provided
-2. Skill fails with: "Usage: `/propagate-design-change design/gdd/[system].md`
+2. Skill fails with: "Usage: `/propagate-design-change docs/design/gdd/[system].md`
    Provide the path to the GDD that was changed."
 3. No diff, scan or analysis is performed
 
 **Assertions:**
 - [ ] Skill outputs the usage message when no argument is given
-- [ ] The usage example shows the `design/gdd/[system].md` path format
+- [ ] The usage example shows the `docs/design/gdd/[system].md` path format
 - [ ] No `git diff` or ADR scan is performed without a target GDD
 - [ ] Skill does NOT silently pick a GDD without user input
 
@@ -188,11 +188,11 @@ Fixture defaults.
 ### Case 5: Director Gate — TD-CHANGE-IMPACT returns CONCERNS in full mode
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: full`, `modes.review_mode: full`
+- `.claude/ccgs/project.yaml`: `modes.workflow: full`, `modes.review_mode: full`
 - A GDD edit that leaves one referencing ADR classified Needs Review
 - TD-CHANGE-IMPACT returns CONCERNS: a second ADR was under-classified
 
-**Input:** `/propagate-design-change design/gdd/[system].md`
+**Input:** `/propagate-design-change docs/design/gdd/[system].md`
 
 **Expected behavior:**
 1. The Design Change Impact Report is presented
@@ -215,19 +215,19 @@ Fixture defaults.
 ### Case 6: Workflow tiers — `minimal` stops before the cascade; `standard` narrows it
 
 **Fixture (minimal):**
-- `project.yaml` sets no `modes` keys — `modes.rigor` defaults to `minimal`, so
+- `.claude/ccgs/project.yaml` sets no `modes` keys — `modes.rigor` defaults to `minimal`, so
   the workflow resolves to `minimal`
-- `design/gdd/loot.md` has an uncommitted edit
+- `docs/design/gdd/loot.md` has an uncommitted edit
 
 **Fixture (standard):**
-- `project.yaml`: `modes.workflow: standard`, `modes.review_mode: solo`
-- `design/gdd/loot.md` has an uncommitted edit
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`, `modes.review_mode: solo`
+- `docs/design/gdd/loot.md` has an uncommitted edit
 - 4 ADRs, by their Engine Compatibility `Layer`: ADR-0001 (Foundation, event bus,
   no mention of `loot.md`), ADR-0002 (Foundation, save system, lists `loot.md` in
   `## GDD Requirements Addressed`), ADR-0006 (Feature, loot tables, names `loot.md`
   in prose only), ADR-0007 (Feature, enemy AI, no mention)
 
-**Input (both fixtures):** `/propagate-design-change design/gdd/loot.md`
+**Input (both fixtures):** `/propagate-design-change docs/design/gdd/loot.md`
 
 **Expected behavior (minimal):**
 1. The diff and Change Summary run as usual
@@ -266,7 +266,7 @@ Fixture defaults.
 - A system pinned `minimal` through `system_overrides` on a `standard` project
   (its change is N/A) is not given its own fixture; Case 6 reaches `minimal`
   through the project default.
-- Downstream GDD impact via `design/registry/entities.yaml` is not independently
+- Downstream GDD impact via `docs/design/registry/entities.yaml` is not independently
   fixture-tested.
 - A GDD with no git history ("appears to be a new GDD, not a revision") and a
   path that does not exist are not separately tested.

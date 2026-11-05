@@ -3,13 +3,15 @@ name: adopt
 description: "Brownfield audit — do existing artifacts actually work? Numbered migration plan. Unlike /project-stage-detect, checks compliance not existence."
 argument-hint: "[focus: full | gdds | adrs | stories | infra]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(bash "*/.claude/skills/adopt/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/gdd-structure-check.sh *), Bash(bash .claude/scripts/migrate-v1-config.sh --dry-run*)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/adopt/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/gdd-structure-check.sh *), Bash(bash .claude/scripts/migrate-v1-config.sh --dry-run*)
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,automation_always_ask,workflow`
 
-Resolved above — use as-is. `/adopt` also inspects `project.yaml` and the legacy
+Resolved above — use as-is. `/adopt` also inspects `.claude/ccgs/project.yaml` and the legacy
 config files directly when reporting and writing migration state; that raw
 inspection is deliberate and separate from the resolved values above.
 
@@ -40,15 +42,15 @@ wrong internal format.
 
 ---
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
 **`workflow`** (per `.claude/docs/workflow-modes.md`). It scopes the Phase 2 audit and
 Phase 3 severity: `full` audits all doc types at full structure; `standard` audits
 only the required docs/sections (optional sections are informational, not gaps);
-`minimal` is a `design/game-brief.md` format check — GDDs/ADRs/UX are not expected. See Phase 2.
+`minimal` is a `docs/GDD.md` format check — GDDs/ADRs/UX are not expected. See Phase 2.
 
 ## Phase 1: Detect Project State
 

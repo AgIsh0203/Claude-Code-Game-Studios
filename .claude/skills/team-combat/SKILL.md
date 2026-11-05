@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/.claude/skills/team-combat/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 # Team Combat
 
 **Argument check:** If no combat feature description is provided, output:
@@ -106,13 +108,13 @@ names one; most are fixed by the skill that already reads them:
 
 | Phase / agent | Writes to | Destination fixed by |
 |---|---|---|
-| 1 game-designer (draft) | `production/combat/[feature]-gdd-draft.md` | this skill — you write the final `design/gdd/[feature].md` (Phase 1) |
+| 1 game-designer (draft) | `docs/production/combat/[feature]-gdd-draft.md` | this skill — you write the final `docs/design/gdd/[feature].md` (Phase 1) |
 | 2 gameplay-programmer | `docs/architecture/[feature]-sketch.md` | see note below |
 | 2 engine specialist | `docs/architecture/[feature]-engine-notes.md` | see note below |
-| 3 gameplay-programmer, ai-programmer, technical-artist | the code root and `assets/` — the files the Phase 3 approval lists | outside the bounded exception: asked once for the set (File Write Protocol) |
-| 3 sound-designer | `production/combat/[feature]-audio-events.md` | this skill |
-| 5 qa-tester (test cases) | `production/qa/test-cases/[feature]-cases.md` | `/team-qa` Phase 4 |
-| 5 qa-tester (bugs) | `production/qa/bugs/BUG-[NNNN].md` | `/team-qa` Phase 5 |
+| 3 gameplay-programmer, ai-programmer, technical-artist | the code root and `Content/` — the files the Phase 3 approval lists | outside the bounded exception: asked once for the set (File Write Protocol) |
+| 3 sound-designer | `docs/production/combat/[feature]-audio-events.md` | this skill |
+| 5 qa-tester (test cases) | `docs/production/qa/test-cases/[feature]-cases.md` | `/team-qa` Phase 4 |
+| 5 qa-tester (bugs) | `docs/production/qa/bugs/BUG-[NNNN].md` | `/team-qa` Phase 5 |
 
 Phase 6 is a spoken status report, not an artifact — no path, and none needed.
 
@@ -126,7 +128,7 @@ Phase 6 is a spoken status report, not an artifact — no path, and none needed.
 > reporting, so the sketch is understood as a record rather than an input to a
 > later gate.
 
-> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
+> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `docs/production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
 
 Launch independent agents in parallel where the pipeline allows it (e.g., Phase 3 agents can run simultaneously).
 
@@ -134,15 +136,15 @@ Launch independent agents in parallel where the pipeline allows it (e.g., Phase 
 
 ### Phase 1: Design
 Delegate to **game-designer**:
-- Create or update the design document for `design/gdd/[feature].md` from `.claude/docs/templates/game-design-document.md`, with `## Summary` and the sections `workflow` requires (Phase 0) — at `full`: mechanic overview, player fantasy, detailed rules, formulas with variable definitions, edge cases, dependencies, tuning knobs with safe ranges, and acceptance criteria
-- Output: completed design document, drafted to `production/combat/[feature]-gdd-draft.md`
+- Create or update the design document for `docs/design/gdd/[feature].md` from `.claude/docs/templates/game-design-document.md`, with `## Summary` and the sections `workflow` requires (Phase 0) — at `full`: mechanic overview, player fantasy, detailed rules, formulas with variable definitions, edge cases, dependencies, tuning knobs with safe ranges, and acceptance criteria
+- Output: completed design document, drafted to `docs/production/combat/[feature]-gdd-draft.md`
 
-`design/` is outside the bounded write exception above, so the game-designer
+`docs/design/` is outside the bounded write exception above, so the game-designer
 drafts and **you** write the GDD — the pattern `/team-level` and
 `/team-narrative` use. At the Phase 1 decision point, present the draft and ask
 via `AskUserQuestion`: "May I write the design document to
-`design/gdd/[feature].md`?" Write it on approval; nothing is written under
-`design/` before that answer.
+`docs/design/gdd/[feature].md`?" Write it on approval; nothing is written under
+`docs/design/` before that answer.
 
 ### Phase 2: Architecture
 Delegate to **gameplay-programmer** (with **ai-programmer** if AI is involved):
@@ -157,7 +159,7 @@ Then spawn the **primary engine specialist** to validate the proposed architectu
 - Any proposed APIs that are deprecated or changed in the pinned engine version?
 - Output: engine architecture notes — incorporate into the architecture before Phase 3 begins
 
-If no engine is configured, skip the specialist spawn. **Record ``Engine validation: NOT ASSESSED — no engine configured (`engine.name` unset in `project.yaml`)`` in this run's output.** A skipped check that says nothing is indistinguishable from a check that passed.
+If no engine is configured, skip the specialist spawn. **Record ``Engine validation: NOT ASSESSED — no engine configured (`engine.name` unset in `.claude/ccgs/project.yaml`)`` in this run's output.** A skipped check that says nothing is indistinguishable from a check that passed.
 
 Use `AskUserQuestion`:
 - Prompt: "Architecture sketch complete. Approve to proceed with parallel implementation."
@@ -177,7 +179,7 @@ Delegate in parallel:
 - **gameplay-programmer**: Implement core combat mechanic code
 - **ai-programmer**: Implement AI behaviors (if the feature involves NPC reactions)
 - **technical-artist**: Create VFX and shader effects
-- **sound-designer**: Define audio event list and mixing notes, drafted to `production/combat/[feature]-audio-events.md`
+- **sound-designer**: Define audio event list and mixing notes, drafted to `docs/production/combat/[feature]-audio-events.md`
 
 The code, VFX and shader work is outside the bounded write exception: each of
 those agents first returns the files it will create or change, you ask once for
@@ -228,12 +230,12 @@ All file writes (design drafts, implementation files, test cases) are
 delegated to sub-agents spawned via `Agent`, under two rules:
 
 - **Drafts, sketches and QA artifacts** — the path table's destinations under
-  `production/`, `docs/` or `tests/` — follow the **bounded exception** documented
+  `docs/production/`, `docs/` or `tests/` — follow the **bounded exception** documented
   above under "Why this does not violate the Collaboration Protocol": the path is
   one you named, the artifact is new, and the phase is gated by an
   `AskUserQuestion`. The sub-agent writes them without a per-write prompt.
 - **Implementation files** — Phase 3's code, VFX and shader files, and any
-  Phase 4 integration edits, under the code root and `assets/` — are outside
+  Phase 4 integration edits, under the code root and `Content/` — are outside
   that exception, as the agents' own files say. Each implementing agent first
   returns the files it will create or change with a one-line summary each; ask
   once for the whole set ("May I have [agents] write these [N] files?") and have
@@ -241,7 +243,7 @@ delegated to sub-agents spawned via `Agent`, under two rules:
   list, never implied by the pre-Phase 3 gate.
 
 The **one exception is the design document**: the orchestrator writes
-`design/gdd/[feature].md` itself, from the game-designer's draft, after its own
+`docs/design/gdd/[feature].md` itself, from the game-designer's draft, after its own
 "May I write …?" prompt (Phase 1). It writes no other file.
 
 ## Output
@@ -261,6 +263,6 @@ Verdict: **BLOCKED** — one or more phases could not complete, or an agent was 
 
 ## Next Steps
 
-- Run `/code-review` on the implemented combat code before closing stories.
+- Run `/gamedev-code-review` on the implemented combat code before closing stories.
 - Run `/balance-check` to validate combat formulas and tuning values.
 - Run `/team-polish` if VFX, audio, or performance polish is needed.

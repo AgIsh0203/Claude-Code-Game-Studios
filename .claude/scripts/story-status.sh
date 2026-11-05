@@ -27,7 +27,7 @@
 # or `STORIES      none` when there are no story files.
 #
 # Reads the same files and Status formats as statusline.sh's story count
-# (production/epics/*/story-*.md; `Status: X`, `**Status:** X`,
+# (docs/production/epics/*/story-*.md; `Status: X`, `**Status:** X`,
 # `> **Status**: X`, `- **Status**: X`) and counts "done" by the same rule --
 # the value's leading word, in any case, is Complete or Done: `Done.` counts,
 # `Not Done` and `Completed` do not -- so the two cannot disagree on "done".
@@ -38,7 +38,7 @@
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null || { echo "STORIES      none"; exit 0; }
 
 files=()
-for f in production/epics/*/story-*.md; do
+for f in docs/production/epics/*/story-*.md; do
   [ -f "$f" ] && files+=("$f")
 done
 if [ "${#files[@]}" -eq 0 ]; then

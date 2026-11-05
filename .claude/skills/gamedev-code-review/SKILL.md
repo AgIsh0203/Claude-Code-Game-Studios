@@ -1,11 +1,13 @@
 ---
-name: code-review
+name: gamedev-code-review
 description: "Architectural code review — coding standards, SOLID, testability, performance concerns."
 argument-hint: "[path-to-file-or-directory]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash(git log *), Agent, AskUserQuestion, Bash(bash "*/.claude/skills/code-review/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Bash(git log *), Agent, AskUserQuestion, Bash(bash "*/.claude/skills/gamedev-code-review/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
 
@@ -54,7 +56,7 @@ Read the target file(s) in full. Read CLAUDE.md for project coding standards.
 
 ## Phase 2: Identify Engine Specialists
 
-Read the `specialists` block from `project.yaml`; if it is absent, fall back to the `## Engine Specialists` section of `.claude/docs/technical-preferences.md`. Note:
+Read the `specialists` block from `.claude/ccgs/project.yaml`; if it is absent, fall back to the `## Engine Specialists` section of `.claude/docs/technical-preferences.md`. Note:
 
 - The **Primary** specialist — `<engine>-specialist` derived from `engine.name` (Godot→`godot-specialist`, Unity→`unity-specialist`, Unreal→`unreal-specialist`); used for architecture and broad engine concerns
 - The **Language/Code Specialist** — `specialists.code` — used when reviewing the project's primary language files
@@ -69,13 +71,13 @@ specialist carries `shader: null` and `ui: null`. The config reader returns the
 four-character string `"null"` for these, which is not empty and therefore reads
 as configured. `null`, empty, and missing are the same state here.
 
-If no engine is configured (no `engine.name` in `project.yaml`, and `technical-preferences.md` reads `[TO BE CONFIGURED]` or is missing), skip engine specialist steps. **Record ``Engine validation: NOT ASSESSED — no engine configured (`engine.name` unset in `project.yaml`)`` in this run's output.** A skipped check that says nothing is indistinguishable from a check that passed; the reader cannot tell engine guidance was never sought.
+If no engine is configured (no `engine.name` in `.claude/ccgs/project.yaml`, and `technical-preferences.md` reads `[TO BE CONFIGURED]` or is missing), skip engine specialist steps. **Record ``Engine validation: NOT ASSESSED — no engine configured (`engine.name` unset in `.claude/ccgs/project.yaml`)`` in this run's output.** A skipped check that says nothing is indistinguishable from a check that passed; the reader cannot tell engine guidance was never sought.
 
 ---
 
 ## Phase 3: ADR Compliance Check
 
-**Argument:** `/code-review [file(s)]` may optionally include a story file path as the last argument (e.g., `/code-review Assets/Scripts/Combat/Attack.cs production/epics/combat/story-001.md`). If a story path is provided, read it to extract the governing ADR reference.
+**Argument:** `/gamedev-code-review [file(s)]` may optionally include a story file path as the last argument (e.g., `/gamedev-code-review Assets/Scripts/Combat/Attack.cs docs/production/epics/combat/story-001.md`). If a story path is provided, read it to extract the governing ADR reference.
 
 Search for ADR references in, in priority order:
 1. The story file (if provided as argument)
@@ -84,7 +86,7 @@ Search for ADR references in, in priority order:
 
 Look for patterns like `ADR-NNNN` or `docs/architecture/adr-` (either case).
 
-If no ADR references found, note: "No ADR references found — ADR compliance check skipped. For full ADR compliance review, provide the story path: `/code-review [files] [story-path]`."
+If no ADR references found, note: "No ADR references found — ADR compliance check skipped. For full ADR compliance review, provide the story path: `/gamedev-code-review [files] [story-path]`."
 
 For each referenced ADR, load **only the sections this check needs — never an unbounded full read.** A substantial ADR exceeds the 25k-token `Read` cap, and a capped read's only recovery is paging the remainder — the most expensive way to read a file. Use the same pattern as `/dev-story` and `/create-stories`:
 
@@ -266,11 +268,11 @@ Use `AskUserQuestion`:
     - `[B] Run /story-done now — suggestions noted for later`
     - `[C] Stop here`
   - If CHANGES REQUIRED:
-    - `[A] Fix the issues and re-run /code-review`
+    - `[A] Fix the issues and re-run /gamedev-code-review`
     - `[B] Run /story-done anyway with noted exceptions`
     - `[C] Stop here`
   - If NOT ASSESSED:
-    - `[A] Fix what stopped the review (point me at the code, run /setup-engine, or fix the unreadable ADR reference), then re-run /code-review`
+    - `[A] Fix what stopped the review (point me at the code, run /setup-engine, or fix the unreadable ADR reference), then re-run /gamedev-code-review`
     - `[B] Stop here`
 
 If an ARCHITECTURAL VIOLATION is found:

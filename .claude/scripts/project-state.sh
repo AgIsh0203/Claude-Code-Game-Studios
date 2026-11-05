@@ -23,13 +23,13 @@
 #   stage_yaml, stage_txt, stage, phase, phase_inferred
 # `-` means no value. Every row is always printed, so a missing row is a bug,
 # never "nothing found".
-#   engine          engine.name: project.local.yaml, then project.yaml, then
+#   engine          engine.name: .claude/ccgs/project.local.yaml, then .claude/ccgs/project.yaml, then
 #                   the legacy `Engine:` line of .claude/docs/technical-preferences.md
 #   code_root       the same answer and source label as resolve_code_root in
 #                   .claude/hooks/yaml-helper.sh; never defaults to src
 #   source_files    `unknown` when code_root is unset: unknown is not zero
-#   stage_yaml      project.stage in project.yaml as written (even if invalid)
-#   stage_txt       first non-blank line of production/stage.txt as written
+#   stage_yaml      project.stage in .claude/ccgs/project.yaml as written (even if invalid)
+#   stage_txt       first non-blank line of .claude/ccgs/stage.txt as written
 #   stage           the resolved stage: a valid stage_yaml, else a valid
 #                   stage_txt, else `-` (the resolve_setting order)
 #   phase           the workflow-catalog phase key for `stage`
@@ -102,10 +102,10 @@ first_line() {
 
 stage_rows() {
   local sy st stage="" src="" phase=""
-  sy=$(yaml_get project.yaml project.stage)
-  st=$(first_line production/stage.txt)
-  if [ -n "$sy" ] && is_stage "$sy"; then stage="$sy"; src="project.yaml"
-  elif [ -n "$st" ] && is_stage "$st"; then stage="$st"; src="production/stage.txt"
+  sy=$(yaml_get .claude/ccgs/project.yaml project.stage)
+  st=$(first_line .claude/ccgs/stage.txt)
+  if [ -n "$sy" ] && is_stage "$sy"; then stage="$sy"; src=".claude/ccgs/project.yaml"
+  elif [ -n "$st" ] && is_stage "$st"; then stage="$st"; src=".claude/ccgs/stage.txt"
   fi
   # help/SKILL.md Step 2's map from a stage name to a workflow-catalog phase key.
   case "$stage" in
@@ -117,8 +117,8 @@ stage_rows() {
     "Polish") phase="polish" ;;
     "Release") phase="release" ;;
   esac
-  if [ -f project.yaml ]; then row stage_yaml "$sy" project.yaml; else row stage_yaml "" absent; fi
-  if [ -f production/stage.txt ]; then row stage_txt "$st" production/stage.txt; else row stage_txt "" absent; fi
+  if [ -f .claude/ccgs/project.yaml ]; then row stage_yaml "$sy" .claude/ccgs/project.yaml; else row stage_yaml "" absent; fi
+  if [ -f .claude/ccgs/stage.txt ]; then row stage_txt "$st" .claude/ccgs/stage.txt; else row stage_txt "" absent; fi
   row stage "$stage" "${src:-unset}"
   row phase "$phase" "$( [ -n "$phase" ] && echo stage || echo unset )"
 }
@@ -137,13 +137,13 @@ count() {
 
 # --- engine and code root: resolve_code_root's three steps -----------------
 ENGINE=""; ESRC=""; CODE_ROOT=""; CSRC=""
-if [ -f project.local.yaml ]; then
-  ENGINE=$(yaml_get project.local.yaml engine.name)
-  [ -n "$ENGINE" ] && { ESRC="project.local.yaml"; CSRC="project.local.yaml"; }
+if [ -f .claude/ccgs/project.local.yaml ]; then
+  ENGINE=$(yaml_get .claude/ccgs/project.local.yaml engine.name)
+  [ -n "$ENGINE" ] && { ESRC=".claude/ccgs/project.local.yaml"; CSRC=".claude/ccgs/project.local.yaml"; }
 fi
-if [ -z "$ENGINE" ] && [ -f project.yaml ]; then
-  ENGINE=$(yaml_get project.yaml engine.name)
-  [ -n "$ENGINE" ] && { ESRC="project.yaml"; CSRC="engine.name"; }
+if [ -z "$ENGINE" ] && [ -f .claude/ccgs/project.yaml ]; then
+  ENGINE=$(yaml_get .claude/ccgs/project.yaml engine.name)
+  [ -n "$ENGINE" ] && { ESRC=".claude/ccgs/project.yaml"; CSRC="engine.name"; }
 fi
 LEGACY=".claude/docs/technical-preferences.md"
 if [ -z "$ENGINE" ] && [ -f "$LEGACY" ]; then
@@ -167,7 +167,7 @@ esac
 if [ -z "$CODE_ROOT" ]; then
   # No usable engine: believe the tree only when exactly one root is present.
   # Names are compared exactly against the listing, never with `[ -d Assets ]`,
-  # which is also true for Godot's assets/ on a case-insensitive filesystem.
+  # which is also true for Godot's Content/ on a case-insensitive filesystem.
   n=0; found=""
   for d in */; do
     d="${d%/}"
@@ -187,18 +187,18 @@ else
 fi
 
 CONCEPT=""
-for f in design/gdd/game-concept.md design/game-brief.md; do
+for f in docs/GDD.md docs/GDD.md; do
   [ -f "$f" ] && { CONCEPT="$f"; break; }
 done
 SYSIDX=""
-[ -f design/gdd/systems-index.md ] && SYSIDX="design/gdd/systems-index.md"
+[ -f docs/GDD.md ] && SYSIDX="docs/GDD.md"
 
-GDD=$(count design/gdd -maxdepth 1 -type f -name '*.md')
+GDD=$(count docs/design/gdd -maxdepth 1 -type f -name '*.md')
 ADR=$(count docs/architecture -maxdepth 1 -type f -name 'adr-*.md')
-STORY=$(count production/epics -type f -name 'story-*.md')
+STORY=$(count docs/production/epics -type f -name 'story-*.md')
 PROTO=$(count prototypes -mindepth 1 -maxdepth 1 -type d)
-SPRINT=$(count production/sprints -maxdepth 1 -type f -name '*.md')
-MILE=$(count production/milestones -maxdepth 1 -type f -name '*.md')
+SPRINT=$(count docs/production/sprints -maxdepth 1 -type f -name '*.md')
+MILE=$(count docs/production/milestones -maxdepth 1 -type f -name '*.md')
 
 ORIGIN=""
 if [ -f .git/config ]; then
@@ -215,12 +215,12 @@ row code_root "$CODE_ROOT" "${CSRC:-unset}"
 row source_files "$SRC_FILES" "$SSRC"
 row concept "$CONCEPT" "$( [ -n "$CONCEPT" ] && echo found || echo absent )"
 row systems_index "$SYSIDX" "$( [ -n "$SYSIDX" ] && echo found || echo absent )"
-row gdd_files "$GDD" "design/gdd/*.md"
+row gdd_files "$GDD" "docs/design/gdd/*.md"
 row adr "$ADR" "docs/architecture/adr-*.md"
-row story "$STORY" "production/epics/**/story-*.md"
-row prototype "$PROTO" "prototypes/*/"
-row sprint "$SPRINT" "production/sprints/*.md"
-row milestone "$MILE" "production/milestones/*.md"
+row story "$STORY" "docs/production/epics/**/story-*.md"
+row prototype "$PROTO" "docs/prototypes/*/"
+row sprint "$SPRINT" "docs/production/sprints/*.md"
+row milestone "$MILE" "docs/production/milestones/*.md"
 row origin_url "$ORIGIN" "$( [ -f .git/config ] && echo .git/config || echo absent )"
 stage_rows
 

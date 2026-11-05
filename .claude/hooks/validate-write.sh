@@ -10,7 +10,7 @@
 # information and must win: a caller sitting inside another project means that
 # project, not this one. Resolving to the script's own location first would
 # override them. So, in order:
-#   1. cwd holds project.yaml   -> cwd   (a project root)
+#   1. cwd holds .claude/ccgs/project.yaml   -> cwd   (a project root)
 #   2. cwd holds .claude/       -> cwd   (a project root not yet configured),
 #      unless cwd is itself named .claude: a stray .claude/.claude/ would
 #      make .claude/ a root, and the hooks would write .claude/production/
@@ -21,7 +21,7 @@
 # overriding a caller that legitimately means somewhere else.
 #
 # NOT an upward search: that resolves a nested project to its parent's config.
-if [ -f "project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
+if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
   CCGS_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
@@ -54,7 +54,7 @@ INPUT=$(cat)
 # builtins only: every rule needs a subagent's agent_type in the payload, one
 # of the words below in the file's path (a guarded name or a folder the rules
 # watch), or "prototypes" in the text written (a code file reaching into
-# prototypes/ names it). The path is tested only below the project root: the
+# docs/prototypes/ names it). The path is tested only below the project root: the
 # payload's cwd and transcript_path, and the root part of an absolute path,
 # are the project's own folder, which can be named anything (.../Source/proj),
 # and matching them sent every Write through the full parse. A path value that
@@ -90,7 +90,7 @@ _vw_go=0
 case "$INPUT" in *'"agent_type"'*) _vw_go=1 ;; esac
 case "$_VW_P" in
   *EPIC.md*|*project.godot*|*helpers*|*tech-debt-register*|*engine-reference*) _vw_go=1 ;;
-  *project.yaml*|*project.local.yaml*|*review-mode.txt*|*prototypes*|*strings*) _vw_go=1 ;;
+  *.claude/ccgs/project.yaml*|*.claude/ccgs/project.local.yaml*|*review-mode.txt*|*prototypes*|*strings*) _vw_go=1 ;;
   *tests*|*.github*|*production*|*Assets*|*Source*) _vw_go=1 ;;
 esac
 case "$_VW_REST" in *prototypes*) _vw_go=1 ;; esac
@@ -133,12 +133,12 @@ _VW_MSG=$(printf '%s\n' "$_VW_OUT" | VW_MAX="$_VW_MAX" VW_GOT="$_VW_GOT" VW_TOOL
   $1 == "checked" { rules = $3 }
   $1 == "OVERWRITE" { say("It replaces " $2 ", which is never overwritten: " $3 ". Edit it in place, or ask first.") }
   $1 == "ENUM" { say($2 " line " $6 ": " $3 " is " $4 ", not one of " $5 ".") }
-  $1 == "NOT_LOCAL" { say($2 " line " $4 ": " $3 " cannot be set locally, so resolution ignores it; it belongs in project.yaml.") }
+  $1 == "NOT_LOCAL" { say($2 " line " $4 ": " $3 " cannot be set locally, so resolution ignores it; it belongs in .claude/ccgs/project.yaml.") }
   $1 == "REVIEW_MODE" { say("It sets the review mode (" $3 ") in " $2 ". That pins it past what modes.rigor would choose; fine if you set it through /settings.") }
   $1 == "PROTOTYPE_HEADER" { say($2 " lacks its " $3 " header in its first lines.") }
-  $1 == "PROTOTYPE_IMPORT" { say($2 " line " $4 ($3 == "into-production" ? " reaches from prototypes/ into the code root: " : " reaches from the code root into prototypes/: ") $5) }
+  $1 == "PROTOTYPE_IMPORT" { say($2 " line " $4 ($3 == "into-production" ? " reaches from docs/prototypes/ into the code root: " : " reaches from the code root into docs/prototypes/: ") $5) }
   $1 == "FREEZE" { say("The string freeze is ACTIVE (" $3 ", called " $4 "): record this change under Post-Freeze Changes there, or lift the freeze first.") }
-  $1 == "AGENT_WRITE" { say("A subagent (" $3 ") writes " $2 ($4 == "outside" ? ", outside production/, docs/ and tests/" : ", which already exists") ": the subagent exception covers only a new file at the path its skill named.") }
+  $1 == "AGENT_WRITE" { say("A subagent (" $3 ") writes " $2 ($4 == "outside" ? ", outside docs/production/, docs/ and tests/" : ", which already exists") ": the subagent exception covers only a new file at the path its skill named.") }
   $1 == "SKIPPED" { say("Not checked (" $2 "): " $3 ".") }
   END {
     if (n > ENVIRON["VW_MAX"]) print "- and " (n - ENVIRON["VW_MAX"]) " more."

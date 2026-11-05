@@ -25,7 +25,7 @@
 - The event brief carries every field its Event Design requires: start date, end date, mechanics, rewards, success criteria — plus a fallback plan if the event breaks (disable, extend, compensate)
 - Includes daily login retention hooks (e.g., daily challenges, login streaks, time-limited rewards) — the request's "reasons to log in daily" — paced across the full 3 weeks, not front-loaded into the first days (e.g., weekly milestones, or the weekly challenges its Weekly cadence tier names)
 - Names reward categories (cosmetic, functional, currency) but does NOT assign specific reward values or currency amounts — those are left to economy-designer ("exact values assigned by economy-designer")
-- Asks before writing the brief to `design/live-ops/events/`
+- Asks before writing the brief to `docs/design/live-ops/events/`
 
 ### Case 2: Out-of-domain request — reward value calculation
 **Input**: "How much premium currency should we give out in this event? What's the fair value of each cosmetic reward tier?"
@@ -40,7 +40,7 @@
 - Flags this design as predatory — pay-to-complete gating is named in its Escalation Paths
 - Does NOT produce a design that requires additional purchases after a battle pass purchase without flagging it ("do NOT implement it silently")
 - Offers at least one compliant option alongside the flag (Question-First step 2 presents 2-4 options): a pass completable by a buyer playing at a reasonable daily pace, using the catch-up mechanics its Battle Pass Design calls for
-- Documents the concern in `design/live-ops/ethics-policy.md` (asking before writing) and escalates to creative-director for a binding ruling on whether the design proceeds, is modified, or is blocked
+- Documents the concern in `docs/design/live-ops/ethics-policy.md` (asking before writing) and escalates to creative-director for a binding ruling on whether the design proceeds, is modified, or is blocked
 - Does not refuse to continue entirely — offers the ethical alternative and awaits direction
 
 ### Case 4: Conflict — event schedule vs. main game progression pacing

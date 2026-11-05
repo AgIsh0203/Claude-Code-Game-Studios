@@ -1,6 +1,6 @@
-# /prototype — Spike Mode
+# /gamedev-prototype — Spike Mode
 
-> Part of `/prototype`. `SKILL.md` names when to read this file; the settings it
+> Part of `/gamedev-prototype`. `SKILL.md` names when to read this file; the settings it
 > resolved and the rules under its later headings still apply here.
 
 **Triggered by:** `--spike` flag OR "Mid-production spike" entry choice in Phase 1.
@@ -24,16 +24,16 @@ gate implications. Hard cap: ~4 hours.
 
 3. **Scope** — maximum 2-3 bullet points. One mechanic, one technical question, nothing else.
 
-4. **Build** — first ask "May I create `prototypes/[concept-name]-spike-[date]/` and build the spike there?" Same relaxed standards and header as the concept prototype. Hard cap: 4 hours. If not demonstrable in 4 hours, the question is too large. Split it.
+4. **Build** — first ask "May I create `docs/prototypes/[concept-name]-spike-[date]/` and build the spike there?" Same relaxed standards and header as the concept prototype. Hard cap: 4 hours. If not demonstrable in 4 hours, the question is too large. Split it.
 
 5. **Observe and decide** — no formal playtest debrief. Ask: "Did the spike answer the question? YES or NO, and why in one sentence."
 
-6. **Write a spike note** (not a full report) to `prototypes/[concept-name]-spike-[date]/SPIKE-NOTE.md` — first ask once for this step and the next, naming both files: "May I write `prototypes/[concept-name]-spike-[date]/SPIKE-NOTE.md` and clear the spike from `production/session-state/active.md`?" The note holds:
+6. **Write a spike note** (not a full report) to `docs/prototypes/[concept-name]-spike-[date]/SPIKE-NOTE.md` — first ask once for this step and the next, naming both files: "May I write `docs/prototypes/[concept-name]-spike-[date]/SPIKE-NOTE.md` and clear the spike from `.claude/ccgs/session-state/active.md`?" The note holds:
    - Question tested
    - Result (YES it works / NO it doesn't / PARTIAL — needs more investigation)
    - What to do next (add to current sprint — at `workflow: minimal`, the brief's build order — / investigate further / abandon the idea)
 
-7. **Update `production/session-state/active.md`** to clear the spike and return to the current sprint state (at `workflow: minimal`, the story in progress).
+7. **Update `.claude/ccgs/session-state/active.md`** to clear the spike and return to the current sprint state (at `workflow: minimal`, the story in progress).
 
 **No CD gate. No phase gate. No PROCEED/PIVOT/KILL.** Spike results inform decisions; they don't make them. The developer decides whether to add the mechanic/approach to the sprint backlog (at `workflow: minimal`, to the brief's build order) based on what the spike revealed.
 

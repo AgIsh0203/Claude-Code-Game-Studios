@@ -5,13 +5,13 @@
 `/test-evidence-review` reviews the **quality** of the test files and evidence
 documents behind stories — `/smoke-check` covers existence and passing. It
 takes a scope: a single story path, `sprint` (the most recent plan in
-`production/sprints/`), or a system name (`production/epics/[system]/story-*.md`);
+`docs/production/sprints/`), or a system name (`docs/production/epics/[system]/story-*.md`);
 with no argument it asks which. If the resolved scope holds zero stories it stops
 with `NOT ASSESSED — no stories in scope` and routes to the skill that creates
 them. For each story it collects Story Type, evidence path and acceptance
 criteria with targeted greps, locates the evidence (`tests/unit/[system]/`,
-`tests/integration/[system]/`, `production/qa/evidence/`,
-`production/qa/smoke-*.md`), and reviews automated tests for assertion count,
+`tests/integration/[system]/`, `docs/production/qa/evidence/`,
+`docs/production/qa/smoke-*.md`), and reviews automated tests for assertion count,
 edge cases, naming and formula traceability, and manual evidence for criterion
 linkage, sign-offs, retained screenshots and freshness. It resolves `qa.level`
 and `testing.strict` the way `/story-done` does: at `qa.level: minimal` a Logic,
@@ -24,7 +24,7 @@ plain-boolean `testing.strict` legacy value applies to every type; else the
 NOT ASSESSED or WAIVED; the overall verdict is the worst present, with NOT
 ASSESSED outranking ADEQUATE only, and WAIVED below ADEQUATE. The report is presented in
 conversation, and the skill asks "May I write this test evidence review to
-`production/qa/evidence-review-[date].md`?" as an optional step. It never
+`docs/production/qa/evidence-review-[date].md`?" as an optional step. It never
 modifies test files or evidence docs and invokes no director gates. The run ends
 COMPLETE, or CONCERNS when BLOCKING items were found.
 
@@ -37,7 +37,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: ADEQUATE, INCOMPLETE, MISSING, NOT ASSESSED, and the run-level COMPLETE / CONCERNS
-- [ ] Contains "May I write" language for the optional `production/qa/evidence-review-[date].md`
+- [ ] Contains "May I write" language for the optional `docs/production/qa/evidence-review-[date].md`
 - [ ] Has a next-step handoff (Section 7: BLOCKING items before `/story-done`, `/test-helpers`, sign-off routing)
 - [ ] The `resolve_config` injection names `qa.level` and `testing.strict`, and the skill states the `WAIVED (qa.level: minimal)` result and the per-type `testing.strict.<type>` gate level
 
@@ -51,9 +51,9 @@ None. Test evidence review is an advisory quality skill; no gates are invoked.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -63,18 +63,18 @@ Fixture defaults.
 ### Case 1: Happy Path — Single Logic story with a strong test
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, so the unit-test root is `tests/unit/`; `modes.automation` unset (collaborative)
-- `production/epics/combat/story-001-damage-calc.md` (slug `damage-calc`): `## Test Evidence` gives Story Type Logic and the path `tests/unit/combat/damage-calc_test.gd`; `## Acceptance Criteria` includes "damage is never below 1" and "critical hits multiply damage by 2.0"
-- `tests/unit/combat/damage-calc_test.gd` opens with `# Story: production/epics/combat/story-001-damage-calc.md`, has 4 test functions with 3+ assertions each, named like `test_damage_calc_zero_armor_returns_base_damage` and `test_damage_calc_max_crit_doubles_damage`, and names the GDD's `damage_formula` in a comment
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, so the unit-test root is `tests/unit/`; `modes.automation` unset (collaborative)
+- `docs/production/epics/combat/story-001-damage-calc.md` (slug `damage-calc`): `## Test Evidence` gives Story Type Logic and the path `tests/unit/combat/damage-calc_test.gd`; `## Acceptance Criteria` includes "damage is never below 1" and "critical hits multiply damage by 2.0"
+- `tests/unit/combat/damage-calc_test.gd` opens with `# Story: docs/production/epics/combat/story-001-damage-calc.md`, has 4 test functions with 3+ assertions each, named like `test_damage_calc_zero_armor_returns_base_damage` and `test_damage_calc_max_crit_doubles_damage`, and names the GDD's `damage_formula` in a comment
 
-**Input:** `/test-evidence-review production/epics/combat/story-001-damage-calc.md`
+**Input:** `/test-evidence-review docs/production/epics/combat/story-001-damage-calc.md`
 
 **Expected behavior:**
 1. Single-story mode: skill reads the story's Test Evidence and Acceptance Criteria
 2. Section 3 finds the test file under `tests/unit/combat/`
 3. Section 4: assertion coverage is normal (3+ per function); "zero" and "max" cases cover the numeric criteria; names follow `test_[scenario]_[expected]`; the formula is referenced
 4. Story verdict: **ADEQUATE**; overall verdict ADEQUATE; 0 BLOCKING items
-5. Report is presented in conversation, then the skill asks "May I write this test evidence review to `production/qa/evidence-review-[date].md`?" as optional
+5. Report is presented in conversation, then the skill asks "May I write this test evidence review to `docs/production/qa/evidence-review-[date].md`?" as optional
 6. Verdict: **COMPLETE**
 
 **Assertions:**
@@ -89,11 +89,11 @@ Fixture defaults.
 ### Case 2: Vacuous and Thin Tests — INCOMPLETE with a BLOCKING item
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `modes.rigor: standard` (so `qa.level: standard` — tests are required); no `testing.strict` block
-- `production/epics/combat/story-002-crit-roll.md` (slug `crit-roll`): Story Type Logic
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `modes.rigor: standard` (so `qa.level: standard` — tests are required); no `testing.strict` block
+- `docs/production/epics/combat/story-002-crit-roll.md` (slug `crit-roll`): Story Type Logic
 - `tests/unit/combat/crit-roll_test.gd` has `func test_1()` with no assertions and `func test_crit_roll_applies_multiplier()` with one assertion
 
-**Input:** `/test-evidence-review production/epics/combat/story-002-crit-roll.md`
+**Input:** `/test-evidence-review docs/production/epics/combat/story-002-crit-roll.md`
 
 **Expected behavior:**
 1. Skill finds the test file and counts assertions per function
@@ -110,21 +110,21 @@ Fixture defaults.
 - [ ] Output states BLOCKING items must be resolved before `/story-done` and suggests `/test-helpers`
 - [ ] Run ends with CONCERNS
 - [ ] The test file is not modified
-- [ ] Variant — with `testing.strict.logic: false` in `project.yaml`, the zero-assertion finding is ADVISORY, the story is still INCOMPLETE, and the run ends COMPLETE
+- [ ] Variant — with `testing.strict.logic: false` in `.claude/ccgs/project.yaml`, the zero-assertion finding is ADVISORY, the story is still INCOMPLETE, and the run ends COMPLETE
 
 ---
 
 ### Case 3: Empty Sprint Scope at Minimal Workflow — NOT ASSESSED, not a clean report
 
 **Fixture:**
-- `project.yaml`: `modes.rigor: minimal` (the resolved block shows `workflow: minimal`)
-- `production/sprints/` does not exist
+- `.claude/ccgs/project.yaml`: `modes.rigor: minimal` (the resolved block shows `workflow: minimal`)
+- `docs/production/sprints/` does not exist
 
 **Input:** `/test-evidence-review sprint`
 
 **Expected behavior:**
 1. Sprint mode finds no sprint plan, so the scope holds zero stories
-2. Skill stops and reports `NOT ASSESSED — no stories in scope`, naming the sprint scope and the empty `production/sprints/` path
+2. Skill stops and reports `NOT ASSESSED — no stories in scope`, naming the sprint scope and the empty `docs/production/sprints/` path
 3. Because the workflow is minimal (no sprints), it routes to `/test-evidence-review [epic-slug]` instead of `/sprint-plan new`
 4. Skill does not continue to Section 3; no Summary table and no "BLOCKING items: 0" line are rendered
 
@@ -139,14 +139,14 @@ Fixture defaults.
 ### Case 4: Story Type Unknown — Per-story NOT ASSESSED lifts the overall verdict
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`
-- `production/epics/combat/` contains `story-001-damage-calc.md` (Logic, test as in Case 1) and `story-003-hit-feedback.md`, whose `## Test Evidence` section states no Story Type and no evidence path
+- `.claude/ccgs/project.yaml`: `engine.name: godot`
+- `docs/production/epics/combat/` contains `story-001-damage-calc.md` (Logic, test as in Case 1) and `story-003-hit-feedback.md`, whose `## Test Evidence` section states no Story Type and no evidence path
 - Full-reading `story-003-hit-feedback.md` does not reveal a type either
 
 **Input:** `/test-evidence-review combat`
 
 **Expected behavior:**
-1. System mode globs `production/epics/combat/story-*.md` and finds both stories
+1. System mode globs `docs/production/epics/combat/story-*.md` and finds both stories
 2. `story-001-damage-calc` is ADEQUATE
 3. `story-003-hit-feedback` is **NOT ASSESSED**, with the reason stated: the story type cannot be determined, so the required evidence is unknown
 4. It is not reported as MISSING
@@ -163,15 +163,15 @@ Fixture defaults.
 ### Case 5: Visual/Feel Evidence Without a Retained Screenshot, Full Review Mode — No gates
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `modes.review_mode: full`
-- `production/epics/combat/story-004-hit-flash.md` (slug `hit-flash`): Story Type Visual/Feel
-- `production/qa/evidence/hit-flash-evidence.md` references every acceptance criterion, has every sign-off filled, and is dated after the sprint start
-- No `*.png`, `*.jpg` or `*.gif` for this story exists in `production/qa/evidence/`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `modes.review_mode: full`
+- `docs/production/epics/combat/story-004-hit-flash.md` (slug `hit-flash`): Story Type Visual/Feel
+- `docs/production/qa/evidence/hit-flash-evidence.md` references every acceptance criterion, has every sign-off filled, and is dated after the sprint start
+- No `*.png`, `*.jpg` or `*.gif` for this story exists in `docs/production/qa/evidence/`
 
-**Input:** `/test-evidence-review production/epics/combat/story-004-hit-flash.md`
+**Input:** `/test-evidence-review docs/production/epics/combat/story-004-hit-flash.md`
 
 **Expected behavior:**
-1. Section 3 finds `production/qa/evidence/hit-flash-evidence.md`
+1. Section 3 finds `docs/production/qa/evidence/hit-flash-evidence.md`
 2. Section 5: criterion linkage and sign-offs are complete, but no retained image exists for the story
 3. The doc describes a visual check without evidence → story verdict **INCOMPLETE**, flagged BLOCKING
 4. No director gate is invoked regardless of review mode
@@ -189,14 +189,14 @@ Fixture defaults.
 ### Case 6: UI Story Closed by Its Screenshots — No Sign-Off Required
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`
-- `production/epics/ui/story-007-inventory-screen.md` (slug `inventory-screen`): Story Type UI; its
-  `## Test Evidence` names `production/qa/evidence/inventory-screen-populated.png` and
-  `production/qa/evidence/inventory-screen-empty.png` — one per screen state it touches
+- `.claude/ccgs/project.yaml`: `engine.name: godot`
+- `docs/production/epics/ui/story-007-inventory-screen.md` (slug `inventory-screen`): Story Type UI; its
+  `## Test Evidence` names `docs/production/qa/evidence/inventory-screen-populated.png` and
+  `docs/production/qa/evidence/inventory-screen-empty.png` — one per screen state it touches
 - Both images exist and are dated after the sprint start
 - No `inventory-screen-evidence.md`, no sign-off record and no walkthrough log exist
 
-**Input:** `/test-evidence-review production/epics/ui/story-007-inventory-screen.md`
+**Input:** `/test-evidence-review docs/production/epics/ui/story-007-inventory-screen.md`
 
 **Expected behavior:**
 1. Section 3 uses the two paths the story states before searching
@@ -214,14 +214,14 @@ Fixture defaults.
 ### Case 7: Unity Logic Story — Evidence at the Stated Engine Path
 
 **Fixture:**
-- `project.yaml`: `engine.name: unity`
-- `production/epics/inventory/story-003-stack-merge.md`: Story Type Logic; its
+- `.claude/ccgs/project.yaml`: `engine.name: unity`
+- `docs/production/epics/inventory/story-003-stack-merge.md`: Story Type Logic; its
   `## Test Evidence` names `Assets/Tests/EditMode/InventoryTests.cs`
 - That file exists and holds one `[Test]` per acceptance criterion (4 in all), each with 3 or more `Assert.That` calls, named in the `[Scenario]_[Expected]` form (`MergeStacks_FullStack_SpillsToNewSlot`), with the empty-stack and max-stack cases covered
 - The inventory GDD has no Formulas section, so formula traceability does not apply
 - Nothing named `stack-merge_test.*` exists anywhere, and `tests/unit/` does not exist
 
-**Input:** `/test-evidence-review production/epics/inventory/story-003-stack-merge.md`
+**Input:** `/test-evidence-review docs/production/epics/inventory/story-003-stack-merge.md`
 
 **Expected behavior:**
 1. Section 3 finds the test at the stated path under `Assets/Tests/EditMode/`
@@ -236,8 +236,8 @@ Fixture defaults.
 ### Case 8: No Test for a Logic Story — MISSING, and it outranks NOT ASSESSED
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `modes.rigor: standard` (so `qa.level: standard` — a Logic story's test is required)
-- `production/epics/combat/` contains `story-003-hit-feedback.md` (no Story Type, as in Case 4) and `story-005-knockback.md`: Story Type Logic, no evidence path stated
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `modes.rigor: standard` (so `qa.level: standard` — a Logic story's test is required)
+- `docs/production/epics/combat/` contains `story-003-hit-feedback.md` (no Story Type, as in Case 4) and `story-005-knockback.md`: Story Type Logic, no evidence path stated
 - No test exists for it: `tests/unit/combat/` does not exist, and no other test file names the slug `knockback` or references the story
 
 **Input:** `/test-evidence-review combat`
@@ -260,8 +260,8 @@ Fixture defaults.
 ### Case 9: `qa.level: minimal` — a Logic Story With No Test Is WAIVED; a UI Screenshot Is Not
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, no `modes` block (so `qa.level: minimal` — tests are waived)
-- `production/epics/combat/` contains `story-005-knockback.md` (Logic, no test anywhere, as in Case 8) and `story-008-pause-menu.md` (UI, no retained image for it in `production/qa/evidence/`)
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, no `modes` block (so `qa.level: minimal` — tests are waived)
+- `docs/production/epics/combat/` contains `story-005-knockback.md` (Logic, no test anywhere, as in Case 8) and `story-008-pause-menu.md` (UI, no retained image for it in `docs/production/qa/evidence/`)
 
 **Input:** `/test-evidence-review combat`
 
@@ -288,7 +288,7 @@ Fixture defaults.
 - [ ] Overall verdict is the worst story verdict; NOT ASSESSED outranks ADEQUATE but not INCOMPLETE or MISSING; WAIVED ranks below ADEQUATE
 - [ ] At `qa.level: minimal` a Logic, Integration or Config/Data story with no test evidence is WAIVED, never MISSING or BLOCKING; Visual/Feel and UI evidence is never waived
 - [ ] BLOCKING vs ADVISORY per story type comes from `testing.strict.<type>` in the resolved block, falling back to a legacy plain-boolean `testing.strict` value applied to every type, then to the `coding-standards.md` default
-- [ ] The report is presented before the optional "May I write" for `production/qa/evidence-review-[date].md`
+- [ ] The report is presented before the optional "May I write" for `docs/production/qa/evidence-review-[date].md`
 - [ ] Does not modify test files or evidence documents
 - [ ] No director gates are invoked
 - [ ] Ends with COMPLETE, or CONCERNS when BLOCKING items were found — except an empty scope, which stops at `NOT ASSESSED — no stories in scope` before any report (Case 3)
@@ -297,7 +297,7 @@ Fixture defaults.
 
 ## Coverage Notes
 
-- Integration stories (playtest records in `production/qa/playtests/`) and
-  Config/Data stories (`production/qa/smoke-*.md`) are not tested here.
+- Integration stories (playtest records in `docs/production/qa/playtests/`) and
+  Config/Data stories (`docs/production/qa/smoke-*.md`) are not tested here.
 - The no-argument path (the skill asks which scope to review) is not tested.
 - The POTENTIALLY STALE freshness flag is not tested separately.

@@ -13,7 +13,7 @@
 
 Present the full report in conversation, then ask:
 
-"May I write this smoke check report to `production/qa/smoke-[date].md`?"
+"May I write this smoke check report to `docs/production/qa/smoke-[date].md`?"
 
 Write only after approval.
 
@@ -25,7 +25,7 @@ blocks hand-off). Otherwise:
 **Resolve the gate enforcement level.** A FAIL verdict either *blocks* QA
 hand-off or is *flagged while hand-off proceeds*, governed by the
 `testing.strict` block **resolved in the resolved-config block at the top of this skill** (which merges
-`project.local.yaml` over `project.yaml` — read that block, not the file, or a
+`.claude/ccgs/project.local.yaml` over `.claude/ccgs/project.yaml` — read that block, not the file, or a
 developer's local override is silently ignored):
 
 1. Take `testing.strict.config` from that resolved block. If its value is `true`
@@ -62,7 +62,7 @@ hand-off is not blocked. Resolve these before release:
 
 [List each failing automated test or smoke check with a one-line description]
 
-QA hand-off: share `production/qa/qa-plan-[sprint].md` with the qa-tester
+QA hand-off: share `docs/production/qa/qa-plan-[sprint].md` with the qa-tester
 agent to begin manual verification. Re-run `/smoke-check` once the failures
 are fixed."
 
@@ -97,14 +97,14 @@ Advisory items to resolve before running `/story-done` on affected stories:
 [list MISSING test evidence entries, and any runner warning — e.g. the orphan
 count]
 
-QA hand-off: share `production/qa/qa-plan-[sprint].md` with the qa-tester
+QA hand-off: share `docs/production/qa/qa-plan-[sprint].md` with the qa-tester
 agent to begin manual verification."
 
 **If verdict is PASS:**
 
 "Smoke check passed cleanly. The build is ready for manual QA.
 
-QA hand-off: share `production/qa/qa-plan-[sprint].md` with the qa-tester
+QA hand-off: share `docs/production/qa/qa-plan-[sprint].md` with the qa-tester
 agent to begin manual verification."
 
 ---

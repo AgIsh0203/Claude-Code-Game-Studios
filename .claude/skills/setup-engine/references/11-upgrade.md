@@ -98,7 +98,7 @@ After confirmation:
 2. If `breaking-changes.md` or `deprecated-apis.md` exist in the engine
    reference directory, append the new version's changes to those files.
 
-3. If `project.yaml` exists at the repo root and has an `engine` block, Read it
+3. If `.claude/ccgs/project.yaml` exists at the repo root and has an `engine` block, Read it
    first, then update `engine.version` to `[new-version]` so the primary config
    store stays in sync with VERSION.md.
 

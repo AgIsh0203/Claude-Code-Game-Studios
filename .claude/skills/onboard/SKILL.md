@@ -3,14 +3,16 @@ name: onboard
 description: "Onboarding doc for a new contributor or agent — project state, conventions, priorities relevant to the specified role."
 argument-hint: "[role|area]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/onboard/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/onboard/../../hooks/yaml-helper.sh" resolve_config *)
 model: haiku
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -59,13 +61,13 @@ Read the relevant agent definition from `.claude/agents/` if a specific role is 
 ## Phase 2: Scan Relevant Area
 
 - For programmers: scan the code root (resolve per `.claude/docs/code-root-resolution.md`) for architecture, patterns, key files. An unresolved root means the scan did not run: the sections it feeds read `NOT ASSESSED — code root unresolved`, never a guess at `src/`
-- For designers: scan `design/` for existing design documents
-- For narrative: scan `design/narrative/` for world-building and story docs
+- For designers: scan `docs/design/` for existing design documents
+- For narrative: scan `docs/story/` for world-building and story docs
 - For QA: scan `tests/` for existing test coverage (`/test-setup` creates it)
-- For production: scan `production/` for current sprint and milestone
-- **No role or area given**: a general orientation — list the top level of `design/`,
-  `docs/architecture/`, `production/` and the code root, read
-  `production/session-state/active.md` if it exists, and say that a role would
+- For production: scan `docs/production/` for current sprint and milestone
+- **No role or area given**: a general orientation — list the top level of `docs/design/`,
+  `docs/architecture/`, `docs/production/` and the code root, read
+  `.claude/ccgs/session-state/active.md` if it exists, and say that a role would
   focus the next pass (e.g. `/onboard programmer`)
 
 Read recent changes (git log if available) to understand current momentum.
@@ -128,7 +130,7 @@ say it found none]
 
 Present the onboarding document to the user.
 
-Ask: "May I write this to `production/onboarding/onboard-[role]-[date].md`?"
+Ask: "May I write this to `docs/production/onboarding/onboard-[role]-[date].md`?"
 
 If yes, write the file, creating the directory if needed.
 

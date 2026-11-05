@@ -325,7 +325,7 @@ Example:
 > **Why this section exists**: Accessibility requirements must be specified at design
 > time because retrofitting them is expensive and often architecturally impractical.
 > This section documents requirements specific to this screen. Project-wide standards
-> live in `design/accessibility-requirements.md` — consult it before filling this
+> live in `docs/design/accessibility-requirements.md` — consult it before filling this
 > section so you do not duplicate or contradict project-level commitments.
 
 **Worked example — text contrast table**:

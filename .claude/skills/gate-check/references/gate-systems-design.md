@@ -6,13 +6,13 @@
 
 
 **Required Artifacts:**
-- [ ] `design/gdd/game-concept.md` exists and has content
-- [ ] Game pillars defined (in concept doc or `design/gdd/game-pillars.md`)
-- [ ] Visual Identity Anchor section exists in `design/gdd/game-concept.md` (from brainstorm Phase 4 art-director output)
+- [ ] `docs/GDD.md` exists and has content
+- [ ] Game pillars defined (in concept doc or `docs/GDD.md`)
+- [ ] Visual Identity Anchor section exists in `docs/GDD.md` (from brainstorm Phase 4 art-director output)
 
 **Recommended (not blocking):**
-- [ ] Concept prototype exists in `prototypes/` with a REPORT.md showing PROCEED verdict
-      (`/prototype [core-mechanic]`) — skipping this means GDDs may be written for an
+- [ ] Concept prototype exists in `docs/prototypes/` with a REPORT.md showing PROCEED verdict
+      (`/gamedev-prototype [core-mechanic]`) — skipping this means GDDs may be written for an
       idea that hasn't been played. Acceptable if the concept is proven by other means.
 
 **Quality Checks:**
@@ -30,4 +30,4 @@ only thing that adds one.
 
 - **`full`** — game-concept.md + pillars + Visual Identity Anchor all required
 - **`standard`** — pillars + Visual Identity Anchor → recommended; `game-concept.md` stays required
-- **`minimal`** — gate target is **`design/game-brief.md`** (not `game-concept.md`); the GDD / pillars / Visual Identity Anchor checks **drop** (a brief with content = PASS). `/brainstorm` writes `design/game-brief.md` at this tier (Option A); `game-concept.md` remains the `standard`/`full` concept doc.
+- **`minimal`** — gate target is **`docs/GDD.md`** (not `game-concept.md`); the GDD / pillars / Visual Identity Anchor checks **drop** (a brief with content = PASS). `/brainstorm` writes `docs/GDD.md` at this tier (Option A); `game-concept.md` remains the `standard`/`full` concept doc.

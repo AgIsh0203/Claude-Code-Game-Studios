@@ -42,7 +42,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 ## Director Gate Checks
 
 Review mode comes from the resolved `review_mode` (`modes.review_mode` in
-`project.yaml`); `--review full|lean|solo` overrides it for one run.
+`.claude/ccgs/project.yaml`); `--review full|lean|solo` overrides it for one run.
 
 In `full` mode: after the draft is generated, the primary engine specialist
 validates it (Step 5.5), then `technical-director` spawns with gate TD-ADR
@@ -63,9 +63,9 @@ In every mode the written ADR has `Status: Proposed`.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -75,11 +75,11 @@ Fixture defaults.
 ### Case 1: Happy Path — New rendering ADR, full mode, TD-ADR approves
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot` and `modes.review_mode: full`
+- `.claude/ccgs/project.yaml` has `engine.name: Godot` and `modes.review_mode: full`
 - `docs/engine-reference/godot/VERSION.md` exists and marks the pinned version HIGH risk; `breaking-changes.md` lists a Rendering change
 - `docs/architecture/` contains `adr-0001-*.md` and `adr-0002-*.md`; none covers rendering
 - `docs/registry/architecture.yaml` exists with no stance touching rendering
-- `design/gdd/visual-effects.md` exists; the user confirms it as the GDD driving the decision, and its names match the ADR's Key Interfaces
+- `docs/design/gdd/visual-effects.md` exists; the user confirms it as the GDD driving the decision, and its names match the ADR's Key Interfaces
 - The engine specialist finds only minor notes; TD-ADR returns APPROVE
 
 **Input:** `/architecture-decision rendering-approach`
@@ -136,10 +136,10 @@ Fixture defaults.
 ### Case 3: Lean and Solo Modes — TD-ADR skipped; checks that cannot run say so
 
 **Fixture:**
-- Scenario (a): `project.yaml` has `modes.review_mode: lean` and `engine.name: Godot`
+- Scenario (a): `.claude/ccgs/project.yaml` has `modes.review_mode: lean` and `engine.name: Godot`
 - Scenario (b): same project, invoked with `--review solo`
 - Scenario (c): invoked with `--review solo` on a project with no engine configured — `engine.name` unset and `.claude/docs/technical-preferences.md` still `[TO BE CONFIGURED]`; at Step 1's prompt the user carries on without running `/setup-engine`
-- `design/gdd/` holds no GDD, so the ADR's GDD Requirements Addressed names none
+- `docs/design/gdd/` holds no GDD, so the ADR's GDD Requirements Addressed names none
 
 **Input:** (a) `/architecture-decision save-format` (b) and (c) `/architecture-decision save-format --review solo`
 
@@ -147,7 +147,7 @@ Fixture defaults.
 1. (a) and (b): the engine specialist validation (Step 5.5) runs
 2. (a) Output notes "TD-ADR skipped — Lean mode." and proceeds to the GDD sync check
 3. (b) and (c): Output notes "TD-ADR skipped — Solo mode." and proceeds to the GDD sync check
-4. (c) No engine specialist is spawned, and the output records `Engine validation: NOT ASSESSED — no engine configured (engine.name unset in project.yaml)`
+4. (c) No engine specialist is spawned, and the output records `Engine validation: NOT ASSESSED — no engine configured (engine.name unset in .claude/ccgs/project.yaml)`
 5. The GDD sync check prints `GDD sync: NOT ASSESSED — [the ADR names no GDDs]`, not the clean one-line result
 6. "May I write it?" is still asked before the file is written
 7. The ADR is written with `Status: Proposed`
@@ -192,7 +192,7 @@ Fixture defaults.
 **Fixture:**
 - `docs/architecture/adr-0005-physics-layers.md` exists with `Status: Proposed`
 - Scenario (a): its `## ADR Dependencies` lists `Depends On: ADR-0002`, and ADR-0002 is `Proposed`
-- Scenario (b): its only dependency is ADR-0001, which is `Accepted`; three files under `production/epics/*/story-*.md` name `ADR-0005` and are Blocked — two in the header form `/create-stories` writes (`> **Status**: Blocked`), one as `**Status:** Blocked`
+- Scenario (b): its only dependency is ADR-0001, which is `Accepted`; three files under `docs/production/epics/*/story-*.md` name `ADR-0005` and are Blocked — two in the header form `/create-stories` writes (`> **Status**: Blocked`), one as `**Status:** Blocked`
 - `modes.automation` is `autonomous`
 
 **Input:** `/architecture-decision accept ADR-0005`
@@ -209,7 +209,7 @@ Fixture defaults.
 - [ ] (b) The confirmation prompt states how many stories will become Ready
 - [ ] (b) The confirmation prompt appears in `autonomous` automation mode
 - [ ] (b) Status becomes `Accepted` and the three stories move to `Ready` only after the user confirms
-- [ ] Stories are matched only under `production/epics/`
+- [ ] Stories are matched only under `docs/production/epics/`
 - [ ] (b) All three stories are found — the Blocked grep matches `> **Status**: Blocked` and `**Status:** Blocked`, not only the literal `Status: Blocked`
 
 ---
@@ -219,7 +219,7 @@ Fixture defaults.
 **Fixture:**
 - `docs/architecture/adr-0005-physics-layers.md` exists with `Status: Proposed`
   and a `## ADR Dependencies` section whose only dependency, ADR-0001, is `Accepted`
-- Three stories under `production/epics/` are `> **Status**: Blocked`:
+- Three stories under `docs/production/epics/` are `> **Status**: Blocked`:
   - `story-001.md`: blocked because ADR-0005 is Proposed
   - `story-002.md`: blocked with "BLOCKED: ADR-0003 is Superseded — point the
     story at ADR-0005 (edit its ADR field …) before implementing"; ADR-0005 is
@@ -252,7 +252,7 @@ Fixture defaults.
 **Fixture:**
 - `docs/architecture/adr-0004-input-mapping.md` exists with Context, Decision, Consequences, Engine Compatibility and GDD Requirements Addressed, but no `## Status` and no `## ADR Dependencies`
 - ADR-0001 is `Accepted`
-- One file under `production/epics/*/story-*.md` names `ADR-0004` and has `> **Status**: Blocked`
+- One file under `docs/production/epics/*/story-*.md` names `ADR-0004` and has `> **Status**: Blocked`
 
 **Input:** `/architecture-decision retrofit docs/architecture/adr-0004-input-mapping.md`
 

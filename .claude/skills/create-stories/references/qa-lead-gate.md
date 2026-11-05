@@ -3,7 +3,7 @@
 Read only when the `review_gate` line says `skill-gates=run` (`review_mode: full`).
 Run it after the stories are drafted and before the Phase 6 write ask.
 
-**An existing QA plan first.** Look for the newest `production/qa/qa-plan-*.md`. If
+**An existing QA plan first.** Look for the newest `docs/production/qa/qa-plan-*.md`. If
 its Automated Tests Required section holds specs for stories in this epic (match by
 title or slug), they can stand in for the agent's specs. Where the two differ, ask:
 "Which test specs should these stories carry?" Options: The QA plan's / The QA

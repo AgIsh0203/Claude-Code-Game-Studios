@@ -15,8 +15,8 @@ NEEDS REVISION, MAJOR REVISION NEEDED, or NOT ASSESSED.
 The review mode sets its depth: `full` adds a parallel adversarial specialist
 review plus a `creative-director` senior synthesis (Phase 3b); `lean` runs all
 phases without agents; `solo` runs Phases 1–4 only with no next-step prompt.
-Phase 4 writes nothing. In Phase 5 it can update `design/gdd/systems-index.md`
-and append to `design/gdd/reviews/[doc-name]-review-log.md`, each only after the
+Phase 4 writes nothing. In Phase 5 it can update `docs/GDD.md`
+and append to `docs/design/gdd/reviews/[doc-name]-review-log.md`, each only after the
 user approves via `AskUserQuestion`.
 
 ---
@@ -35,9 +35,9 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -47,21 +47,21 @@ Fixture defaults.
 ### Case 1: Happy Path — Complete GDD, all 8 sections present
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/light-manipulation.md` exists with all 8 sections populated with
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/light-manipulation.md` exists with all 8 sections populated with
   substantive content (the Detailed Rules section is titled `## Detailed Design`)
 - Formulas section defines at least one formula with named variables
 - Acceptance Criteria section contains at least 3 testable criteria
-- Every system named in its Dependencies section has a GDD in `design/gdd/`
+- Every system named in its Dependencies section has a GDD in `docs/design/gdd/`
 - No prior review log exists for this document
 
-**Input:** `/design-review design/gdd/light-manipulation.md --review lean`
+**Input:** `/design-review docs/design/gdd/light-manipulation.md --review lean`
 
 **Expected behavior:**
 1. Freshness check (`review-receipts.sh check …`) finds no receipt → full review
 2. Skill reads the target document in full and reads CLAUDE.md
-3. Skill runs `bash .claude/scripts/gdd-structure-check.sh design/gdd/light-manipulation.md`
-4. Skill Globs `design/gdd/` for each declared dependency
+3. Skill runs `bash .claude/scripts/gdd-structure-check.sh docs/design/gdd/light-manipulation.md`
+4. Skill Globs `docs/design/gdd/` for each declared dependency
 5. Skill checks internal consistency, implementability and cross-system fit
 6. No agents are spawned (lean)
 7. Skill outputs the Phase 4 review, ending with the verdict
@@ -83,12 +83,12 @@ Fixture defaults.
 ### Case 2: Failure Path — Incomplete GDD (4/8 sections at `full`)
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/light-manipulation.md` has Overview, Player Fantasy, Detailed
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/light-manipulation.md` has Overview, Player Fantasy, Detailed
   Rules and Dependencies only; Formulas, Edge Cases, Tuning Knobs and
   Acceptance Criteria are absent
 
-**Input:** `/design-review design/gdd/light-manipulation.md --review lean`
+**Input:** `/design-review docs/design/gdd/light-manipulation.md --review lean`
 
 **Expected behavior:**
 1. `gdd-structure-check.sh` reports the 4 sections in its `ABSENT:` list
@@ -104,7 +104,7 @@ Fixture defaults.
 - [ ] Verdict is NEEDS REVISION or MAJOR REVISION NEEDED — never APPROVED while a REQUIRED section is missing, and not NOT ASSESSED (the document was read)
 - [ ] Output does not suggest the document is implementation-ready
 - [ ] "Accept as-is and move on" is not offered, because the missing sections are blocking
-- [ ] No file is written except after an explicit Phase 5 choice: `[A] Revise the GDD now`, "May I update `design/gdd/systems-index.md`…", or "May I append this review summary…"
+- [ ] No file is written except after an explicit Phase 5 choice: `[A] Revise the GDD now`, "May I update `docs/GDD.md`…", or "May I append this review summary…"
 - [ ] The systems-index prompt offers `Needs Revision` or `In Review` — never `Approved` on this revision verdict — and the review-log entry records the revision verdict, not an approval
 
 ---
@@ -112,14 +112,14 @@ Fixture defaults.
 ### Case 3: Partial Path — `standard` tier, numeric rules with no Formulas section
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: standard`
+- `.claude/ccgs/project.yaml` sets `modes.workflow: standard`
 - GDD has Overview, Player Fantasy, `## Detailed Design`, Edge Cases,
   Dependencies, Tuning Knobs and Acceptance Criteria; no Formulas section
 - Detailed Design states numeric rules ("drain 2 oxygen per second", "refill
   costs 50 credits") but no formula defines them
 - Acceptance Criteria are vague ("feels good" rather than measurable)
 
-**Input:** `/design-review design/gdd/oxygen.md --review lean`
+**Input:** `/design-review docs/design/gdd/oxygen.md --review lean`
 
 **Expected behavior:**
 1. Skill marks Formulas REQUIRED at `standard` because the system defines
@@ -141,10 +141,10 @@ Fixture defaults.
 **Fixture:**
 - The path provided does not exist in the project
 
-**Input:** `/design-review design/gdd/nonexistent.md --review lean`
+**Input:** `/design-review docs/design/gdd/nonexistent.md --review lean`
 
 (`lean`, so Phase 5 runs. In `solo` — what the review mode resolves to when
-`project.yaml` sets neither `modes.review_mode` nor `modes.rigor` — Phase 5 never
+`.claude/ccgs/project.yaml` sets neither `modes.review_mode` nor `modes.rigor` — Phase 5 never
 runs and the last assertion below would test nothing.)
 
 **Expected behavior:**
@@ -166,11 +166,11 @@ runs and the last assertion below would test nothing.)
 ### Case 5: Review mode — specialist delegation in `full`, none in `lean` / `solo`
 
 **Fixture (all sub-cases):**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/light-manipulation.md` exists with all 8 sections, including
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/light-manipulation.md` exists with all 8 sections, including
   formulas and combat stats
 
-**Case 5a — full:** `/design-review design/gdd/light-manipulation.md --review full`
+**Case 5a — full:** `/design-review docs/design/gdd/light-manipulation.md --review full`
 
 **Expected behavior:**
 1. Before spawning, skill prints "Full review: spawning specialist agents in parallel…"
@@ -189,14 +189,14 @@ runs and the last assertion below would test nothing.)
 - [ ] The `### Verdict:` line carries exactly one of this skill's words — APPROVED, NEEDS REVISION or MAJOR REVISION NEEDED — taken from the creative-director's synthesis; never a director-gate word such as READY, CONCERNS, NOT READY, APPROVE or REJECT
 - [ ] No director-gate IDs appear ("Gate: CD-…" etc.) — the senior review is a direct spawn, not a gate from `director-gates.md`
 
-**Case 5b — lean via the legacy flag:** `/design-review design/gdd/light-manipulation.md --depth lean`
+**Case 5b — lean via the legacy flag:** `/design-review docs/design/gdd/light-manipulation.md --depth lean`
 
 **Assertions (5b):**
 - [ ] `--depth lean` is treated as `--review lean`, and the skill says once that the flag was renamed
 - [ ] No `Agent` call is made; the review runs in-session
 - [ ] Phase 5's next-step widgets still run
 
-**Case 5c — solo:** `/design-review design/gdd/light-manipulation.md --review solo`
+**Case 5c — solo:** `/design-review docs/design/gdd/light-manipulation.md --review solo`
 
 **Assertions (5c):**
 - [ ] No `Agent` call is made
@@ -207,10 +207,10 @@ runs and the last assertion below would test nothing.)
 ### Case 6: Review mode from the resolved config — no flag
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full` and `modes.review_mode: lean`
-- `design/gdd/light-manipulation.md` exists with all 8 sections
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full` and `modes.review_mode: lean`
+- `docs/design/gdd/light-manipulation.md` exists with all 8 sections
 
-**Input:** `/design-review design/gdd/light-manipulation.md`
+**Input:** `/design-review docs/design/gdd/light-manipulation.md`
 
 **Expected behavior:**
 1. No `--review` flag, so the skill takes `review_mode: lean` from the resolved
@@ -219,7 +219,7 @@ runs and the last assertion below would test nothing.)
 3. Phase 5's widgets run — which `solo`, the `rigor: minimal` default, would have skipped
 
 **Assertions:**
-- [ ] The review mode comes from the resolved config block when no flag is given (`review_mode: lean (project.yaml)`)
+- [ ] The review mode comes from the resolved config block when no flag is given (`review_mode: lean (.claude/ccgs/project.yaml)`)
 - [ ] No `Agent` call is made, and Phase 5's next-step widgets run — so the run is `lean`, not the `solo` default
 - [ ] Variant — the same fixture with `--review solo` on the input: the flag wins over the config, and no Phase 5 widget runs
 

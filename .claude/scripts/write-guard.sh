@@ -24,20 +24,20 @@
 #                    Edit changes a file in place, so only a Write (the
 #                    default) is reported
 #   config PATH [NEW]
-#                    project.yaml or project.local.yaml: values outside a
-#                    setting's allowed list, keys project.local.yaml cannot
-#                    override, and modes.review_mode set; production/
+#                    .claude/ccgs/project.yaml or .claude/ccgs/project.local.yaml: values outside a
+#                    setting's allowed list, keys .claude/ccgs/project.local.yaml cannot
+#                    override, and modes.review_mode set; docs/production/
 #                    review-mode.txt: written at all. With NEW, a value the
 #                    current file already holds is not reported again
 #   prototype PATH [NEW]
-#                    a file under prototypes/ without its PROTOTYPE or
+#                    a file under docs/prototypes/ without its PROTOTYPE or
 #                    VERTICAL SLICE header, or reaching into the code root;
-#                    a file under the code root reaching into prototypes/
-#   freeze PATH      a string table under assets/data/strings/ while
-#                    production/localization/freeze-status.md says ACTIVE
+#                    a file under the code root reaching into docs/prototypes/
+#   freeze PATH      a string table under Content/data/strings/ while
+#                    docs/production/localization/freeze-status.md says ACTIVE
 #   agent PATH --agent TYPE [--existed yes|no]
 #                    a subagent's write outside the exception: only a new file
-#                    under production/, docs/ or tests/
+#                    under docs/production/, docs/ or tests/
 #   artifact PATH... each path a return contract named: there or missing
 #   git              stdin: one shell command segment per line; each whose
 #                    command (after VAR=value words and sudo-like wrappers) is
@@ -157,12 +157,12 @@ rel() {
 }
 tsv() { printf '%s' "$1" | tr '\t\n' '  '; }
 
-# The engine names project.yaml may hold, and each engine's code root
+# The engine names .claude/ccgs/project.yaml may hold, and each engine's code root
 # (directory-structure.md, "The code root is engine-specific").
 engine_name() {
-  [ -f project.yaml ] || return 0
+  [ -f .claude/ccgs/project.yaml ] || return 0
   [ -f "$HERE/yaml-get.awk" ] || return 0
-  YG_PATH=engine.name awk -f "$HERE/yaml-get.awk" project.yaml
+  YG_PATH=engine.name awk -f "$HERE/yaml-get.awk" .claude/ccgs/project.yaml
 }
 ENGINE=$(engine_name | tr 'A-Z' 'a-z')
 case "$ENGINE" in
@@ -180,7 +180,7 @@ applied() { APPLIED="${APPLIED:+$APPLIED,}$1"; }
 # Each never-overwrite rule and the skill that states it.
 overwrite_why() {
   case "$1" in
-    production/epics/*/EPIC.md) echo "/create-epics updates an existing EPIC.md in place and never rewrites it" ;;
+    docs/production/epics/*/EPIC.md) echo "/create-epics updates an existing EPIC.md in place and never rewrites it" ;;
     project.godot) echo "/setup-engine never replaces an existing Godot project file" ;;
     tests/helpers/*) echo "/test-helpers never overwrites existing helpers, which may hold hand-written code" ;;
     docs/tech-debt-register.md) echo "/tech-debt appends to the register and never rewrites it" ;;
@@ -194,7 +194,7 @@ rule_overwrite() {
   _w=$(overwrite_why "$1")
   # Where /test-setup writes: the test roots of the three engines, CI and the
   # QA evidence folder. Other paths never ask test-scaffold.sh.
-  case "$1" in tests/*|.github/*|production/qa/*|Assets/Tests/*|Source/*) ;; *) _w="${_w:--}" ;; esac
+  case "$1" in tests/*|.github/*|docs/production/qa/*|Assets/Tests/*|Source/*) ;; *) _w="${_w:--}" ;; esac
   [ "$_w" = "-" ] && return 0
   if [ -z "$_w" ]; then
     # The files /test-setup creates, as test-scaffold.sh lists them per engine.
@@ -267,14 +267,14 @@ yaml_leaves() {
 rule_config() {
   _path="$1"; _new="${2:-$1}"
   case "$_path" in
-    production/review-mode.txt)
+    .claude/ccgs/review-mode.txt)
       applied config
       [ -f "$_new" ] || return 0
       _v=$(awk 'BEGIN { BINMODE = 3 } { sub(/\r$/, ""); sub(/^[ \t]+/, ""); sub(/[ \t]+$/, "") } $0 != "" { print $0 "\t" NR; exit }' "$_new")
       printf 'REVIEW_MODE\t%s\t%s\t%s\n' "$_path" "${_v%%	*}" "${_v##*	}"
       [ -n "$_v" ] || printf 'REVIEW_MODE\t%s\t-\t-\n' "$_path"
       return 0 ;;
-    project.yaml|project.local.yaml) applied config ;;
+    .claude/ccgs/project.yaml|.claude/ccgs/project.local.yaml) applied config ;;
     *) return 0 ;;
   esac
   [ -f "$_new" ] || return 0
@@ -301,7 +301,7 @@ rule_config() {
         printf "ENUM\t%s\t%s\t%s\t%s\t%d\n", p, k, v, al, ln
       # schema_version and framework.* are file metadata, not settings, so the
       # local file may carry them (validate_local_scope exempts the same two).
-      if (p == "project.local.yaml" && !(k in WL) && k != "schema_version" && k !~ /^framework\./ && !(k in HAD))
+      if (p == ".claude/ccgs/project.local.yaml" && !(k in WL) && k != "schema_version" && k !~ /^framework\./ && !(k in HAD))
         printf "NOT_LOCAL\t%s\t%s\t%d\n", p, k, ln
       if (k == "modes.review_mode" && changed)
         printf "REVIEW_MODE\t%s\t%s\t%d\n", p, v, ln
@@ -309,13 +309,13 @@ rule_config() {
 }
 
 # ------------------------------------------------------------------ prototype
-# The file types that can hold a comment line (/prototype, Phase 5: JSON,
+# The file types that can hold a comment line (/gamedev-prototype, Phase 5: JSON,
 # scene and project files are exempt).
 COMMENTABLE=" gd py cs cpp cc cxx h hpp js mjs ts tsx lua html htm md gdshader shader hlsl glsl sh "
 rule_prototype() {
   _path="$1"; _new="${2:-$1}"; _dir=""
   case "$_path" in
-    prototypes/*) _dir=into-production ;;
+    docs/prototypes/*) _dir=into-production ;;
     *) for _r in $ROOTS; do case "$_path" in "$_r"/*) _dir=into-prototypes ;; esac; done ;;
   esac
   [ -n "$_dir" ] || return 0
@@ -330,22 +330,22 @@ rule_prototype() {
         # or an engine's own first line above it.
         if ! awk 'BEGIN { BINMODE = 3 } NR > 5 { exit } /PROTOTYPE - NOT FOR PRODUCTION|VERTICAL SLICE - NOT FOR PRODUCTION/ { f = 1; exit } END { exit !f }' "$_new"; then
           case "$_path" in
-            prototypes/*-vertical-slice/*) _h="VERTICAL SLICE - NOT FOR PRODUCTION" ;;
+            docs/prototypes/*-vertical-slice/*) _h="VERTICAL SLICE - NOT FOR PRODUCTION" ;;
             *) _h="PROTOTYPE - NOT FOR PRODUCTION" ;;
           esac
           printf 'PROTOTYPE_HEADER\t%s\t%s\n' "$(tsv "$_path")" "$_h"
         fi ;;
     esac
   fi
-  # A reference that climbs out of prototypes/ into a code root (../src/,
-  # Godot's res://src/), or one from the code root into prototypes/.
+  # A reference that climbs out of docs/prototypes/ into a code root (../src/,
+  # Godot's res://src/), or one from the code root into docs/prototypes/.
   ROOTS="$ROOTS" D="$_dir" P="$(tsv "$_path")" awk '
     BEGIN {
       BINMODE = 3
       n = split(ENVIRON["ROOTS"], r, " "); alt = ""
       for (i = 1; i <= n; i++) alt = alt (alt == "" ? "" : "|") r[i]
       if (ENVIRON["D"] == "into-production") re = "(res://|\\.\\./)(\\.\\./)*(" alt ")/"
-      else re = "(res://|\\.\\./|[\"'"'"'(<])(\\.\\./)*prototypes/"
+      else re = "(res://|\\.\\./|[\"'"'"'(<])(\\.\\./)*docs/prototypes/"
     }
     { l = $0; sub(/\r$/, "", l) }
     l ~ re { gsub(/\t/, " ", l); printf "PROTOTYPE_IMPORT\t%s\t%s\t%d\t%s\n", ENVIRON["P"], ENVIRON["D"], NR, l }
@@ -353,9 +353,9 @@ rule_prototype() {
 }
 
 # --------------------------------------------------------------------- freeze
-FREEZE_FILE=production/localization/freeze-status.md
+FREEZE_FILE=docs/production/localization/freeze-status.md
 rule_freeze() {
-  case "$1" in assets/data/strings/*) applied freeze ;; *) return 0 ;; esac
+  case "$1" in Content/data/strings/*) applied freeze ;; *) return 0 ;; esac
   [ -f "$FREEZE_FILE" ] || return 0
   # /localize writes **Status**: ACTIVE or LIFTED; "Active" is spelled both
   # ways in the skill, so the match ignores case.
@@ -374,10 +374,10 @@ rule_agent() {
   case "$1" in
     # Agent memory and session-state appends need no approval
     # (.claude/rules/agent-memory.md); they are not the subagent exception.
-    .claude/agent-memory/*|production/session-state/active.md) return 0 ;;
+    .claude/agent-memory/*|.claude/ccgs/session-state/active.md) return 0 ;;
   esac
   case "$1" in
-    production/*|docs/*|tests/*) ;;
+    docs/production/*|docs/*|tests/*) ;;
     *) printf 'AGENT_WRITE\t%s\t%s\toutside\n' "$(tsv "$1")" "$(tsv "$AGENT")"; return 0 ;;
   esac
   _e="$EXISTED"; [ -n "$_e" ] || { [ -e "$1" ] && _e=yes || _e=no; }

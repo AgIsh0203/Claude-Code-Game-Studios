@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash 
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,docs.density`
 
 Resolved above — use as-is. No block → defaults in
@@ -52,18 +54,18 @@ Four authoring modes exist based on the argument:
 
 | Argument | Mode | Output file |
 |----------|------|-------------|
-| `hud` | HUD design | `design/ux/hud.md` |
-| `patterns` | Interaction pattern library | `design/ux/interaction-patterns.md` |
-| `accessibility` | Project-wide accessibility requirements | `design/accessibility-requirements.md` |
-| Any other value (e.g., `main-menu`, `inventory`) | UX spec for a screen or flow | `design/ux/[argument].md` |
+| `hud` | HUD design | `docs/design/ux/hud.md` |
+| `patterns` | Interaction pattern library | `docs/design/ux/interaction-patterns.md` |
+| `accessibility` | Project-wide accessibility requirements | `docs/design/accessibility-requirements.md` |
+| Any other value (e.g., `main-menu`, `inventory`) | UX spec for a screen or flow | `docs/design/ux/[argument].md` |
 | No argument | Ask the user | (see below) |
 
-> **`accessibility` is the only mode that writes outside `design/ux/`.** Its
+> **`accessibility` is the only mode that writes outside `docs/design/ux/`.** Its
 > output is a project-wide standard the per-screen specs consult, not a spec for
 > one screen — `.claude/docs/workflow-catalog.yaml`, the Pre-Production and
 > Polish gates, and `/architecture-review` all check
-> `design/accessibility-requirements.md` at that exact path. Do not "tidy" it
-> under `design/ux/`: every one of those checks would stop matching, and the
+> `docs/design/accessibility-requirements.md` at that exact path. Do not "tidy" it
+> under `docs/design/ux/`: every one of those checks would stop matching, and the
 > Technical Setup → Pre-Production gate would become unpassable.
 
 **If no argument is provided**, do not fail — ask instead. Use `AskUserQuestion`:
@@ -117,9 +119,9 @@ controls the depth of each section, not which sections exist.
 
 If the session is interrupted (compaction, crash, new session):
 
-1. Read `production/session-state/active.md` — it records the current screen
+1. Read `.claude/ccgs/session-state/active.md` — it records the current screen
    and which sections are complete.
-2. Read `design/ux/[filename].md` — sections with real content are done;
+2. Read `docs/design/ux/[filename].md` — sections with real content are done;
    sections with `[To be designed]` still need work.
 3. Resume from the next incomplete section — no need to re-discuss completed ones.
 

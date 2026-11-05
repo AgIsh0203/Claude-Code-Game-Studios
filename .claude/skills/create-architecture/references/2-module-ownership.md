@@ -25,6 +25,6 @@ relevant module reference doc. If an API is post-cutoff, flag it:
 ```
 
 Get user approval on the ownership map, then record it in
-`production/session-state/active.md`; it is written at Phase 7.
+`.claude/ccgs/session-state/active.md`; it is written at Phase 7.
 
 ---

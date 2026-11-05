@@ -80,17 +80,17 @@ this gate asks for, not what a later one will), the list of artifacts present,
 and its gate's own context — named here, so this session never has to read the
 gate files:
 - **CD-PHASE-GATE**: the game pillars and core fantasy (from
-  `design/gdd/game-concept.md`, else `design/game-brief.md`).
+  `docs/GDD.md`, else `docs/GDD.md`).
 - **TD-PHASE-GATE**: the architecture document path, the engine reference path
   (`docs/engine-reference/<engine>/VERSION.md`), and the ADR list.
 - **PR-PHASE-GATE**: the sprint and milestone artifacts present, `team.size` as
   resolved above (with the current sprint plan's capacity, if a plan exists), and
-  the number of stories under `production/epics/` whose status is `Blocked`. At
-  `workflow: minimal`, pass the Build order in `design/game-brief.md` as the plan — that
+  the number of stories under `docs/production/epics/` whose status is `Blocked`. At
+  `workflow: minimal`, pass the Build order in `docs/GDD.md` as the plan — that
   tier has no sprint plan.
 - **AD-PHASE-GATE**: the art and visual artifacts present, the Visual Identity
-  Anchor (from `design/gdd/game-concept.md`, else the "Art & audio direction"
-  line of `design/game-brief.md`), and the art bible path.
+  Anchor (from `docs/GDD.md`, else the "Art & audio direction"
+  line of `docs/GDD.md`), and the art bible path.
 
 Tell each director to read any GDD, ADR or the art bible by section: find the
 headings with the Grep tool (pattern `^#`, content mode) and Read those

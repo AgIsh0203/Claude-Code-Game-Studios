@@ -3,14 +3,16 @@ name: security-audit
 description: "Security audit — save tampering, cheat vectors, network exploits, data exposure, input validation. Before public or multiplayer release."
 argument-hint: "[full | network | save | input | quick]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Agent, Bash(bash "*/.claude/skills/security-audit/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, Bash(bash "*/.claude/skills/security-audit/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -33,7 +35,7 @@ remediation plan.
 - After implementing any system that reads from disk or network
 - When a security-related bug is reported
 
-**Output:** `production/security/security-audit-[date]-[scope].md` — the scope
+**Output:** `docs/production/security/security-audit-[date]-[scope].md` — the scope
 in the name keeps a same-day `quick` or `save` run from overwriting the `full`
 report the release gate reads.
 
@@ -49,7 +51,7 @@ report the release gate reads.
 - `quick` — high-severity checks only (fastest, for iterative use)
 - No argument — run `full`
 
-Read `project.yaml` to determine the following, falling back to `.claude/docs/technical-preferences.md` for engine/language/platforms when a key is absent or empty:
+Read `.claude/ccgs/project.yaml` to determine the following, falling back to `.claude/docs/technical-preferences.md` for engine/language/platforms when a key is absent or empty:
 - `engine.name` and `engine.language` — **load-bearing: they select the Phase 3
   pattern set, and an engine with no sourced set for a category makes that
   category `NOT ASSESSED`.** If `engine.name` is absent or empty, say so in the
@@ -80,7 +82,7 @@ Read `project.yaml` to determine the following, falling back to `.claude/docs/te
   > multiplayer one ships the category unrun.
   >
   > Set them explicitly with `/settings platform.multiplayer=true` (they are
-  > project-wide, so `--local` is refused). Recording it in `project.yaml` is the
+  > project-wide, so `--local` is refused). Recording it in `.claude/ccgs/project.yaml` is the
   > fix; this rule is the guard for until someone does.
 
 ---
@@ -92,7 +94,7 @@ categories in this session instead. If it cannot be spawned, say why, run the
 scan here, and let the report's **Audited by** line say so.
 
 **Send this fixed brief template.** Fill only the `{…}` slots, from
-`project.yaml` (else technical preferences), the code root resolved per
+`.claude/ccgs/project.yaml` (else technical preferences), the code root resolved per
 `.claude/docs/code-root-resolution.md`, and the Phase 3 text copied as written.
 Add nothing else: no view on the game's type, no expected severity, no opinion
 on any finding — a sentence of your own is where a pre-rating gets in.
@@ -104,12 +106,12 @@ Scope: {full | network | save | input | quick}
 Engine: {engine.name} {engine.version}, language {engine.language}
 platform.multiplayer: {true | false | unset}    platform.online: {true | false | unset}    Phase 1 answer: {multiplayer | single-player | not asked}
 Code root: {the resolved code root, or "unresolved"}
-Also scan: {assets/data/ and the config files that exist, or "none"}
+Also scan: {Content/data/ and the config files that exist, or "none"}
 Categories to run, with their checks and grep patterns for this engine:
 {each Phase 3 category this scope runs, copied as written, with the table's row for this engine}
 NOT SOURCEABLE on this engine: {categories, or "none"} — report each NOT ASSESSED; never call it reviewed, verified safe or passed
 Skipped, with reason: {e.g. "Category 2 — platform.multiplayer and platform.online are false", or "none"}
-Report: production/security/security-audit-{date}-{scope}.md — return the report as text; /security-audit writes the file after asking
+Report: docs/production/security/security-audit-{date}-{scope}.md — return the report as text; /security-audit writes the file after asking
 
 Severity (rate every finding yourself, against this table only):
 - CRITICAL: Remote code execution, data breach, or trivially-exploitable cheat that breaks multiplayer integrity
@@ -225,7 +227,7 @@ Grep for: `recv`, `receive`, `PacketPeer`, `socket`, `MultiplayerPeer`,
 Grep for: `get_input`, `Input.get_`, `input_map`, user-facing text fields — check validation.
 
 ### Category 4: Data Exposure
-- Are any API keys, credentials, or secrets hardcoded in the code root or `assets/`?
+- Are any API keys, credentials, or secrets hardcoded in the code root or `Content/`?
 - Are debug symbols or verbose error messages included in release builds?
 - Does the game log sensitive player data to disk or console?
 - Are any internal file paths or system information exposed to players?
@@ -391,7 +393,7 @@ At `workflow: standard` and `full`, the Polish → Release gate requires this re
 
 Present the report summary (executive summary + CRITICAL/HIGH findings only) in conversation.
 
-Ask: "May I write the full security audit report to `production/security/security-audit-[date]-[scope].md`?"
+Ask: "May I write the full security audit report to `docs/production/security/security-audit-[date]-[scope].md`?"
 
 Write only after approval.
 
@@ -427,7 +429,7 @@ If it is **NOT ASSESSED**:
 > (Phase 3), naming that category.
 
 If it is **CLEAR TO SHIP**:
-> "✅ No blocking security findings. Report written to `production/security/`. Include this path when running `/gate-check release`."
+> "✅ No blocking security findings. Report written to `docs/production/security/`. Include this path when running `/gate-check release`."
 
 ---
 

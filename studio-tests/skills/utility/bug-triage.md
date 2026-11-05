@@ -3,14 +3,14 @@
 ## Skill Summary
 
 `/bug-triage` turns the open bug backlog into a prioritised, sprint-assigned
-action list and writes it to `production/qa/bug-triage-[date].md` after a
+action list and writes it to `docs/production/qa/bug-triage-[date].md` after a
 "May I write" ask. It runs on the Sonnet model. Modes: `sprint` (assign fixable
 bugs to the current sprint, defer the rest), `full` (P1 → current sprint, P2 →
 next sprint, P3+ → backlog), `trend` (trend analysis only, no assignment, from
 header fields alone); no argument runs `sprint` if a sprint file exists, else `full`.
 
-Bugs are discovered in `production/qa/bugs/*.md`, falling back to
-`production/qa/bugs.md`, then a `production/qa/qa-plan-*.md` "Bugs Found" table.
+Bugs are discovered in `docs/production/qa/bugs/*.md`, falling back to
+`docs/production/qa/bugs.md`, then a `docs/production/qa/qa-plan-*.md` "Bugs Found" table.
 Each bug gets a **severity** (S1 Critical – S4 Low, impact) and a **priority**
 (P1 Fix this sprint – P4 Won't fix / Deferred, urgency) — two separate axes, so
 the report groups bugs by priority, not severity. A deviation check flags
@@ -30,7 +30,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED
-- [ ] Contains "May I write" language before writing `production/qa/bug-triage-[date].md`
+- [ ] Contains "May I write" language before writing `docs/production/qa/bug-triage-[date].md`
 - [ ] Has a next-step handoff (`/sprint-status` for unassigned S1s; `/smoke-check` after regressions)
 
 ---
@@ -43,9 +43,9 @@ None. `/bug-triage` is an operational triage skill. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -55,8 +55,8 @@ Fixture defaults.
 ### Case 1: Happy Path — Sprint mode, 5 bugs grouped by priority
 
 **Fixture:**
-- `production/sprints/sprint-004.md` is the newest sprint file and notes spare capacity
-- `production/qa/bugs/` contains 5 bug files:
+- `docs/production/sprints/sprint-004.md` is the newest sprint file and notes spare capacity
+- `docs/production/qa/bugs/` contains 5 bug files:
   - `BUG-0001.md` — S1, P1, Audio
   - `BUG-0002.md` — S2, P1, Combat
   - `BUG-0003.md` — S3, P2, UI
@@ -71,7 +71,7 @@ Fixture defaults.
 3. Classifies severity and priority separately; P1 bugs are assigned to sprint 4
 4. Report has the Triage Summary table (P1: 2, P2: 2, P3: 1, P4: 0),
    "Critical (S1/S2) unfixed count: 3", and separate P1, P2 and P3/P4 tables
-5. Presents the report and asks "May I write this triage report to `production/qa/bug-triage-[date].md`?"
+5. Presents the report and asks "May I write this triage report to `docs/production/qa/bug-triage-[date].md`?"
 6. Writes only after approval
 
 **Assertions:**
@@ -79,27 +79,27 @@ Fixture defaults.
 - [ ] BUG-0001 and BUG-0002 are in the "P1 Bugs — Fix This Sprint" table, assigned to the current sprint
 - [ ] BUG-0003 and BUG-0004 are in the P2 table; BUG-0005 is in the P3/P4 table
 - [ ] Triage Summary counts and the S1/S2 unfixed count (3) are correct
-- [ ] "May I write" names `production/qa/bug-triage-[date].md`, and nothing is written before approval
+- [ ] "May I write" names `docs/production/qa/bug-triage-[date].md`, and nothing is written before approval
 
 ---
 
 ### Case 2: No Bug Files Found — Stops without a report
 
 **Fixture:**
-- `production/qa/bugs/` does not exist
-- No `production/qa/bugs.md` and no `production/qa/qa-plan-*.md`
+- `docs/production/qa/bugs/` does not exist
+- No `docs/production/qa/bugs.md` and no `docs/production/qa/qa-plan-*.md`
 
 **Input:** `/bug-triage`
 
 **Expected behavior:**
 1. Step 2a finds no bug source in any of its three locations
-2. Skill says: "No bug files found in `production/qa/bugs/`. If bugs are tracked in a
+2. Skill says: "No bug files found in `docs/production/qa/bugs/`. If bugs are tracked in a
    different location, adjust the glob pattern. If no bugs exist yet, there is nothing to triage."
 3. Skill stops — no classification, no triage report, no write — and ends
-   `Verdict: COMPLETE — no bug files in production/qa/bugs/; nothing to triage.`
+   `Verdict: COMPLETE — no bug files in docs/production/qa/bugs/; nothing to triage.`
 
 **Assertions:**
-- [ ] Output states that no bug files were found in `production/qa/bugs/`
+- [ ] Output states that no bug files were found in `docs/production/qa/bugs/`
 - [ ] Skill stops gracefully rather than erroring
 - [ ] No triage tables are produced
 - [ ] No "May I write" ask and no file written
@@ -110,9 +110,9 @@ Fixture defaults.
 ### Case 3: Systemic Issues — Deviation check flags a hot spot and a regression
 
 **Fixture:**
-- `production/sprints/sprint-004.md` exists
-- `production/qa/bugs/` holds 4 bugs: 3 in the Inventory system filed this sprint,
-  and 1 filed against `production/epics/core/story-003.md`, whose `Status: Complete`
+- `docs/production/sprints/sprint-004.md` exists
+- `docs/production/qa/bugs/` holds 4 bugs: 3 in the Inventory system filed this sprint,
+  and 1 filed against `docs/production/epics/core/story-003.md`, whose `Status: Complete`
 - The user approves the write when asked
 
 **Input:** `/bug-triage sprint`
@@ -122,7 +122,7 @@ Fixture defaults.
 2. "Systemic Issues Flagged" lists "Potential design or implementation quality issue in Inventory"
 3. It also flags "Regression in completed story — story should be re-opened in sprint tracking"
 4. Trend Analysis names Inventory as the hot spot and counts 1 regression
-5. Asks "May I write this triage report to `production/qa/bug-triage-[date].md`?";
+5. Asks "May I write this triage report to `docs/production/qa/bug-triage-[date].md`?";
    the user approves and the report is written
 6. After writing, the skill adds: "Regressions found — consider re-opening the affected
    stories in sprint tracking and running `/smoke-check` to re-gate." Verdict: COMPLETE
@@ -139,8 +139,8 @@ Fixture defaults.
 ### Case 4: Sprint at Capacity — Overflow flagged, Won't Fix asked, write declined
 
 **Fixture:**
-- `production/sprints/sprint-004.md` notes the sprint is at full capacity
-- `production/qa/bugs/` holds one S2/P1 bug and one S4 bug judged P4 (cosmetic, out of scope)
+- `docs/production/sprints/sprint-004.md` notes the sprint is at full capacity
+- `docs/production/qa/bugs/` holds one S2/P1 bug and one S4 bug judged P4 (cosmetic, out of scope)
 
 **Input:** `/bug-triage sprint`
 
@@ -156,7 +156,7 @@ Fixture defaults.
 - [ ] P1 bug carries the `Priority overflow` flag instead of a sprint assignment
 - [ ] The Won't Fix question is asked before any bug is dispositioned P4
 - [ ] Verdict is BLOCKED when the write is declined
-- [ ] `production/qa/bug-triage-[date].md` is not written
+- [ ] `docs/production/qa/bug-triage-[date].md` is not written
 
 ---
 
@@ -164,8 +164,8 @@ Fixture defaults.
 
 **Fixture:**
 - `modes.workflow: standard` (pinned: unset resolves to minimal, which has no sprints by design)
-- No sprint file in `production/sprints/`
-- `production/qa/bugs/` holds two bugs, S3/P3 and S4/P3
+- No sprint file in `docs/production/sprints/`
+- `docs/production/qa/bugs/` holds two bugs, S3/P3 and S4/P3
 
 **Input:** `/bug-triage full`
 
@@ -187,12 +187,12 @@ Fixture defaults.
 ### Case 6: Minimal workflow — no sprints by design, P1 bugs ahead of the next brief story
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: minimal` (pinned: this case tests the `minimal`
+- `.claude/ccgs/project.yaml`: `modes.workflow: minimal` (pinned: this case tests the `minimal`
   wording, the opposite of Case 5)
-- No `production/sprints/` directory
-- `design/game-brief.md` lists a build order of three features; the next unbuilt one
+- No `docs/production/sprints/` directory
+- `docs/GDD.md` lists a build order of three features; the next unbuilt one
   is "Inventory screen"
-- `production/qa/bugs/` holds BUG-0001 (S1, P1, Audio), BUG-0002 (S3, P1, UI) and
+- `docs/production/qa/bugs/` holds BUG-0001 (S1, P1, Audio), BUG-0002 (S3, P1, UI) and
   BUG-0003 (S4, P3, Tutorial)
 
 **Input:** `/bug-triage` (no argument; no sprint file, so `full` mode)
@@ -205,7 +205,7 @@ Fixture defaults.
    brief's build order ("Inventory screen")
 4. BUG-0003 goes to the backlog; no bug is given a `Sprint:` assignment
 5. The report is written after "May I write this triage report to
-   `production/qa/bug-triage-[date].md`?"; Verdict: COMPLETE
+   `docs/production/qa/bug-triage-[date].md`?"; Verdict: COMPLETE
 
 **Assertions:**
 - [ ] The no-sprint note says there are no sprints at `workflow: minimal`, and the "No sprint plan found — assigning to backlog only." wording does not appear
@@ -217,7 +217,7 @@ Fixture defaults.
 
 ## Protocol Compliance
 
-- [ ] Discovers bugs in `production/qa/bugs/*.md` before the fallbacks
+- [ ] Discovers bugs in `docs/production/qa/bugs/*.md` before the fallbacks
 - [ ] Keeps severity (S1–S4) and priority (P1–P4) as separate classifications
 - [ ] Never auto-assigns to a sprint at capacity
 - [ ] Never marks a bug Won't Fix without asking the user
@@ -230,7 +230,7 @@ Fixture defaults.
 
 - `trend` mode (header-field Grep only, no bug-body reads, no assignment) is not
   separately tested.
-- The consolidated `production/qa/bugs.md` and `qa-plan-*.md` fallbacks are not
+- The consolidated `docs/production/qa/bugs.md` and `qa-plan-*.md` fallbacks are not
   separately tested.
 - The "2+ S1/S2 bugs in the same story" deviation flag and the aged-bug
   warning (>2 sprints) are not separately tested.

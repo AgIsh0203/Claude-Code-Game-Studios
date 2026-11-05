@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Team Audio
 
 If no argument is provided, output usage guidance and exit without spawning any agents:
@@ -74,18 +76,18 @@ enforced.**
    `main menu`, `forest biome`, `boss encounter`).
 
 2. **Gather context**:
-   - Read relevant design docs in `design/gdd/` for the feature, by section: find the
+   - Read relevant design docs in `docs/design/gdd/` for the feature, by section: find the
      headings you need with the Grep tool (pattern `^#`, content mode) and Read
      those ranges with offset and limit
-   - Read the sound bible at `design/audio/sound-bible.md` if it exists. If only
-     `design/gdd/sound-bible.md` exists (where earlier versions put it), read that
-     and recommend moving it to `design/audio/` — in `design/gdd/` the GDD checks
+   - Read the sound bible at `docs/design/audio/sound-bible.md` if it exists. If only
+     `docs/design/gdd/sound-bible.md` exists (where earlier versions put it), read that
+     and recommend moving it to `docs/design/audio/` — in `docs/design/gdd/` the GDD checks
      count every file as a system GDD. If neither exists,
-     say so in one line — "No sound bible at `design/audio/sound-bible.md`; audio
+     say so in one line — "No sound bible at `docs/design/audio/sound-bible.md`; audio
      direction starts from the GDDs alone" — so the gap is visible in the output.
      Carry the gap forward: say so in the audio-director's Step 1 brief, and
      recommend creating a sound bible in Next Steps.
-   - Read existing audio asset lists in `assets/audio/`
+   - Read existing audio asset lists in `Content/audio/`
    - Read any existing sound design docs for this area
 
 ## How to Delegate
@@ -103,23 +105,23 @@ Use the `Agent` tool to spawn each team member as a subagent:
 **End every agent prompt with a return contract:** "Write your full output to `[path]` — that named path is your write authorisation under the bounded exception below, so write it without a separate approval prompt. Return **only** (1) the path written, (2) a ≤5-bullet summary of decisions, (3) any BLOCKED/CONCERNS items, one line each. Do not restate the documents you read." Without it, an agent returns everything it read back into this session. **Implementation files are the exception:** an agent writing code or assets first returns the files it will create or change, and its return contract names them only after you have asked once for the set and the user said yes (File Write Protocol) — that answer, not the bounded exception, authorises those writes.
 
 **Substitute a real path for `[path]`.** Working artifacts go under
-`production/audio/[feature]/`, where `[feature]` is the argument as a slug —
+`docs/production/audio/[feature]/`, where `[feature]` is the argument as a slug —
 lowercase, spaces → hyphens (`boss encounter` → `boss-encounter`), the same slug
 the "Save to" step uses. One file per agent, so parallel steps never share one:
 
 | Step / agent | Writes to |
 |---|---|
-| 1 audio-director | `production/audio/[feature]/direction.md` |
-| 2 sound-designer | `production/audio/[feature]/sfx-spec.md` |
-| 2 accessibility-specialist | `production/audio/[feature]/accessibility.md` |
-| 3 technical-artist | `production/audio/[feature]/integration-plan.md` |
-| 3 engine specialist | `production/audio/[feature]/engine-notes.md` |
+| 1 audio-director | `docs/production/audio/[feature]/direction.md` |
+| 2 sound-designer | `docs/production/audio/[feature]/sfx-spec.md` |
+| 2 accessibility-specialist | `docs/production/audio/[feature]/accessibility.md` |
+| 3 technical-artist | `docs/production/audio/[feature]/integration-plan.md` |
+| 3 engine specialist | `docs/production/audio/[feature]/engine-notes.md` |
 | 4 gameplay-programmer | the code root and the engine's test root — the files the one implementation ask lists (File Write Protocol), outside the bounded exception |
 
 These are working drafts; the durable record is the audio design document you
 compile from them.
 
-> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
+> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `docs/production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
 
 3. **Orchestrate the audio team** in sequence:
 
@@ -166,7 +168,7 @@ Spawn the **primary engine specialist** in parallel (`<engine>-specialist` deriv
 - Known audio system changes in the pinned engine version that affect the integration plan?
 - Output: engine audio integration notes to merge with the technical-artist's plan
 
-If no engine is configured, skip the specialist spawn. **Record ``Engine validation: NOT ASSESSED — no engine configured (`engine.name` unset in `project.yaml`)`` in this run's output.** A skipped check that says nothing is indistinguishable from a check that passed; the reader cannot tell engine guidance was never sought.
+If no engine is configured, skip the specialist spawn. **Record ``Engine validation: NOT ASSESSED — no engine configured (`engine.name` unset in `.claude/ccgs/project.yaml`)`` in this run's output.** A skipped check that says nothing is indistinguishable from a check that passed; the reader cannot tell engine guidance was never sought.
 
 ### Step 4: Code Integration (gameplay-programmer)
 Spawn the `gameplay-programmer` agent to:
@@ -178,18 +180,18 @@ Spawn the `gameplay-programmer` agent to:
 
 4. **Compile the audio design document** combining all team outputs.
 
-5. **Save to** `design/audio/audio-[feature].md` — **but ask first.** `design/` is
+5. **Save to** `docs/design/audio/audio-[feature].md` — **but ask first.** `docs/design/` is
    NOT one of the three directories the bounded write exception covers
-   (`production/`, `docs/`, `tests/`), so a sub-agent handed this path must
+   (`docs/production/`, `docs/`, `tests/`), so a sub-agent handed this path must
    prompt. Do not
    resolve that by widening the exception. Instead, follow the same pattern
    `team-level` uses: **you** already hold every sub-agent's output, so compile
    the document yourself and ask directly via `AskUserQuestion` — "May I write the
-   audio design to `design/audio/audio-[feature].md`?" — then write it on
-   approval. Sub-agent working artifacts stay under `production/` where the
+   audio design to `docs/design/audio/audio-[feature].md`?" — then write it on
+   approval. Sub-agent working artifacts stay under `docs/production/` where the
    exception does reach them.
 
-   Note: If `design/audio/` does not exist, writing the file creates it.
+   Note: If `docs/design/audio/` does not exist, writing the file creates it.
 
 6. **Output a summary** with: audio event count, estimated asset count,
    implementation tasks, and any open questions between team members.
@@ -210,14 +212,14 @@ Verdict: **BLOCKED** — [reason]
 Per-agent artifacts (SFX specs, integration plans) are written by the sub-agent
 that produced them, under the **bounded exception** documented above under "Why
 this does not violate the Collaboration Protocol" — the path is one you named, the
-artifact is new under `production/`, `docs/` or `tests/`, and the phase is gated by
+artifact is new under `docs/production/`, `docs/` or `tests/`, and the phase is gated by
 an `AskUserQuestion`. A sub-agent does **not** prompt per write inside those bounds;
 outside them it must ask. **Implementation files** — gameplay-programmer's audio
-integration code, anything under the code root or `assets/` — are outside those
+integration code, anything under the code root or `Content/` — are outside those
 bounds: the agent returns the files it will create or change, you ask once for the
 set, and it writes after a yes. The **one exception is the final compiled audio design
 document**: the orchestrator already holds every input, so it compiles and writes
-`design/audio/audio-[feature].md` itself after its own "May I write …?" prompt
+`docs/design/audio/audio-[feature].md` itself after its own "May I write …?" prompt
 (the "Save to" step above).
 
 ## Next Steps
@@ -226,9 +228,9 @@ document**: the orchestrator already holds every input, so it compiles and write
 - Use `/dev-story` to implement the audio manager and event system once the design is approved.
 - Run `/asset-audit` after audio assets are created to verify naming and format compliance.
 - If there was no sound bible, create one before the next audio pass: ask the
-  `audio-director` agent to draft `design/audio/sound-bible.md` from
+  `audio-director` agent to draft `docs/design/audio/sound-bible.md` from
   `.claude/docs/templates/sound-bible.md`, starting from this run's Step 1
-  direction (it asks before writing under `design/`).
+  direction (it asks before writing under `docs/design/`).
 
 ## Error Recovery Protocol
 

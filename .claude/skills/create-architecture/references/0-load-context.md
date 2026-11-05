@@ -33,7 +33,7 @@ Then read **only the module docs whose domain this game actually uses** —
 not the whole `modules/` directory:
 
 5. `docs/engine-reference/[engine]/modules/` — glob it to establish what exists,
-   then match against the domains present in `design/gdd/systems-index.md`
+   then match against the domains present in `docs/GDD.md`
    (the same domain vocabulary the ADR template uses: Physics, Rendering, UI,
    Audio, Navigation, Animation, Networking, Core, Input). Read the matching
    modules; skip the rest.
@@ -55,8 +55,8 @@ Load the approved design documents and extract technical requirements from each.
 Read each one by section: find the headings you need with the Grep tool (pattern
 `^#`, content mode) and Read those ranges with offset and limit.
 
-1. `design/gdd/game-concept.md` — game pillars, genre, core loop
-2. `design/gdd/systems-index.md` — all systems, dependencies, priority tiers
+1. `docs/GDD.md` — game pillars, genre, core loop
+2. `docs/GDD.md` — all systems, dependencies, priority tiers
 
 **Check both exist before reading either. Neither is optional here, and both
 need an absence branch** — §0a stops for an unconfigured engine, and these two
@@ -69,7 +69,7 @@ matter just as much:
   At `minimal` the index is not required (the `workflow` list in SKILL.md) — say so and proceed
   from the brief instead.
 - **`game-concept.md` absent** — at `standard`/`full`, stop and point at
-  `/brainstorm`. At `minimal`, read `design/game-brief.md` in its place; if that
+  `/brainstorm`. At `minimal`, read `docs/GDD.md` in its place; if that
   is absent too, stop — there is no design record to architect against.
 - **Either present but empty or still template placeholders** — treat as absent.
   Present-but-empty is the case that most looks like present.
@@ -77,15 +77,15 @@ matter just as much:
 Do not proceed on a partial read and note it later. This phase is where design
 assumptions get baked into ADRs, and an assumption made here is re-derived by
 everything downstream rather than re-checked.
-3. Project config — `naming.*` and `performance.*` from `project.yaml` (for any
+3. Project config — `naming.*` and `performance.*` from `.claude/ccgs/project.yaml` (for any
    key absent or empty, fall back to `.claude/docs/technical-preferences.md`);
    allowed libraries and forbidden patterns from
-   `.claude/docs/technical-preferences.md` (not migrated to project.yaml)
-4. **Every GDD in `design/gdd/`** — extract technical requirements from the
+   `.claude/docs/technical-preferences.md` (not migrated to .claude/ccgs/project.yaml)
+4. **Every GDD in `docs/design/gdd/`** — extract technical requirements from the
    sections that carry them, **not from whole files**. Establish the denominator
-   first (glob `design/gdd/*.md`, count **N**), then:
+   first (glob `docs/design/gdd/*.md`, count **N**), then:
    ```
-   Grep pattern="^## (Detailed Rules|Detailed Design|Formulas|Dependencies|Tuning Knobs|Acceptance Criteria)" glob="design/gdd/*.md" output_mode="content" -A 40
+   Grep pattern="^## (Detailed Rules|Detailed Design|Formulas|Dependencies|Tuning Knobs|Acceptance Criteria)" glob="docs/design/gdd/*.md" output_mode="content" -A 40
    ```
    Overview and Player Fantasy are narrative and imply no architecture; the
    scanned set is where rules, numbers, and cross-system contracts live. Accept

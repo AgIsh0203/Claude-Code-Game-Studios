@@ -1,11 +1,11 @@
-# /prototype — Phase 5: Implement
+# /gamedev-prototype — Phase 5: Implement
 
-> Part of `/prototype`. `SKILL.md` names when to read this file; the settings it
+> Part of `/gamedev-prototype`. `SKILL.md` names when to read this file; the settings it
 > resolved and the rules under its later headings still apply here.
 
 ## Phase 5: Implement
 
-Ask: "May I create the prototype directory at `prototypes/[concept-name]-concept/`
+Ask: "May I create the prototype directory at `docs/prototypes/[concept-name]-concept/`
 and begin implementation?"
 
 If yes, create the directory. Every file must begin with:
@@ -82,14 +82,14 @@ Iterate until the prototype is playable. Each loop:
 
 ### HTML path: single output
 
-Write a single `prototype.html` to `prototypes/[concept-name]-concept/`. Include
+Write a single `prototype.html` to `docs/prototypes/[concept-name]-concept/`. Include
 all styles, logic, and assets inline. The file must be openable by double-clicking
 with no server required.
 
 ### Paper path: document + log
 
-Write `prototypes/[concept-name]-concept/rules.md` (the game rules) and
-`prototypes/[concept-name]-concept/play-log.md` (a simulated session walking
+Write `docs/prototypes/[concept-name]-concept/rules.md` (the game rules) and
+`docs/prototypes/[concept-name]-concept/play-log.md` (a simulated session walking
 through one complete play cycle step by step with dice rolls, decisions, and
 outcomes narrated).
 

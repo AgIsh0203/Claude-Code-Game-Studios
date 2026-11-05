@@ -3,14 +3,16 @@ name: changelog
 description: "Auto-generate a changelog from git commits and sprint data. Internal and player-facing versions."
 argument-hint: "[version|sprint-number]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/changelog/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *), Bash(git tag --list*), Bash(git rev-parse *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/changelog/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *), Bash(git tag --list*), Bash(git rev-parse *)
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -56,7 +58,7 @@ check governs is whether that output is usable, not whether it is fetched.
 > history it is. Change both together.
 
 The genuine wrong-history signal is different: Game commits naming a product that
-`design/` and the code root (`src/`, `Assets/` or `Source/`) never mention. If you
+`docs/design/` and the code root (`src/`, `Assets/` or `Source/`) never mention. If you
 see that, stop.
 
 If **no** commit in the range is this game's, say so and stop:
@@ -113,9 +115,9 @@ a changelog covering one release, and the oldest of them are the least relevant.
 If 100 commits does not reach far enough back, say so and ask for a start ref
 rather than widening blindly.
 
-Read sprint reports from `production/sprints/` for the relevant period to understand planned work and context behind changes.
+Read sprint reports from `docs/production/sprints/` for the relevant period to understand planned work and context behind changes.
 
-Read completed design documents from `design/gdd/` for any new features implemented during this period. Read them by section: find the headings you need with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
+Read completed design documents from `docs/design/gdd/` for any new features implemented during this period. Read them by section: find the headings you need with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
 
 ---
 

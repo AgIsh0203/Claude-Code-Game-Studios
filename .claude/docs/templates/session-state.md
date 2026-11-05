@@ -20,7 +20,7 @@
   to agree on. With the named regions, every consumer reads the same part.
 
   ROTATION. When the narrative below grows past ~200 lines, move it to
-  `production/session-logs/` and start it fresh:
+  `.claude/ccgs/session-logs/` and start it fresh:
       bash .claude/scripts/rotate-session-state.sh
   Nothing is lost — and the commit history already records most of what the
   narrative repeats.

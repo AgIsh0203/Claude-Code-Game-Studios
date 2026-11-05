@@ -1,8 +1,8 @@
 # Phase 8: The next story when a sprint plan exists
 
-Read only when `production/sprints/` holds a sprint plan.
+Read only when `docs/production/sprints/` holds a sprint plan.
 
-1. Read the newest sprint plan in `production/sprints/`.
+1. Read the newest sprint plan in `docs/production/sprints/`.
 2. Find the stories that are Ready or Not Started, not waiting on an unfinished
    story, and in the Must Have or Should Have tier.
 

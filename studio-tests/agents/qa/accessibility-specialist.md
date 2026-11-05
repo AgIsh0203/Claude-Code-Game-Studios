@@ -74,7 +74,7 @@ No gate IDs assigned.
 - [ ] Does not implement UI changes — coordinates with ui-programmer for implementation
 - [ ] References specific WCAG criteria by number when compliance target is provided
 - [ ] Flags conflicts between accessibility requirements and art decisions to art-director
-- [ ] Asks "May I write this to [filepath]?" naming the file (e.g., `production/qa/accessibility/[screen-or-feature]-audit-[date].md`) before writing any audit or requirements document
+- [ ] Asks "May I write this to [filepath]?" naming the file (e.g., `docs/production/qa/accessibility/[screen-or-feature]-audit-[date].md`) before writing any audit or requirements document
 
 ---
 

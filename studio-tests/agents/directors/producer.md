@@ -66,7 +66,7 @@ Verified by reading the agent's `.claude/agents/producer.md` frontmatter:
 - [ ] Does not give generic scope advice disconnected from the supplied deadline and velocity data
 
 ### Case 6: Missing gate input — NOT ASSESSED
-**Scenario:** A sprint plan is submitted with five stories — titles, estimates and dependencies, correctly ordered — and the milestone constraints, but no team capacity: the context gives none, and `production/sprints/` holds no earlier sprint to derive a velocity from. Request is tagged PR-SPRINT.
+**Scenario:** A sprint plan is submitted with five stories — titles, estimates and dependencies, correctly ordered — and the milestone constraints, but no team capacity: the context gives none, and `docs/production/sprints/` holds no earlier sprint to derive a velocity from. Request is tagged PR-SPRINT.
 **Expected:** Returns `PR-SPRINT: NOT ASSESSED`, naming team capacity as the input it could not read. Whether a story load is realistic depends on the capacity it is measured against, so no feasibility verdict is given.
 **Assertions:**
 - [ ] Verdict token is `PR-SPRINT: NOT ASSESSED` — not REALISTIC, and not UNREALISTIC by assumption
@@ -74,7 +74,7 @@ Verified by reading the agent's `.claude/agents/producer.md` frontmatter:
 - [ ] Does not invent a capacity or velocity figure to judge the load against
 
 ### Case 7: Phase gate at `minimal` — the brief's Build order is the plan
-**Scenario:** `/gate-check production` at `workflow: minimal` runs the panel with `review_mode: lean` set explicitly, so the producer is spawned alone for PR-PHASE-GATE. The context gives the target phase (Production), the tier, and the gate's required artifacts at that tier: a filled `design/game-brief.md` with its Build order, and stories under `production/epics/`. Both are present — the Build order lists four MVP features, the first three independent and the fourth depending on the first, and there is one story per feature in that order, none Blocked. `team.size` is `individual`; the brief states a six-week target for the MVP. The sprint plan and sprint capacity are passed as "not required at `workflow: minimal`".
+**Scenario:** `/gate-check production` at `workflow: minimal` runs the panel with `review_mode: lean` set explicitly, so the producer is spawned alone for PR-PHASE-GATE. The context gives the target phase (Production), the tier, and the gate's required artifacts at that tier: a filled `docs/GDD.md` with its Build order, and stories under `docs/production/epics/`. Both are present — the Build order lists four MVP features, the first three independent and the fourth depending on the first, and there is one story per feature in that order, none Blocked. `team.size` is `individual`; the brief states a six-week target for the MVP. The sprint plan and sprint capacity are passed as "not required at `workflow: minimal`".
 **Expected:** Returns `PR-PHASE-GATE: READY` — the Build order is the plan at this tier, its dependency is ordered, and four stories fit a solo developer's six weeks. The absent sprint plan and velocity are not findings.
 **Assertions:**
 - [ ] Verdict is exactly one of READY / CONCERNS / NOT READY (the PR-PHASE-GATE verdicts), formatted as `PR-PHASE-GATE: READY`
@@ -88,7 +88,7 @@ Verified by reading the agent's `.claude/agents/producer.md` frontmatter:
 
 - [ ] Returns the verdict vocabulary the invoked gate's definition file lists — REALISTIC / CONCERNS / UNREALISTIC for PR-SPRINT and PR-EPIC; REALISTIC / OPTIMISTIC / UNREALISTIC for PR-SCOPE; ON TRACK / AT RISK / OFF TRACK for PR-MILESTONE; READY / CONCERNS / NOT READY for PR-PHASE-GATE; `NOT ASSESSED`, naming the input, at any gate when an input the gate names is missing
 - [ ] Stays within declared production domain
-- [ ] Escalates design/technical conflicts by quantifying scope impact and presenting to user
+- [ ] Escalates docs/design/technical conflicts by quantifying scope impact and presenting to user
 - [ ] Uses gate IDs in output (e.g., `PR-SPRINT: REALISTIC`) not inline prose verdicts
 - [ ] Does not make binding game design or technical architecture decisions
 - [ ] At a phase gate, treats an artifact the target phase requires that the calling skill passes as "none" as a finding (NOT READY or CONCERNS), and one passed as "not expected before [phase]" or "not required at `workflow: [tier]`" as no finding — it judges readiness for the phase being entered, not a later one

@@ -3,14 +3,16 @@ name: patch-notes
 description: "Player-facing patch notes from git history and changelogs. Translates developer language into player communication."
 argument-hint: "[version] [--style brief|detailed|full]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/patch-notes/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/patch-notes/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *)
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -46,7 +48,7 @@ before Phase 2 and stop if it fails.
 > Excluding them addresses that exactly, and a repo-level stop does not.
 
 Corroborate before you proceed, cheaply: the Game commits should name systems
-that appear in `design/` and the code root (`src/`, `Assets/` or `Source/`). If
+that appear in `docs/design/` and the code root (`src/`, `Assets/` or `Source/`). If
 they name a product those directories
 never mention, that is the real wrong-history signal — stop.
 
@@ -78,14 +80,14 @@ If no version is provided, ask the user before proceeding.
 
 ## Phase 2: Gather Change Data
 
-- Read the internal changelog at `production/releases/[version]/changelog.md` if it exists
+- Read the internal changelog at `docs/production/releases/[version]/changelog.md` if it exists
 - Also check `docs/CHANGELOG.md` for the relevant version entry
 - Run `git log` between the previous release tag and current tag/HEAD as a fallback
-- Read sprint retrospectives in `production/sprints/` for context
-- Read any balance change documents in `design/balance/`
+- Read sprint retrospectives in `docs/production/sprints/` for context
+- Read any balance change documents in `docs/design/balance/`
 - Read bug fix records from QA if available
 
-**If no changelog data is available** (neither `production/releases/[version]/changelog.md`
+**If no changelog data is available** (neither `docs/production/releases/[version]/changelog.md`
 nor a `docs/CHANGELOG.md` entry for this version exists, and git log is empty or unavailable):
 
 > "No changelog data found for [version]. Run `/changelog [version]` first to generate the
@@ -102,7 +104,7 @@ Verdict: **BLOCKED** — stop here without generating notes.
 1. Check `.claude/docs/technical-preferences.md` for any "tone", "voice", or "style"
    fields or sections.
 2. Check `docs/PATCH-NOTES-STYLE.md` if it exists.
-3. Check `design/community/tone-guide.md` if it exists.
+3. Check `docs/design/community/tone-guide.md` if it exists.
 4. If any source contains tone/voice/style instructions, extract them and apply
    them to the language and framing of the generated notes.
 5. If no tone guidance is found anywhere, default to:
@@ -235,7 +237,7 @@ Check the generated notes for:
 Present the completed patch notes to the user along with: a count of changes by category, and any internal changes that were excluded (for review).
 
 Ask: "May I write these patch notes to `docs/patch-notes/[version].md`, and an
-archive copy to `production/releases/[version]/patch-notes.md`?"
+archive copy to `docs/production/releases/[version]/patch-notes.md`?"
 
 If yes, write both files, creating the directories if needed.
 If no, write nothing.

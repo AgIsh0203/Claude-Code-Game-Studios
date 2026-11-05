@@ -106,13 +106,13 @@ Use the template structure from `.claude/docs/templates/game-design-document.md`
 [To be designed]
 ```
 
-Ask: "May I create the skeleton file at `design/gdd/[system-name].md`?"
+Ask: "May I create the skeleton file at `docs/design/gdd/[system-name].md`?"
 
 If the user declines: Stop with the following message:
 > "Verdict: **BLOCKED** — skeleton creation declined. The design session cannot proceed without the skeleton file, as all subsequent phases use it as the base. Re-run `/design-system [system]` when ready to create the file."
 Do not proceed to Section A.
 
-After writing, update `production/session-state/active.md`:
+After writing, update `.claude/ccgs/session-state/active.md`:
 - Use Glob to check if the file exists.
 - If it **does not exist**: use the **Write** tool to create it. Never attempt Edit on a file that may not exist.
 - If it **already exists**: use the **Edit** tool to update the relevant fields.
@@ -120,6 +120,6 @@ After writing, update `production/session-state/active.md`:
 File content:
 - Task: Designing [system-name] GDD
 - Current section: Starting (skeleton created)
-- File: design/gdd/[system-name].md
+- File: docs/design/gdd/[system-name].md
 
 ---

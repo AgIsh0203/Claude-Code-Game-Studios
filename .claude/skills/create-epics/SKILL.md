@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,docs.density,engine_values,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
@@ -22,8 +24,8 @@ and which decisions govern it. How to build it is for the stories. Run it once p
 layer as development reaches that layer: Feature epics written before Core is
 nearly done describe a design that will have changed.
 
-**Writes:** `production/epics/[epic-slug]/EPIC.md` per epic and its row in
-`production/epics/index.md`, each after its own yes.
+**Writes:** `docs/production/epics/[epic-slug]/EPIC.md` per epic and its row in
+`docs/production/epics/index.md`, each after its own yes.
 **Next:** `/create-stories [epic-slug]` per epic. This skill never writes a story.
 
 Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
@@ -55,14 +57,14 @@ The text typed after the skill name, with any `--review <mode>` pair removed:
 in-scope system's own GDD bar comes from its `system_overrides` row, when it has one.
 
 **At `minimal`, tell the user first:** this step is optional at this tier, because
-`/create-stories` builds the epic from `design/game-brief.md` by itself. Then go on
+`/create-stories` builds the epic from `docs/GDD.md` by itself. Then go on
 when they asked for epics.
 
 ## Phase 2: Load the inputs
 
 ### `minimal`: the brief
 
-Read `design/game-brief.md`. None: stop, "No `design/game-brief.md` — run `/start`
+Read `docs/GDD.md`. None: stop, "No `docs/GDD.md` — run `/start`
 or `/brainstorm` first." Never ask for GDDs, a systems index, an architecture
 document, ADRs, a TR registry or a control manifest, and never send the user to
 `/design-system`, `/map-systems` or `/create-architecture` first: this tier has none
@@ -71,7 +73,7 @@ by design.
 Report first, word for word:
 
 ```
-Loaded: design/game-brief.md · engine [name version from the engine_values line]
+Loaded: docs/GDD.md · engine [name version from the engine_values line]
 At minimal this step is optional: /create-stories builds the epic from the brief by itself.
 ```
 
@@ -86,17 +88,17 @@ per group of MVP features that ship together. Every epic names its slug, since
 1. **The system GDDs.** `bash .claude/scripts/gdd-structure-check.sh` lists every
    system GDD; the game concept, systems index, pillars, cross-reviews and the other
    non-system documents are left out for you. Their count is **N**. N is 0: stop,
-   "No system GDDs found in `design/gdd/` — run `/design-system` first."
+   "No system GDDs found in `docs/design/gdd/` — run `/design-system` first."
 2. **What is in scope.** Each GDD's `## Summary` quick reference gives its layer and
    priority. A GDD with no Summary (older GDDs predate it) takes its layer from
-   `design/gdd/systems-index.md`. Never treat an absent `## Summary` as an absent system:
+   `docs/GDD.md`. Never treat an absent `## Summary` as an absent system:
    it never drops one from scope.
 3. **The architecture.** `docs/architecture/architecture.md` is required at both
    tiers: missing, stop with
    "No `docs/architecture/architecture.md` — run `/create-architecture` first." Never invent module boundaries.
 4. **For in-scope systems only**, by section, never whole:
    - each GDD's Overview and Acceptance Criteria
-     (`bash .claude/scripts/md-section.sh extract design/gdd/<file>.md "Overview"`);
+     (`bash .claude/scripts/md-section.sh extract docs/design/gdd/<file>.md "Overview"`);
    - `bash .claude/scripts/adr-status.sh` for every ADR's status, layer and missing
      sections; then the GDD Requirements Addressed, Decision and Engine
      Compatibility sections of the ADRs that cover in-scope systems;
@@ -137,7 +139,7 @@ Foundation-layer requirements at `standard`; any other untraced requirement at
 ```
 ## Epic: [System Name]
 **Layer**: [Foundation | Core | Feature | Presentation]
-**GDD**: design/gdd/[file].md   (at minimal: design/game-brief.md, MVP features [list])
+**GDD**: docs/design/gdd/[file].md   (at minimal: docs/GDD.md, MVP features [list])
 **Architecture Module**: [module]
 **Governing ADRs**: [Accepted ADRs, or "none"]
 **Engine Risk**: [LOW | MEDIUM | HIGH — the highest among governing ADRs, else VERSION.md's]
@@ -178,12 +180,12 @@ Overview, Governing ADRs, GDD Requirements, Definition of Done) and leaves the
 `**Stories**` line and any `## Stories` table as they are: `/create-stories` wrote
 them, and resetting them orphans the stories already there.
 
-**New:** ask "May I write `production/epics/[epic-slug]/EPIC.md` and add its row to
-`production/epics/index.md`[, creating it]?" This is its own ask, one per epic, after
+**New:** ask "May I write `docs/production/epics/[epic-slug]/EPIC.md` and add its row to
+`docs/production/epics/index.md`[, creating it]?" This is its own ask, one per epic, after
 the Phase 3 yes: that yes approved the epic, not the write. Write only on an explicit
 yes to it. Right
 before writing, run `bash .claude/scripts/write-guard.sh overwrite
-production/epics/[epic-slug]/EPIC.md`. It always prints a `checked` row; an
+docs/production/epics/[epic-slug]/EPIC.md`. It always prints a `checked` row; an
 `OVERWRITE` row back means the file exists after all, so write nothing and ask the
 update question instead.
 
@@ -195,7 +197,7 @@ whole at every density.
 # Epic: [System Name]
 
 > **Layer**: [Foundation | Core | Feature | Presentation]
-> **GDD**: design/gdd/[file].md
+> **GDD**: docs/design/gdd/[file].md
 > **Architecture Module**: [module]
 > **Status**: Ready
 > **Stories**: Not yet created — run `/create-stories [epic-slug]`
@@ -220,17 +222,17 @@ whole at every density.
 ## Definition of Done
 
 - Every story implemented, reviewed and closed with `/story-done`
-- Every acceptance criterion of design/gdd/[file].md verified
+- Every acceptance criterion of docs/design/gdd/[file].md verified
 - Logic and Integration stories have passing tests in the test root
-- Visual/Feel and UI stories have retained screenshots in `production/qa/evidence/`
+- Visual/Feel and UI stories have retained screenshots in `docs/production/qa/evidence/`
   (a lead sign-off too for Visual/Feel)
 ```
 
-At `minimal`, the GDD line names `design/game-brief.md`, the Governing ADRs and GDD
+At `minimal`, the GDD line names `docs/GDD.md`, the Governing ADRs and GDD
 Requirements tables are left out, and a **Scope** list holds the epic's MVP
 features in Build order.
 
-**`production/epics/index.md`:** one row per epic. An epic that already has a row
+**`docs/production/epics/index.md`:** one row per epic. An epic that already has a row
 keeps it: update it in place, never add a second row, never reset its Stories cell.
 
 ```markdown
@@ -258,7 +260,7 @@ Every epic's content comes from the GDDs, ADRs and architecture docs (the brief 
 ```
 Verdict: COMPLETE — [N] epics written: [slugs]
 Review: [PR-EPIC skipped — Solo mode | skipped — Lean mode | its verdict]
-Index: production/epics/index.md [created | updated]
+Index: docs/production/epics/index.md [created | updated]
 Next step: /create-stories [first-epic-slug]
 ```
 

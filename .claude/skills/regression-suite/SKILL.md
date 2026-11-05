@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.cla
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,qa.level,system_overrides`
 
 Resolved above — use as-is. No block → defaults in
@@ -100,14 +102,14 @@ Do not read test file contents unless needed for name-to-test mapping.
 
 ### Step 2c — Load GDD critical paths
 
-For `audit` mode: read `design/gdd/systems-index.md` to get all systems, then
+For `audit` mode: read `docs/GDD.md` to get all systems, then
 scope the scan by each system's workflow tier (resolved above):
 - **`full`** — read the GDD and map critical paths from all sections.
 - **`standard`** — same, from the required sections (Acceptance Criteria, Edge
   Cases, and Formulas where the system defines numeric rules).
   A system pinned higher via `system_overrides` is mapped at its higher tier.
 - **`minimal`** — **skip the GDD critical-path scan**. Instead read the latest
-  smoke-check report in `production/qa/smoke-*.md` and take the critical paths it
+  smoke-check report in `docs/production/qa/smoke-*.md` and take the critical paths it
   exercises as the regression scope (Step 3 maps coverage against those, not GDD
   acceptance criteria). If no smoke report exists, stop with Verdict: **NOT
   ASSESSED — no smoke report to take critical paths from** — there is no
@@ -129,7 +131,7 @@ and story files to find stories with Status: Complete this sprint.
 
 ### Step 2d — Load closed bugs
 
-Glob `production/qa/bugs/*.md` and filter for bugs with a `Status: Closed`
+Glob `docs/production/qa/bugs/*.md` and filter for bugs with a `Status: Closed`
 or `Status: Fixed` field. Note:
 - Which story or system the bug was in
 - Whether a regression test was mentioned in the fix description

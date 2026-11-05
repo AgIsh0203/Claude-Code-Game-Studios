@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/.claude/skills/team-ui/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 # Team UI
 
 If no argument is provided, output usage guidance and exit without spawning any agents or reading any design files:
@@ -73,7 +75,7 @@ enforced.**
 - **ux-designer** — User flows, wireframes, accessibility, input handling
 - **ui-programmer** — UI framework, screens, widgets, data binding, implementation
 - **art-director** — Visual style, layout polish, consistency with art bible
-- **engine UI specialist** — Validates UI implementation patterns against engine-specific best practices (`specialists.ui` from `project.yaml`; if absent, the UI Specialist line of `## Engine Specialists` in `.claude/docs/technical-preferences.md`)
+- **engine UI specialist** — Validates UI implementation patterns against engine-specific best practices (`specialists.ui` from `.claude/ccgs/project.yaml`; if absent, the UI Specialist line of `## Engine Specialists` in `.claude/docs/technical-preferences.md`)
 - **accessibility-specialist** — Audits accessibility compliance at Phase 4
 
 > **`specialists.ui: null` means UNSET.** Treat it as absent and skip the engine
@@ -101,20 +103,20 @@ Use the `Agent` tool to spawn each team member as a subagent:
 **End every agent prompt with a return contract:** "Write your full output to `[path]` — that named path is your write authorisation under the bounded exception below, so write it without a separate approval prompt. Return **only** (1) the path written, (2) a ≤5-bullet summary of decisions, (3) any BLOCKED/CONCERNS items, one line each. Do not restate the documents you read." Without it, an agent returns everything it read back into this session. **Implementation files are the exception:** an agent writing code or assets first returns the files it will create or change, and its return contract names them only after you have asked once for the set and the user said yes (File Write Protocol) — that answer, not the bounded exception, authorises those writes.
 
 **Substitute a real path for `[path]`.** Working artifacts go under
-`production/ui/[feature-name]/`, the slug Phase 1b's `design/ux/[feature-name].md`
+`docs/production/ui/[feature-name]/`, the slug Phase 1b's `docs/design/ux/[feature-name].md`
 uses. One file per agent, so the parallel Phase 4 reviews never share one:
 
 | Phase / agent | Writes to |
 |---|---|
-| 2 art-director | `production/ui/[feature-name]/visual-design.md` |
-| 3 engine UI specialist | `production/ui/[feature-name]/engine-notes.md` |
+| 2 art-director | `docs/production/ui/[feature-name]/visual-design.md` |
+| 3 engine UI specialist | `docs/production/ui/[feature-name]/engine-notes.md` |
 | 3 ui-programmer | the code root — the files the one implementation ask lists (File Write Protocol), outside the bounded exception |
-| 4 ux-designer, art-director, accessibility-specialist | `production/ui/[feature-name]/review-[agent].md`, one each |
+| 4 ux-designer, art-director, accessibility-specialist | `docs/production/ui/[feature-name]/review-[agent].md`, one each |
 
-The UX spec itself (Phase 1b) and any pattern-library update are under `design/`,
+The UX spec itself (Phase 1b) and any pattern-library update are under `docs/design/`,
 outside the bounded exception: `/ux-design` or the agent asks before writing them.
 
-> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
+> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `docs/production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
 
 Launch independent agents in parallel where the pipeline allows it (e.g., Phase 4 review agents can run simultaneously).
 
@@ -125,19 +127,19 @@ Launch independent agents in parallel where the pipeline allows it (e.g., Phase 
 Before designing anything, read and synthesize. Read each GDD by section: find the
 headings you need with the Grep tool (pattern `^#`, content mode) and Read those
 ranges with offset and limit.
-- `design/gdd/game-concept.md` — platform targets and intended audience (or
-  `design/game-brief.md`, the one-page brief that replaces it at `rigor: minimal` —
+- `docs/GDD.md` — platform targets and intended audience (or
+  `docs/GDD.md`, the one-page brief that replaces it at `rigor: minimal` —
   its "Who it's for" line gives the audience; it names no platform)
-- `design/player-journey.md` — player's state and context when they reach this screen
+- `docs/design/player-journey.md` — player's state and context when they reach this screen
 - All GDD UI Requirements sections relevant to this feature
-- `design/ux/interaction-patterns.md` — existing patterns to reuse (not reinvent)
-- `design/accessibility-requirements.md` — committed accessibility tier (Basic, Standard, Comprehensive or Exemplary)
+- `docs/design/ux/interaction-patterns.md` — existing patterns to reuse (not reinvent)
+- `docs/design/accessibility-requirements.md` — committed accessibility tier (Basic, Standard, Comprehensive or Exemplary)
 
 **Report the status of every document above before designing anything.** Phase 1a
 reads five inputs, and any of them can be absent. List each as
 present or ABSENT.
 
-**`design/accessibility-requirements.md` is the one that must not pass silently.**
+**`docs/design/accessibility-requirements.md` is the one that must not pass silently.**
 It carries the committed accessibility tier, which **Phase 3 implements against**
 and **Phase 4 gates on** ("verify compliance against the committed accessibility
 tier … flag any violations as blockers"). If the file is missing there is no tier,
@@ -145,32 +147,32 @@ so that gate has no criterion and would pass while checking nothing — a gate m
 of an absent standard, the same shape as an assertion that can never fail. When it
 is absent:
 - Say so here, and carry it forward: **Phase 4 must report
-  `Accessibility: NOT ASSESSED — no committed tier (design/accessibility-requirements.md absent)`
+  `Accessibility: NOT ASSESSED — no committed tier (docs/design/accessibility-requirements.md absent)`
   and must NOT report the accessibility gate as passed.**
 - The ux-designer states which tier they designed against as an explicit
   assumption, so a later reader can see it was assumed rather than committed.
 - Recommend `/ux-design accessibility` to establish the tier.
 
-Absence of a concept doc (neither `design/gdd/game-concept.md` nor
-`design/game-brief.md`), `design/player-journey.md` or `design/ux/hud.md` is not
+Absence of a concept doc (neither `docs/GDD.md` nor
+`docs/GDD.md`), `docs/design/player-journey.md` or `docs/design/ux/hud.md` is not
 blocking, but name each missing one in the brief you
 pass to the ux-designer so they design knowing what context they lack, rather
 than inferring it.
 
-**If `design/ux/interaction-patterns.md` does not exist**, surface the gap immediately:
+**If `docs/design/ux/interaction-patterns.md` does not exist**, surface the gap immediately:
 > "interaction-patterns.md does not exist — no existing patterns to reuse."
 
 Then use `AskUserQuestion` with options:
 - (a) Run `/ux-design patterns` first to establish the pattern library, then continue
-- (b) Proceed without the pattern library — ui-programmer will treat all patterns created as new and add each to a new `design/ux/interaction-patterns.md` at completion
+- (b) Proceed without the pattern library — ui-programmer will treat all patterns created as new and add each to a new `docs/design/ux/interaction-patterns.md` at completion
 
-Do NOT invent or assume patterns from the feature name or GDD alone. If the user chooses (b), explicitly instruct ui-programmer in Phase 3 to treat all patterns as new and document them in `design/ux/interaction-patterns.md` when implementation is complete. Note the pattern library status (created / absent / updated) in the final summary report.
+Do NOT invent or assume patterns from the feature name or GDD alone. If the user chooses (b), explicitly instruct ui-programmer in Phase 3 to treat all patterns as new and document them in `docs/design/ux/interaction-patterns.md` when implementation is complete. Note the pattern library status (created / absent / updated) in the final summary report.
 
 Summarize the context in a brief for the ux-designer: what the player is doing, what they need, what constraints apply, and which existing patterns are relevant.
 
 ### Phase 1b: UX Spec Authoring
 
-Invoke `/ux-design [feature name]` skill OR delegate directly to ux-designer to produce `design/ux/[feature-name].md` following the `ux-spec.md` template.
+Invoke `/ux-design [feature name]` skill OR delegate directly to ux-designer to produce `docs/design/ux/[feature-name].md` following the `ux-spec.md` template.
 
 If designing the HUD, use the `hud-design.md` template instead of `ux-spec.md`.
 
@@ -178,11 +180,11 @@ If designing the HUD, use the `hud-design.md` template instead of `ux-spec.md`.
 > - For HUD design specifically, invoke `/ux-design` with `argument: hud` (e.g., `/ux-design hud`).
 > - For the interaction pattern library, run `/ux-design patterns` once at project start and update it whenever new patterns are introduced during later phases.
 
-Output: `design/ux/[feature-name].md` with all required spec sections filled.
+Output: `docs/design/ux/[feature-name].md` with all required spec sections filled.
 
 ### Phase 1c: UX Review
 
-After the spec is complete, invoke `/ux-review design/ux/[feature-name].md`.
+After the spec is complete, invoke `/ux-review docs/design/ux/[feature-name].md`.
 
 **Gate**: Do not proceed to Phase 2 until the verdict is APPROVED. If the verdict is NEEDS REVISION, the ux-designer must address the flagged issues in the same spec — it is kept and revised, never discarded — and re-run the review. The user may explicitly accept a NEEDS REVISION risk and proceed, but this must be a conscious decision — present the specific concerns via `AskUserQuestion` before asking whether to proceed.
 
@@ -202,23 +204,23 @@ Delegate to **art-director**:
 
 ### Phase 3: Implementation
 
-Before implementation begins, spawn the **engine UI specialist** (`specialists.ui` from `project.yaml`; if absent, the UI Specialist line of `## Engine Specialists` in `.claude/docs/technical-preferences.md`) to review the UX spec and visual design spec for engine-specific implementation guidance:
+Before implementation begins, spawn the **engine UI specialist** (`specialists.ui` from `.claude/ccgs/project.yaml`; if absent, the UI Specialist line of `## Engine Specialists` in `.claude/docs/technical-preferences.md`) to review the UX spec and visual design spec for engine-specific implementation guidance:
 - Which engine UI framework should be used for this screen? (e.g., UI Toolkit vs UGUI in Unity, Control nodes vs CanvasLayer in Godot, UMG vs CommonUI in Unreal)
 - Any engine-specific gotchas for the proposed layout or interaction patterns?
 - Recommended widget/node structure for the engine?
 - Output: engine UI implementation notes to hand off to ui-programmer before they begin
 
-If no engine is configured, skip this step. **Record ``Engine validation: NOT ASSESSED — no engine configured (`engine.name` unset in `project.yaml`)`` in this run's output.** A skipped check that says nothing is indistinguishable from a check that passed; the reader cannot tell engine guidance was never sought.
+If no engine is configured, skip this step. **Record ``Engine validation: NOT ASSESSED — no engine configured (`engine.name` unset in `.claude/ccgs/project.yaml`)`` in this run's output.** A skipped check that says nothing is indistinguishable from a check that passed; the reader cannot tell engine guidance was never sought.
 
 Delegate to **ui-programmer**:
 - Implement the UI following the UX spec and visual design spec
-- **Use patterns from `design/ux/interaction-patterns.md`** — do not reinvent patterns that are already specified. If a pattern almost fits but needs modification, note the deviation and flag it for ux-designer review.
+- **Use patterns from `docs/design/ux/interaction-patterns.md`** — do not reinvent patterns that are already specified. If a pattern almost fits but needs modification, note the deviation and flag it for ux-designer review.
 - **UI NEVER owns or modifies game state** — display only; emit events for all player actions
 - All text through the localization system — no hardcoded player-facing strings
 - Support both input methods (keyboard/mouse AND gamepad)
-- Implement accessibility features per the committed tier in `design/accessibility-requirements.md`
+- Implement accessibility features per the committed tier in `docs/design/accessibility-requirements.md`
 - Wire up data binding to game state
-- **If any new interaction pattern is created during implementation** (i.e., something not already in the pattern library), add it to `design/ux/interaction-patterns.md` before marking implementation complete
+- **If any new interaction pattern is created during implementation** (i.e., something not already in the pattern library), add it to `docs/design/ux/interaction-patterns.md` before marking implementation complete
 - Output: implemented UI feature
 
 ### Phase 4: Review (parallel)
@@ -226,7 +228,7 @@ Delegate to **ui-programmer**:
 Delegate in parallel:
 - **ux-designer**: Verify implementation matches wireframes and interaction spec. Test keyboard-only and gamepad-only navigation. Check accessibility features function correctly.
 - **art-director**: Verify visual consistency with art bible. Check at minimum and maximum supported resolutions.
-- **accessibility-specialist**: Verify compliance against the committed accessibility tier documented in `design/accessibility-requirements.md`. Flag any violations as blockers. **If that file is absent there is no committed tier, so this gate has no criterion: report `Accessibility: NOT ASSESSED — no committed tier (design/accessibility-requirements.md absent)` and do NOT report the gate as passed**. Carry forward whatever tier Phase 1a recorded as assumed, and say plainly that it was assumed.
+- **accessibility-specialist**: Verify compliance against the committed accessibility tier documented in `docs/design/accessibility-requirements.md`. Flag any violations as blockers. **If that file is absent there is no committed tier, so this gate has no criterion: report `Accessibility: NOT ASSESSED — no committed tier (docs/design/accessibility-requirements.md absent)` and do NOT report the gate as passed**. Carry forward whatever tier Phase 1a recorded as assumed, and say plainly that it was assumed.
 
 All three review streams must report before proceeding to Phase 5.
 
@@ -236,8 +238,8 @@ All three review streams must report before proceeding to Phase 5.
 - Verify animations are skippable and respect the player's motion reduction preferences
 - Confirm UI sounds trigger through the audio event system (no direct audio calls)
 - Test at all supported resolutions and aspect ratios
-- **Verify `design/ux/interaction-patterns.md` is up to date** — if any new patterns were introduced during this feature's implementation, confirm they have been added to the library
-- **Confirm all HUD elements respect the visual budget** defined in `design/ux/hud.md` (element count, screen region allocations, maximum opacity values)
+- **Verify `docs/design/ux/interaction-patterns.md` is up to date** — if any new patterns were introduced during this feature's implementation, confirm they have been added to the library
+- **Confirm all HUD elements respect the visual budget** defined in `docs/design/ux/hud.md` (element count, screen region allocations, maximum opacity values)
 
 ## Quick Reference — When to Use Which Skill
 
@@ -273,7 +275,7 @@ delegated to sub-agents and sub-skills. The two follow **different** rules:
 
 - **Sub-agents spawned via `Agent`** (e.g. `ui-programmer`) follow the **bounded
   exception** documented above under "Why this does not violate the Collaboration
-  Protocol" — the path is one you named, the artifact is new under `production/`,
+  Protocol" — the path is one you named, the artifact is new under `docs/production/`,
   `docs/` or `tests/`, and the phase is gated by an `AskUserQuestion`. A sub-agent
   does **not** prompt per write inside those bounds; outside them it must ask.
   **Implementation files** (ui-programmer's code under the code root) are outside
@@ -300,5 +302,5 @@ Verdict: **BLOCKED** — pipeline halted; surface the blocker and its phase befo
 ## Next Steps
 
 - Run `/ux-review` on the final spec if not yet approved.
-- Run `/code-review` on the UI implementation before closing stories.
+- Run `/gamedev-code-review` on the UI implementation before closing stories.
 - Run `/team-polish` if visual or audio polish pass is needed.

@@ -8,7 +8,7 @@ Agent: `art-director` | Model tier: session (inherit)
 introduced, or when a tech art decision affects visual style
 
 **Context to pass**:
-- Art bible path (if exists at `design/art/art-bible.md`)
+- Art bible path (if exists at `docs/design/art/art-bible.md`)
 - The specific asset type, style decision, or visual direction being reviewed
 - Reference images or style descriptions
 - Platform and performance constraints

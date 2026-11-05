@@ -19,7 +19,7 @@ code. This file is the procedure for applying it.
 
 ## Resolution order
 
-1. `engine.name` from `project.local.yaml`, then `project.yaml`.
+1. `engine.name` from `.claude/ccgs/project.local.yaml`, then `.claude/ccgs/project.yaml`.
 2. The legacy mirror: an `Engine:` line in
    `.claude/docs/technical-preferences.md`. A value of `[TO BE CONFIGURED]`
    does not count.
@@ -27,8 +27,8 @@ code. This file is the procedure for applying it.
    `src/`, `Assets/` or `Source/` present means that is the root. Two or more
    present means the project is genuinely undecidable — do not guess. Compare the
    names exactly as the directory listing spells them: on Windows and default
-   macOS an existence test for `Assets/` also succeeds on Godot's own `assets/`,
-   which would make `src/` + `assets/` look ambiguous and a lone `assets/` look
+   macOS an existence test for `Assets/` also succeeds on Godot's own `Content/`,
+   which would make `src/` + `Content/` look ambiguous and a lone `Content/` look
    like Unity.
 4. Otherwise: **unresolved.**
 

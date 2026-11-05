@@ -8,7 +8,7 @@
 **In this file:**
 
 - `tests/README.md`
-- `production/qa/evidence/.gitkeep`
+- `docs/production/qa/evidence/.gitkeep`
 - Engine-specific files
 
 After approval, create the following files:
@@ -38,11 +38,11 @@ or `Source/<Module>/Private/Tests/[System]/`; `tests/` keeps this README and
 `smoke/`. Every `tests/unit/` path below means that test root.]
 
 ```
-production/qa/
+docs/production/qa/
   evidence/       # Screenshot logs and manual test sign-off records
 ```
 
-> **Manual evidence lives under `production/qa/evidence/`, not `tests/`** — that
+> **Manual evidence lives under `docs/production/qa/evidence/`, not `tests/`** — that
 > is where every consumer reads it.
 
 ## Running Tests
@@ -67,9 +67,9 @@ Names follow the engine's language (`.claude/rules/test-standards.md`):
 |---|---|---|
 | Logic | Automated unit test — must pass | `tests/unit/[system]/` |
 | Integration | Integration test OR playtest doc | `tests/integration/[system]/` |
-| Visual/Feel | Screenshot + lead sign-off | `production/qa/evidence/` |
-| UI | Retained screenshot of each screen touched | `production/qa/evidence/` |
-| Config/Data | Smoke check pass | `production/qa/smoke-*.md` |
+| Visual/Feel | Screenshot + lead sign-off | `docs/production/qa/evidence/` |
+| UI | Retained screenshot of each screen touched | `docs/production/qa/evidence/` |
+| Config/Data | Smoke check pass | `docs/production/qa/smoke-*.md` |
 
 ## CI
 
@@ -78,11 +78,11 @@ A failed test suite blocks merging.
 ````
 
 The README and this skill's completion summary name the same evidence path —
-`production/qa/evidence/` is where `/smoke-check`, `/test-evidence-review`,
+`docs/production/qa/evidence/` is where `/smoke-check`, `/test-evidence-review`,
 `/qa-plan` and the evidence table in `.claude/docs/coding-standards.md` read,
 so a `tests/evidence/` would be a directory nothing reads.
 
-### `production/qa/evidence/.gitkeep`
+### `docs/production/qa/evidence/.gitkeep`
 
 Create it empty. Git does not keep an empty directory, and this is where
 `/story-done`, `/smoke-check` and `/test-evidence-review` look for screenshots and

@@ -8,6 +8,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(git r
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Hotfix
 
 > **Explicit invocation only**: This skill should only run when the user explicitly requests it with `/hotfix`. Do not auto-invoke based on context matching.
@@ -63,7 +65,7 @@ Status: IN PROGRESS
 [How to revert if the fix causes new issues]
 ```
 
-Ask: "May I write this to `production/hotfixes/hotfix-[date]-[short-name].md`?"
+Ask: "May I write this to `docs/production/hotfixes/hotfix-[date]-[short-name].md`?"
 
 If yes, write the file, creating the directory if needed.
 
@@ -104,7 +106,7 @@ Present the root cause and proposed fix, then ask: "May I implement this fix?" D
 
 ## Phase 4b: Implement (only after approval)
 
-Implement the approved minimal change. Validate the fix by running targeted tests for the affected system, with `commands.test` from `project.yaml` (narrowed to the affected suite where the runner allows) — never a runner line written from memory, which drops the flags the engine needs (gdUnit4 hangs without `--remote-debug tcp://127.0.0.1:0`). Check for regressions in adjacent systems. If `commands.test` is unset, or no test covers the affected system, say so and record `Tests: NOT RUN — [reason]` in the hotfix record's Testing section; the Phase 5b QA gate then carries the verification.
+Implement the approved minimal change. Validate the fix by running targeted tests for the affected system, with `commands.test` from `.claude/ccgs/project.yaml` (narrowed to the affected suite where the runner allows) — never a runner line written from memory, which drops the flags the engine needs (gdUnit4 hangs without `--remote-debug tcp://127.0.0.1:0`). Check for regressions in adjacent systems. If `commands.test` is unset, or no test covers the affected system, say so and record `Tests: NOT RUN — [reason]` in the hotfix record's Testing section; the Phase 5b QA gate then carries the verification.
 
 Update the hotfix record with root cause, fix details, and test results.
 
@@ -187,9 +189,9 @@ hotfix record's Status stays IN PROGRESS, and say so.
 > the result. An unbackported hotfix means the bug returns in the next release
 > tagged from `main`, which is the single most common hotfix regression.
 
-Update the original bug file if one exists — find it in `production/qa/bugs/`
+Update the original bug file if one exists — find it in `docs/production/qa/bugs/`
 by its number, as `/bug-report verify` does. Ask first: "May I update
-`production/qa/bugs/[bug file]` with the fix record below and set its Status to
+`docs/production/qa/bugs/[bug file]` with the fix record below and set its Status to
 `Fixed — Pending Verification`?"
 
 ```markdown

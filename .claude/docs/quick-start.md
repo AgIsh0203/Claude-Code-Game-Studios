@@ -17,10 +17,10 @@ Flow State, Bartle Player Types). Use whichever engine set matches your project.
 before saving; `/settings` changes it any time). At `minimal` the path to code is four steps:
 
 1. `/setup-engine` -- configure the engine
-2. `/brainstorm` -- writes the one-page `design/game-brief.md`, in place of the
+2. `/brainstorm` -- writes the one-page `docs/GDD.md`, in place of the
    concept doc, systems decomposition and per-system GDDs
 3. `/create-stories` -- turns the brief's MVP list into stories under
-   `production/epics/<slug>/`; the brief's build order is the plan, so there is
+   `docs/production/epics/<slug>/`; the brief's build order is the plan, so there is
    no `/create-epics` or `/sprint-plan`
 4. `/dev-story` then `/story-done`, story by story -- `/story-done` names the
    next story, and `/help` knows this route
@@ -128,7 +128,7 @@ Ask yourself: "What department would handle this in a real studio?"
 | `/story-done` | End-of-story completion review — verifies acceptance criteria |
 | `/estimate` | Produces structured effort estimates |
 | `/design-review` | Reviews a design document |
-| `/code-review` | Reviews code for quality and architecture |
+| `/gamedev-code-review` | Reviews code for quality and architecture |
 | `/balance-check` | Analyzes game balance data |
 | `/asset-audit` | Audits assets for compliance |
 | `/content-audit` | GDD-specified content vs. implemented — find gaps |
@@ -138,7 +138,7 @@ Ask yourself: "What department would handle this in a real studio?"
 | `/gate-check` | Validate phase readiness (PASS/CONCERNS/NOT ASSESSED/FAIL) |
 | `/consistency-check` | Scan all GDDs for cross-document inconsistencies (conflicting stats, names, rules) |
 | `/security-audit` | Audit for security vulnerabilities: save tampering, cheat vectors, network exploits, data exposure |
-| `/reverse-document` | Generate design/architecture docs from existing code |
+| `/reverse-document` | Generate docs/design/architecture docs from existing code |
 | `/milestone-review` | Reviews milestone progress |
 | `/retrospective` | Runs sprint/milestone retrospective |
 | `/bug-report` | Structured bug report creation |
@@ -150,7 +150,7 @@ Ask yourself: "What department would handle this in a real studio?"
 | `/patch-notes` | Generate player-facing patch notes |
 | `/hotfix` | Emergency fix with audit trail |
 | `/day-one-patch` | Prepare a focused day-one patch for known issues discovered after gold master |
-| `/prototype` | Concept prototype — validate core idea before writing GDDs (Phase 1) |
+| `/gamedev-prototype` | Concept prototype — validate core idea before writing GDDs (Phase 1) |
 | `/vertical-slice` | Production-quality end-to-end build — validate full game loop (Phase 4) |
 | `/localize` | Localization scan, extract, validate |
 | `/team-combat` | Orchestrate full combat team pipeline |
@@ -242,13 +242,13 @@ If you already know what you need, jump directly to the relevant path:
    - Produces a game concept document and recommends an engine
 2. **Set up the engine** — Run `/setup-engine` (uses the brainstorm recommendation)
    - Configures CLAUDE.md, detects knowledge gaps, populates reference docs
-   - Writes engine, naming conventions, and performance budgets to `project.yaml`
+   - Writes engine, naming conventions, and performance budgets to `.claude/ccgs/project.yaml`
      (the source of truth), mirrored to `.claude/docs/technical-preferences.md`
    - If the engine version is newer than the LLM's training data, it fetches
      current docs from the web so agents suggest correct APIs
-3. **Validate the concept** — Run `/design-review design/gdd/game-concept.md`
-   (or `design/game-brief.md`, if `/brainstorm` wrote the one-page brief)
-4. **Prototype the mechanic** — Run `/prototype [core-mechanic]` (1 day at most) to
+3. **Validate the concept** — Run `/design-review docs/GDD.md`
+   (or `docs/GDD.md`, if `/brainstorm` wrote the one-page brief)
+4. **Prototype the mechanic** — Run `/gamedev-prototype [core-mechanic]` (1 day at most) to
    test that the core idea is fun before you write GDDs
 5. **Decompose into systems** — Run `/map-systems` to map all systems and dependencies
 6. **Design each system** — Run `/design-system [system-name]` (or `/map-systems next`)
@@ -266,7 +266,7 @@ If you already have a game concept and engine choice:
 3. **Decompose into systems** — Run `/map-systems` to enumerate systems and dependencies
 4. **Design each system** — Run `/design-system [system-name]` for GDDs in dependency order
 5. **Create the initial ADR** — Run `/architecture-decision`
-6. **Create the first milestone** in `production/milestones/`
+6. **Create the first milestone** in `docs/production/milestones/`
 7. **Plan the first sprint** — Run `/sprint-plan new`
 8. Start building
 
@@ -296,7 +296,7 @@ If you have design docs, prototypes, or code already:
 
 ```
 CLAUDE.md                          -- Master config (read this first, ~80 lines)
-project.yaml                       -- Machine-readable project config (engine, modes, stage) — source of truth
+.claude/ccgs/project.yaml                       -- Machine-readable project config (engine, modes, stage) — source of truth
 .claude/
   settings.json                    -- Claude Code hooks and project settings
   agents/                          -- 49 agent definitions (YAML frontmatter)
@@ -305,7 +305,7 @@ project.yaml                       -- Machine-readable project config (engine, m
   rules/                           -- 14 path-specific rule files
   docs/
     quick-start.md                 -- This file
-    technical-preferences.md       -- Legacy fallback for project.yaml config (mirror; see project.yaml at repo root)
+    technical-preferences.md       -- Legacy fallback for .claude/ccgs/project.yaml config (mirror; see .claude/ccgs/project.yaml at repo root)
     coding-standards.md            -- Coding and design doc standards
     coordination-rules.md          -- Agent coordination rules
     context-management.md          -- Context budgets and compaction instructions

@@ -3,9 +3,11 @@ name: retrospective
 description: "Sprint or milestone retrospective from completed work, velocity, blockers. Actionable insights for the next iteration."
 argument-hint: "[sprint-N|milestone-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(bash "*/.claude/skills/retrospective/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/retrospective/../../hooks/yaml-helper.sh" resolve_config *), Bash(git log *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,qa.level`
 
@@ -56,9 +58,9 @@ Determine whether this is a sprint retrospective (`sprint-N`) or a milestone ret
 
 Before loading any data, glob for an existing retrospective file:
 
-- For sprint retrospectives: `production/retrospectives/retro-[sprint-slug]-*.md`
-  (also check `production/sprints/sprint-[N]-retrospective.md` as an alternate location)
-- For milestone retrospectives: `production/retrospectives/retro-[milestone-name]-*.md`
+- For sprint retrospectives: `docs/production/retrospectives/retro-[sprint-slug]-*.md`
+  (also check `docs/production/sprints/sprint-[N]-retrospective.md` as an alternate location)
+- For milestone retrospectives: `docs/production/retrospectives/retro-[milestone-name]-*.md`
 
 If a matching file is found, use `AskUserQuestion`:
 - Prompt: "An existing retrospective was found: [filename]. How do you want to proceed?"
@@ -75,10 +77,10 @@ If [B]: continue to Phase 2 with a blank slate. Before writing the new file, ren
 
 Read the sprint or milestone plan from the appropriate location:
 
-- Sprint plans: `production/sprints/`
-- Milestone definitions: `production/milestones/`
+- Sprint plans: `docs/production/sprints/`
+- Milestone definitions: `docs/production/milestones/`
 
-**Also check for `production/sprint-status.yaml`**: if it exists, read it alongside the sprint plan. It is the authoritative source for actual story completion status (status: done, completed dates, blockers). Use it as the primary source for completion metrics in Phase 3. Fall back to markdown scanning only if the yaml does not exist. Note discrepancies between the yaml and the sprint plan (e.g., stories in yaml not in plan, or vice versa).
+**Also check for `docs/production/sprint-status.yaml`**: if it exists, read it alongside the sprint plan. It is the authoritative source for actual story completion status (status: done, completed dates, blockers). Use it as the primary source for completion metrics in Phase 3. Fall back to markdown scanning only if the yaml does not exist. Note discrepancies between the yaml and the sprint plan (e.g., stories in yaml not in plan, or vice versa).
 
 **If the file does not exist or is empty**, output:
 
@@ -86,7 +88,7 @@ Read the sprint or milestone plan from the appropriate location:
 > sprint (`/sprint-status` only reads one), or provide the sprint details manually."
 
 At `workflow: minimal` (resolved above) there are no sprints: offer to look back over the stories
-closed so far instead (`production/epics/*/story-*.md` with `Status: Complete`).
+closed so far instead (`docs/production/epics/*/story-*.md` with `Status: Complete`).
 At `qa.level: minimal` (resolved above) tests are waived, so a story closed
 without one is not a finding; a Visual/Feel or UI story closed without its
 retained screenshot still is.
@@ -127,7 +129,7 @@ Scan for completed and incomplete tasks by comparing the plan against actual del
 - Tasks added mid-sprint (unplanned work)
 - Tasks removed or descoped
 
-Every story with `status: blocked` in `production/sprint-status.yaml` goes under
+Every story with `status: blocked` in `docs/production/sprint-status.yaml` goes under
 Blockers Encountered, with its `blocker` field as the Blocker, and gets an action
 item in Action Items for Next Iteration.
 
@@ -137,7 +139,7 @@ Scan the codebase for TODO/FIXME trends:
 - Compare to previous sprint counts if available (check previous retrospectives)
 - Note whether technical debt is growing or shrinking
 
-Read previous retrospectives (if any) from `production/retrospectives/` to check:
+Read previous retrospectives (if any) from `docs/production/retrospectives/` to check:
 
 - Were previous action items addressed?
 - Are the same problems recurring?
@@ -249,13 +251,13 @@ the single most important thing to change going forward?]
 
 Present the retrospective and top findings to the user (completion rate, velocity trend, top blocker, most important action item).
 
-Ask: "May I write this to `production/retrospectives/retro-sprint-[N]-[date].md`?" (or `production/retrospectives/retro-[milestone-name]-[date].md` for milestone retrospectives)
+Ask: "May I write this to `docs/production/retrospectives/retro-sprint-[N]-[date].md`?" (or `docs/production/retrospectives/retro-[milestone-name]-[date].md` for milestone retrospectives)
 
 After Start fresh in Phase 1b, the same ask also names the rename: "…and rename
 `[old file]` to `[old file name]-archived-[date].md`?" On yes, rename first, then
 write; on no, neither happens.
 
-If yes, write the file, creating the `production/retrospectives/` directory if needed. Verdict: **COMPLETE** — retrospective saved.
+If yes, write the file, creating the `docs/production/retrospectives/` directory if needed. Verdict: **COMPLETE** — retrospective saved.
 
 If no, stop here. Verdict: **BLOCKED** — user declined write.
 

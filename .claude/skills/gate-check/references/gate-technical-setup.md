@@ -6,9 +6,9 @@
 
 
 **Required Artifacts:**
-- [ ] Systems index exists at `design/gdd/systems-index.md` with at least MVP systems enumerated
-- [ ] All MVP-tier GDDs exist in `design/gdd/` and individually pass `/design-review`
-- [ ] A cross-GDD review report exists in `design/gdd/` (from `/review-all-gdds`)
+- [ ] Systems index exists at `docs/GDD.md` with at least MVP systems enumerated
+- [ ] All MVP-tier GDDs exist in `docs/design/gdd/` and individually pass `/design-review`
+- [ ] A cross-GDD review report exists in `docs/design/gdd/` (from `/review-all-gdds`)
 
 **Quality Checks:**
 - [ ] All MVP GDDs pass individual design review (8 required sections, no MAJOR REVISION NEEDED verdict)

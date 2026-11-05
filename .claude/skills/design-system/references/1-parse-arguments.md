@@ -31,19 +31,19 @@ required structure itself.
 
 A system name or retrofit path is **required**. If missing:
 
-1. Check if `design/gdd/systems-index.md` exists.
+1. Check if `docs/GDD.md` exists.
 2. If it exists: read it, find the highest-priority system with status "Not Started" or equivalent, and use `AskUserQuestion`:
    - Prompt: "The next system in your design order is **[system-name]** ([priority] | [layer]). Start designing it?"
    - Options: `[A] Yes — design [system-name]` / `[B] Pick a different system` / `[C] Stop here`
    - If [A]: proceed with that system name. If [B]: ask which system to design (plain text). If [C]: exit.
 3. If no systems index exists, fail with:
    > "Usage: `/design-system <system-name>` — e.g., `/design-system movement`
-   > Or to fill gaps in an existing GDD: `/design-system retrofit design/gdd/[system-name].md`
+   > Or to fill gaps in an existing GDD: `/design-system retrofit docs/design/gdd/[system-name].md`
    > No systems index found. Run `/map-systems` first to map your systems and get the design order."
 
 **Detect retrofit mode:**
 If the argument starts with `retrofit` or the argument is a file path to an
-existing `.md` file in `design/gdd/`, enter **retrofit mode**:
+existing `.md` file in `docs/design/gdd/`, enter **retrofit mode**:
 
 1. Read the existing GDD file. Read it by section: find the headings with
    the Grep tool (pattern `^#`, content mode) and Read those ranges with
@@ -62,7 +62,7 @@ existing `.md` file in `design/gdd/`, enter **retrofit mode**:
 4. Present to the user before doing anything:
    ```
    ## Retrofit: [System Name]
-   File: design/gdd/[filename].md
+   File: docs/design/gdd/[filename].md
 
    Sections already written (will not be touched):
    ✓ [section name]

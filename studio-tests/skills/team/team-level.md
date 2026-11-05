@@ -11,7 +11,7 @@ resolves `review_mode`, `automation` and `team.size` and the skill announces the
 active set before Step 1 — `individual` spawns level-designer alone, `small` adds
 systems-designer + art-director + qa-tester, `studio` adds narrative-director,
 world-builder and accessibility-specialist. The orchestrator compiles all team
-outputs itself and writes `design/levels/[level-name].md` only after asking "May I
+outputs itself and writes `docs/design/levels/[level-name].md` only after asking "May I
 write…?" via `AskUserQuestion`; per-agent artifacts are written by sub-agents under
 the bounded write exception. Uses `AskUserQuestion` at each step gate. Produces a
 summary report with verdict COMPLETE / BLOCKED and handoffs to `/design-review`,
@@ -24,8 +24,8 @@ summary report with verdict COMPLETE / BLOCKED and handoffs to `/design-review`,
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase/step headings (Step 1 through Step 5 are all present)
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED
-- [ ] File Write Protocol: per-agent artifacts are written by sub-agents under the bounded exception (named path, new artifact under `production/`, `docs/` or `tests/`, gated step); the one exception is the compiled level doc, which the orchestrator writes itself after its own "May I write …?" prompt
-- [ ] Names a destination per agent under `production/levels/[level-name]/` — `narrative.md`, `lore.md`, `visual-direction.md`, `layout.md`, `systems.md`, `production-concepts.md`, `accessibility.md` — and qa-tester's at `production/qa/test-cases/[level-name]-cases.md`
+- [ ] File Write Protocol: per-agent artifacts are written by sub-agents under the bounded exception (named path, new artifact under `docs/production/`, `docs/` or `tests/`, gated step); the one exception is the compiled level doc, which the orchestrator writes itself after its own "May I write …?" prompt
+- [ ] Names a destination per agent under `docs/production/levels/[level-name]/` — `narrative.md`, `lore.md`, `visual-direction.md`, `layout.md`, `systems.md`, `production-concepts.md`, `accessibility.md` — and qa-tester's at `docs/production/qa/test-cases/[level-name]-cases.md`
 - [ ] Defines a phase gate as a decision point the pipeline itself lists, whatever the `automation` mode, and claims no director spawn at phase gates
 - [ ] Has a next-step handoff at the end (references `/design-review`, `/dev-story`, `/qa-plan`)
 - [ ] Error Recovery Protocol section is present: verify a named artifact is on disk before treating a step as done, surface BLOCKED immediately, always produce a partial report, full procedure (surface → assess → options → partial report) in `.claude/docs/error-recovery-protocol.md`
@@ -33,18 +33,18 @@ summary report with verdict COMPLETE / BLOCKED and handoffs to `/design-review`,
 - [ ] Phase 0 resolves `team.size`, and the skill requires a one-line active-set announcement before Step 1
 - [ ] Step 1 explicitly spawns narrative-director, world-builder and art-director in parallel
 - [ ] Step 4 is explicitly marked as parallel (art-director and accessibility-specialist run simultaneously) and waits for both
-- [ ] Context gathering reads: `design/gdd/game-concept.md` (or `design/game-brief.md`), `design/gdd/game-pillars.md`, `design/levels/`, `design/narrative/`, and relevant world-building docs
+- [ ] Context gathering reads: `docs/GDD.md` (or `docs/GDD.md`), `docs/GDD.md`, `docs/design/levels/`, `docs/story/`, and relevant world-building docs
 - [ ] `## How to Delegate` lists all seven roles (narrative-director, world-builder, level-designer, systems-designer, art-director, accessibility-specialist, qa-tester)
 - [ ] accessibility-specialist output includes severity ratings (BLOCKING / RECOMMENDED / NICE TO HAVE)
-- [ ] Final level design document saved to `design/levels/[level-name].md`, where `[level-name]` is the argument slugged — lowercase, spaces → hyphens — and adjacent-area paths use the same rule
+- [ ] Final level design document saved to `docs/design/levels/[level-name].md`, where `[level-name]` is the argument slugged — lowercase, spaces → hyphens — and adjacent-area paths use the same rule
 
 ---
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -55,25 +55,25 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`
-- `design/gdd/game-concept.md` exists and is populated
-- `design/gdd/game-pillars.md` exists
-- `design/levels/` directory exists (may contain other level docs)
-- `design/narrative/` directory exists with relevant narrative docs
+- `docs/GDD.md` exists and is populated
+- `docs/GDD.md` exists
+- `docs/design/levels/` directory exists (may contain other level docs)
+- `docs/story/` directory exists with relevant narrative docs
 - World-building docs for the forest region exist
 
 **Input:** `/team-level forest dungeon`
 
 **Expected behavior:**
 1. Before any spawn, one line announces the active set for `team.size: studio`
-2. Context gathering — orchestrator reads game-concept.md, game-pillars.md, existing level docs in `design/levels/`, narrative docs in `design/narrative/`, and world-building docs for the forest region
+2. Context gathering — orchestrator reads game-concept.md, game-pillars.md, existing level docs in `docs/design/levels/`, narrative docs in `docs/story/`, and world-building docs for the forest region
 3. Step 1 — narrative-director, world-builder and art-director are spawned together (all three Agent calls issued before any result is awaited): narrative purpose and emotional arc; lore context and world rules; visual theme targets, lighting mood, shape language and landmarks; `AskUserQuestion` presents all three outputs before Step 2
-4. Step 2 — level-designer spawned with the Step 1 outputs, including the art-director's visual targets as explicit constraints; designs spatial layout, pacing curve, encounters, puzzles, entry/exit points; orchestrator checks `design/levels/` for every adjacent area referenced; `AskUserQuestion` confirms layout before Step 3
+4. Step 2 — level-designer spawned with the Step 1 outputs, including the art-director's visual targets as explicit constraints; designs spatial layout, pacing curve, encounters, puzzles, entry/exit points; orchestrator checks `docs/design/levels/` for every adjacent area referenced; `AskUserQuestion` confirms layout before Step 3
 5. Step 3 — systems-designer spawned: enemy compositions, loot tables, difficulty balance, area-specific mechanics, resource distribution; `AskUserQuestion` confirms systems before Step 4
 6. Step 4 — art-director (location-specific production concepts) and accessibility-specialist spawned in parallel; each accessibility concern rated BLOCKING / RECOMMENDED / NICE TO HAVE; orchestrator waits for both; `AskUserQuestion` presents both outputs before Step 5
 7. Step 5 — qa-tester spawned: test cases for critical path, boundary/edge cases (sequence breaks, softlocks), playtest checklist, acceptance criteria
-8. Orchestrator compiles all team outputs into the level design template itself — it does not re-spawn level-designer to do it — then asks via `AskUserQuestion`: "May I write the compiled level design to `design/levels/forest-dungeon.md`?" and writes on approval
+8. Orchestrator compiles all team outputs into the level design template itself — it does not re-spawn level-designer to do it — then asks via `AskUserQuestion`: "May I write the compiled level design to `docs/design/levels/forest-dungeon.md`?" and writes on approval
 9. Summary report: area overview, encounter count, estimated asset list, narrative beats, cross-team dependencies, open cross-level dependencies, accessibility concerns with resolution status; verdict: COMPLETE
-10. Next steps listed: `/design-review design/levels/forest-dungeon.md`, `/dev-story`, `/qa-plan`
+10. Next steps listed: `/design-review docs/design/levels/forest-dungeon.md`, `/dev-story`, `/qa-plan`
 
 **Assertions:**
 - [ ] Active-set line naming `team.size: studio` appears before the first agent is spawned
@@ -83,7 +83,7 @@ Fixture defaults.
 - [ ] `AskUserQuestion` called at each step gate (minimum: after Step 1, Step 2, Step 3, Step 4)
 - [ ] Step 4 agents (art-director, accessibility-specialist) launched simultaneously
 - [ ] The compiled level doc is written by the orchestrator, not a re-spawned agent, and only after its own "May I write" approval
-- [ ] Level doc saved to `design/levels/forest-dungeon.md` (slugified from argument)
+- [ ] Level doc saved to `docs/design/levels/forest-dungeon.md` (slugified from argument)
 - [ ] Verdict COMPLETE in final summary report
 - [ ] Next steps include `/design-review`, `/dev-story`, `/qa-plan`
 - [ ] Summary report includes: area overview, encounter count, estimated asset list, narrative beats
@@ -94,7 +94,7 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`
-- `design/gdd/game-concept.md` exists
+- `docs/GDD.md` exists
 - World-building docs for the forest region do NOT exist
 - world-builder agent returns BLOCKED: "No world-building docs found for the forest region — cannot provide lore context"
 
@@ -148,7 +148,7 @@ Fixture defaults.
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`
 - Steps 1–3 complete successfully
-- `design/accessibility-requirements.md` committed tier: Standard
+- `docs/design/accessibility-requirements.md` committed tier: Standard
 - accessibility-specialist (Step 4, parallel) flags a BLOCKING concern: the critical path through the forest dungeon requires players to distinguish between two environmental hazards (toxic pools vs. shallow water) using color alone — no shape, icon, or audio cue differentiates them
 
 **Input:** `/team-level forest dungeon`
@@ -180,14 +180,14 @@ Fixture defaults.
 - Resolved config block: `automation: collaborative` (any `team.size` — level-designer is active at every size)
 - Steps 1–3 in progress
 - level-designer (Step 2) produces a layout that specifies entry/exit points connecting to "the crystal caves" (an adjacent area)
-- `design/levels/crystal-caves.md` does NOT exist — the crystal caves area has not been designed yet
+- `docs/design/levels/crystal-caves.md` does NOT exist — the crystal caves area has not been designed yet
 
 **Input:** `/team-level forest dungeon`
 
 **Expected behavior:**
 1. Step 2 — level-designer produces layout including: "West exit connects to crystal-caves entry point A"
-2. Orchestrator checks `design/levels/` for `crystal-caves.md`; file not found
-3. Dependency gap surfaced: "Level references crystal-caves as an adjacent area but `design/levels/crystal-caves.md` does not exist"
+2. Orchestrator checks `docs/design/levels/` for `crystal-caves.md`; file not found
+3. Dependency gap surfaced: "Level references crystal-caves as an adjacent area but `docs/design/levels/crystal-caves.md` does not exist"
 4. `AskUserQuestion` presented with options:
    - (a) Proceed with a placeholder reference — note the dependency in the level doc as UNRESOLVED
    - (b) Pause and run `/team-level crystal caves` first to establish that area
@@ -196,7 +196,7 @@ Fixture defaults.
 7. Final report includes open cross-level dependencies section
 
 **Assertions:**
-- [ ] Skill detects the missing adjacent area by checking `design/levels/` — does not assume it will be created later
+- [ ] Skill detects the missing adjacent area by checking `docs/design/levels/` — does not assume it will be created later
 - [ ] Skill does NOT fabricate crystal caves content (lore, layout, connections) to resolve the reference
 - [ ] `AskUserQuestion` offers a "design crystal caves first" option referencing `/team-level`
 - [ ] If user proceeds with placeholder, level doc explicitly marks the west exit as UNRESOLVED

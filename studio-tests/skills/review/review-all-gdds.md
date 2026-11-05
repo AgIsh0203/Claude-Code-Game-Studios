@@ -3,7 +3,7 @@
 ## Skill Summary
 
 `/review-all-gdds` is an Opus-tier skill that performs a holistic cross-GDD
-review across the system GDDs in `design/gdd/`. After loading everything
+review across the system GDDs in `docs/design/gdd/`. After loading everything
 (Phase 1), it runs two independent reviews in parallel as `game-designer`
 sub-agents: Phase 2, Cross-GDD Consistency (dependency bidirectionality, rule
 contradictions, stale references, ownership conflicts, formula compatibility,
@@ -11,7 +11,7 @@ acceptance-criteria conflicts), and Phase 3, Game Design Holism (competing
 progression loops, attention budget, dominant strategies, economic loops,
 difficulty curves, pillar alignment, player-fantasy coherence). Phase 4 walks
 multi-system scenarios. It produces a PASS / NOT ASSESSED / CONCERNS / FAIL
-verdict, and writes `design/gdd/gdd-cross-review-[YYYY-MM-DD].md` and
+verdict, and writes `docs/design/gdd/gdd-cross-review-[YYYY-MM-DD].md` and
 systems-index "Needs Revision" statuses only after the user approves.
 
 Each phase is a `references/N-*.md` file the skill reads before doing that phase and
@@ -48,9 +48,9 @@ review mode. It IS the holistic review; its only agents are the two
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -60,8 +60,8 @@ Fixture defaults.
 ### Case 1: Happy Path — Clean GDD set with no conflicts
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/` contains `game-concept.md`, `game-pillars.md` (pillars and
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/` contains `game-concept.md`, `game-pillars.md` (pillars and
   anti-pillars), `systems-index.md`, and three system GDDs — `combat.md`,
   `inventory.md`, `crafting.md` — each with every section Phase 1c loads and a
   filled `## Cross-References` table whose rows all resolve
@@ -74,14 +74,14 @@ Fixture defaults.
 **Input:** `/review-all-gdds`
 
 **Expected behavior:**
-1. Skill greps `## Summary` across `design/gdd/*.md` and shows a manifest ("Found [N] GDDs. Summaries: …")
+1. Skill greps `## Summary` across `docs/design/gdd/*.md` and shows a manifest ("Found [N] GDDs. Summaries: …")
 2. Skill reads the entity registry, or notes that it is empty and suggests `/consistency-check`
 3. Skill loads the review sections and reports "Loaded [N] system GDDs covering [M] systems. Pillars: […]. Anti-pillars: […]."
 4. Phase 2 and Phase 3 spawn simultaneously as `game-designer` sub-agents, each
    given the pasted GDD content for its slice (not file paths) and its checklist (2a–2f / 3a–3g)
 5. Phase 4 walks 3–5 multi-system scenarios
 6. Report shows no blocking issues and no warnings; verdict PASS
-7. `AskUserQuestion`: "May I write this review to `design/gdd/gdd-cross-review-[date].md`?"
+7. `AskUserQuestion`: "May I write this review to `docs/design/gdd/gdd-cross-review-[date].md`?"
 8. Closing widget built from project state
 
 **Assertions:**
@@ -97,7 +97,7 @@ Fixture defaults.
 ### Case 2: Failure Path — Conflicting rules between two GDDs
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
 - `combat.md` defines a floor: "Minimum damage after armour reduction is 1"
 - `status-effects.md` states a mechanic that bypasses it: "Poison ignores armour
   and can reduce damage to 0"
@@ -127,11 +127,11 @@ Fixture defaults.
 ### Case 3: Partial Path — Cross-reference to a GDD that does not exist
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/` holds `game-pillars.md`, `systems-index.md` and two consistent
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/` holds `game-pillars.md`, `systems-index.md` and two consistent
   system GDDs, `crafting.md` and `inventory.md`
 - `crafting.md`'s `## Cross-References` table has a row whose Target GDD is
-  `system-b.md`; no `design/gdd/system-b.md` exists
+  `system-b.md`; no `docs/design/gdd/system-b.md` exists
 - `systems-index.md` lists system-b as the next system with Status: Not Started
 - Nothing else would warn
 
@@ -165,8 +165,8 @@ Fixture defaults.
 ### Case 4: Edge Case — Fewer than two system GDDs
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/` contains `systems-index.md` and a single system GDD, `combat.md`
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/` contains `systems-index.md` and a single system GDD, `combat.md`
 
 **Input:** `/review-all-gdds`
 
@@ -187,8 +187,8 @@ Fixture defaults.
 ### Case 5: Director Gate — none spawned, whatever the review mode
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/` holds the Case 1 set: concept, pillars, systems index and three
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/` holds the Case 1 set: concept, pillars, systems index and three
   consistent system GDDs
 - 5a: `modes.review_mode: full`; 5b: `modes.review_mode: solo`
 
@@ -212,8 +212,8 @@ Fixture defaults.
 ### Case 6: NOT ASSESSED — fewer than two readable GDDs
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/` holds `game-pillars.md`, `systems-index.md` and two system GDDs:
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/` holds `game-pillars.md`, `systems-index.md` and two system GDDs:
   `combat.md`, complete, and `inventory.md`, which has the template's headings but
   only placeholder text under them
 
@@ -239,8 +239,8 @@ Fixture defaults.
 ### Case 7: Phase files are read on demand, and again after a compaction
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/` holds the Case 1 set: concept, pillars, systems index and three consistent system GDDs
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/` holds the Case 1 set: concept, pillars, systems index and three consistent system GDDs
 - The skill folder holds `references/1-load.md` through `references/7-handoff.md`
 - The conversation is compacted while Phase 4 (scenario walkthrough) is under way, then the run continues
 
@@ -263,11 +263,11 @@ Fixture defaults.
 ### Case 8: `since-last-review` — scope comes from the script, not from reasoning over git
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/` holds `game-pillars.md`, `systems-index.md`, a committed `gdd-cross-review-2025-01-15.md`, and four system GDDs: `combat.md`, `inventory.md`, `crafting.md`, `status-effects.md`
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/` holds `game-pillars.md`, `systems-index.md`, a committed `gdd-cross-review-2025-01-15.md`, and four system GDDs: `combat.md`, `inventory.md`, `crafting.md`, `status-effects.md`
 - Only `combat.md` has been modified since that report was committed; its `## Dependencies` section names `inventory.md`
 - `crafting.md` and `status-effects.md` are unchanged and no changed GDD names them
-- `.claude/scripts/review-scope.sh` prints `PRIOR_REVIEW: design/gdd/gdd-cross-review-2025-01-15.md`, `CHANGED:` with `design/gdd/combat.md`, and a `DEPS` line `combat.md -> inventory.md`
+- `.claude/scripts/review-scope.sh` prints `PRIOR_REVIEW: docs/design/gdd/gdd-cross-review-2025-01-15.md`, `CHANGED:` with `docs/design/gdd/combat.md`, and a `DEPS` line `combat.md -> inventory.md`
 
 **Input:** `/review-all-gdds since-last-review`
 
@@ -296,8 +296,8 @@ Fixture defaults.
 ### Case 9: Focus modes — one pass runs, and the report says which did not
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/` holds the Case 1 set: concept, pillars, systems index and three consistent system GDDs, with no conflicts and nothing a design-theory check would warn on
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/design/gdd/` holds the Case 1 set: concept, pillars, systems index and three consistent system GDDs, with no conflicts and nothing a design-theory check would warn on
 
 **Case 9a — `/review-all-gdds consistency`**
 

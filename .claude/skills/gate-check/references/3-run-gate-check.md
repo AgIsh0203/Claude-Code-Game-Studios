@@ -90,10 +90,10 @@ does not turn on.
 For code checks, verify directory structure and file counts.
 
 **Systems Design → Technical Setup gate — cross-GDD review check**:
-Use `Glob('design/gdd/gdd-cross-review-*.md')` to find the `/review-all-gdds` report.
+Use `Glob('docs/design/gdd/gdd-cross-review-*.md')` to find the `/review-all-gdds` report.
 If no file matches: at `full` mark the "cross-GDD review report exists" artifact as
 **FAIL** and surface it prominently ("No `/review-all-gdds` report found in
-`design/gdd/`. Run `/review-all-gdds` before advancing to Technical Setup."); at
+`docs/design/gdd/`. Run `/review-all-gdds` before advancing to Technical Setup."); at
 `standard` the report is recommended, so mark it **CONCERNS**, not a blocker; at
 `minimal` this gate is not applicable (see the gate file). If a file is found, read it and
 check the verdict line: a FAIL verdict means the cross-GDD consistency check failed
@@ -109,8 +109,8 @@ A report whose `Focus:` line names one pass only (a `consistency` or
   the trigger in the verdict section. A gate that ran no tests found no test
   failures, which is not the same as passing.
   A test failure's effect on the verdict depends on the `testing.strict` block
-  **resolved in Phase 1** (`resolve_config` merges `project.local.yaml` over
-  `project.yaml`; reading the file directly would drop a local override), per
+  **resolved in Phase 1** (`resolve_config` merges `.claude/ccgs/project.local.yaml` over
+  `.claude/ccgs/project.yaml`; reading the file directly would drop a local override), per
   test type:
   - **Logic** — unit-level failures (`tests/unit/` on Godot, Edit Mode on
     Unity), gated by `testing.strict.logic`.
@@ -151,7 +151,7 @@ A report whose `Focus:` line names one pass only (a `consistency` or
   the Grep tool (pattern `^#`, content mode) and Read those ranges with offset
   and limit.
 - For performance checks: read the budgets (`performance.target_framerate`,
-  `frame_budget_ms`, `draw_call_limit`, `memory_ceiling_mb`) from `project.yaml`
+  `frame_budget_ms`, `draw_call_limit`, `memory_ceiling_mb`) from `.claude/ccgs/project.yaml`
   (else technical-preferences.md) and compare against any profiling data in
   `tests/performance/` or recent `/perf-profile` output. What a breach *means*
   is set by `performance.enforce`, taken from the Phase 1 resolved block (it is
@@ -165,7 +165,7 @@ A report whose `Focus:` line names one pass only (a `consistency` or
 - For localization checks: `Grep` for hardcoded strings in the **code root** (resolve per `.claude/docs/code-root-resolution.md`). **If the code root is unresolved, report `NOT ASSESSED — code root unresolved` rather than zero hits.**
 
 ### Cross-Reference Checks
-- Compare `design/gdd/` documents against implementations in the **code root**
+- Compare `docs/design/gdd/` documents against implementations in the **code root**
 - Check that every system referenced in architecture docs has corresponding code
 - Verify sprint plans reference real work items
 

@@ -41,7 +41,7 @@ safest for production code.
 ### During Prototyping — `acceptEdits`
 File edits and common filesystem commands such as `mkdir` and `mv` are accepted
 without asking; other commands still ask. It applies to the whole working
-directory, not only `prototypes/`, so switch back when you return to production
+directory, not only `docs/prototypes/`, so switch back when you return to production
 code.
 
 ### During Code Review — `plan`
@@ -68,7 +68,7 @@ response:
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'echo \"Response finished at $(date)\" >> \"$CLAUDE_PROJECT_DIR/production/session-logs/my-stops.log\"'",
+            "command": "bash -c 'echo \"Response finished at $(date)\" >> \"$CLAUDE_PROJECT_DIR/.claude/ccgs/session-logs/my-stops.log\"'",
             "timeout": 5
           }
         ]

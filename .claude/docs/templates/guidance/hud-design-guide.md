@@ -296,7 +296,7 @@ so it can be cited in design reviews.]
 > in every gameplay moment. Color-blind failures, illegible text at minimum scale,
 > and inability to disable distracting animations are among the top accessibility
 > complaints in game reviews. This section defines HUD-specific requirements; refer
-> to the project's `design/accessibility-requirements.md` for the full project standard.
+> to the project's `docs/design/accessibility-requirements.md` for the full project standard.
 
 **Worked example — colorblind modes table (10.1)**:
 

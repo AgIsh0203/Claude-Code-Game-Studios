@@ -3,13 +3,13 @@
 ## Skill Summary
 
 `/ux-review` validates UX documents before they enter the implementation
-pipeline. It takes a file path, `hud` (`design/ux/hud.md`), `patterns`
-(`design/ux/interaction-patterns.md`), `all` (every file in `design/ux/`, with a
+pipeline. It takes a file path, `hud` (`docs/design/ux/hud.md`), `patterns`
+(`docs/design/ux/interaction-patterns.md`), `all` (every file in `docs/design/ux/`, with a
 summary table first), or no argument (it asks which spec).
 
-Phase 2 loads cross-reference context: input methods from the `project.yaml`
+Phase 2 loads cross-reference context: input methods from the `.claude/ccgs/project.yaml`
 `platform` block (the authority for input coverage checks), the accessibility
-tier committed in `design/accessibility-requirements.md`, the pattern library,
+tier committed in `docs/design/accessibility-requirements.md`, the pattern library,
 the UI Requirements of GDDs named in the spec header, and the player journey.
 It then runs the checklist for the document type — Phase 3A for a UX spec
 (15 completeness items plus quality checks), 3B for a HUD design, 3C for the
@@ -49,9 +49,9 @@ tool and invokes no director gate.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -61,26 +61,26 @@ Fixture defaults.
 ### Case 1: Happy Path — Complete UX spec, APPROVED
 
 **Fixture:**
-- `design/ux/inventory.md` follows `.claude/docs/templates/ux-spec.md`: header with Status, Author, Platform Target (PC, Console), Related GDDs (`design/gdd/inventory.md`), Accessibility Tier and `> **Template**: UX Spec`; every section populated, including States & Variants (loading, empty, populated, error), keyboard and d-pad navigation with focus order, an Input Method Completeness Checklist block for keyboard/mouse and for gamepad with every item ticked, and at least 5 testable acceptance criteria
-- `design/accessibility-requirements.md` commits the Standard tier
-- `design/ux/interaction-patterns.md` exists, and every interactive component in the spec names a pattern from it
-- `project.yaml` `platform` block: `targets: [PC, Console]`, `gamepad_support: Full`
-- `design/gdd/inventory.md` UI Requirements are all addressed by the spec
+- `docs/design/ux/inventory.md` follows `.claude/docs/templates/ux-spec.md`: header with Status, Author, Platform Target (PC, Console), Related GDDs (`docs/design/gdd/inventory.md`), Accessibility Tier and `> **Template**: UX Spec`; every section populated, including States & Variants (loading, empty, populated, error), keyboard and d-pad navigation with focus order, an Input Method Completeness Checklist block for keyboard/mouse and for gamepad with every item ticked, and at least 5 testable acceptance criteria
+- `docs/design/accessibility-requirements.md` commits the Standard tier
+- `docs/design/ux/interaction-patterns.md` exists, and every interactive component in the spec names a pattern from it
+- `.claude/ccgs/project.yaml` `platform` block: `targets: [PC, Console]`, `gamepad_support: Full`
+- `docs/design/gdd/inventory.md` UI Requirements are all addressed by the spec
 
-**Input:** `/ux-review design/ux/inventory.md`
+**Input:** `/ux-review docs/design/ux/inventory.md`
 
 **Expected behavior:**
-1. Phase 2 derives input methods (keyboard/mouse, gamepad) from the `platform` block, reads the committed tier, the pattern library if present, and the UI Requirements of `design/gdd/inventory.md`
+1. Phase 2 derives input methods (keyboard/mouse, gamepad) from the `platform` block, reads the committed tier, the pattern library if present, and the UI Requirements of `docs/design/gdd/inventory.md`
 2. Phase 3A runs the completeness items and quality checks
 3. The report names Phase 3A as the checklist (from the Template line) and shows "Completeness: [X/Y sections present]", Quality Issues, "GDD Alignment: ALIGNED", "Accessibility: COMPLIANT" against the Standard tier, and "Pattern Library: CONSISTENT"
 4. Verdict: APPROVED — "This spec is ready for handoff to `/team-ui` Phase 2 (Visual Design)."
 5. Phase 5 suggests running `/team-ui`
 
 **Assertions:**
-- [ ] Input method coverage is checked against the `project.yaml` platform block, not only the spec header
+- [ ] Input method coverage is checked against the `.claude/ccgs/project.yaml` platform block, not only the spec header
 - [ ] The UX spec checklist (Phase 3A) is used, including States & Variants, Interaction Map coverage and the Input Method Completeness Checklist item
 - [ ] Every review dimension has something to check against — the committed tier, the pattern library, the referenced GDD — so none is NOT ASSESSED
-- [ ] Accessibility is checked against the tier committed in `design/accessibility-requirements.md`
+- [ ] Accessibility is checked against the tier committed in `docs/design/accessibility-requirements.md`
 - [ ] Verdict is APPROVED with the `/team-ui` handoff
 - [ ] No files are written
 
@@ -90,9 +90,9 @@ Fixture defaults.
 
 **Fixture:**
 - Same as Case 1, but the spec's Accessibility section is empty
-- `design/accessibility-requirements.md` commits the Standard tier
+- `docs/design/accessibility-requirements.md` commits the Standard tier
 
-**Input:** `/ux-review design/ux/inventory.md`
+**Input:** `/ux-review docs/design/ux/inventory.md`
 
 **Expected behavior:**
 1. The Accessibility Requirements completeness item fails, and the Standard-tier text-contrast check cannot be met; the focus-order check still passes, because the spec still defines keyboard and d-pad focus order (Case 1's fixture)
@@ -111,17 +111,17 @@ Fixture defaults.
 ### Case 3: Incomplete States — NEEDS REVISION outranks NOT ASSESSED
 
 **Fixture:**
-- `design/ux/settings-menu.md` follows the UX spec template, carries `> **Template**: UX Spec`, and is otherwise complete
+- `docs/design/ux/settings-menu.md` follows the UX spec template, carries `> **Template**: UX Spec`, and is otherwise complete
 - Its States & Variants section documents only the populated state — no loading, empty or error state; the screen fetches its data asynchronously
-- `design/ux/interaction-patterns.md` exists and the spec's components name patterns from it
-- No `design/accessibility-requirements.md`, so there is no committed tier
+- `docs/design/ux/interaction-patterns.md` exists and the spec's components name patterns from it
+- No `docs/design/accessibility-requirements.md`, so there is no committed tier
 
-**Input:** `/ux-review design/ux/settings-menu.md`
+**Input:** `/ux-review docs/design/ux/settings-menu.md`
 
 **Expected behavior:**
 1. The States & Variants completeness item fails ("at minimum: loading, empty/populated, and error states")
 2. The Completeness list marks it, e.g. "States & Variants — MISSING: error state not documented", and names each missing state (loading, empty, error)
-3. The report shows "Accessibility: NOT ASSESSED — no committed tier (design/accessibility-requirements.md absent)" and lists it under "Dimensions not assessed"
+3. The report shows "Accessibility: NOT ASSESSED — no committed tier (docs/design/accessibility-requirements.md absent)" and lists it under "Dimensions not assessed"
 4. The verdict is NEEDS REVISION: a gap that was found outranks a dimension that could not be checked. It is not NOT ASSESSED, and not MAJOR REVISION NEEDED for this fixable gap
 5. The handoff is to fix the gaps and re-run `/ux-review`
 
@@ -137,14 +137,14 @@ Fixture defaults.
 ### Case 4: Nothing to Assess Against — NOT ASSESSED
 
 **Fixture:**
-- Scenario (a): `design/ux/inventory-screen.md` does not exist
-- Scenario (b): `design/ux/inventory.md` is complete (as in Case 1), but `design/accessibility-requirements.md` does not exist; the spec header states "Accessibility Tier: Standard"
+- Scenario (a): `docs/design/ux/inventory-screen.md` does not exist
+- Scenario (b): `docs/design/ux/inventory.md` is complete (as in Case 1), but `docs/design/accessibility-requirements.md` does not exist; the spec header states "Accessibility Tier: Standard"
 
-**Input:** (a) `/ux-review design/ux/inventory-screen.md` (b) `/ux-review design/ux/inventory.md`
+**Input:** (a) `/ux-review docs/design/ux/inventory-screen.md` (b) `/ux-review docs/design/ux/inventory.md`
 
 **Expected behavior:**
 1. (a) The spec cannot be read: the verdict is NOT ASSESSED, the missing path is named, and no checklist is produced
-2. (b) The report shows "Accessibility: NOT ASSESSED — no committed tier (design/accessibility-requirements.md absent)" — never COMPLIANT
+2. (b) The report shows "Accessibility: NOT ASSESSED — no committed tier (docs/design/accessibility-requirements.md absent)" — never COMPLIANT
 3. (b) The header's Standard tier is carried forward and stated as an assumption, not a commitment
 4. (b) `/ux-design accessibility` is recommended to establish the tier
 5. The verdict is NOT ASSESSED, the dimensions not assessed are named with what would make them checkable, and handoff to `/team-ui` is not recommended
@@ -161,13 +161,13 @@ Fixture defaults.
 ### Case 5: `all` Argument and No Director Gate
 
 **Fixture:**
-- `design/ux/` contains `hud.md` (written by `/ux-design hud`, header line `> **Template**: HUD Design`), `inventory.md` (written by `/ux-design inventory`, `> **Template**: UX Spec`) and `pause-menu.md` (hand-written from `.claude/docs/templates/ux-spec.md`, with no Template line)
-- `project.yaml` has `modes.review_mode: full`
+- `docs/design/ux/` contains `hud.md` (written by `/ux-design hud`, header line `> **Template**: HUD Design`), `inventory.md` (written by `/ux-design inventory`, `> **Template**: UX Spec`) and `pause-menu.md` (hand-written from `.claude/docs/templates/ux-spec.md`, with no Template line)
+- `.claude/ccgs/project.yaml` has `modes.review_mode: full`
 
 **Input:** `/ux-review all`
 
 **Expected behavior:**
-1. The skill finds every file in `design/ux/` and outputs a summary table first (file | verdict | primary issue), then the full report for each
+1. The skill finds every file in `docs/design/ux/` and outputs a summary table first (file | verdict | primary issue), then the full report for each
 2. `hud.md` is checked with the HUD checklist (Phase 3B) and `inventory.md` with the UX spec checklist (Phase 3A), each from its Template line
 3. `pause-menu.md` has no Template line and is not `hud.md` or `interaction-patterns.md`, so it gets Phase 3A, and its report says the checklist was assumed from the file name
 4. No agent is spawned and no gate ID or gate skip message appears; the review mode has no effect
@@ -202,4 +202,4 @@ Fixture defaults.
   fixture-tested.
 - The no-argument prompt ("which spec to validate") is not tested.
 - The fallback to `.claude/docs/technical-preferences.md`, and then to the spec
-  header, when `project.yaml` has no `platform` block is not tested.
+  header, when `.claude/ccgs/project.yaml` has no `platform` block is not tested.

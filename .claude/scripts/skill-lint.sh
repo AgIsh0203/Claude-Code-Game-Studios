@@ -203,7 +203,7 @@ EOF
         if (l == "---") { infm = 1; fmstate = "unclosed"; continue }
         fmstate = "missing"
       }
-      # Verdict words count in the frontmatter too: /prototype advertises PROCEED,
+      # Verdict words count in the frontmatter too: /gamedev-prototype advertises PROCEED,
       # PIVOT and KILL in its description.
       if (l ~ /[A-Z][A-Z]/) {
         nm2 = split(VERDICTS, va2, " ")

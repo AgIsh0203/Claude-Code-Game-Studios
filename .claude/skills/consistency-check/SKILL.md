@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.cla
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,system_overrides`
 
 
@@ -14,7 +16,7 @@ model: sonnet
 # Consistency Check
 
 Detects cross-document inconsistencies by comparing all GDDs against the
-entity registry (`design/registry/entities.yaml`). Uses a grep-first approach:
+entity registry (`docs/design/registry/entities.yaml`). Uses a grep-first approach:
 reads the registry once, then targets only the GDD sections that mention
 registered names — no full document reads unless a conflict needs investigation.
 
@@ -56,7 +58,7 @@ filename stem) when the block lists one, else the project value:
 **Load the registry:**
 
 ```
-Read path="design/registry/entities.yaml"
+Read path="docs/design/registry/entities.yaml"
 ```
 
 If the file does not exist or has no entries:
@@ -88,19 +90,19 @@ nothing, and that is not a PASS.
 ## Phase 2: Locate In-Scope GDDs
 
 ```
-Glob pattern="design/gdd/*.md"
+Glob pattern="docs/design/gdd/*.md"
 ```
 
-Exclude the docs that live in `design/gdd/` but are not system GDDs:
+Exclude the docs that live in `docs/design/gdd/` but are not system GDDs:
 `game-concept.md`, `systems-index.md`, `game-pillars.md`, `gameplay-tags.md`,
 `entity-registry.md`, `fixture-swap-ledger.md`, `sound-bible.md` and any
 `gdd-cross-review-*.md` (the report `/review-all-gdds` writes here).
 
 For `since-last-review` mode:
 ```bash
-git log --name-only --pretty=format: -- design/gdd/ | grep "\.md$" | sort -u
+git log --name-only --pretty=format: -- docs/design/gdd/ | grep "\.md$" | sort -u
 ```
-Limit to GDDs modified since the most recent `design/gdd/gdd-cross-review-*.md`
+Limit to GDDs modified since the most recent `docs/design/gdd/gdd-cross-review-*.md`
 file's creation date.
 
 Report the in-scope GDD list before scanning. **If the list is empty** — no system
@@ -127,7 +129,7 @@ every section compared). Grep each such GDD once for `^## ` to get its headings
 and line numbers, and file every name hit under the nearest heading above it:
 only hits under Overview, Detailed Rules / Detailed Design, Formulas, Edge
 Cases, Dependencies or Acceptance Criteria are compared — plus Tuning Knobs when
-`project.yaml` sets `workflow_overrides.tuning_knobs: true` (read that flag
+`.claude/ccgs/project.yaml` sets `workflow_overrides.tuning_knobs: true` (read that flag
 once; it only ever adds the section). Any other hit (Tuning Knobs without the
 flag, Player Fantasy, any other section) raises no finding and is not logged;
 list each one that states a value (name, GDD, section) on the report's
@@ -138,7 +140,7 @@ list each one that states a value (name, GDD, section) on the report's
 For each entity in entity_map:
 
 ```
-Grep pattern="[entity_name]" glob="design/gdd/*.md" output_mode="content" -C 3
+Grep pattern="[entity_name]" glob="docs/design/gdd/*.md" output_mode="content" -C 3
 ```
 
 For each GDD hit, extract the values mentioned near the entity name:
@@ -190,7 +192,7 @@ For each conflict found in Phase 3, do a targeted full-section read of the
 conflicting GDD to get precise context:
 
 ```
-Read path="design/gdd/[conflicting_gdd].md"
+Read path="docs/design/gdd/[conflicting_gdd].md"
 ```
 (Or use Grep with wider context if the file is large)
 
@@ -276,12 +278,12 @@ Verdict: PASS | CONFLICTS FOUND | NOT ASSESSED
 
 **Re-read before you write.** Phase 1 read the registry before the scans, and
 another skill or session may have changed it since. Before each Edit, read the
-current `design/registry/entities.yaml`, find the entry in its section, and
+current `docs/design/registry/entities.yaml`, find the entry in its section, and
 anchor the Edit on the entry's current text, never on what Phase 1 saw. Append
 a new entry after the last existing entry of its section.
 
 If stale registry entries were found, ask:
-> "May I update `design/registry/entities.yaml` to fix the [N] stale entries?"
+> "May I update `docs/design/registry/entities.yaml` to fix the [N] stale entries?"
 
 For each stale entry:
 - Update the `value` / attribute field
@@ -290,7 +292,7 @@ For each stale entry:
 
 If new entries were found in GDDs that are not in the registry, ask:
 > "Found [N] entities/items mentioned in GDDs that aren't in the registry yet.
-> May I add them to `design/registry/entities.yaml`?"
+> May I add them to `docs/design/registry/entities.yaml`?"
 
 Only add entries that appear in more than one GDD (true cross-system facts).
 
@@ -342,7 +344,7 @@ Then append the new conflict entries. Never skip logging on your own — a missi
 
 ## Phase 7: Session State and Closing
 
-Silently append to `production/session-state/active.md` (create the file if it does not exist):
+Silently append to `.claude/ccgs/session-state/active.md` (create the file if it does not exist):
 
 ```
 <!-- CONSISTENCY-CHECK: [date] | GDDs checked: [N] | Conflicts found: [N] | Log: docs/consistency-failures.md -->

@@ -9,7 +9,7 @@ will be compacted or lost. Files on disk persist across compactions and session 
 
 ### Session State File
 
-Maintain `production/session-state/active.md` as a living checkpoint. Update it
+Maintain `.claude/ccgs/session-state/active.md` as a living checkpoint. Update it
 after each significant milestone:
 
 - Design section approved and written to file
@@ -39,7 +39,7 @@ anything else.
 > same part, and the cost is fixed no matter how long the narrative grows.
 
 **Rotation.** When the narrative passes ~200 lines, move it into
-`production/session-logs/`:
+`.claude/ccgs/session-logs/`:
 
 ```bash
 bash .claude/scripts/rotate-session-state.sh            # --dry-run to preview
@@ -52,8 +52,8 @@ deleted. `session-start.sh` observes when rotation is due but never performs it.
 
 When the project is in Production, Polish, or Release stage, include a structured
 status block in `active.md` that the status line script can parse. (The project
-stage is resolved from `project.stage` in `project.yaml`, falling back to
-`production/stage.txt`.)
+stage is resolved from `project.stage` in `.claude/ccgs/project.yaml`, falling back to
+`.claude/ccgs/stage.txt`.)
 
 ```markdown
 <!-- STATUS -->
@@ -148,7 +148,7 @@ Subagents run in their own context window and return only summaries:
 
 When context is compacted, preserve the following in the summary:
 
-- Reference to `production/session-state/active.md` (read it to recover state)
+- Reference to `.claude/ccgs/session-state/active.md` (read it to recover state)
 - List of files modified in this session and their purpose
 - Any architectural decisions made and their rationale
 - Active sprint tasks and their current status
@@ -158,7 +158,7 @@ When context is compacted, preserve the following in the summary:
 - The current task and what step we are on
 - Which sections of the current document are written to file vs. still in progress
 
-**After compaction:** Read `production/session-state/active.md` and any files being
+**After compaction:** Read `.claude/ccgs/session-state/active.md` and any files being
 actively worked on to recover full context. The files contain the decisions; the
 conversation history is secondary.
 

@@ -10,7 +10,7 @@
 # that was mostly history the commit log already records.
 #
 # Rotation keeps the checkpoint, appends the narrative to a dated file under
-# production/session-logs/, and starts the Notes section fresh. Nothing is
+# .claude/ccgs/session-logs/, and starts the Notes section fresh. Nothing is
 # deleted.
 #
 # EXPLICIT INVOCATION ONLY. No hook calls this. session-start.sh observes that
@@ -26,8 +26,8 @@
 set -u
 cd "$(dirname "$0")/../.." || exit 1
 
-STATE="production/session-state/active.md"
-LOGDIR="production/session-logs"
+STATE=".claude/ccgs/session-state/active.md"
+LOGDIR=".claude/ccgs/session-logs"
 DRY=0
 
 case "${1:-}" in

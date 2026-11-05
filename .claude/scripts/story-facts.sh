@@ -13,8 +13,8 @@
 #
 # Usage: bash .claude/scripts/story-facts.sh [--root DIR] [--all | --sprint | PATH ...] [--lint]
 #                                          [--granularity coarse|balanced|fine]
-#   --all       every production/epics/**/story-*.md (the default)
-#   --sprint    the stories production/sprint-status.yaml lists in its file:
+#   --all       every docs/production/epics/**/story-*.md (the default)
+#   --sprint    the stories docs/production/sprint-status.yaml lists in its file:
 #               entries, the only place a sprint names story paths
 #   PATH ...    these story files, relative to the root
 #   --lint      also print the rules each story trips
@@ -99,10 +99,10 @@ else
   cd "$(dirname "$0")/../.." 2>/dev/null || { echo "story-facts: cannot reach the repo root" >&2; exit 1; }
 fi
 
-YAML="production/sprint-status.yaml"
+YAML="docs/production/sprint-status.yaml"
 SPRINT=""     # "path<TAB>status" per story, from the yaml
 case "$SCOPE" in
-  all) LIST=$(find production/epics -type f -name 'story-*.md' 2>/dev/null | sort) ;;
+  all) LIST=$(find docs/production/epics -type f -name 'story-*.md' 2>/dev/null | sort) ;;
   sprint)
     [ -f "$YAML" ] || { echo "story-facts: no $YAML; --sprint has no story paths to read (try --all)" >&2; exit 3; }
     # Each `- ` entry under stories: gives one story; its file: and status:
@@ -138,7 +138,7 @@ EOF
 
 
 SCOPE_LABEL="$SCOPE"
-[ "$SCOPE" = all ] && SCOPE_LABEL="production/epics/**/story-*.md"
+[ "$SCOPE" = all ] && SCOPE_LABEL="docs/production/epics/**/story-*.md"
 [ "$SCOPE" = sprint ] && SCOPE_LABEL="$YAML"
 
 # The file list goes to awk on stdin, never as arguments: thousands of paths

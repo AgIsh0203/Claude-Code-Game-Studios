@@ -5,9 +5,9 @@
 `/create-architecture` produces the master architecture document,
 `docs/architecture/architecture.md`. Phase 0 loads context and stops early when
 a prerequisite is missing: the engine reference docs (no engine → `/setup-engine`),
-`design/gdd/systems-index.md` (absent at `standard`/`full` → `/map-systems`),
-and `design/gdd/game-concept.md` (absent → `/brainstorm`; at `minimal` the
-one-page `design/game-brief.md` stands in). It extracts a Technical Requirements
+`docs/GDD.md` (absent at `standard`/`full` → `/map-systems`),
+and `docs/GDD.md` (absent → `/brainstorm`; at `minimal` the
+one-page `docs/GDD.md` stands in). It extracts a Technical Requirements
 Baseline (`TR-[system]-[NNN]`) from the requirement-bearing sections of every
 GDD, inventories existing ADRs from their headers, and shows an Engine Knowledge
 Gap Inventory with an `AskUserQuestion` before authoring.
@@ -19,7 +19,7 @@ Phase 7 asks "All sections approved. May I write the master architecture
 document?" with `[A]/[B]/[C]` options. Phase 7b collects the TD-ARCHITECTURE and
 LP-FEASIBILITY reviews, presents them side by side, and asks before recording
 the sign-off in the Document Status section. Phase 8 updates
-`production/session-state/active.md` and prints a fixed handoff template.
+`.claude/ccgs/session-state/active.md` and prints a fixed handoff template.
 
 An existing `docs/architecture/architecture.md` is never replaced unasked:
 Phase 0e offers to update chosen sections in place (raising the document's
@@ -48,7 +48,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 ## Director Gate Checks
 
 Review mode comes from the resolved `review_mode` (`modes.review_mode` in
-`project.yaml`); `--review full|lean|solo` overrides it for one run.
+`.claude/ccgs/project.yaml`); `--review full|lean|solo` overrides it for one run.
 
 In `full` mode: after `docs/architecture/architecture.md` is written, TD-ARCHITECTURE
 (`technical-director`) and LP-FEASIBILITY (`lead-programmer`) review it. Each is
@@ -69,9 +69,9 @@ skipped — Solo mode."
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -81,10 +81,10 @@ Fixture defaults.
 ### Case 1: Happy Path — New architecture document, full mode, reviews approve
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot`, `modes.review_mode: full`, `modes.workflow: full`
+- `.claude/ccgs/project.yaml` has `engine.name: Godot`, `modes.review_mode: full`, `modes.workflow: full`
 - `docs/engine-reference/godot/` has `VERSION.md`, `breaking-changes.md`, `deprecated-apis.md`, `current-best-practices.md` and `modules/`
-- `design/gdd/game-concept.md` and `design/gdd/systems-index.md` exist with real content
-- `design/gdd/combat.md` and `design/gdd/inventory.md` follow the GDD template
+- `docs/GDD.md` and `docs/GDD.md` exist with real content
+- `docs/design/gdd/combat.md` and `docs/design/gdd/inventory.md` follow the GDD template
 - `docs/architecture/adr-0001-event-bus.md` exists (`Status: Accepted`)
 - No `docs/architecture/architecture.md`
 - TD-ARCHITECTURE returns APPROVE; LP-FEASIBILITY returns FEASIBLE
@@ -96,11 +96,11 @@ Fixture defaults.
 2. Phase 0b Greps the requirement-bearing sections of each GDD (Detailed Rules/Design, Formulas, Dependencies, Tuning Knobs, Acceptance Criteria) and presents the Technical Requirements Baseline with IDs such as `TR-combat-001 (provisional)` (no TR registry yet)
 3. Phase 0c builds the ADR inventory from `## Status`/`## Summary` and `**Domain**` Greps, not full reads
 4. Phase 0d shows the Engine Knowledge Gap Inventory and asks `[A] Proceed — flag HIGH RISK domains…` / `[B] Let me check the engine reference first…` / `[C] Show me which domains are HIGH RISK and why`
-5. Phases 1–4: each proposal (layer map, ownership map, each data-flow scenario, API boundaries) is shown and approved before the next, and each approval is recorded in `production/session-state/active.md` — nothing is written to the architecture document before Phase 7
+5. Phases 1–4: each proposal (layer map, ownership map, each data-flow scenario, API boundaries) is shown and approved before the next, and each approval is recorded in `.claude/ccgs/session-state/active.md` — nothing is written to the architecture document before Phase 7
 6. Phase 7: a one-paragraph summary, then "All sections approved. May I write the master architecture document?" with `[A] Yes — write…` / `[B] Show me the full draft inline first…` / `[C] Not yet…`
 7. Phase 7b: TD-ARCHITECTURE (passed the document path, the TR baseline, the ADR list with statuses and the knowledge gap inventory) and LP-FEASIBILITY review the written document; both assessments are shown side by side; the user chooses `Accept — proceed to handoff`
 8. The proposed Document Status block is shown, then "May I update the Document Status section with the sign-off results?"
-9. Phase 8 writes a summary to `production/session-state/active.md` and prints the handoff with the headings "Architecture Complete", "Run These ADRs Next", "Gate-Check Readiness"; its **Then:** line names `/architecture-review`, then `/create-control-manifest` once the review passes, and the readiness block names `/gate-check pre-production`
+9. Phase 8 writes a summary to `.claude/ccgs/session-state/active.md` and prints the handoff with the headings "Architecture Complete", "Run These ADRs Next", "Gate-Check Readiness"; its **Then:** line names `/architecture-review`, then `/create-control-manifest` once the review passes, and the readiness block names `/gate-check pre-production`
 
 **Assertions:**
 - [ ] The baseline uses `TR-[system]-[NNN]` IDs and is built from the scanned GDD sections, not whole-file reads
@@ -147,7 +147,7 @@ Fixture defaults.
 ### Case 3: Lean and Solo Modes — Both reviews skipped, written with user approval only
 
 **Fixture:**
-- Same project as Case 1, but scenario (a): `project.yaml` has `modes.review_mode: lean`
+- Same project as Case 1, but scenario (a): `.claude/ccgs/project.yaml` has `modes.review_mode: lean`
 - Scenario (b): same project, invoked with `--review solo`
 
 **Input:** (a) `/create-architecture` (b) `/create-architecture --review solo`
@@ -196,10 +196,10 @@ Fixture defaults.
 ### Case 4: Edge Case — Systems index missing or empty
 
 **Fixture:**
-- Engine configured; `design/gdd/game-concept.md` exists
-- Scenario (a): `modes.workflow: standard`, no `design/gdd/systems-index.md`
-- Scenario (b): `modes.workflow: standard`, `design/gdd/systems-index.md` exists but contains only template placeholders
-- Scenario (c): `modes.workflow: minimal`, no systems index, no game concept, `design/game-brief.md` exists
+- Engine configured; `docs/GDD.md` exists
+- Scenario (a): `modes.workflow: standard`, no `docs/GDD.md`
+- Scenario (b): `modes.workflow: standard`, `docs/GDD.md` exists but contains only template placeholders
+- Scenario (c): `modes.workflow: minimal`, no systems index, no game concept, `docs/GDD.md` exists
 
 **Input:** `/create-architecture`
 
@@ -207,7 +207,7 @@ Fixture defaults.
 1. The skill checks both design files exist before reading either
 2. (a) Stops with: "No systems index found. Run `/map-systems` first…" — no baseline is built, no file is written
 3. (b) Treats the placeholder-only index as absent and stops the same way
-4. (c) Says the systems index is not required at `minimal`, reads `design/game-brief.md` in place of the concept, and proceeds
+4. (c) Says the systems index is not required at `minimal`, reads `docs/GDD.md` in place of the concept, and proceeds
 
 **Assertions:**
 - [ ] (a) The skill stops with the `/map-systems` message and writes nothing
@@ -221,7 +221,7 @@ Fixture defaults.
 
 **Fixture:**
 - Same as Case 1, plus `docs/architecture/adr-0002-save-format.md` with `Status: Proposed`
-- Also `design/gdd/crafting.md`, written before the GDD template, with none of the scanned section headings
+- Also `docs/design/gdd/crafting.md`, written before the GDD template, with none of the scanned section headings
 - Baseline requirement `TR-combat-002` (combo state machine) is not covered by any ADR's GDD Requirements Addressed section or decision text
 
 **Input:** `/create-architecture`
@@ -247,7 +247,7 @@ Fixture defaults.
 ### Case 6: Existing Architecture Document — Update in place, never overwritten unasked
 
 **Fixture:**
-- Same project as Case 1, but `project.yaml` has `modes.review_mode: lean`
+- Same project as Case 1, but `.claude/ccgs/project.yaml` has `modes.review_mode: lean`
 - Scenario (a): `docs/architecture/architecture.md` exists at `Version: 2` with every section written; the user picks `[A] Update chosen sections in place` and chooses Data Flow
 - Scenario (b): no `docs/architecture/architecture.md`; the input is `/create-architecture layers`
 
@@ -272,7 +272,7 @@ Fixture defaults.
 
 **Fixture:**
 - Same project as Case 1, but `/architecture-review` has run: `docs/architecture/tr-registry.yaml` holds `TR-combat-001` (`requirement: "Hitbox detection per-frame"`, `status: active`) and `TR-combat-002` (`requirement: "Old combo timing"`, `status: deprecated`)
-- `design/gdd/combat.md` still describes per-frame hitbox detection and adds a combo state machine; `design/gdd/inventory.md` has no registry entries
+- `docs/design/gdd/combat.md` still describes per-frame hitbox detection and adds a combo state machine; `docs/design/gdd/inventory.md` has no registry entries
 
 **Input:** `/create-architecture`
 
@@ -292,7 +292,7 @@ Fixture defaults.
 
 ## Protocol Compliance
 
-- [ ] Stops before authoring when the engine is missing, or on a `standard`/`full` project when the systems index or game concept is missing; at `minimal` it proceeds from `design/game-brief.md` and stops only when that is absent too
+- [ ] Stops before authoring when the engine is missing, or on a `standard`/`full` project when the systems index or game concept is missing; at `minimal` it proceeds from `docs/GDD.md` and stops only when that is absent too
 - [ ] Every section is shown in full before its approval is asked
 - [ ] Write approvals use `AskUserQuestion` with labeled options, not plain-text asks
 - [ ] Follows one consistent write model for `docs/architecture/architecture.md`, and never replaces an existing one without the user choosing to

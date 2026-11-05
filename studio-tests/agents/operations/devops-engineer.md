@@ -79,5 +79,5 @@
 - Case 1 references `coding-standards.md` CI rules — verify this file is present and current before running this test
 - Case 3 tests that the agent consults `docs/engine-reference/godot/` for version-specific behavior; it does not require the reference to cover headless import
 - Case 4 (branching strategy) is a convention-enforcement test — agent must know the project convention, not just give neutral advice
-- Case 5 supplies the target platforms in context; in a real project they come from `project.yaml`
+- Case 5 supplies the target platforms in context; in a real project they come from `.claude/ccgs/project.yaml`
 - No automated runner; review manually or via `/skill-test`

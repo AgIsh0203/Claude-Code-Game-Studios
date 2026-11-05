@@ -3,8 +3,8 @@
 ## Skill Summary
 
 `/consistency-check [full | since-last-review | entity:<name> | item:<name>]`
-compares every in-scope GDD in `design/gdd/` against the entity registry
-(`design/registry/entities.yaml`). It reads the registry once, builds entity,
+compares every in-scope GDD in `docs/design/gdd/` against the entity registry
+(`docs/design/registry/entities.yaml`). It reads the registry once, builds entity,
 item, formula and constant lookups, then greps each GDD for each registered name
 (`-C 3`) instead of reading whole documents; only conflicts get a targeted
 section read. The registry entry's `source:` GDD is the authoritative owner.
@@ -18,7 +18,7 @@ nothing is not a PASS. Registry corrections are written only
 after a "May I update / May I add" ask; afterwards the verdict is COMPLETE, or
 BLOCKED while conflicts remain. Every 🔴 CONFLICT is appended to
 `docs/consistency-failures.md` after a "May I append" ask, a breadcrumb is appended to
-`production/session-state/active.md`, and the skill closes with an
+`.claude/ccgs/session-state/active.md`, and the skill closes with an
 `AskUserQuestion` widget (collaborative and guided modes). No director gates.
 
 ---
@@ -32,7 +32,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Contains verdict keywords: PASS, CONFLICTS FOUND, NOT ASSESSED, COMPLETE, BLOCKED
 - [ ] The analysis phases (1–5) are read-only
 - [ ] Has a next-step handoff at the end
-- [ ] Registry writes are preceded by "May I update" / "May I add" language naming `design/registry/entities.yaml`
+- [ ] Registry writes are preceded by "May I update" / "May I add" language naming `docs/design/registry/entities.yaml`
 - [ ] The conflict log write is preceded by "May I append" language naming `docs/consistency-failures.md`
 
 ---
@@ -47,9 +47,9 @@ required as part of the scan itself.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -60,26 +60,26 @@ Fixture defaults.
 
 **Fixture:**
 - `modes.workflow` resolves to `full`; `modes.automation` resolves to `collaborative`
-- `design/registry/entities.yaml` has 3 entities and 2 constants, each with a `source:` GDD
-- `design/gdd/` contains 4 system GDDs plus `game-concept.md`, `systems-index.md` and a `gdd-cross-review-[date].md`
+- `docs/design/registry/entities.yaml` has 3 entities and 2 constants, each with a `source:` GDD
+- `docs/design/gdd/` contains 4 system GDDs plus `game-concept.md`, `systems-index.md` and a `gdd-cross-review-[date].md`
 - Every value the GDDs state for a registered name matches the registry
 
 **Input:** `/consistency-check`
 
 **Expected behavior:**
 1. Skill reads the registry and reports `Registry loaded: 3 entities, 0 items, 0 formulas, 2 constants` and `Scope: full`
-2. Skill globs `design/gdd/*.md`, excludes `game-concept.md`, `systems-index.md` and the cross-review report, and reports the 4 in-scope GDDs before scanning
+2. Skill globs `docs/design/gdd/*.md`, excludes `game-concept.md`, `systems-index.md` and the cross-review report, and reports the 4 in-scope GDDs before scanning
 3. Each registered name is grepped across the in-scope GDDs with 3 lines of context; no GDD is read in full
 4. No conflicts or stale entries; the report's Clean Entries line reads `✅ 5 registry entries verified across all GDDs with no conflicts.`
 5. Verdict: PASS
-6. Nothing is appended to `docs/consistency-failures.md`; the breadcrumb is appended to `production/session-state/active.md`
+6. Nothing is appended to `docs/consistency-failures.md`; the breadcrumb is appended to `.claude/ccgs/session-state/active.md`
 7. Closes with the `AskUserQuestion` widget (Fix / Run `/design-review` / Stop)
 
 **Assertions:**
 - [ ] The in-scope GDD list (4 GDDs, non-system docs excluded) is reported before the scan
 - [ ] The scan greps for registered names rather than fully reading each GDD
 - [ ] Verdict is PASS when registry and GDDs agree
-- [ ] `design/registry/entities.yaml` and `docs/consistency-failures.md` are not written; the only write is the `active.md` breadcrumb
+- [ ] `docs/design/registry/entities.yaml` and `docs/consistency-failures.md` are not written; the only write is the `active.md` breadcrumb
 - [ ] The breadcrumb names `docs/consistency-failures.md`, not an invented report file
 - [ ] The skill closes with the `AskUserQuestion` widget, not plain text
 
@@ -89,9 +89,9 @@ Fixture defaults.
 
 **Fixture:**
 - `modes.workflow` resolves to `full`
-- Registry `constants:` has `crit_multiplier` value 1.5, `source: design/gdd/combat.md`, `referenced_by: [combat.md, loot.md]`
-- `design/gdd/combat.md` states `crit_multiplier = 1.5`
-- `design/gdd/loot.md` states `crit_multiplier = 2.0`
+- Registry `constants:` has `crit_multiplier` value 1.5, `source: docs/design/gdd/combat.md`, `referenced_by: [combat.md, loot.md]`
+- `docs/design/gdd/combat.md` states `crit_multiplier = 1.5`
+- `docs/design/gdd/loot.md` states `crit_multiplier = 2.0`
 - The registry entry is newer than the last commit to `combat.md` (not stale)
 
 **Input:** `/consistency-check`
@@ -118,8 +118,8 @@ Fixture defaults.
 
 **Fixture:**
 - `modes.workflow` resolves to `full`
-- Registry `entities:` has `goblin` with `health: 40`, `source: design/gdd/combat.md`
-- `design/gdd/combat.md` now says goblin health is 50; `git log` shows it changed after the registry entry was written
+- Registry `entities:` has `goblin` with `health: 40`, `source: docs/design/gdd/combat.md`
+- `docs/design/gdd/combat.md` now says goblin health is 50; `git log` shows it changed after the registry entry was written
 - No other GDD states a goblin health value
 
 **Input:** `/consistency-check entity:goblin`
@@ -128,14 +128,14 @@ Fixture defaults.
 1. Scope is limited to the `goblin` entity across all GDDs; the report shows `Scope: entity:goblin`
 2. The mismatch is found in the source GDD itself; Phase 4 checks git history and classifies it ⚠️ STALE REGISTRY, not 🔴 CONFLICT
 3. Report lists it under Stale Registry Entries: registry says 40, source GDD now says 50
-4. Skill asks: "May I update `design/registry/entities.yaml` to fix the 1 stale entries?"
+4. Skill asks: "May I update `docs/design/registry/entities.yaml` to fix the 1 stale entries?"
 5. On approval: `health` becomes 50, `revised:` is set to today, and a `# was: 40 before [date]` comment is added; nothing is deleted
 6. After writing, verdict is COMPLETE
 7. No entry is appended to `docs/consistency-failures.md` (only 🔴 CONFLICT entries are logged)
 
 **Assertions:**
 - [ ] The finding is classified ⚠️ STALE REGISTRY, distinct from 🔴 CONFLICT
-- [ ] The registry is not written until the "May I update `design/registry/entities.yaml`" ask is approved
+- [ ] The registry is not written until the "May I update `docs/design/registry/entities.yaml`" ask is approved
 - [ ] The approved update sets `revised:` and keeps the old value in a `# was:` comment
 - [ ] Verdict after the write is COMPLETE
 - [ ] `docs/consistency-failures.md` is not written for a stale-registry finding
@@ -146,8 +146,8 @@ Fixture defaults.
 
 **Fixture:**
 - `modes.workflow` resolves to `full`
-- `design/registry/entities.yaml` is the shipped stub with no entries
-- `design/gdd/` is empty
+- `docs/design/registry/entities.yaml` is the shipped stub with no entries
+- `docs/design/gdd/` is empty
 
 **Input:** `/consistency-check`
 
@@ -160,7 +160,7 @@ Fixture defaults.
 **Assertions:**
 - [ ] Skill outputs the empty-registry message naming `/design-system`
 - [ ] Verdict is NOT ASSESSED, naming the empty registry as the reason — never PASS, CONFLICTS FOUND, COMPLETE or BLOCKED, and never no verdict at all (`.claude/rules/skill-authoring.md` obligation 1)
-- [ ] No file is written, including `production/session-state/active.md`
+- [ ] No file is written, including `.claude/ccgs/session-state/active.md`
 - [ ] Skill does NOT crash or produce a partial report
 
 ---
@@ -169,8 +169,8 @@ Fixture defaults.
 
 **Fixture:**
 - `modes.workflow` resolves to `full`
-- `design/registry/entities.yaml` has 3 entities, each with a `source:` GDD
-- `design/gdd/gdd-cross-review-[date].md` exists, and no system GDD has changed since it
+- `docs/design/registry/entities.yaml` has 3 entities, each with a `source:` GDD
+- `docs/design/gdd/gdd-cross-review-[date].md` exists, and no system GDD has changed since it
 
 **Input:** `/consistency-check since-last-review`
 
@@ -191,8 +191,8 @@ Fixture defaults.
 
 **Fixture:**
 - `modes.workflow` resolves to `full`
-- `design/registry/entities.yaml` has entities `goblin` and `orc_warlord`
-- `design/gdd/` contains 3 system GDDs; one mentions a `goblin_shaman`
+- `docs/design/registry/entities.yaml` has entities `goblin` and `orc_warlord`
+- `docs/design/gdd/` contains 3 system GDDs; one mentions a `goblin_shaman`
 
 **Input:** `/consistency-check entity:goblin_shaman`
 
@@ -212,9 +212,9 @@ Fixture defaults.
 ### Case 5: Director Gate — No gate spawned in full review mode
 
 **Fixture:**
-- `project.yaml`: `modes.review_mode: full`, `modes.workflow: full`
-- `design/registry/entities.yaml` has entries
-- `design/gdd/` contains ≥2 GDDs
+- `.claude/ccgs/project.yaml`: `modes.review_mode: full`, `modes.workflow: full`
+- `docs/design/registry/entities.yaml` has entries
+- `docs/design/gdd/` contains ≥2 GDDs
 
 **Input:** `/consistency-check`
 
@@ -236,9 +236,9 @@ Fixture defaults.
 
 **Fixture:**
 - `modes.workflow` resolves to `standard`
-- Registry `constants:` has `crit_multiplier` value 1.5, `source: design/gdd/combat.md`
-- `design/gdd/combat.md` `## Detailed Design` states `crit_multiplier = 1.5`
-- `design/gdd/loot.md` states `crit_multiplier = 2.0` only in its `## Tuning Knobs` section, which `standard` does not require; no required section of `loot.md` states a value for it
+- Registry `constants:` has `crit_multiplier` value 1.5, `source: docs/design/gdd/combat.md`
+- `docs/design/gdd/combat.md` `## Detailed Design` states `crit_multiplier = 1.5`
+- `docs/design/gdd/loot.md` states `crit_multiplier = 2.0` only in its `## Tuning Knobs` section, which `standard` does not require; no required section of `loot.md` states a value for it
 
 **Input:** `/consistency-check`
 
@@ -258,11 +258,11 @@ Fixture defaults.
 ### Case 6b: Standard Workflow — A per-system override makes one GDD `full`
 
 **Fixture:**
-- `modes.workflow` resolves to `standard`; `project.yaml` has
+- `modes.workflow` resolves to `standard`; `.claude/ccgs/project.yaml` has
   `workflow_overrides.system_overrides.loot: full`
-- Registry `constants:` has `crit_multiplier` value 1.5, `source: design/gdd/combat.md`
-- `design/gdd/combat.md` `## Detailed Design` states `crit_multiplier = 1.5`
-- `design/gdd/loot.md` states `crit_multiplier = 2.0` only in its `## Tuning Knobs` section
+- Registry `constants:` has `crit_multiplier` value 1.5, `source: docs/design/gdd/combat.md`
+- `docs/design/gdd/combat.md` `## Detailed Design` states `crit_multiplier = 1.5`
+- `docs/design/gdd/loot.md` states `crit_multiplier = 2.0` only in its `## Tuning Knobs` section
 
 **Input:** `/consistency-check`
 
@@ -284,12 +284,12 @@ Fixture defaults.
 **Fixture:**
 - `modes.workflow` resolves to `full`
 - Registry at the start of the run: `entities:` has `goblin` (`health: 40`,
-  `source: design/gdd/combat.md`) and `orc`; `items:` has `health_potion`
-- `design/gdd/combat.md` says goblin health is 50 (changed after the registry
+  `source: docs/design/gdd/combat.md`) and `orc`; `items:` has `health_potion`
+- `docs/design/gdd/combat.md` says goblin health is 50 (changed after the registry
   entry was written: stale); `iron_sword` appears with a stated damage in both
   `combat.md` and `loot.md` and is not in the registry
 - Between the Phase 1 read and the writes, another session edits
-  `design/registry/entities.yaml`: it adds a `troll` entity after `orc`, adds
+  `docs/design/registry/entities.yaml`: it adds a `troll` entity after `orc`, adds
   an `iron_axe` item after `health_potion`, and changes the `referenced_by`
   list on `goblin`
 - The user approves both asks: the stale-entry update and the new-entry add
@@ -300,7 +300,7 @@ Fixture defaults.
 1. The scan reports one ⚠️ STALE REGISTRY entry (`goblin`) and one unregistered
    cross-GDD item (`iron_sword`)
 2. Before the update Edit, the skill reads the current
-   `design/registry/entities.yaml`, finds the `goblin` entry in it, and anchors
+   `docs/design/registry/entities.yaml`, finds the `goblin` entry in it, and anchors
    the Edit on the entry's current text (the changed `referenced_by` included),
    not on what Phase 1 saw
 3. Before the add Edit, it reads the file again and appends `iron_sword` after
@@ -309,7 +309,7 @@ Fixture defaults.
    `referenced_by` are all still in the file
 
 **Assertions:**
-- [ ] A Read of `design/registry/entities.yaml` happens before each registry Edit, not only in Phase 1
+- [ ] A Read of `docs/design/registry/entities.yaml` happens before each registry Edit, not only in Phase 1
 - [ ] The Edit that updates `goblin` is anchored on the entry as it reads at that moment, and it succeeds without overwriting the other session's `referenced_by` change
 - [ ] `iron_sword` is appended after `iron_axe`, the last existing `items:` entry, not after `health_potion`
 - [ ] `troll`, `iron_axe` and the changed `referenced_by` are present after the run: the registry is never rewritten whole from the Phase 1 copy

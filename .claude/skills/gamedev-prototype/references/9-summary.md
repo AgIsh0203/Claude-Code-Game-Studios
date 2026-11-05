@@ -1,12 +1,12 @@
-# /prototype — Phase 9: Summary and Next Steps
+# /gamedev-prototype — Phase 9: Summary and Next Steps
 
-> Part of `/prototype`. `SKILL.md` names when to read this file; the settings it
+> Part of `/gamedev-prototype`. `SKILL.md` names when to read this file; the settings it
 > resolved and the rules under its later headings still apply here.
 
 ## Phase 9: Summary and Next Steps
 
 Output a summary: the hypothesis, the result, and the final recommendation.
-Link to `prototypes/[concept-name]-concept/REPORT.md`.
+Link to `docs/prototypes/[concept-name]-concept/REPORT.md`.
 
 **If PROCEED:**
 Your concept prototype validated the core idea. Now design it properly, informed by
@@ -16,7 +16,7 @@ At `workflow: minimal`: `/create-stories` (from the brief), then `/dev-story`
 on the first story — the rest of this list is the `standard`/`full` path.
 
 Recommended path (in order, `standard`/`full`):
-1. `/design-review design/gdd/game-concept.md` — validate the concept doc against what the prototype revealed
+1. `/design-review docs/GDD.md` — validate the concept doc against what the prototype revealed
 2. `/gate-check` — confirm readiness to advance to Systems Design
 3. `/art-bible` — define visual identity (optional but worth doing before GDDs)
 4. `/map-systems` — decompose the concept into all game systems
@@ -35,13 +35,13 @@ two questions (plain text, one at a time):
 1. "What specifically worked in this prototype that we should preserve in the next version?"
 2. "What is the single most important thing to change?"
 
-Ask: "May I write this to `prototypes/[concept-name]-concept/PIVOT-NOTE.md`?"
+Ask: "May I write this to `docs/prototypes/[concept-name]-concept/PIVOT-NOTE.md`?"
 
 If yes, write the file with: original hypothesis, what to keep, what to change, and
-the revised hypothesis for the next prototype. The next `/prototype` run picks it
+the revised hypothesis for the next prototype. The next `/gamedev-prototype` run picks it
 up at the start of Phase 1.
 
-- Run `/prototype [revised-concept]` to test the adjusted direction
+- Run `/gamedev-prototype [revised-concept]` to test the adjusted direction
 - Or `/brainstorm [hint]` if the concept needs more fundamental rethinking
 
 **If KILL:**
@@ -56,8 +56,8 @@ Before moving on, run this check to confirm the verdict is sound and not tempora
 
 If 2+ boxes apply → KILL verdict is sound. If 0–1 apply → consider one more focused PIVOT before killing.
 
-**Document the kill in `prototypes/GRAVEYARD.md`** (create if it doesn't exist).
-Ask: "May I append this concept to `prototypes/GRAVEYARD.md`?" If yes, add one entry:
+**Document the kill in `docs/prototypes/GRAVEYARD.md`** (create if it doesn't exist).
+Ask: "May I append this concept to `docs/prototypes/GRAVEYARD.md`?" If yes, add one entry:
 
 ```
 ## [Concept Name] — YYYY-MM-DD
@@ -77,7 +77,7 @@ This file exists so the same mistake doesn't get made twice on the next concept.
 There is no fun evidence yet, so PROCEED, PIVOT and KILL are all unreachable —
 report NOT ASSESSED and stop here rather than guess.
 
-- Play it, then run `/prototype [same concept]` again
+- Play it, then run `/gamedev-prototype [same concept]` again
 - The report and the concept index row read NOT ASSESSED until a playtest happens
 
 ---

@@ -7,17 +7,19 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation`
 
 # Asset Spec
 
 
 
-If no argument is provided, check whether `design/assets/entity-inventory.md` exists:
+If no argument is provided, check whether `docs/design/assets/entity-inventory.md` exists:
 - If it exists: read it, find the first entity or screen with status "Needed" but no spec file yet, and use `AskUserQuestion`:
   - Prompt: "The next unspecced item is **[name]**. Generate specs for it?"
   - Options: `[A] Yes — spec [name]` / `[B] Pick a different item` / `[C] Stop here`
-- If no entity inventory: check `design/assets/asset-manifest.md`. If manifest exists, same flow above but reading from manifest.
+- If no entity inventory: check `docs/design/assets/asset-manifest.md`. If manifest exists, same flow above but reading from manifest.
 - If neither exists: **start the Entity & Screen Inventory flow** (Phase 0b below) rather than failing.
 
 ---
@@ -33,26 +35,26 @@ unconditionally, independent of whether `external_calls` is listed in
 
 ## Phase 0b: Entity & Screen Inventory (runs when no arguments and no existing inventory)
 
-This flow produces `design/assets/entity-inventory.md` — the master list of everything
+This flow produces `docs/design/assets/entity-inventory.md` — the master list of everything
 the game needs visually. Run once before asset spec work begins.
 
 ### Step 1 — Gather from docs
 Read all available source material in parallel, each doc by section: find the
 headings you need with the Grep tool (pattern `^#`, content mode) and Read those
 ranges with offset and limit.
-- `design/gdd/systems-index.md` — extract every system listed
+- `docs/GDD.md` — extract every system listed
 - GDD asset content — do **not** full-read every GDD. The two wanted sections are
   standard headings, and named entities live in the registry:
   ```
-  Grep pattern="## (Visual/Audio Requirements|UI Requirements)" glob="design/gdd/*.md" output_mode="content" -A 25
+  Grep pattern="## (Visual/Audio Requirements|UI Requirements)" glob="docs/design/gdd/*.md" output_mode="content" -A 25
   ```
   For named entities (characters, enemies, buildings, items), read
-  `design/registry/entities.yaml` (`entities`/`items`) if it exists and has
+  `docs/design/registry/entities.yaml` (`entities`/`items`) if it exists and has
   entries; otherwise grep the GDDs for named content. Full-read a GDD only when
   its Visual/Audio section is missing or reads `[To be designed]` (Phase 1 already
   handles that case). VFX events surface in the Visual/Audio grep context.
-- `design/art/art-bible.md` — extract: any named visual categories, asset type expectations
-- `design/narrative/` — scan for any character or world entity documents if they exist (optional — not required)
+- `docs/design/art/art-bible.md` — extract: any named visual categories, asset type expectations
+- `docs/story/` — scan for any character or world entity documents if they exist (optional — not required)
 
 ### Step 2 — Build proposed inventory
 Organize everything found into categories:
@@ -86,7 +88,7 @@ If [B] or [D]: ask the user to describe additional items. Accept brief descripti
 If [C] or [D]: ask which items to remove and why. Remove them from the list.
 
 ### Step 4 — Write inventory
-After user approval, ask: "May I write the entity inventory to `design/assets/entity-inventory.md`?"
+After user approval, ask: "May I write the entity inventory to `docs/design/assets/entity-inventory.md`?"
 
 Write the file:
 
@@ -155,39 +157,39 @@ the GDD by section: find the headings you need with the Grep tool (pattern `^#`,
 content mode) and Read those ranges with offset and limit.
 
 ### Required reads:
-- **Art bible**: Read `design/art/art-bible.md` — fail if missing:
+- **Art bible**: Read `docs/design/art/art-bible.md` — fail if missing:
   > "No art bible found. Run `/art-bible` first — asset specs are anchored to the art bible's visual rules and asset standards."
 
   **Exception — the minimal path.** If there is no art bible but
-  `design/game-brief.md` exists (at `rigor: minimal` no art bible is required),
+  `docs/GDD.md` exists (at `rigor: minimal` no art bible is required),
   do not fail: anchor the specs in the brief's **Art & audio direction** line,
   and say so at the top of the output — "Anchored to the brief's one-line art
   direction; there is no art bible, so colour, shape and asset-standard rules
   below are proposals, not constraints." Offer `/art-bible` once, as optional.
   The written spec follows the same anchor: its header reads
-  `> **Art direction**: design/game-brief.md (Art & audio direction) — no art bible`
+  `> **Art direction**: docs/GDD.md (Art & audio direction) — no art bible`
   in place of the `> **Art Bible**:` line, each asset carries
   `**Brief anchor:** [the brief line applied]` in place of the **Art Bible
   Anchors** block, and no spec cites an Art Bible section or §8 tier.
   Extract: Visual Identity Statement, Color System (semantic colors), Shape Language, Asset Standards (art bible Section 8 — dimensions, formats, polycount budgets, texture resolution tiers).
 
-- **Project config**: Read `performance.*` and `naming.*` from `project.yaml`; for any key absent or empty (including when `project.yaml` has no `performance` or `naming` block), fall back to `.claude/docs/technical-preferences.md`. Extract performance budgets and naming conventions.
+- **Project config**: Read `performance.*` and `naming.*` from `.claude/ccgs/project.yaml`; for any key absent or empty (including when `.claude/ccgs/project.yaml` has no `performance` or `naming` block), fall back to `.claude/docs/technical-preferences.md`. Extract performance budgets and naming conventions.
 
 ### Source doc reads (by target type):
-- **system**: Read `design/gdd/[target-name].md`. Extract the **Visual/Audio Requirements** section. If it doesn't exist or reads `[To be designed]`:
-  > "The Visual/Audio section of `design/gdd/[target-name].md` is empty. Either run `/design-system [target-name]` to complete the GDD, or describe the visual needs manually."
+- **system**: Read `docs/design/gdd/[target-name].md`. Extract the **Visual/Audio Requirements** section. If it doesn't exist or reads `[To be designed]`:
+  > "The Visual/Audio section of `docs/design/gdd/[target-name].md` is empty. Either run `/design-system [target-name]` to complete the GDD, or describe the visual needs manually."
   Use `AskUserQuestion`: `[A] Describe needs manually` / `[B] Stop — complete the GDD first`
-- **level**: Read `design/levels/[target-name].md`. Extract art requirements, asset list, VFX needs, and the art-director's production concept specs from Step 4.
-- **character** or **entity**: Read `design/narrative/characters/[target-name].md` or search `design/narrative/` and `design/assets/entity-inventory.md` for a matching entry. Extract visual description, role, and any specified distinguishing features.
+- **level**: Read `docs/design/levels/[target-name].md`. Extract art requirements, asset list, VFX needs, and the art-director's production concept specs from Step 4.
+- **character** or **entity**: Read `docs/story/characters/[target-name].md` or search `docs/story/` and `docs/design/assets/entity-inventory.md` for a matching entry. Extract visual description, role, and any specified distinguishing features.
   - **If no source doc exists**: do not fail. Instead, use `AskUserQuestion`:
     - Prompt: "No profile found for **[name]**. Describe it briefly — a sentence or two is enough."
     - Options: `[A] Describe it now` / `[B] Skip this entity` / `[C] Stop here`
     - If [A]: the user's description becomes the source. Brief answers produce concise specs; detailed answers produce detailed specs. Accept whatever level of detail the user provides and work from it.
 
 ### Optional reads:
-- **This target's existing spec**: if `design/assets/specs/[target-name]-assets.md` exists, read it — this is a re-run, and Phase 2 proposes only what is new or changed since (Phase 5 updates the file in place).
-- **Existing manifest**: Read `design/assets/asset-manifest.md` if it exists — extract already-specced assets for this target to avoid duplicates.
-- **Related specs**: Glob `design/assets/specs/*.md` — scan for assets that could be shared (e.g., a common UI element specced for one system might apply here too).
+- **This target's existing spec**: if `docs/design/assets/specs/[target-name]-assets.md` exists, read it — this is a re-run, and Phase 2 proposes only what is new or changed since (Phase 5 updates the file in place).
+- **Existing manifest**: Read `docs/design/assets/asset-manifest.md` if it exists — extract already-specced assets for this target to avoid duplicates.
+- **Related specs**: Glob `docs/design/assets/specs/*.md` — scan for assets that could be shared (e.g., a common UI element specced for one system might apply here too).
 
 ### Present context summary:
 > **Asset Spec: [Target Type] — [Target Name]**
@@ -236,8 +238,8 @@ Spawn specialist agents based on review mode. **Issue all `Agent` calls simultan
 - Ask: "For each asset in this list, produce: (1) a 2–3 sentence visual description anchored to the art bible's shape language and color system — be specific enough that two different artists would produce consistent results; (2) a generation prompt ready for use with AI image tools (Midjourney/Stable Diffusion style — include style keywords, composition, color palette anchors, negative prompts); (3) which art bible rules directly govern this asset (cite by section). For audio assets, describe the sonic character instead of a generation prompt."
 
 **`technical-artist`** via `Agent`:
-- Provide: full asset list, art bible Asset Standards (Section 8), performance budgets (`performance.*` from `project.yaml`, else `technical-preferences.md`), engine name and version
-- Ask: "For each asset in this list, specify: (1) exact dimensions or polycount (match the art bible Asset Standards tiers — do not invent new sizes); (2) file format and export settings; (3) naming convention (`naming.*` from `project.yaml`, else `technical-preferences.md`); (4) any engine-specific constraints this asset type must respect; (5) LOD requirements if applicable. Flag any asset type where the art bible's preferred standard conflicts with the engine's constraints."
+- Provide: full asset list, art bible Asset Standards (Section 8), performance budgets (`performance.*` from `.claude/ccgs/project.yaml`, else `technical-preferences.md`), engine name and version
+- Ask: "For each asset in this list, specify: (1) exact dimensions or polycount (match the art bible Asset Standards tiers — do not invent new sizes); (2) file format and export settings; (3) naming convention (`naming.*` from `.claude/ccgs/project.yaml`, else `technical-preferences.md`); (4) any engine-specific constraints this asset type must respect; (5) LOD requirements if applicable. Flag any asset type where the art bible's preferred standard conflicts with the engine's constraints."
 
 ### Lean mode — spawn art-director only (skip technical-artist).
 
@@ -294,13 +296,13 @@ If [C]: ask what direction to change. Re-spawn the relevant agent with the updat
 
 ## Phase 5: Write Spec File
 
-After approval, ask: "May I write the spec to `design/assets/specs/[target-name]-assets.md`?"
+After approval, ask: "May I write the spec to `docs/design/assets/specs/[target-name]-assets.md`?"
 
 **If that file already exists** (a re-run for the same target), update it in
 place — never overwrite it wholesale. Keep its existing `ASSET-NNN` blocks and
 IDs, apply only the changes the user approved, and append new assets with the
 next project-wide IDs. Show what changes, then ask "May I update
-`design/assets/specs/[target-name]-assets.md`?" instead of "May I write".
+`docs/design/assets/specs/[target-name]-assets.md`?" instead of "May I write".
 
 Write the file with:
 
@@ -308,14 +310,14 @@ Write the file with:
 # Asset Specs — [Target Type]: [Target Name]
 
 > **Source**: [path to source GDD/level/character doc]
-> **Art Bible**: design/art/art-bible.md
+> **Art Bible**: docs/design/art/art-bible.md
 > **Generated**: [date]
 > **Status**: [N] assets specced / [N] approved / [N] in production / [N] done
 
 [all asset specs in ASSET-NNN format]
 ```
 
-Then update `design/assets/asset-manifest.md`. If it doesn't exist, create it:
+Then update `docs/design/assets/asset-manifest.md`. If it doesn't exist, create it:
 
 ```markdown
 # Asset Manifest
@@ -333,12 +335,12 @@ Then update `design/assets/asset-manifest.md`. If it doesn't exist, create it:
 ### [Target Type]: [Target Name]
 | Asset ID | Name | Category | Status | Spec File |
 |----------|------|----------|--------|-----------|
-| ASSET-001 | [name] | [category] | Needed | design/assets/specs/[target]-assets.md |
+| ASSET-001 | [name] | [category] | Needed | docs/design/assets/specs/[target]-assets.md |
 ```
 
 If the manifest already exists, append the new context block — on a re-run for this target, add the new rows to its existing block instead of appending a second one — and update the Progress Summary counts.
 
-Ask: "May I update `design/assets/asset-manifest.md`?"
+Ask: "May I update `docs/design/assets/asset-manifest.md`?"
 
 ---
 
@@ -360,7 +362,7 @@ Use `AskUserQuestion`:
 Asset IDs are assigned sequentially across the entire project — not per-context. Read the manifest before assigning IDs to find the current highest number:
 
 ```
-Grep pattern="ASSET-" path="design/assets/asset-manifest.md"
+Grep pattern="ASSET-" path="docs/design/assets/asset-manifest.md"
 ```
 
 Start new assets from `ASSET-[highest + 1]`. This ensures IDs are stable and unique across the whole project.

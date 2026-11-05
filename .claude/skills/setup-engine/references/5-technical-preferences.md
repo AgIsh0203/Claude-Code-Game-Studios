@@ -60,7 +60,7 @@ For **Primary Input**, use the dominant input for the game genre:
 - Cross-platform → ask the user
 
 > **Genre may not exist yet — check before deriving from it.** At `minimal` the
-> design artifact is `design/game-brief.md`, and it is authored *after* this
+> design artifact is `docs/GDD.md`, and it is authored *after* this
 > skill runs (Section 2 says so explicitly). There is no genre to map. The same
 > is true at any tier when `/setup-engine` is run before the concept exists.
 >

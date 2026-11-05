@@ -12,9 +12,9 @@ active set before Phase 1 — at the default `individual` only writer is spawned
 (narrative-director only on an explicit pillar conflict), `small` adds
 narrative-director, plus localization-lead and world-builder when `review_mode` is
 `full`, and `studio` activates every narrative agent whatever the review mode. Each agent drafts to a concrete path
-under `production/narrative/[content-slug]/` named in the skill's path table;
+under `docs/production/narrative/[content-slug]/` named in the skill's path table;
 Phase 4 runs the ND-CONSISTENCY gate; the orchestrator writes the final documents
-to `design/narrative/` after one approval. Uses
+to `docs/story/` after one approval. Uses
 `AskUserQuestion` at each phase transition. Produces a narrative summary report.
 Verdict is COMPLETE when all phases succeed — `COMPLETE — consistency NOT ASSESSED
 ([input])` when the ND-CONSISTENCY review could not assess — or BLOCKED when a
@@ -28,8 +28,8 @@ dependency is unresolved.
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED
 - [ ] Contains "File Write Protocol" section
-- [ ] Sub-agents write drafts under `production/narrative/[content-slug]/`; the orchestrator writes only the final `design/narrative/` documents, after one "May I write" approval
-- [ ] Names a concrete draft path per agent (including level-designer and localization-lead) and the final `design/narrative/` document each design artifact becomes — localization-lead's review is not one, and stays in `production/`
+- [ ] Sub-agents write drafts under `docs/production/narrative/[content-slug]/`; the orchestrator writes only the final `docs/story/` documents, after one "May I write" approval
+- [ ] Names a concrete draft path per agent (including level-designer and localization-lead) and the final `docs/story/` document each design artifact becomes — localization-lead's review is not one, and stays in `docs/production/`
 - [ ] Every agent prompt ends with the return contract: path written, ≤5-bullet summary, BLOCKED/CONCERNS items one line each
 - [ ] Defines a phase gate as a decision point the pipeline itself lists, whatever the `automation` mode, and claims no director spawn at phase gates
 - [ ] Has a next-step handoff at the end (references `/design-review`, `/localize extract`, `/dev-story`)
@@ -43,9 +43,9 @@ dependency is unresolved.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -56,25 +56,25 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`
-- A game concept and GDD exist for the target feature (e.g., `design/gdd/faction-intro.md`)
-- Character voice profiles exist (e.g., `design/narrative/characters/`)
-- Existing lore entries exist for cross-reference (e.g., `design/narrative/lore/`)
+- A game concept and GDD exist for the target feature (e.g., `docs/design/gdd/faction-intro.md`)
+- Character voice profiles exist (e.g., `docs/story/characters/`)
+- Existing lore entries exist for cross-reference (e.g., `docs/story/lore/`)
 - No lore contradictions exist between existing entries and the new content
 
 **Input:** `/team-narrative faction introduction cutscene for the Ironveil faction`
 
 **Expected behavior:**
 1. Before any spawn, one line announces the active set for `team.size: studio`
-2. Phase 1: narrative-director is spawned; writes a narrative brief draft to `production/narrative/[content-slug]/brief.md` defining the story beat, characters involved, emotional tone, and lore dependencies
+2. Phase 1: narrative-director is spawned; writes a narrative brief draft to `docs/production/narrative/[content-slug]/brief.md` defining the story beat, characters involved, emotional tone, and lore dependencies
 3. `AskUserQuestion` presents the narrative brief; user approves before Phase 2 begins
-4. Phase 2: world-builder, writer and art-director are spawned in parallel; world-builder drafts Ironveil lore entries, writer drafts dialogue using character voice profiles, and art-director drafts visual direction — each under `production/narrative/[content-slug]/`
+4. Phase 2: world-builder, writer and art-director are spawned in parallel; world-builder drafts Ironveil lore entries, writer drafts dialogue using character voice profiles, and art-director drafts visual direction — each under `docs/production/narrative/[content-slug]/`
 5. Phase gate: all three Phase 2 outputs are collected, then `AskUserQuestion` presents the lore, dialogue and visual direction summaries; user approves before Phase 3 begins
 6. Phase 3: level-designer is spawned; produces environmental storytelling layout, trigger placement, and pacing plan
 7. `AskUserQuestion` presents level narrative plan; user approves before Phase 4 begins
 8. Phase 4: narrative-director is spawned with the ND-CONSISTENCY gate; reviews voices, lore and pacing and returns APPROVE
 9. `AskUserQuestion` presents review results; user approves before Phase 5 begins
 10. Phase 5: writer, localization-lead, and world-builder are spawned in parallel; writer performs final self-review; localization-lead validates i18n compliance; world-builder finalizes canon levels
-11. The orchestrator lists the final documents and asks once, "May I write these [N] narrative documents to `design/narrative/`?"; on approval it writes them
+11. The orchestrator lists the final documents and asks once, "May I write these [N] narrative documents to `docs/story/`?"; on approval it writes them
 12. Final summary report is presented
 13. Verdict: COMPLETE
 
@@ -87,7 +87,7 @@ Fixture defaults.
 - [ ] narrative-director is re-spawned in Phase 4 using gate ND-CONSISTENCY — in every review mode, since it is this pipeline's own review and `review_mode` never skips it — and its APPROVE / CONCERNS / REJECT verdict decides whether Phase 5 starts
 - [ ] Phase 5 spawns all three agents (writer, localization-lead, world-builder) simultaneously
 - [ ] Each agent prompt names its draft path from the skill's path table
-- [ ] Nothing is written under `design/narrative/` before the single "May I write" approval
+- [ ] Nothing is written under `docs/story/` before the single "May I write" approval
 - [ ] Summary report includes: narrative brief status, lore entries created/updated, dialogue lines written, level narrative integration points, consistency review results
 - [ ] The orchestrator writes nothing except the approved final documents
 - [ ] Verdict is COMPLETE after delivery
@@ -98,7 +98,7 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`
-- Existing lore entry at `design/narrative/lore/ironveil-history.md` states the Ironveil faction was founded 200 years ago
+- Existing lore entry at `docs/story/lore/ironveil-history.md` states the Ironveil faction was founded 200 years ago
 - The new narrative brief (from Phase 1) states the Ironveil were founded 50 years ago
 - The writer has been spawned in parallel with the world-builder in Phase 2
 
@@ -107,7 +107,7 @@ Fixture defaults.
 **Expected behavior:**
 1. Phases 1–2 begin normally
 2. Phase 2 world-builder detects a factual contradiction between the narrative brief and existing lore: founding date conflict
-3. world-builder returns BLOCKED with reason: "Lore contradiction found — founding date conflicts with `design/narrative/lore/ironveil-history.md`"
+3. world-builder returns BLOCKED with reason: "Lore contradiction found — founding date conflicts with `docs/story/lore/ironveil-history.md`"
 4. Orchestrator surfaces the contradiction immediately: "world-builder: BLOCKED — Lore contradiction: founding date in narrative brief (50 years ago) conflicts with existing canon (200 years ago in `ironveil-history.md`)"
 5. Orchestrator assesses dependency: the writer's dialogue depends on canon lore — the writer's draft cannot be finalized without resolving the contradiction
 6. `AskUserQuestion` presents the error-recovery options:
@@ -183,7 +183,7 @@ Fixture defaults.
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`
 - Phase 1 narrative-director produces a narrative brief referencing two characters: Commander Varek and Advisor Selene
-- No character voice profiles exist in `design/narrative/characters/` for either character
+- No character voice profiles exist in `docs/story/characters/` for either character
 - Phase 2 begins; world-builder and art-director proceed normally
 
 **Input:** `/team-narrative ironveil surrender negotiation scene`
@@ -191,7 +191,7 @@ Fixture defaults.
 **Expected behavior:**
 1. Phase 1 completes; narrative brief lists Commander Varek and Advisor Selene as characters
 2. Phase 2: writer is spawned in parallel with world-builder and art-director
-3. writer returns BLOCKED: "Cannot produce dialogue — no voice profiles found for Commander Varek or Advisor Selene in `design/narrative/characters/`. Voice profiles required to match character tone and speech patterns."
+3. writer returns BLOCKED: "Cannot produce dialogue — no voice profiles found for Commander Varek or Advisor Selene in `docs/story/characters/`. Voice profiles required to match character tone and speech patterns."
 4. Orchestrator surfaces the blocker immediately: "writer: BLOCKED — Missing prerequisite: character voice profiles for Commander Varek and Advisor Selene"
 5. world-builder output is preserved; partial report is produced with lore entries
 6. `AskUserQuestion` presents the error-recovery options:
@@ -213,10 +213,10 @@ Fixture defaults.
 ### Case 6: `review_mode` gates nothing but the `small` roster — ND-CONSISTENCY runs in every mode
 
 **Fixture:**
-- `project.yaml`: `team.size: studio` for Runs A–C, `team.size: small` for Runs D–F
+- `.claude/ccgs/project.yaml`: `team.size: studio` for Runs A–C, `team.size: small` for Runs D–F
   (pinned: the roster is the one thing `review_mode` still touches); `modes.review_mode`
   is not set, so each run's `--review` value decides
-- `design/gdd/faction-intro.md`, character voice profiles and existing lore exist
+- `docs/design/gdd/faction-intro.md`, character voice profiles and existing lore exist
 - Runs A and D: `/team-narrative faction introduction cutscene --review full`.
   Runs B and E: `--review lean`. Runs C and F: `--review solo`
 
@@ -246,7 +246,7 @@ Fixture defaults.
 - [ ] At the default `team.size: individual`, the run opens with `Active set (team.size: individual): writer.` and a `Not spawned this run:` line naming narrative-director, world-builder, art-director, level-designer and localization-lead, consulted through writer — before any agent is spawned
 - [ ] In `collaborative` mode, `AskUserQuestion` is used after every phase output before the next phase launches
 - [ ] Parallel spawning: Phase 2 (world-builder + writer + art-director) and Phase 5 (writer + localization-lead + world-builder) issue all Agent calls before waiting for results
-- [ ] No write under `design/` happens without a "May I write" approval — `design/` is outside the bounded exception (`production/`, `docs/`, `tests/`)
+- [ ] No write under `docs/design/` happens without a "May I write" approval — `docs/design/` is outside the bounded exception (`docs/production/`, `docs/`, `tests/`)
 - [ ] At `team.size: individual`, Phase 4 does not spawn narrative-director; the output says "ND-CONSISTENCY not run — narrative-director is not active at `team.size: individual`; consistency self-checked by writer." and never presents the writer's self-check as the gate's verdict
 - [ ] An ND-CONSISTENCY `NOT ASSESSED [missing input]` answer is never treated as APPROVE: the missing input is named, then either supplied and the gate re-run, or `ND-CONSISTENCY: NOT ASSESSED — [input]` is carried into the report's consistency review results and the verdict reads `COMPLETE — consistency NOT ASSESSED ([input])`, never a plain COMPLETE
 - [ ] A phase whose named artifact is missing on disk is treated as failed, not done

@@ -84,7 +84,7 @@ with the same name and behaviour:
   architecture would inherit a rule nobody defined; one that exists but was
   designed differently is a **Warning**, unless the difference changes a rule the
   referencing GDD depends on (then Blocking)
-- If the **target GDD is not written yet** (no file in `design/gdd/`): when
+- If the **target GDD is not written yet** (no file in `docs/design/gdd/`): when
   `systems-index.md` lists that system (e.g. `Status: Not Started`), it is a
   **Warning** — a dependency on planned work, to re-check when that GDD is
   written; when neither a GDD nor a systems-index entry exists for it, it is

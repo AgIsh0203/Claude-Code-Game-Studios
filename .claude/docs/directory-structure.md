@@ -1,23 +1,28 @@
 # Directory Structure
 
 ```text
-/
-├── CLAUDE.md                    # Master configuration
-├── project.yaml                 # Machine-readable project config — engine, modes, stage (source of truth)
-├── .claude/                     # Agent definitions, skills, hooks, rules, docs
-├── <code root>/                 # Game source code — THE PATH IS ENGINE-SPECIFIC, see below
-├── assets/                      # Game assets (art, audio, vfx, shaders, data)
-├── design/                      # Game design documents (gdd, narrative, levels, balance)
-├── docs/                        # Technical documentation (architecture, api, postmortems)
-│   └── engine-reference/        # Curated engine API snapshots (version-pinned)
-├── tests/                       # Game test suites (unit, integration, performance, playtest)
-├── tools/                       # Build and pipeline tools (ci, build, asset-pipeline)
-├── prototypes/                  # Throwaway prototypes (outside the code root)
-├── production/                  # Production management (sprints, milestones, releases)
-│   ├── session-state/           # Ephemeral session state (active.md — gitignored)
-│   └── session-logs/            # Session audit trail (gitignored)
-└── studio-tests/                # QA for the skills/agents themselves — /skill-test, /skill-improve
+/                                # ProjectI (Squirrel Wheels). Full map: .claude/docs/projecti-layout.md
+├── CLAUDE.md                    # Master configuration: status, locked decisions, code map (wins on conflict)
+├── CREDITS.md                   # A line per imported asset
+├── .claude/                     # Agents, skills, docs, scripts
+│   └── ccgs/                    # Framework config + state: project.yaml, stage.txt, session-state/ (gitignored), session-logs/ (gitignored)
+├── Source/ProjectI/             # Game C++ (the code root)
+├── Content/                     # Unreal assets; ThirdParty/ (committed), ThirdParty_Private/ (ignored)
+├── SourceArt/                   # Source art for the Blender pipelines
+├── Tools/                       # Blender, Car, Docs, Playtest, Route scripts
+├── Config/                      # Engine and game config
+└── docs/
+    ├── GDD.md                   # Concept, pillars, systems and their status, tuning table
+    ├── Roadmap.md               # Plan (J1–J15), backlog (#N), package size, release checklist, decisions
+    ├── Playtest.md              # Hands-on checks and every playtest / review result
+    ├── Story.md, story/         # Story bible, radio script, voice-actor sources
+    ├── Assets.md                # Licences, folders, slot map, sources
+    ├── Terrain.md               # L_Route, the mountain trail
+    ├── design/, production/, prototypes/, architecture/   # created only if a skill needs them
+    └── Review_<date>_<topic>.md # Long reviews
 ```
+
+Work items (bugs, tasks, stories) are cards on the Trello board, not files.
 
 ## The code root is engine-specific
 

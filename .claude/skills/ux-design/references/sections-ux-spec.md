@@ -230,7 +230,7 @@ Questions rather than ticking it.
 
 #### Section G: Accessibility
 
-Cross-reference `design/accessibility-requirements.md` if it exists.
+Cross-reference `docs/design/accessibility-requirements.md` if it exists.
 
 Walk through the ux-designer agent's standard checklist for this screen:
 - Keyboard-only navigation path through all interactive elements

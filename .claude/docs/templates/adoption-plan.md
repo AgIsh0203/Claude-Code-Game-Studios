@@ -42,13 +42,13 @@ Run `/create-control-manifest`
 ### 3c. Create sprint tracking file
 Run `/sprint-plan update`
 **Time**: 5 min (if sprint plan already exists as markdown)
-- [ ] production/sprint-status.yaml created
+- [ ] docs/production/sprint-status.yaml created
 
 ### 3d. Set authoritative project stage
 Run `/gate-check [current-phase]` (the gate into the phase the project is in;
 at Concept there is none — Concept is the default stage, nothing to run)
 **Time**: 5 min
-- [ ] `project.stage` in `project.yaml` written (legacy `production/stage.txt` also updated)
+- [ ] `project.stage` in `.claude/ccgs/project.yaml` written (legacy `.claude/ccgs/stage.txt` also updated)
 
 ---
 

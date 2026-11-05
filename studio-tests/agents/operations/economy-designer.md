@@ -22,11 +22,11 @@
 **Input**: "Design the loot table for a standard treasure chest in our dungeon game."
 **Expected behavior**:
 - Before drafting, asks clarifying questions and presents 2-4 options with a recommendation (Question-First Workflow) — e.g. tier names, whether chests use pity timers or bad-luck protection
-- Reads `design/registry/entities.yaml` before authoring and uses registered item values as canonical; a value that differs from a registered entry is flagged as a proposed registry change, not silently used
+- Reads `docs/design/registry/entities.yaml` before authoring and uses registered item values as canonical; a value that differs from a registered entry is flagged as a proposed registry change, not silently used
 - Produces the table in its Reward Output Format (output, rate or weight, condition, notes) with distinct rarity tiers — Common, Uncommon, Rare, Epic, Legendary, or project-equivalent — not a single flat list of items
 - Tier rates form a complete distribution: percentages sum to 100%, or weights are given with their total
 - States the expected acquisition for each tier (attempts on average to receive it) and names the reward-schedule principle behind the table (Reward Psychology)
-- Offers to register new cross-system items: "May I add them to `design/registry/entities.yaml`?"
+- Offers to register new cross-system items: "May I add them to `docs/design/registry/entities.yaml`?"
 
 ### Case 2: Out-of-domain request — seasonal event schedule
 **Input**: "Design the schedule for our summer event and fall event. When should they run and how long should each last?"
@@ -70,13 +70,13 @@
 - [ ] Flags inflation/deflation risks proactively with quantified sink/faucet analysis
 - [ ] States progression-curve changes as formulas with defined variables and worked numbers — no vague curve adjustments
 - [ ] Uses actual economy data from context; does not produce generic benchmarks when specifics are provided
-- [ ] Checks `design/registry/entities.yaml` before authoring items and flags any change to a registered value
+- [ ] Checks `docs/design/registry/entities.yaml` before authoring items and flags any change to a registered value
 - [ ] Asks "May I create [filepath] with the section skeleton?" before creating a multi-section document, and "May I write this section to [filepath]?" before writing each section
 
 ---
 
 ## Coverage Notes
-- Case 1 exercises Registry Awareness — include `design/registry/entities.yaml` in the fixture
+- Case 1 exercises Registry Awareness — include `docs/design/registry/entities.yaml` in the fixture
 - Case 3 (inflation risk) is an economic health test — missed inflation risks cause long-term economy damage in live games
 - Case 4 requires the agent to produce actual numbers, not curve shapes — verify math is present, not just a narrative
 - Case 5 is the most important context-awareness test; agent must use provided data, not placeholder values

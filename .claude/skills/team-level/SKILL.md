@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Team Level
 
 If no argument is provided, output usage guidance and exit without spawning any agents or reading any design files:
@@ -76,11 +78,11 @@ enforced.**
 2. **Gather context** (read each design doc by section: find the headings you need
    with the Grep tool with pattern `^#` in content mode, and Read those ranges
    with offset and limit):
-   - Read the game concept at `design/gdd/game-concept.md` — or `design/game-brief.md`,
+   - Read the game concept at `docs/GDD.md` — or `docs/GDD.md`,
      the one-page brief that replaces it at `rigor: minimal` — if either exists
-   - Read game pillars at `design/gdd/game-pillars.md`
-   - Read existing level docs in `design/levels/`
-   - Read relevant narrative docs in `design/narrative/`
+   - Read game pillars at `docs/GDD.md`
+   - Read existing level docs in `docs/design/levels/`
+   - Read relevant narrative docs in `docs/story/`
    - Read world-building docs for the area's region/faction
 
 ## How to Delegate
@@ -99,24 +101,24 @@ Use the `Agent` tool to spawn each team member as a subagent:
 **End every agent prompt with a return contract:** "Write your full output to `[path]` — that named path is your write authorisation under the bounded exception below, so write it without a separate approval prompt. Return **only** (1) the path written, (2) a ≤5-bullet summary of decisions, (3) any BLOCKED/CONCERNS items, one line each. Do not restate the documents you read." Without it, an agent returns everything it read back into this session.
 
 **Substitute a real path for `[path]`.** Working artifacts go under
-`production/levels/[level-name]/`, slugged as in the "Save to" step below. One
+`docs/production/levels/[level-name]/`, slugged as in the "Save to" step below. One
 file per agent, so the parallel steps never share one:
 
 | Step / agent | Writes to |
 |---|---|
-| 1 narrative-director | `production/levels/[level-name]/narrative.md` |
-| 1 world-builder | `production/levels/[level-name]/lore.md` |
-| 1 art-director | `production/levels/[level-name]/visual-direction.md` |
-| 2 level-designer | `production/levels/[level-name]/layout.md` |
-| 3 systems-designer | `production/levels/[level-name]/systems.md` |
-| 4 art-director | `production/levels/[level-name]/production-concepts.md` |
-| 4 accessibility-specialist | `production/levels/[level-name]/accessibility.md` |
-| 5 qa-tester | `production/qa/test-cases/[level-name]-cases.md` — test cases, edge cases, playtest checklist, acceptance criteria |
+| 1 narrative-director | `docs/production/levels/[level-name]/narrative.md` |
+| 1 world-builder | `docs/production/levels/[level-name]/lore.md` |
+| 1 art-director | `docs/production/levels/[level-name]/visual-direction.md` |
+| 2 level-designer | `docs/production/levels/[level-name]/layout.md` |
+| 3 systems-designer | `docs/production/levels/[level-name]/systems.md` |
+| 4 art-director | `docs/production/levels/[level-name]/production-concepts.md` |
+| 4 accessibility-specialist | `docs/production/levels/[level-name]/accessibility.md` |
+| 5 qa-tester | `docs/production/qa/test-cases/[level-name]-cases.md` — test cases, edge cases, playtest checklist, acceptance criteria |
 
 These are working drafts; the durable record is the level design document you
-compile from them (`design/levels/[level-name].md`).
+compile from them (`docs/design/levels/[level-name].md`).
 
-> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
+> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `docs/production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
 
 3. **Orchestrate the level design team** in sequence:
 
@@ -139,7 +141,7 @@ Spawn the `art-director` agent to:
 - Define the color temperature and lighting mood for this area (how does it differ from adjacent areas?)
 - Specify shape language direction (angular fortress? organic cave? decayed grandeur?)
 - Name the primary visual landmarks that will orient the player
-- Read `design/art/art-bible.md` if it exists — anchor all direction in the established art bible. Read it by section: find the headings you need with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
+- Read `docs/design/art/art-bible.md` if it exists — anchor all direction in the established art bible. Read it by section: find the headings you need with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
 
 **The art-director's visual targets from Step 1 must be passed to the level-designer in Step 2** as explicit constraints. Layout decisions happen within the visual direction, not before it.
 
@@ -159,8 +161,8 @@ The level-designer should:
 - Define points of interest and landmarks for wayfinding — these must match the visual landmarks the art-director specified
 - Specify entry/exit points and connections to adjacent areas
 
-**Adjacent area dependency check**: After the layout is produced, check `design/levels/` for each adjacent area referenced by the level-designer. If any referenced area's `.md` file does not exist, surface the gap:
-> "Level references [area-name] as an adjacent area but `design/levels/[area-name].md` does not exist."
+**Adjacent area dependency check**: After the layout is produced, check `docs/design/levels/` for each adjacent area referenced by the level-designer. If any referenced area's `.md` file does not exist, surface the gap:
+> "Level references [area-name] as an adjacent area but `docs/design/levels/[area-name].md` does not exist."
 
 Use `AskUserQuestion` with options:
 - (a) Proceed with a placeholder reference — mark the connection as UNRESOLVED in the level doc and list it in the open cross-level dependencies section of the summary report
@@ -222,9 +224,9 @@ second spawn pays a fresh agent's overhead plus a full re-transmission of contex
 the orchestrator already has, to move text it is already holding. After compiling
 into the level-design template format, ask the user directly via
 `AskUserQuestion`: "May I write the compiled level design to
-`design/levels/[level-name].md`?" On approval, write it.
+`docs/design/levels/[level-name].md`?" On approval, write it.
 
-5. **Save to** `design/levels/[level-name].md` after that approval.
+5. **Save to** `docs/design/levels/[level-name].md` after that approval.
    `[level-name]` is the argument as a slug — lowercase, spaces → hyphens
    (`forest dungeon` → `forest-dungeon.md`) — and `[area-name]` in the adjacent
    area check is slugged the same way.
@@ -239,7 +241,7 @@ into the level-design template format, ask the user directly via
 Per-agent artifacts (narrative docs, test checklists) are written by the
 sub-agent that produced them, under the **bounded exception** documented above
 under "Why this does not violate the Collaboration Protocol" — the path is one
-you named, the artifact is new under `production/`, `docs/` or `tests/`, and the
+you named, the artifact is new under `docs/production/`, `docs/` or `tests/`, and the
 phase is gated by an `AskUserQuestion`. A sub-agent does **not** prompt per write
 inside those bounds; outside them it must ask. The **one exception is the final
 compiled level-design document**: the
@@ -252,7 +254,7 @@ Verdict: **BLOCKED** — one or more agents blocked, or an agent was skipped (`.
 
 ## Next Steps
 
-- Run `/design-review design/levels/[level-name].md` to validate the completed level design doc.
+- Run `/design-review docs/design/levels/[level-name].md` to validate the completed level design doc.
 - Run `/dev-story` to implement level content once the design is approved.
 - Run `/qa-plan` to generate a QA test plan for this level.
 

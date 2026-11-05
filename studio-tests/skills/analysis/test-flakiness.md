@@ -15,7 +15,7 @@ table, using Grep on the test file. With fewer than 3 runs, every finding is
 "suspected", not "confirmed", whatever its fail rate, and nothing is quarantined;
 the summary table's Confidence column says which. It asks separately "May I update the quarantine
 section of `tests/regression-suite.md`…?" and "May I write a full flakiness
-report to `production/qa/flakiness-report-[date].md`?", appends quarantine
+report to `docs/production/qa/flakiness-report-[date].md`?", appends quarantine
 entries without removing existing ones, and never deletes test files. No
 director gates are invoked. Verdicts: COMPLETE (report written) or BLOCKED
 (user declined write).
@@ -29,7 +29,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED, and the flakiness tiers High / Moderate / Low
-- [ ] Contains "May I" write language for `tests/regression-suite.md` and `production/qa/flakiness-report-[date].md`
+- [ ] Contains "May I" write language for `tests/regression-suite.md` and `docs/production/qa/flakiness-report-[date].md`
 - [ ] Has a next-step handoff (Section 7: add skip annotations, schedule fixes before the release gate)
 
 ---
@@ -42,9 +42,9 @@ None. Flakiness detection is an advisory quality skill; no gates are invoked.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -54,7 +54,7 @@ Fixture defaults.
 ### Case 1: Happy Path — High flakiness from JUnit history, quarantined on approval
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`; `modes.automation` unset (collaborative)
+- `.claude/ccgs/project.yaml`: `engine.name: godot`; `modes.automation` unset (collaborative)
 - `test-results/` holds 6 gdUnit4 JUnit XML files from 6 runs of the same commit
 - `test_loot_drop_rolls_rare_item` fails in 2 of the 6 runs (33%); the other 40 tests pass in all 6
 - `tests/unit/loot/loot_drop_test.gd` calls `randf()` with no seed
@@ -69,7 +69,7 @@ Fixture defaults.
 4. Grep of `loot_drop_test.gd` finds `randf` → likely cause Random seed; fix direction: pass an explicit seed
 5. The quarantine recommendation names gdUnit4's GDScript skip parameters (`_do_skip := true`, `_skip_reason := "flaky: ..."`) as the way to skip it
 6. Summary shows Runs analysed 6, Tests tracked 41, the flaky test with a 33% fail rate, and 40 tests with consistent results
-7. Skill asks "May I update the quarantine section of `tests/regression-suite.md` with the flaky tests found?" and, separately, "May I write a full flakiness report to `production/qa/flakiness-report-[date].md`?"
+7. Skill asks "May I update the quarantine section of `tests/regression-suite.md` with the flaky tests found?" and, separately, "May I write a full flakiness report to `docs/production/qa/flakiness-report-[date].md`?"
 8. On approval, the new entry is appended with `Edit`; the existing entry stays
 9. Verdict: **COMPLETE** — flakiness report written
 
@@ -87,7 +87,7 @@ Fixture defaults.
 ### Case 2: Moderate Flakiness — Fix directly, do not quarantine
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`
 - `test-results/` holds 20 JUnit XML files from 20 runs of the same commit
 - `test_physics_bounce_height_matches_spec` fails in 3 of 20 runs (15%)
 - The test asserts `bounce_height == 0.5`
@@ -131,7 +131,7 @@ Fixture defaults.
 ### Case 4: Too Few Runs — Suspected, not confirmed
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`
 - `test-results/` holds only 2 JUnit XML files, from 2 runs of the same commit
 - `test_save_roundtrip_preserves_inventory` passes in one run and fails in the other
 
@@ -155,7 +155,7 @@ Fixture defaults.
 ### Case 5: Registry Mode in Full Review Mode — Guidance for known quarantined tests, no gates
 
 **Fixture:**
-- `project.yaml`: `modes.review_mode: full`
+- `.claude/ccgs/project.yaml`: `modes.review_mode: full`
 - `tests/regression-suite.md` Quarantined Tests table lists `test_ai_path_recalc_avoids_blocked_tile` (reason: timing) and `test_scene_load_spawns_player` (reason: scene not ready)
 
 **Input:** `/test-flakiness registry`
@@ -181,7 +181,7 @@ Fixture defaults.
 - [ ] Names a likely cause and fix direction from the cause table, using Grep on the test file
 - [ ] Counts a test as flaky only when it both passed and failed across runs with no code change between them
 - [ ] With fewer than 3 runs, flags findings as suspected, not confirmed, in the summary's Confidence column, and quarantines nothing
-- [ ] Asks separately before updating `tests/regression-suite.md` and before writing `production/qa/flakiness-report-[date].md`
+- [ ] Asks separately before updating `tests/regression-suite.md` and before writing `docs/production/qa/flakiness-report-[date].md`
 - [ ] Appends quarantine entries, never removes existing ones, and never deletes test files
 - [ ] No director gates are invoked
 - [ ] Ends with COMPLETE on write or BLOCKED on decline; with no result data it lists the three options and stops to ask instead (Case 3), never reporting a clean result

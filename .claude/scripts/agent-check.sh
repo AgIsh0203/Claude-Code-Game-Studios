@@ -184,7 +184,7 @@ def unquote(v):
 
 
 def split_list(v):
-    """Split a tools/skills value on commas outside parentheses; accepts [a, b]."""
+    """Split a Tools/skills value on commas outside parentheses; accepts [a, b]."""
     v = unquote(v)
     if v.startswith("[") and v.endswith("]"):
         v = v[1:-1]

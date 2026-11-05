@@ -24,7 +24,7 @@ values that should be data-driven.
 . "$(git rev-parse --show-toplevel)/.claude/hooks/yaml-helper.sh"
 CODE_ROOT=$(resolve_code_root | cut -f1)
 if [ -z "$CODE_ROOT" ]; then
-    echo "SKIPPED: no code root (set engine.name in project.yaml) — code checks did not run."
+    echo "SKIPPED: no code root (set engine.name in .claude/ccgs/project.yaml) — code checks did not run."
     exit 0
 fi
 

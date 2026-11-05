@@ -16,7 +16,7 @@
 #               (bash 3.2 has no globstar, so globs go through find), and a
 #               trailing `/` matches folders instead of files. `*` matches
 #               dot-files too. A backslash is read as `/` (design\gdd\*.md is
-#               design/gdd/*.md); the row keeps the spec as it was given.
+#               docs/design/gdd/*.md); the row keeps the spec as it was given.
 #   --from F    read more specs from F, one per line (`-` is stdin); blank
 #               lines and lines starting with `#` are skipped
 #   --root DIR  the project to check; defaults to the repo this script is in

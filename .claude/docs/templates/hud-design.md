@@ -7,9 +7,9 @@
 > **Last Updated**: [today's date]
 > **Game**: [Game name — this is a single document per game, not per element]
 > **Platform Targets**: [target platforms and input methods from 2h]
-> **Related GDDs**: [Every system that exposes information through the HUD — e.g., `design/gdd/combat.md`, `design/gdd/progression.md`, `design/gdd/quests.md`]
+> **Related GDDs**: [Every system that exposes information through the HUD — e.g., `docs/design/gdd/combat.md`, `docs/design/gdd/progression.md`, `docs/design/gdd/quests.md`]
 > **Accessibility Tier**: Basic | Standard | Comprehensive | Exemplary
-> **Style Reference**: [Link to art bible HUD section if it exists — e.g., `design/art/art-bible.md § 7. UI/HUD Visual Direction`]
+> **Style Reference**: [Link to art bible HUD section if it exists — e.g., `docs/design/art/art-bible.md § 7. UI/HUD Visual Direction`]
 > **Template**: HUD Design
 
 > **Note — Scope boundary**: This document specifies all elements that overlay the
@@ -236,7 +236,7 @@ Repositioning saves to player profile, not to a single slot. Applies across play
 [To be designed]
 
 > HUD-specific requirements only — refer to the project's
-> `design/accessibility-requirements.md` for the full project standard.
+> `docs/design/accessibility-requirements.md` for the full project standard.
 
 ### 10.1 Colorblind Modes
 

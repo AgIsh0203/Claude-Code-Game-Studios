@@ -10,7 +10,7 @@ writes base assertion and factory helpers (`scaffold`), and a
 `[helper root]/[system]_factory.[ext]` per system built from that system's GDD
 (`[system-name]` or `all`). No argument runs `scaffold` when no helpers exist,
 else `all`. It reads `engine.name`, `engine.language` and `testing.framework`
-from `project.yaml` (falling back to `technical-preferences.md`), samples up to
+from `.claude/ccgs/project.yaml` (falling back to `technical-preferences.md`), samples up to
 5 existing test files for house style, and section-greps the GDD (Formulas,
 Edge Cases, Detailed Rules/Design) rather than reading it whole.
 
@@ -44,9 +44,9 @@ None. `/test-helpers` is a scaffolding utility. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -56,23 +56,23 @@ Fixture defaults.
 ### Case 1: Happy Path — Player helper generated for Godot/GDScript
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot`, `engine.language: GDScript`,
+- `.claude/ccgs/project.yaml` has `engine.name: Godot`, `engine.language: GDScript`,
   `testing.framework: gdUnit4`; `addons/gdUnit4/` is installed, so its
   assertion API can be confirmed from the project
 - `tests/unit/player/player_movement_test.gd` exists
-- `design/gdd/player.md` has a Formulas section bounding health to 0–100
+- `docs/design/gdd/player.md` has a Formulas section bounding health to 0–100
 - No existing files in `tests/helpers/`; the user approves the write
 
 **Input:** `/test-helpers player`
 
 **Expected behavior:**
 1. Skill reads engine, language and framework; samples the existing test file
-2. Skill greps `design/gdd/player.md` for the Formulas / Edge Cases / Detailed
+2. Skill greps `docs/design/gdd/player.md` for the Formulas / Edge Cases / Detailed
    Rules headings instead of reading it whole
 3. Skill drafts `tests/helpers/player_factory.gd`: a `class_name` helper that
    `extends RefCounted`, static `make_*` factories with default parameters,
    bound constants commented as coming from the GDD, and a header line
-   "Based on: design/gdd/player.md"
+   "Based on: docs/design/gdd/player.md"
 4. Every assertion goes through gdUnit4's confirmed API — no bare `assert()`,
    no `FAIL_IF` placeholder
 5. Skill presents the file list and asks "May I write these helper files to `tests/helpers/`?"
@@ -90,13 +90,13 @@ Fixture defaults.
 ### Case 2: Engine Not Configured — Stops with /setup-engine
 
 **Fixture:**
-- `project.yaml` has no `engine` block; `technical-preferences.md` shows
+- `.claude/ccgs/project.yaml` has no `engine` block; `technical-preferences.md` shows
   `[TO BE CONFIGURED]` for Engine
 
 **Input:** `/test-helpers player`
 
 **Expected behavior:**
-1. Skill checks `project.yaml`, then `technical-preferences.md` — no engine in either
+1. Skill checks `.claude/ccgs/project.yaml`, then `technical-preferences.md` — no engine in either
 2. Skill outputs: "Engine not configured. Run `/setup-engine` first."
 3. Skill stops — no test scan, no draft, no write
 
@@ -140,7 +140,7 @@ Fixture defaults.
 ### Case 4: Framework Assertion API Unconfirmed — No helper generated
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot`, `engine.language: GDScript`;
+- `.claude/ccgs/project.yaml` has `engine.name: Godot`, `engine.language: GDScript`;
   `testing.framework` is absent and `technical-preferences.md` shows no Framework
 - No `addons/gdUnit4/` and no existing test files to learn the API from
 
@@ -182,7 +182,7 @@ Fixture defaults.
 ### Case 6: Unity — Helpers under the engine's test root
 
 **Fixture:**
-- `project.yaml` has `engine.name: Unity`, `engine.language: C#`,
+- `.claude/ccgs/project.yaml` has `engine.name: Unity`, `engine.language: C#`,
   `testing.framework: NUnit`; `com.unity.test-framework` is in
   `Packages/manifest.json`, so NUnit's assertion API can be confirmed from the
   installed package

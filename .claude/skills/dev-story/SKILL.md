@@ -4,9 +4,11 @@ description: "Implements one story in code with tests, following its ADRs. Use w
 argument-hint: "[story-path]"
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/dev-story/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/session-state.sh *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(godot *), Bash(mkdir -p production/qa/evidence/*)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/dev-story/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/session-state.sh *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(godot *), Bash(mkdir -p docs/production/qa/evidence/*)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,qa.level,gate_level,engine_values,specialists,perf_budgets,system_overrides`
 
@@ -23,11 +25,11 @@ the right programmer agent with a brief built from the story, then checks the
 result parses and looks right, and hands off.
 
 **Writes** (each after an ask that names it): the story's `Status`, `Last Updated`
-and `## Files`, and its `production/sprint-status.yaml` entry. The programmer agents
+and `## Files`, and its `docs/production/sprint-status.yaml` entry. The programmer agents
 write the code and tests under the code root and test root
 (`.claude/docs/code-root-resolution.md`). The session checkpoint and the evidence
 stamp are written without an ask.
-**Next:** `/story-done [story-path]`; at `standard` and `full`, `/code-review
+**Next:** `/story-done [story-path]`; at `standard` and `full`, `/gamedev-code-review
 [files]` first.
 
 Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
@@ -49,17 +51,17 @@ Checklist (copy it and tick as you go):
 ## Phase 1: The story
 
 The text typed after the skill name is the story path. With nothing typed, take the
-story the checkpoint in `production/session-state/active.md` names and confirm it:
+story the checkpoint in `.claude/ccgs/session-state/active.md` names and confirm it:
 "Continuing work on [title] — is that correct?" None there: ask "Which story are we
 implementing?" with the `TODO` rows of `bash .claude/scripts/story-facts.sh --all`
-as options. No story file under `production/epics/` at all: stop with
-"No stories found in `production/epics/` — run `/create-stories [epic-slug]` to make them (at `standard` and `full`, run `/create-epics` first if there is no epic yet)."
+as options. No story file under `docs/production/epics/` at all: stop with
+"No stories found in `docs/production/epics/` — run `/create-stories [epic-slug]` to make them (at `standard` and `full`, run `/create-epics` first if there is no epic yet)."
 
 `bash .claude/scripts/story-facts.sh <story-path>` gives its type, layer, TR-IDs,
 ADRs and dependencies. Then read the story in full.
 
 **Tier.** `workflow` for the story's system, keyed on the GDD filename stem of its
-`GDD:` path (`design/gdd/<stem>.md` → `<stem>`; the `[system]` of its TR-ID only when
+`GDD:` path (`docs/design/gdd/<stem>.md` → `<stem>`; the `[system]` of its TR-ID only when
 there is no GDD path): that system's `system_overrides` row if there is one, else the
 project value. Say it in your first reply: `Tier: workflow [value]`. That value, never
 `rigor` or `qa.level`, picks the Phase 2 column and the closing Next step.
@@ -93,7 +95,7 @@ are what the programmer reads instead. Compare the ADR's `version` with the stor
   `references/version-mismatch.md`. On a match, do not load it.
 
 Never treat an absent stamp as a stale one: unknown falls back to the story, and
-`/story-readiness` and `/code-review` are the checks that catch drift later.
+`/story-readiness` and `/gamedev-code-review` are the checks that catch drift later.
 
 **The manifest.** When it exists, compare its `Manifest Version` line with the
 story's. They differ: read `references/version-mismatch.md`.
@@ -112,7 +114,7 @@ Any stop above: no agent runs. Go to Phase 7 and write the BLOCKED checkpoint.
 ## Phase 3: Mark it In Progress
 
 Before any agent, ask once: "May I mark this story In Progress? This sets `Status`
-and `Last Updated` in [story path] and its entry in `production/sprint-status.yaml`,
+and `Last Updated` in [story path] and its entry in `docs/production/sprint-status.yaml`,
 and at the end lists the files changed under its `## Files`." Leave the sprint file
 out of the question when it does not exist. Put what you will do next before the
 question: the question is the last thing in the reply. On yes:
@@ -120,9 +122,9 @@ question: the question is the last thing in the reply. On yes:
 - `bash .claude/scripts/md-section.sh set-field <story> Status "In Progress"`, then
   `set-field <story> "Last Updated" <YYYY-MM-DD> --after Status`. At `minimal` the
   story file is the only record of progress.
-- `production/sprint-status.yaml`: this story's entry gets `status: in-progress` and
+- `docs/production/sprint-status.yaml`: this story's entry gets `status: in-progress` and
   the top-level `updated` today. No file: say `Sprint status not updated:
-  production/sprint-status.yaml absent`.
+  docs/production/sprint-status.yaml absent`.
 
 Declined: change neither, print `Story not marked In Progress — declined` in the
 summary, and go on.
@@ -164,7 +166,7 @@ paste whole documents into it.
   3. The ADR guidance, **inline**: the story's ADR Decision Summary and
      Implementation Notes. Never the ADR path.
   4. The control manifest's [Layer] Layer Rules, by section.
-  5. `naming.*` in `project.yaml` and the `perf_budgets` line above.
+  5. `naming.*` in `.claude/ccgs/project.yaml` and the `perf_budgets` line above.
   6. The test file path from the story's Test Evidence section.
 - **Tests,** by `qa.level`, for Logic and Integration stories:
   - `minimal`: "Do not write a test file for this story — test evidence is waived at
@@ -235,9 +237,9 @@ command, the exit code and any error lines:
 **Run it and look** (`.claude/docs/run-and-observe.md`). For every story a player
 can see (every Visual/Feel and UI story, and any other with a surface): launch
 straight into the scene the story touched, capture a screenshot straight into
-`production/qa/evidence/[story-slug]/` (`[story-slug]` is the story file's name
+`docs/production/qa/evidence/[story-slug]/` (`[story-slug]` is the story file's name
 without `.md`; `mkdir -p` the folder first), stamp it with
-`bash .claude/scripts/review-receipts.sh hash <each changed file> > production/qa/evidence/[story-slug]/stamp.txt`,
+`bash .claude/scripts/review-receipts.sh hash <each changed file> > docs/production/qa/evidence/[story-slug]/stamp.txt`,
 then open the image and compare it with the criteria. Not waived at `qa.level:
 minimal`. Report exactly one line, plain text starting `Run result:` (no bold:
 `/story-done` reads it as written):
@@ -278,8 +280,8 @@ At `qa.level: standard` and `full`, add: "Run your test suite and confirm the ne
 tests pass before `/story-done`: it checks that the test file exists, and runs
 nothing." At `minimal` leave that out: there are no tests to run. For a Visual/Feel
 or UI story with no retained image, add: "A retained screenshot under
-`production/qa/evidence/[story-slug]/` is required before `/story-done`" (and, for
-Visual/Feel, the sign-off in `production/qa/evidence/[story-slug]-evidence.md`).
+`docs/production/qa/evidence/[story-slug]/` is required before `/story-done`" (and, for
+Visual/Feel, the sign-off in `docs/production/qa/evidence/[story-slug]-evidence.md`).
 
 **`## Files`.** Replace the section's body with the list of changed code and test
 files, one per line, as the Phase 3 ask said:
@@ -305,12 +307,12 @@ this when the Phase 3 ask was declined.
 **The run's last reply ends with this block**, the only place the `Run result:` line
 is printed: print it nowhere else in the reply. The Next step goes by the tier you stated in Phase 1 (the `workflow` line,
 never `rigor` or `qa.level`). The Next step: at `minimal`, `/story-done [path]`. At `standard` and `full`,
-`/code-review [files]`, then `/story-done [path]`. INCOMPLETE: `/dev-story [path]`
+`/gamedev-code-review [files]`, then `/story-done [path]`. INCOMPLETE: `/dev-story [path]`
 to resume. BLOCKED: the action that unblocks it (`/architecture-decision accept
 ADR-NNNN`, the dependency to finish, the diff to review).
 
 ```
 Story: [path] — [Implemented | INCOMPLETE — <breakage> | BLOCKED — <reason>]
 Run result: [OBSERVED — … | NOT VERIFIED — … | N/A — …]
-Next step: [Implemented, Tier: workflow minimal → /story-done [path] | Implemented, Tier: workflow standard or full → /code-review [changed files], then /story-done [path] | INCOMPLETE → /dev-story [path] to resume | BLOCKED → the unblocking action]
+Next step: [Implemented, Tier: workflow minimal → /story-done [path] | Implemented, Tier: workflow standard or full → /gamedev-code-review [changed files], then /story-done [path] | INCOMPLETE → /dev-story [path] to resume | BLOCKED → the unblocking action]
 ```

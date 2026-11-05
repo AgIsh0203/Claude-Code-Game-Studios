@@ -23,7 +23,7 @@
 #
 # Usage:
 #   bash .claude/scripts/gdd-structure-check.sh                    # all system GDDs
-#   bash .claude/scripts/gdd-structure-check.sh design/gdd/foo.md  # one GDD
+#   bash .claude/scripts/gdd-structure-check.sh docs/design/gdd/foo.md  # one GDD
 #
 # Output (per GDD; the ABSENT and PLACEHOLDER lines are omitted when empty):
 #   combat.md PRESENT: Overview,Player Fantasy,Detailed Rules,...
@@ -53,7 +53,7 @@ MATCH=("Overview" \
 LABEL=("Overview" "Player Fantasy" "Detailed Rules" "Formulas" "Edge Cases" \
        "Dependencies" "Tuning Knobs" "Acceptance Criteria")
 
-# Governance and registry docs that live in design/gdd/ but are not system GDDs.
+# Governance and registry docs that live in docs/design/gdd/ but are not system GDDs.
 not_a_system_gdd() {
     case "$(basename "$1")" in
         game-concept.md|systems-index.md|game-pillars.md|gdd-cross-review-*.md) return 0 ;;
@@ -122,7 +122,7 @@ if [ $# -gt 0 ] && [ -n "${1:-}" ]; then
 fi
 
 any=0
-# -maxdepth 1 keeps design/gdd/reviews/ out of scope — /design-review writes its
+# -maxdepth 1 keeps docs/design/gdd/reviews/ out of scope — /design-review writes its
 # own output there, and sweeping it in makes the tool review its own reports.
 while IFS= read -r f; do
     [ -n "$f" ] || continue
@@ -130,7 +130,7 @@ while IFS= read -r f; do
     any=1
     check_file "$f"
 done <<EOF
-$(find design/gdd -maxdepth 1 -name '*.md' -type f 2>/dev/null | sort)
+$(find docs/design/gdd -maxdepth 1 -name '*.md' -type f 2>/dev/null | sort)
 EOF
 
-[ "$any" -eq 1 ] || echo "No system GDDs found in design/gdd/."
+[ "$any" -eq 1 ] || echo "No system GDDs found in docs/design/gdd/."

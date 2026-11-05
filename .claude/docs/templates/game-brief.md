@@ -5,7 +5,7 @@ THE ONE-PAGE BRIEF. At the `minimal` workflow tier this is the ENTIRE design doc
 it replaces the full concept doc, systems decomposition, and per-system GDDs.
 Keep it to one screen. If a field needs a second paragraph, you're writing a GDD,
 not a brief. Fill every REQUIRED field; the three RECOMMENDED one-liners are cheap
-but optional. Engine is set separately (project.yaml / /setup-engine) — don't restate it.
+but optional. Engine is set separately (.claude/ccgs/project.yaml / /setup-engine) — don't restate it.
 
 Field set grounded in industry practice — Tim Ryan (*Anatomy of a Design Document*),
 Stone Librande (GDC *One-Page Designs*: the one-page constraint forces the real

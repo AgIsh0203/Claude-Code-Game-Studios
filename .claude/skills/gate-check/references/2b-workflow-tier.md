@@ -87,10 +87,10 @@ tier:
 **Before applying any of them, check the block the other way round: does every
 KEY match a system?** `<system>` is the GDD filename stem
 (`.claude/docs/workflow-modes.md`), so for each key in `system_overrides`, look
-for `design/gdd/<key>.md`. Any key with no matching stem is reported, naming the
+for `docs/design/gdd/<key>.md`. Any key with no matching stem is reported, naming the
 key and listing the stems that do exist:
 
-> `system_overrides key 'no-such-system' matches no GDD in design/gdd/. Available stems: combat, inventory, forge-heat-system. This override is doing nothing.`
+> `system_overrides key 'no-such-system' matches no GDD in docs/design/gdd/. Available stems: combat, inventory, forge-heat-system. This override is doing nothing.`
 
 Surface it as a **CONCERNS**-level finding, not a Blocker — the project is still
 gateable, but an override the user believes is in force and is not is exactly how

@@ -15,9 +15,9 @@
 Once the user confirms, **immediately** create the output file with empty section
 headers. This ensures incremental writes have a target and work survives interruptions.
 
-Ask: "May I create the skeleton file at `design/ux/[filename].md`?" — except in
-`accessibility` mode, where the path is `design/accessibility-requirements.md`
-(see the mode table in Section 1; it is deliberately not under `design/ux/`).
+Ask: "May I create the skeleton file at `docs/design/ux/[filename].md`?" — except in
+`accessibility` mode, where the path is `docs/design/accessibility-requirements.md`
+(see the mode table in Section 1; it is deliberately not under `docs/design/ux/`).
 
 ---
 
@@ -373,9 +373,9 @@ the template gains or loses a section, this skeleton follows it, not the reverse
 
 ---
 
-After writing the skeleton, update `production/session-state/active.md` with:
+After writing the skeleton, update `.claude/ccgs/session-state/active.md` with:
 - Task: Designing [screen/flow name] UX spec
 - Current section: Starting (skeleton created)
-- File: design/ux/[filename].md (or `design/accessibility-requirements.md` in `accessibility` mode)
+- File: docs/design/ux/[filename].md (or `docs/design/accessibility-requirements.md` in `accessibility` mode)
 
 ---

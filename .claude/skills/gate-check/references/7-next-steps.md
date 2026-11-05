@@ -10,7 +10,7 @@
 - 7. Closing Next-Step Widget: per gate, and the `workflow: minimal` route
 - 8. Follow-Up Actions
 
-After the verdict is presented and any stage update is complete (project.yaml + stage.txt), close with a structured next-step prompt using `AskUserQuestion`.
+After the verdict is presented and any stage update is complete (.claude/ccgs/project.yaml + stage.txt), close with a structured next-step prompt using `AskUserQuestion`.
 
 **Tailor the options to the gate that just ran.** The argument names the phase
 being entered, so `/gate-check systems-design` is the Concept → Systems Design gate.
@@ -24,7 +24,7 @@ built), then `/create-stories`, then `/dev-story` on the next story — the rout
 `/help` gives.
 
 For **Concept → Systems Design** (`/gate-check systems-design`) PASS — option [A] is
-`/map-systems` when `design/gdd/systems-index.md` does not exist yet (many
+`/map-systems` when `docs/GDD.md` does not exist yet (many
 projects write it during Concept, as the workflow catalog orders it), otherwise
 `/design-system [first system in the index's design order]`:
 ```
@@ -85,7 +85,7 @@ Based on the verdict, suggest specific next steps:
 - **Small design change needed?** → `/quick-design` for changes under about one week of implementation (bypasses full GDD pipeline)
 - **No UX specs?** → `/ux-design [screen name]` to author specs, or `/team-ui [feature]` for full pipeline
 - **UX specs not reviewed?** → `/ux-review [file]` or `/ux-review all` to validate
-- **No accessibility requirements doc?** → `/ux-design accessibility` to write `design/accessibility-requirements.md`
+- **No accessibility requirements doc?** → `/ux-design accessibility` to write `docs/design/accessibility-requirements.md`
 - **No interaction pattern library?** → `/ux-design patterns` to initialize it
 - **Concept or a GDD not reviewed?** → `/design-review [doc]`
 - **GDDs not cross-reviewed?** → `/review-all-gdds` (run after all MVP GDDs are individually approved)
@@ -103,13 +103,13 @@ Based on the verdict, suggest specific next steps:
 - **Tests failing?** → delegate to `lead-programmer` or `qa-tester`
 - **No playtest data?** → `/playtest-report`
 - **No playtest sessions beyond the minimum?** → Additional sessions give more reliable signal. 3+ total is recommended before committing the full team. Use `/playtest-report` to structure findings.
-- **No Difficulty Curve doc?** → Author `design/difficulty-curve.md` by hand from the template at `.claude/docs/templates/difficulty-curve.md`. (`/quick-design` is a related session but writes to `design/quick-specs/`, not to this path — use it to think the curve through, then copy the outcome here.)
-- **No player journey map?** → Author `design/player-journey.md` by hand from the template at `.claude/docs/templates/player-journey.md`.
+- **No Difficulty Curve doc?** → Author `docs/design/difficulty-curve.md` by hand from the template at `.claude/docs/templates/difficulty-curve.md`. (`/quick-design` is a related session but writes to `docs/design/quick-specs/`, not to this path — use it to think the curve through, then copy the outcome here.)
+- **No player journey map?** → Author `docs/design/player-journey.md` by hand from the template at `.claude/docs/templates/player-journey.md`.
 
 > **Neither of these has a skill that writes it — do not name one.**
-> "`/ux-design` Phase 2b" is the step that *reads* `design/player-journey.md`,
+> "`/ux-design` Phase 2b" is the step that *reads* `docs/design/player-journey.md`,
 > so it lands the user back at the check that just failed. `/quick-design`
-> writes `design/quick-specs/[name]-[date].md` and leaves this gate still
+> writes `docs/design/quick-specs/[name]-[date].md` and leaves this gate still
 > failing. Say plainly that both docs are hand-authored from their templates.
 - **Need a quick sprint check?** → `/sprint-status` for current sprint progress snapshot
 - **Performance unknown?** → `/perf-profile`

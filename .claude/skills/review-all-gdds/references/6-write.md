@@ -6,7 +6,7 @@
 ## Phase 6: Write Report and Flag GDDs
 
 Use `AskUserQuestion` for write permission:
-- Prompt: "May I write this review to `design/gdd/gdd-cross-review-[date].md`?"
+- Prompt: "May I write this review to `docs/design/gdd/gdd-cross-review-[date].md`?"
 - Options: `[A] Yes — write the report` / `[B] No — skip`
 
 > **`[date]` here means ISO 8601 — `YYYY-MM-DD`, e.g.
@@ -29,7 +29,7 @@ If any GDDs are flagged for revision, use a second `AskUserQuestion`:
 ### Session State Update
 
 After writing the report (and updating systems index if approved), silently
-append to `production/session-state/active.md`:
+append to `.claude/ccgs/session-state/active.md`:
 
     ## Session Extract — /review-all-gdds [date]
     - Verdict: [PASS / NOT ASSESSED / CONCERNS / FAIL]
@@ -38,7 +38,7 @@ append to `production/session-state/active.md`:
     - Flagged for revision: [comma-separated list, or "None"]
     - Blocking issues: [N — brief one-line descriptions, or "None"]
     - Recommended next: [the Phase 7 handoff action, condensed to one line]
-    - Report: design/gdd/gdd-cross-review-[date].md   ← only if user approved the write
+    - Report: docs/design/gdd/gdd-cross-review-[date].md   ← only if user approved the write
     - Report: (not written — user declined at [date])  ← only if user declined the write
 
 Use the appropriate line based on the user's response to the write-permission widget in Phase 6.

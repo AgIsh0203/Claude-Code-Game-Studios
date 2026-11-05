@@ -54,7 +54,7 @@ No gate IDs assigned.
 - Presents the options with their trade-offs — e.g., inlining only the hottest 2–3 methods, which keeps the public methods testable — rather than one all-or-nothing recommendation
 
 ### Case 5: Context pass — project performance budgets
-**Input:** Performance budgets from the project config (`performance.*` in `project.yaml`) provided in context: Target 60fps, frame budget 16.67ms, draw calls max 200, memory ceiling 512MB. Request: "Review the current build profile."
+**Input:** Performance budgets from the project config (`performance.*` in `.claude/ccgs/project.yaml`) provided in context: Target 60fps, frame budget 16.67ms, draw calls max 200, memory ceiling 512MB. Request: "Review the current build profile."
 **Expected behavior:**
 - References the specific values from the provided context: 16.67ms, 200 draw calls, 512MB
 - Compares current measurements against each threshold explicitly, in its Performance Report Format (Budget / Actual / Status tables for frame time and memory)
@@ -76,6 +76,6 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- Frame time analysis (Case 1) output follows the agent's Performance Report Format; when run under `/perf-profile` or `/team-polish`, the report is written to `production/polish/`
+- Frame time analysis (Case 1) output follows the agent's Performance Report Format; when run under `/perf-profile` or `/team-polish`, the report is written to `docs/production/polish/`
 - Regression case (Case 3) confirms the agent localizes the cause from profiles across builds, not just measures symptoms or guesses from diffs
 - Code quality trade-off (Case 4) verifies the agent does not recommend optimizations that violate coding standards without flagging the conflict

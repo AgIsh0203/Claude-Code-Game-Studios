@@ -3,7 +3,7 @@
 - All game code must include doc comments on public APIs
 - Architecture decisions are recorded as ADRs in `docs/architecture/`. **How many is
   set by `modes.workflow`** — all ADRs at `full`, *critical* ADRs only at `standard`,
-  and none required at `minimal`, where the decision log and `design/game-brief.md`
+  and none required at `minimal`, where the decision log and `docs/GDD.md`
   carry the rationale instead. See `.claude/docs/workflow-modes.md`.
 - Gameplay values must be data-driven (external config), never hardcoded
 - All public methods must be unit-testable (dependency injection over singletons)
@@ -14,19 +14,19 @@
   before marking work complete. Every implementation should have a way to prove it works.
 - **A parse check is not a run.** Every story that changes something
   player-observable is launched and observed before it closes, and the
-  observation is a retained screenshot in `production/qa/evidence/`. Procedure
+  observation is a retained screenshot in `docs/production/qa/evidence/`. Procedure
   per engine: `.claude/docs/run-and-observe.md`. Not waived at
   `qa.level: minimal` — tests are, the look is not.
 
 # Design Document Standards
 
 - All design docs use Markdown
-- Each mechanic has a dedicated document in `design/gdd/`
+- Each mechanic has a dedicated document in `docs/design/gdd/`
 - **How many of the 8 sections are required depends on `modes.workflow`** —
   all 8 at `full`, 5 (+ Formulas when the system defines numeric rules — rates,
   curves, thresholds, costs; the system's `Category` is a hint, not the test) at
   `standard`, and no
-  GDD at all at `minimal`, where `design/game-brief.md` is the design record.
+  GDD at all at `minimal`, where `docs/GDD.md` is the design record.
   See `.claude/docs/workflow-modes.md`. The 8 sections:
   1. **Overview** -- one-paragraph summary
   2. **Player Fantasy** -- intended feeling and experience
@@ -48,19 +48,19 @@ All stories must have appropriate test evidence before they can be marked Done:
 |---|---|---|---|
 | **Logic** (formulas, AI, state machines) | Automated unit test — must pass | `tests/unit/[system]/` | BLOCKING |
 | **Integration** (multi-system) | Integration test OR documented playtest | `tests/integration/[system]/` | BLOCKING |
-| **Visual/Feel** (animation, VFX, feel) | Retained screenshot + lead sign-off | `production/qa/evidence/` | BLOCKING |
-| **UI** (menus, HUD, screens) | Retained screenshot of each screen touched | `production/qa/evidence/` | BLOCKING |
-| **Config/Data** (balance tuning) | Smoke check pass | `production/qa/smoke-[date].md` | ADVISORY |
+| **Visual/Feel** (animation, VFX, feel) | Retained screenshot + lead sign-off | `docs/production/qa/evidence/` | BLOCKING |
+| **UI** (menus, HUD, screens) | Retained screenshot of each screen touched | `docs/production/qa/evidence/` | BLOCKING |
+| **Config/Data** (balance tuning) | Smoke check pass | `docs/production/qa/smoke-[date].md` | ADVISORY |
 
 The **Default Gate Level** applies when `testing.strict` is not set in
-`project.yaml`. A project may override it per test type: `testing.strict.logic`,
+`.claude/ccgs/project.yaml`. A project may override it per test type: `testing.strict.logic`,
 `.integration`, `.visual`, `.ui`, and `.config` each take `true` (BLOCKING) or
 `false` (ADVISORY). `/story-done`, `/story-readiness`, `/dev-story`,
 `/gate-check`, and `/smoke-check` resolve the effective level from that setting,
 falling back to the defaults above when it is absent.
 
 > **Why Visual and UI block.** "Retained" is load-bearing — the screenshot must
-> still be on disk in `production/qa/evidence/` when the story is closed. One
+> still be on disk in `docs/production/qa/evidence/` when the story is closed. One
 > that was captured and discarded is an assertion, not evidence. These two rows
 > block because for a game the way it looks *is* the product: an advisory visual
 > gate gets deferred in favour of whatever does block, and the result is a

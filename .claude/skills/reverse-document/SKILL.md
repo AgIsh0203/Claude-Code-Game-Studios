@@ -8,6 +8,8 @@ model: sonnet
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Reverse Documentation
 
 This skill analyzes existing implementation (code, prototypes, systems) and generates
@@ -35,12 +37,12 @@ appropriate design or architecture documentation. Use this when:
 - `src/gameplay/combat/` → All combat-related code (Godot)
 - `Assets/Scripts/Core/EventSystem.cs` → Specific file (Unity)
 - `Source/MyGame/Private/AI/` → A module folder (Unreal)
-- `prototypes/stealth-mech/` → Prototype directory
+- `docs/prototypes/stealth-mech/` → Prototype directory
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys workflow,system_overrides,automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -64,7 +66,7 @@ generated — see Phase 5. Semantics of each tier are in
 ```bash
 /reverse-document design src/gameplay/magic-system
 /reverse-document architecture Source/MyGame/Private/EntityComponent
-/reverse-document concept prototypes/vehicle-combat
+/reverse-document concept docs/prototypes/vehicle-combat
 ```
 
 ## Phase 2: Analyze Implementation
@@ -197,9 +199,9 @@ Based on type, use appropriate template:
 
 | Type | Template | Output Path |
 |------|----------|-------------|
-| `design` | `templates/design-doc-from-implementation.md` | `design/gdd/[system-name].md` |
+| `design` | `templates/design-doc-from-implementation.md` | `docs/design/gdd/[system-name].md` |
 | `architecture` | `templates/architecture-doc-from-code.md` | `docs/architecture/[decision-name].md` |
-| `concept` | `templates/concept-doc-from-prototype.md` | `prototypes/[name]/CONCEPT.md` or `design/concepts/[name].md` |
+| `concept` | `templates/concept-doc-from-prototype.md` | `docs/prototypes/[name]/CONCEPT.md` or `docs/design/concepts/[name].md` |
 
 **The `design` output scales with the workflow tier** (resolved in Phase 1):
 - **`full`** — generate a full 8-section GDD.
@@ -208,9 +210,9 @@ Based on type, use appropriate template:
   numeric rules). Skip Player Fantasy and Tuning Knobs.
 - **`minimal`** — generate a **game brief** in the one-page format
   (`.claude/docs/templates/game-brief.md`), not a GDD. For the whole game
-  (the path is the code root itself) write `design/game-brief.md`; for a single
+  (the path is the code root itself) write `docs/GDD.md`; for a single
   reverse-engineered system write
-  `design/[system-name]-brief.md`.
+  `docs/design/[system-name]-brief.md`.
 
 (`architecture` and `concept` outputs are tier-independent.)
 
@@ -267,8 +269,8 @@ SECTIONS MARKED AS INCOMPLETE:
 May I write this to [output path]?
 ```
 
-Use the tier-correct output path in the prompt: `design/gdd/[system-name].md` for
-a `full`/`standard` GDD, or `design/[system-name]-brief.md` for a `minimal` brief.
+Use the tier-correct output path in the prompt: `docs/design/gdd/[system-name].md` for
+a `full`/`standard` GDD, or `docs/design/[system-name]-brief.md` for a `minimal` brief.
 
 **At `collaborative`** — wait for approval; the user may request changes before
 writing. **At `guided`** — this is a *new* file, so `automation-modes.md:81`
@@ -302,7 +304,7 @@ verified-by: [User name]
 After writing, suggest next steps:
 
 ```
-✅ Written to design/gdd/combat-system.md
+✅ Written to docs/design/gdd/combat-system.md
 
 FOLLOW-UP RECOMMENDED:
 1. Run /balance-check on combat formulas (exponential scaling concern)
@@ -323,7 +325,7 @@ Would you like me to tackle any of these now?
 |----------------|-----------------|------------|
 | `<code root>/gameplay/*` | design-doc-from-implementation.md | Gameplay mechanics → GDD |
 | `<code root>/core/*`, `<code root>/ai/*` | architecture-doc-from-code.md | Core systems → ADR |
-| `prototypes/*` | concept-doc-from-prototype.md | Experiments → concept doc |
+| `docs/prototypes/*` | concept-doc-from-prototype.md | Experiments → concept doc |
 | `<code root>/networking/*` | architecture-doc-from-code.md | Technical systems → ADR |
 | `<code root>/ui/*` | design-doc-from-implementation.md | UI/UX → design spec |
 
@@ -352,11 +354,11 @@ User: 1. [Resource] is for pacing, prevent [unwanted behavior]
 Agent: Perfect, that clarifies the vision. Let me draft the design doc.
        [Shows draft with clarified intent]
 
-       May I write this to design/gdd/[system-name].md?
+       May I write this to docs/design/gdd/[system-name].md?
 
 User: Yes, write it.
 
-Agent: ✅ Written to design/gdd/[system-name].md
+Agent: ✅ Written to docs/design/gdd/[system-name].md
        ✅ Marked as [REVERSE-DOCUMENTED]
        ✅ Flagged [value] scaling for rebalancing
 

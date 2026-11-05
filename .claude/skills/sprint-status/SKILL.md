@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Bash(bash "*/.claude/skills/sprint-status/../..
 model: haiku
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys story_granularity,workflow`
 
 
@@ -32,11 +34,11 @@ at `balanced` (`rigor: standard`), **AC-sized** at `fine`.
 **Argument:** `$ARGUMENTS` (blank = use current sprint)
 
 - If an argument is given (e.g., `/sprint-status 3`), search
-  `production/sprints/` for a file matching `sprint-003.md`, `sprint-03.md`, `sprint-3.md`,
+  `docs/production/sprints/` for a file matching `sprint-003.md`, `sprint-03.md`, `sprint-3.md`,
   or similar (`/sprint-plan` writes three digits). Report which file was found.
 - If no argument is given, find the most recently modified file in
-  `production/sprints/` and treat it as the current sprint.
-- If `production/sprints/` does not exist or is empty:
+  `docs/production/sprints/` and treat it as the current sprint.
+- If `docs/production/sprints/` does not exist or is empty:
   - **At `workflow: minimal` there are no sprints by design** — the brief's
     build order is the plan and the story files carry it. Report progress
     through it instead, then stop:
@@ -98,7 +100,7 @@ found — burndown assessment skipped."
 
 ## 3. Scan Story Status
 
-**First: check for `production/sprint-status.yaml`.**
+**First: check for `docs/production/sprint-status.yaml`.**
 
 If it exists, read it directly — it is the authoritative source of truth.
 Extract each story's `status`, and its `priority`, `owner` and `blocker` when set — they fill the status table's columns. No markdown scanning needed.
@@ -130,7 +132,7 @@ After collecting status for all stories, check each IN PROGRESS story for stalen
   — a date is a single line, and opening every in-progress story to find it is
   the whole cost of this check:
   ```
-  Grep pattern="\*{0,2}(Last Updated|Updated|last-updated|updated_at)\*{0,2}[[:space:]]*:" glob="production/epics/**/story-*.md" output_mode="content"
+  Grep pattern="\*{0,2}(Last Updated|Updated|last-updated|updated_at)\*{0,2}[[:space:]]*:" glob="docs/production/epics/**/story-*.md" output_mode="content"
   ```
   That one pattern accepts every field-name variant. A story with no match has
   **no date**, which is not the same as being stale — report it as "never

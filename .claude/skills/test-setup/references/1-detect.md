@@ -6,10 +6,10 @@
 ## Phase 1: Detect Engine and Existing State
 
 1. **Read engine config**:
-   - Read `engine.name` from `project.yaml`; if that key is absent or empty
-     (including when `project.yaml` has no `engine:` block), fall back to the
+   - Read `engine.name` from `.claude/ccgs/project.yaml`; if that key is absent or empty
+     (including when `.claude/ccgs/project.yaml` has no `engine:` block), fall back to the
      `Engine:` value in `.claude/docs/technical-preferences.md`.
-   - If neither source yields a configured engine (project.yaml `engine.name`
+   - If neither source yields a configured engine (.claude/ccgs/project.yaml `engine.name`
      absent/empty and technical-preferences.md shows `[TO BE CONFIGURED]` or is
      missing), stop:
      "Engine not configured. Run `/setup-engine` first, then re-run `/test-setup`."

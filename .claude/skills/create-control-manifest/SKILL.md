@@ -3,9 +3,11 @@ name: create-control-manifest
 description: "Builds a short list of must-do and never-do coding rules per system from accepted ADRs. Use when the user wants programmer rules or a cheat sheet from the ADRs, or needs it regenerated after ADR changes."
 argument-hint: "[update — regenerate from current ADRs] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/create-control-manifest/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/adr-status.sh*), Bash(bash .claude/scripts/md-section.sh *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/create-control-manifest/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/adr-status.sh*), Bash(bash .claude/scripts/md-section.sh *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation`
 
@@ -52,10 +54,10 @@ title of every ADR a rule comes from.
 
 ### Project config
 
-- `naming.*` and `performance.*` from `project.yaml`; for any key absent or empty,
+- `naming.*` and `performance.*` from `.claude/ccgs/project.yaml`; for any key absent or empty,
   `.claude/docs/technical-preferences.md`.
 - Approved libraries and forbidden patterns from
-  `.claude/docs/technical-preferences.md` (not migrated to `project.yaml`).
+  `.claude/docs/technical-preferences.md` (not migrated to `.claude/ccgs/project.yaml`).
 
 ### Engine reference
 
@@ -66,7 +68,7 @@ title of every ADR a rule comes from.
 ### What exists already
 
 `docs/architecture/control-manifest.md` present: this run regenerates it; read it
-before the Phase 5 write, which replaces it. `production/epics/*/EPIC.md` present:
+before the Phase 5 write, which replaces it. `docs/production/epics/*/EPIC.md` present:
 epics exist. Phase 6 picks its next step from both.
 
 Report: "Loaded [A] Accepted ADRs of [N], engine: [name + version]."
@@ -115,7 +117,7 @@ An ADR that spans layers puts its rule in each one.
 
 ## Phase 3: Add the global rules
 
-Rules for every layer, each with its source (the `project.yaml` key,
+Rules for every layer, each with its source (the `.claude/ccgs/project.yaml` key,
 `technical-preferences.md`, or the engine-reference file), as a layer rule has:
 
 - **Naming** from `naming.*`: classes, variables, signals and events, files,
@@ -264,19 +266,19 @@ read its ADR.
 ### Naming Conventions
 | Element | Convention | Example | Source |
 |---------|-----------|---------|--------|
-| Classes | [convention] | [example] | [`naming.classes` in project.yaml, or technical-preferences.md] |
-| Variables | [convention] | [example] | [`naming.variables` in project.yaml, or technical-preferences.md] |
-| Signals/Events | [convention] | [example] | [`naming.signals` in project.yaml, or technical-preferences.md] |
-| Files | [convention] | [example] | [`naming.files` in project.yaml, or technical-preferences.md] |
-| Constants | [convention] | [example] | [`naming.constants` in project.yaml, or technical-preferences.md] |
+| Classes | [convention] | [example] | [`naming.classes` in .claude/ccgs/project.yaml, or technical-preferences.md] |
+| Variables | [convention] | [example] | [`naming.variables` in .claude/ccgs/project.yaml, or technical-preferences.md] |
+| Signals/Events | [convention] | [example] | [`naming.signals` in .claude/ccgs/project.yaml, or technical-preferences.md] |
+| Files | [convention] | [example] | [`naming.files` in .claude/ccgs/project.yaml, or technical-preferences.md] |
+| Constants | [convention] | [example] | [`naming.constants` in .claude/ccgs/project.yaml, or technical-preferences.md] |
 
 ### Performance Budgets
 | Target | Value | Source |
 |--------|-------|--------|
-| Framerate | [value] | [`performance.target_framerate` in project.yaml, or technical-preferences.md] |
-| Frame budget | [value] | [`performance.frame_budget_ms` in project.yaml, or technical-preferences.md] |
-| Draw calls | [value] | [`performance.draw_call_limit` in project.yaml, or technical-preferences.md] |
-| Memory ceiling | [value] | [`performance.memory_ceiling_mb` in project.yaml, or technical-preferences.md] |
+| Framerate | [value] | [`performance.target_framerate` in .claude/ccgs/project.yaml, or technical-preferences.md] |
+| Frame budget | [value] | [`performance.frame_budget_ms` in .claude/ccgs/project.yaml, or technical-preferences.md] |
+| Draw calls | [value] | [`performance.draw_call_limit` in .claude/ccgs/project.yaml, or technical-preferences.md] |
+| Memory ceiling | [value] | [`performance.memory_ceiling_mb` in .claude/ccgs/project.yaml, or technical-preferences.md] |
 
 ### Approved Libraries / Addons
 - [library] — approved for [purpose] — source: technical-preferences.md

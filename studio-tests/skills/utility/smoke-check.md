@@ -5,7 +5,7 @@
 `/smoke-check` is the gate between implementation and QA hand-off. Phase 1 runs
 `project-coherence.sh`, verifies that **game test files** exist under the
 engine's test root or `tests/smoke/` (not merely that `tests/` exists), and
-reads the engine from `project.yaml` (falling back to `technical-preferences.md`),
+reads the engine from `.claude/ccgs/project.yaml` (falling back to `technical-preferences.md`),
 then resolves the editor executable — the one `commands.test` names, else
 `engine.path`, else the name on `PATH` — before it calls the runner unavailable.
 Phase 2 runs `commands.test` (or the per-engine default) under a timeout and
@@ -17,7 +17,7 @@ and Phase 2 runs a build check instead — `commands.smoke`, else
 sprint stories; Phase 4 batch-verifies manual smoke checks with
 `AskUserQuestion`, and Batch 1 first asks whether the build was launched this
 session — "not launched" makes the manual checks NOT ASSESSED. The report is written
-to `production/qa/smoke-[date].md` after explicit approval.
+to `docs/production/qa/smoke-[date].md` after explicit approval.
 
 Verdicts, first matching rule wins: FAIL (a test failure, a suite that did not
 complete — timeout, compile/parse/build error, no results file — or a Batch
@@ -56,9 +56,9 @@ None. `/smoke-check` is a pre-QA utility skill. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -68,10 +68,10 @@ Fixture defaults.
 ### Case 1: Happy Path — Automated tests pass, manual items confirmed, PASS
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot` and `commands.test` set to the gdUnit4 command
+- `.claude/ccgs/project.yaml` has `engine.name: Godot` and `commands.test` set to the gdUnit4 command
 - `addons/gdUnit4/bin/GdUnitCmdTool.gd` exists; game tests exist under
   `tests/unit/` and `tests/integration/`
-- `production/qa/qa-plan-sprint-005.md` exists
+- `docs/production/qa/qa-plan-sprint-005.md` exists
 - The runner exits 0 with 12 tests, 12 passing
 - The developer says the build was launched this session and selects no FAILED item in Batch 1, Batch 2 or Batch 3
 - Every sprint story is COVERED or EXPECTED (no MISSING, no UNKNOWN)
@@ -87,14 +87,14 @@ Fixture defaults.
 4. Coverage scan: all stories COVERED or EXPECTED
 5. `AskUserQuestion` for Batch 1, Batch 2 and Batch 3 — nothing selected
 6. Report names its checklist source (the QA plan's Smoke Test Scope)
-7. Asks "May I write this smoke check report to `production/qa/smoke-[date].md`?"
+7. Asks "May I write this smoke check report to `docs/production/qa/smoke-[date].md`?"
 8. Writes after approval; delivers "Smoke check passed cleanly. The build is ready for manual QA."
 
 **Assertions:**
 - [ ] Automated test runner is invoked via Bash, after the Godot import
 - [ ] `AskUserQuestion` is used for manual smoke check batches
 - [ ] "May I write" is asked before writing the report file
-- [ ] Report is written to `production/qa/smoke-[date].md`
+- [ ] Report is written to `docs/production/qa/smoke-[date].md`
 - [ ] Verdict is PASS
 
 ---
@@ -102,7 +102,7 @@ Fixture defaults.
 ### Case 2: Failure Path — Automated test fails, blocking FAIL
 
 **Fixture:**
-- As Case 1, but `project.yaml` sets `modes.rigor: standard` (so `qa.level`
+- As Case 1, but `.claude/ccgs/project.yaml` sets `modes.rigor: standard` (so `qa.level`
   resolves to `standard`) and leaves `testing.strict` unset
 - The runner exits 100: 10 tests run, 8 passing, 2 failing —
   `test_health_clamp_at_zero`, `test_damage_calculation_negative`
@@ -153,14 +153,14 @@ Fixture defaults.
 - [ ] MISSING test coverage entry appears in the report
 - [ ] Verdict is PASS WITH WARNINGS (not PASS, not FAIL)
 - [ ] Advisory note says the MISSING entry must be resolved before `/story-done`
-- [ ] Report file is written to `production/qa/smoke-[date].md`
+- [ ] Report file is written to `docs/production/qa/smoke-[date].md`
 
 ---
 
 ### Case 4: Scaffold Without Game Tests — NOT ASSESSED, then stop
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard` (so `qa.level` resolves to `standard`)
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard` (so `qa.level` resolves to `standard`)
 - Engine is Godot; `tests/unit/` and `tests/integration/` exist but hold only
   the `.gdignore_placeholder` files `/test-setup` creates
 - No `tests/smoke/` directory
@@ -347,7 +347,7 @@ Fixture defaults.
    invented for it, and Missing Test Evidence reads "Not checked (quick run).",
    not "All Logic and Integration stories have test coverage."
 6. The verdict is labelled: `PASS (quick — coverage and Batch 3 not checked)`
-7. Asks "May I write this smoke check report to `production/qa/smoke-[date].md`?"
+7. Asks "May I write this smoke check report to `docs/production/qa/smoke-[date].md`?"
    and writes after approval
 
 **Assertions:**
@@ -433,7 +433,7 @@ Fixture defaults.
 
 - [ ] Uses `AskUserQuestion` for all manual smoke check batches (Batch 1, Batch 2, Batch 3), and Batch 1 asks whether the build was launched this session; "not launched" yields NOT ASSESSED
 - [ ] Resolves the editor executable from `commands.test`, then `engine.path`, then `PATH` before reporting the runner unavailable; a bare `godot` that does not resolve is never read as "no engine installed"
-- [ ] Never edits `project.yaml`: a `commands.test` missing flags or using a relative path is adjusted for the run and reported to the user
+- [ ] Never edits `.claude/ccgs/project.yaml`: a `commands.test` missing flags or using a relative path is adjusted for the run and reported to the user
 - [ ] Runs automated tests via Bash before asking any manual questions
 - [ ] Asks "May I write" before creating the report file — never writes without approval
 - [ ] Verdict vocabulary is PASS / PASS WITH WARNINGS / NOT ASSESSED / FAIL — no other verdicts

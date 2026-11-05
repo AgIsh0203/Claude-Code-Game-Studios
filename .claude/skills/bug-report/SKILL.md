@@ -7,17 +7,19 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.cla
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
 
 # Bug Report
 
-**Drafts only.** This skill writes reports to `production/qa/bugs/`. When the
+**Drafts only.** This skill writes reports to `docs/production/qa/bugs/`. When the
 cause is in the engine, a plugin or another vendor's code, add a draft for their
 tracker under **Notes** and stop there: never file, open or comment on an issue
 or pull request in their repository. The user submits it.
@@ -113,16 +115,16 @@ Deferred` (an accepted risk), not a wishlist. If you change either ladder, chang
 ## Phase 2C: Verify Mode
 
 **Find the bug file by its number**, here and in close mode: Glob
-`production/qa/bugs/BUG-*.md` and take the file whose number matches `[BUG-ID]`,
+`docs/production/qa/bugs/BUG-*.md` and take the file whose number matches `[BUG-ID]`,
 whatever its zero-padding — an older three-digit file with a slug is found by
 its number too. If none
-matches, stop: "No bug [BUG-ID] in `production/qa/bugs/`." Verdict: **BLOCKED**
+matches, stop: "No bug [BUG-ID] in `docs/production/qa/bugs/`." Verdict: **BLOCKED**
 — no such bug.
 
 Read that file. Extract the reproduction steps and expected result.
 
 1. **Re-run reproduction steps** — use Grep/Glob to check whether the root cause code path still exists as described. If the fix removed or changed it, note the change.
-2. **Run the related test** — if the bug's system has a test file in the engine's test root (`tests/` Godot, `Assets/Tests/` Unity, `Source/<Module>/Private/Tests/` Unreal — `.claude/docs/directory-structure.md`), run it via Bash with `commands.test` from `project.yaml`, narrowed to the affected suite where the runner allows — never a runner line written from memory, which drops the flags the engine needs (gdUnit4 hangs without `--remote-debug tcp://127.0.0.1:0`) — and report pass/fail. `commands.test` unset → no test ran: name the unset key and go on to step 3.
+2. **Run the related test** — if the bug's system has a test file in the engine's test root (`tests/` Godot, `Assets/Tests/` Unity, `Source/<Module>/Private/Tests/` Unreal — `.claude/docs/directory-structure.md`), run it via Bash with `commands.test` from `.claude/ccgs/project.yaml`, narrowed to the affected suite where the runner allows — never a runner line written from memory, which drops the flags the engine needs (gdUnit4 hangs without `--remote-debug tcp://127.0.0.1:0`) — and report pass/fail. `commands.test` unset → no test ran: name the unset key and go on to step 3.
 3. **Check for regression** — grep the codebase for any new occurrence of the pattern that caused the bug.
 4. **Manual verification** — when no related test ran (none covers the bug — the usual case where `qa.level` waives tests — `commands.test` is unset, or the run did not complete), or the bug's Category is Visual or UI, whose look no automated test checks, ask via `AskUserQuestion`: "Did you play the reproduction steps in [bug file] on a build with the fix? Which build?" —
    `[No longer occurs]` / `[Still occurs]` / `[Not played yet]`.
@@ -138,7 +140,7 @@ Produce a verification verdict:
 - **STILL PRESENT** — a related test fails on the bug's case, or the user answered `[Still occurs]`; the fix did not resolve the issue
 - **CANNOT VERIFY** — step 4 was answered `[Not played yet]`: name what is missing or could not run (no related test, `commands.test` unset, a run that did not complete, a Visual or UI bug), and say that playing the reproduction steps settles it — run `/bug-report verify [BUG-ID]` again once played
 
-Ask: "May I update `production/qa/bugs/[bug file]` to set Status: Verified Fixed / Still Present / Cannot Verify?" — naming the file found above, whatever its padding or slug. With the Status, write a `**Verified by**:` line under it: `[test file(s)] — ran and passed`, or `[user], manual, build [X]` for a manual verification.
+Ask: "May I update `docs/production/qa/bugs/[bug file]` to set Status: Verified Fixed / Still Present / Cannot Verify?" — naming the file found above, whatever its padding or slug. With the Status, write a `**Verified by**:` line under it: `[test file(s)] — ran and passed`, or `[user], manual, build [X]` for a manual verification.
 
 If STILL PRESENT: reopen the bug, set Status back to Open, and suggest re-running `/hotfix [BUG-ID]`.
 
@@ -148,7 +150,7 @@ If STILL PRESENT: reopen the bug, set Status back to Open, and suggest re-runnin
 
 Read the bug file, found by its number as in verify mode. Confirm Status is `Verified Fixed` before closing. If status is anything else, stop: "Bug [ID] must be Verified Fixed before it can be closed. Run `/bug-report verify [BUG-ID]` first."
 
-Show the closure record below and the Status change, then ask: "May I update `production/qa/bugs/[bug file]` to mark it Closed?" Nothing is written before a yes; on no, stop — the bug stays Verified Fixed.
+Show the closure record below and the Status change, then ask: "May I update `docs/production/qa/bugs/[bug file]` to mark it Closed?" Nothing is written before a yes; on no, stop — the bug stays Verified Fixed.
 
 On yes, append the closure record to the bug file:
 
@@ -165,7 +167,7 @@ On yes, append the closure record to the bug file:
 
 Then update the top-level `**Status**:` field to `**Status**: Closed`.
 
-After closing, check `production/qa/bug-triage-*.md` — if the bug appears in an open triage report, note: "Bug [ID] is referenced in the triage report. Run `/bug-triage` to refresh the open bug count."
+After closing, check `docs/production/qa/bug-triage-*.md` — if the bug appears in an open triage report, note: "Bug [ID] is referenced in the triage report. Run `/bug-triage` to refresh the open bug count."
 
 ---
 
@@ -173,14 +175,14 @@ After closing, check `production/qa/bug-triage-*.md` — if the bug appears in a
 
 Present the completed bug report(s) to the user.
 
-**Allocate the ID** before asking: Glob `production/qa/bugs/BUG-*.md`, take the
+**Allocate the ID** before asking: Glob `docs/production/qa/bugs/BUG-*.md`, take the
 highest number and add 1, zero-padded to four digits (`BUG-0001` when there are
 none). Several reports in one run (analyze mode) take consecutive IDs from
 there, one each — never the same ID twice.
 
-Ask: "May I write this to `production/qa/bugs/BUG-[NNNN].md`?" For several
+Ask: "May I write this to `docs/production/qa/bugs/BUG-[NNNN].md`?" For several
 reports, ask once and name every file: "May I write these to
-`production/qa/bugs/BUG-[NNNN].md`, `production/qa/bugs/BUG-[NNNN+1].md`, …?"
+`docs/production/qa/bugs/BUG-[NNNN].md`, `docs/production/qa/bugs/BUG-[NNNN+1].md`, …?"
 
 If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — bug report filed.
 

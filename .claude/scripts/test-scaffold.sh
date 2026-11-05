@@ -29,7 +29,7 @@
 #   -h, --help      this text
 #
 # Files per engine, in this order (the skill's Phases 3 to 5):
-#   all      tests/README.md, production/qa/evidence/.gitkeep
+#   all      tests/README.md, docs/production/qa/evidence/.gitkeep
 #   godot    tests/unit/.gitkeep, tests/integration/.gitkeep
 #   unity    Assets/Tests/EditMode/EditModeTests.asmdef,
 #            Assets/Tests/PlayMode/PlayModeTests.asmdef
@@ -41,7 +41,7 @@
 # folder in git. Unity and Unreal tests live in the engine's test root because
 # neither compiles code under tests/.
 # The README carries the setup date and the engine version (engine.version of
-# project.local.yaml, then project.yaml). The CI workflow carries the full
+# .claude/ccgs/project.local.yaml, then .claude/ccgs/project.yaml). The CI workflow carries the full
 # Godot version where engine.version has three numbers; a value that is not
 # known stays as the skill writes it in square brackets and is listed as an
 # input still needed. Local and CI commands are the skill's, and they differ
@@ -128,10 +128,10 @@ fi
 PROJ_NAME="${PROJECT_ARG:-${UPROJ:-$MODULE_ARG}}"
 MOD_NAME="${MODULE_ARG:-${UPROJ:-$PROJECT_ARG}}"
 
-# The engine version, as project-state.sh reads project.yaml: the shared reader.
+# The engine version, as project-state.sh reads .claude/ccgs/project.yaml: the shared reader.
 VER=""
 if [ -f "$HERE/yaml-get.awk" ]; then
-  for _yf in project.local.yaml project.yaml; do
+  for _yf in .claude/ccgs/project.local.yaml .claude/ccgs/project.yaml; do
     if [ -z "$VER" ] && [ -f "$_yf" ]; then
       VER=$(YG_PATH=engine.version awk -f "$HERE/yaml-get.awk" "$_yf")
     fi
@@ -158,7 +158,7 @@ CIPROJ="${PROJ_NAME:-[ProjectName]}"
 
 # ---------------------------------------------------------------------- paths
 README=tests/README.md
-EVID=production/qa/evidence/.gitkeep
+EVID=docs/production/qa/evidence/.gitkeep
 CI=.github/workflows/tests.yml
 SMOKE=tests/smoke/critical-paths.md
 UNREAL_README="Source/$MODTXT/Private/Tests/README.md"
@@ -199,11 +199,11 @@ tests/
 ```
 
 ```
-production/qa/
+docs/production/qa/
   evidence/       # Screenshot logs and manual test sign-off records
 ```
 
-> **Manual evidence lives under `production/qa/evidence/`, not `tests/`** — that
+> **Manual evidence lives under `docs/production/qa/evidence/`, not `tests/`** — that
 > is where every consumer reads it.
 
 ## Running Tests
@@ -245,9 +245,9 @@ Names follow the engine's language (`.claude/rules/test-standards.md`):
 |---|---|---|
 | Logic | Automated unit test — must pass | `tests/unit/[system]/` |
 | Integration | Integration test OR playtest doc | `tests/integration/[system]/` |
-| Visual/Feel | Screenshot + lead sign-off | `production/qa/evidence/` |
-| UI | Retained screenshot of each screen touched | `production/qa/evidence/` |
-| Config/Data | Smoke check pass | `production/qa/smoke-*.md` |
+| Visual/Feel | Screenshot + lead sign-off | `docs/production/qa/evidence/` |
+| UI | Retained screenshot of each screen touched | `docs/production/qa/evidence/` |
+| Config/Data | Smoke check pass | `docs/production/qa/smoke-*.md` |
 
 ## CI
 
@@ -286,11 +286,11 @@ tests/
 ```
 
 ```
-production/qa/
+docs/production/qa/
   evidence/       # Screenshot logs and manual test sign-off records
 ```
 
-> **Manual evidence lives under `production/qa/evidence/`, not `tests/`** — that
+> **Manual evidence lives under `docs/production/qa/evidence/`, not `tests/`** — that
 > is where every consumer reads it.
 
 ## Running Tests
@@ -324,9 +324,9 @@ Names follow the engine's language (`.claude/rules/test-standards.md`):
 |---|---|---|
 | Logic | Automated unit test — must pass | `tests/unit/[system]/` |
 | Integration | Integration test OR playtest doc | `tests/integration/[system]/` |
-| Visual/Feel | Screenshot + lead sign-off | `production/qa/evidence/` |
-| UI | Retained screenshot of each screen touched | `production/qa/evidence/` |
-| Config/Data | Smoke check pass | `production/qa/smoke-*.md` |
+| Visual/Feel | Screenshot + lead sign-off | `docs/production/qa/evidence/` |
+| UI | Retained screenshot of each screen touched | `docs/production/qa/evidence/` |
+| Config/Data | Smoke check pass | `docs/production/qa/smoke-*.md` |
 
 ## CI
 
@@ -364,11 +364,11 @@ tests/
 ```
 
 ```
-production/qa/
+docs/production/qa/
   evidence/       # Screenshot logs and manual test sign-off records
 ```
 
-> **Manual evidence lives under `production/qa/evidence/`, not `tests/`** — that
+> **Manual evidence lives under `docs/production/qa/evidence/`, not `tests/`** — that
 > is where every consumer reads it.
 
 ## Running Tests
@@ -390,9 +390,9 @@ Names follow the engine's language (`.claude/rules/test-standards.md`):
 |---|---|---|
 | Logic | Automated unit test — must pass | `tests/unit/[system]/` |
 | Integration | Integration test OR playtest doc | `tests/integration/[system]/` |
-| Visual/Feel | Screenshot + lead sign-off | `production/qa/evidence/` |
-| UI | Retained screenshot of each screen touched | `production/qa/evidence/` |
-| Config/Data | Smoke check pass | `production/qa/smoke-*.md` |
+| Visual/Feel | Screenshot + lead sign-off | `docs/production/qa/evidence/` |
+| UI | Retained screenshot of each screen touched | `docs/production/qa/evidence/` |
+| Config/Data | Smoke check pass | `docs/production/qa/smoke-*.md` |
 
 ## CI
 
@@ -706,7 +706,7 @@ printf 'exists\t%d\nskipped\t%d\n' "$NEXIST" "$NSKIP"
 made() { case "$CREATED_LIST" in *"|$1|"*) return 0 ;; esac; return 1; }
 need() { printf 'NEEDS\t%s\t%s\t%s\n' "$1" "$2" "$3"; }
 if made "$README" && [ -z "$VER" ]; then
-  need engine_version "$README" "set the engine version on the Engine line (project.yaml has no engine.version)"
+  need engine_version "$README" "set the engine version on the Engine line (.claude/ccgs/project.yaml has no engine.version)"
 fi
 case "$ENG" in
   godot)

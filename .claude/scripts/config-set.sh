@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# config-set.sh — set one key in project.yaml or project.local.yaml, after the
+# config-set.sh — set one key in .claude/ccgs/project.yaml or .claude/ccgs/project.local.yaml, after the
 # checks /settings makes before a write, and read the value back.
 #
 # Replaces /settings Phases 1b, 4 and 5 done by hand: the enum check, the local
@@ -17,7 +17,7 @@
 #   KEY         a dotted YAML path, for example modes.review_mode
 #   VALUE       the new value; quote one with spaces ("Systems Design"). KEY=VALUE
 #               splits at the first `=`
-#   --local     write project.local.yaml (gitignored) instead of project.yaml
+#   --local     write .claude/ccgs/project.local.yaml (gitignored) instead of .claude/ccgs/project.yaml
 #   --dry-run   print every row; write nothing
 #   --root DIR  the project; defaults to the repo this script is in
 #   -h, --help  this text
@@ -36,12 +36,12 @@
 #   known keys                     those two lists, the effects-map headings
 #                                  (a key under a heading's dotted prefix counts),
 #                                  and the keys in effects-map's "Complete
-#                                  example `project.yaml`" block (a key under one
+#                                  example `.claude/ccgs/project.yaml`" block (a key under one
 #                                  of its scalar keys counts: an OS-aware
 #                                  command, a system override)
 #   reading a value back           yaml-get.awk, as project-state.sh does
 # project.stage is not edited here: it goes through set-stage.sh, which also
-# keeps production/stage.txt in step (the stage mirror).
+# keeps .claude/ccgs/stage.txt in step (the stage mirror).
 #
 # What the edit does (comments, other keys, line endings and a UTF-8 BOM kept):
 #   A  the key is set: its value is replaced, keeping quotes and an inline comment;
@@ -58,31 +58,31 @@
 #      its parents is a one-line value. Nothing is written.
 # The lines of a multi-line text value are text, never keys: a `review_mode:`
 # line inside `notes: |` is neither edited nor counted as the key.
-# A missing project.local.yaml is created with a one-line header comment.
+# A missing .claude/ccgs/project.local.yaml is created with a one-line header comment.
 # A file already holding the value is left byte-for-byte alone. The new text is
 # made in full and read back first, then copied over the file in place, so the
 # file keeps its mode and a symlink stays one.
 #
 # Output: TSV, in this order.
-#   file       <project.yaml|project.local.yaml>  <present|absent>
+#   file       <.claude/ccgs/project.yaml|.claude/ccgs/project.local.yaml>  <present|absent>
 #   enum       <ok|invalid|none>  <allowed values, or - when the key has no enum>
 #   whitelist  <overridable|locked>  <yaml-helper.sh's list>
 #   reserved   <yes|no>  <the effects-map heading, or ->
 #   known      <yes|no>  <why>; on no, ending "; nearest: KEY" when a known
 #              key is at most two single-character edits away (a typo)
-#   shadow     <yes|no>  <the project.local.yaml value>   (project.yaml writes only)
+#   shadow     <yes|no>  <the .claude/ccgs/project.local.yaml value>   (.claude/ccgs/project.yaml writes only)
 #   current    <value now in the file, or ->  <file>
 #   edit       <replaced|inserted|added-block|created|unchanged|refused|via set-stage.sh>  <line or ->
 #   readback   <value read back from the edited text>  <file>
 # Rows that cannot apply are left out (no shadow row for --local). A write that is
 # refused still prints the rows up to the one that refused it. For project.stage,
-# set-stage.sh's rows (project.yaml, stage.txt, stage_yaml, stage_txt) follow
+# set-stage.sh's rows (.claude/ccgs/project.yaml, stage.txt, stage_yaml, stage_txt) follow
 # `edit via set-stage.sh` in place of `readback`.
 #
 # Exit codes: 0 done (or a dry run that would be); 1 cannot read the root, the
 # yaml-helper.sh constants or a file, or cannot write; 2 usage error; 3 the value
 # is not in the key's enum; 4 --local on a key that is not on the whitelist;
-# 5 a layout it will not edit; 6 no project.yaml; 7 the value read
+# 5 a layout it will not edit; 6 no .claude/ccgs/project.yaml; 7 the value read
 # back is not the one asked for. 3 to 7 write nothing. project.stage exits with
 # set-stage.sh's code, which means the same, its 4 (the files disagree) given as 7.
 #
@@ -159,7 +159,7 @@ WHITELIST=$(yh_const _yaml_helper_locally_overridable)
 yget() { YG_PATH="$2" awk -f "$HERE/yaml-get.awk" "$1"; }
 
 # --- the checks --------------------------------------------------------------
-TARGET="project.yaml"; [ "$LOCAL" = 1 ] && TARGET="project.local.yaml"
+TARGET=".claude/ccgs/project.yaml"; [ "$LOCAL" = 1 ] && TARGET=".claude/ccgs/project.local.yaml"
 if [ -f "$TARGET" ]; then printf 'file\t%s\tpresent\n' "$TARGET"; else printf 'file\t%s\tabsent\n' "$TARGET"; fi
 
 # enum: the allowed set is whatever follows `KEY::`. testing.strict is not in
@@ -204,7 +204,7 @@ EOF
 if [ "$RES_HIT" = "-" ]; then printf 'reserved\tno\t-\n'; else printf 'reserved\tyes\t%s\n' "$RES_HIT"; fi
 
 # known: an enum key, a whitelisted key, a key at or under an effects-map heading,
-# or a key of effects-map's complete example project.yaml, which is the only
+# or a key of effects-map's complete example .claude/ccgs/project.yaml, which is the only
 # place that names some keys skills read (engine.version, platform.targets).
 KNOWN=no; WHY="no enum, whitelist entry, effects-map heading or complete-example key names it"
 [ -n "$ALLOWED" ] && { KNOWN=yes; WHY="enum key"; }
@@ -289,20 +289,20 @@ printf 'known\t%s\t%s\n' "$KNOWN" "$WHY"
 if [ "$EXIT" != 0 ]; then
   case "$EXIT" in
     3) echo "config-set: Invalid value '$VALUE' for '$KEY'. Allowed: $ALLOWED" >&2 ;;
-    4) echo "config-set: $KEY cannot be locally overridden: it is a project-wide setting. Set it in project.yaml without --local." >&2 ;;
+    4) echo "config-set: $KEY cannot be locally overridden: it is a project-wide setting. Set it in .claude/ccgs/project.yaml without --local." >&2 ;;
   esac
   exit "$EXIT"
 fi
 
-# base check: local overrides need a base, and /settings never creates project.yaml.
-if [ ! -f project.yaml ]; then
-  echo "config-set: project.yaml is missing, so there is nothing to set or override. Run /start to create one first." >&2
+# base check: local overrides need a base, and /settings never creates .claude/ccgs/project.yaml.
+if [ ! -f .claude/ccgs/project.yaml ]; then
+  echo "config-set: .claude/ccgs/project.yaml is missing, so there is nothing to set or override. Run /start to create one first." >&2
   exit 6
 fi
 
-# shadow: a local value hides the one about to be written to project.yaml.
+# shadow: a local value hides the one about to be written to .claude/ccgs/project.yaml.
 if [ "$LOCAL" = 0 ]; then
-  SH=""; [ -f project.local.yaml ] && SH=$(yget project.local.yaml "$KEY")
+  SH=""; [ -f .claude/ccgs/project.local.yaml ] && SH=$(yget .claude/ccgs/project.local.yaml "$KEY")
   if [ -n "$SH" ]; then printf 'shadow\tyes\t%s\n' "$SH"; else printf 'shadow\tno\t-\n'; fi
 fi
 
@@ -339,10 +339,10 @@ ACTION=""; LINE="-"; DUPS=""
 if [ ! -f "$TARGET" ]; then
   ACTION="created"
   # A new local file: header (the line /settings Phase 5 writes), then the key
-  # wrapped in its parent blocks, two spaces a level, as the shipped project.yaml
+  # wrapped in its parent blocks, two spaces a level, as the shipped .claude/ccgs/project.yaml
   # and every new block below are indented.
   awk -v key="$KEY" -v val="$VALUE" 'BEGIN {
-    print "# project.local.yaml — per-developer overrides (gitignored)"
+    print "# .claude/ccgs/project.local.yaml — per-developer overrides (gitignored)"
     n = split(key, s, ".")
     for (i = 1; i <= n; i++) {
       pad = ""; for (j = 1; j < i; j++) pad = pad "  "

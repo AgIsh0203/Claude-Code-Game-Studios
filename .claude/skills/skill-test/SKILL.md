@@ -3,14 +3,16 @@ name: skill-test
 description: "Validate skill files for structural compliance and behavioral correctness. Four modes: static linter, spec, category rubric, audit."
 argument-hint: "static [skill-name | all] | spec [skill-or-agent-name] | category [skill-or-agent-name | all] | audit"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/skill-test/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/agent-check.sh*), Bash(bash .claude/scripts/compat-inventory.sh*)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/skill-test/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/agent-check.sh*), Bash(bash .claude/scripts/compat-inventory.sh*)
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -48,7 +50,7 @@ Determine mode from the first argument:
 - `static [name]` → run 7 structural checks on one skill, or the agent observations on one agent
 - `static all` → run 7 structural checks on all skills (Glob `.claude/skills/*/SKILL.md`), plus the observations for every agent
 - `spec [name]` → read the skill or agent + its test spec, evaluate assertions
-- `category [name]` → run category-specific rubric from `studio-tests/quality-rubric.md`
+- `category [name]` → run category-specific rubric from `.claude/ccgs/studio-tests/quality-rubric.md`
 - `category all` → run category rubric for every skill and every agent that has a `category:` in catalog
 - `audit` (or no argument) → read catalog, list all skills and agents, show coverage
 
@@ -56,12 +58,12 @@ If the argument is unrecognized, output usage and stop.
 
 **The old spec folder.** Glob `CCGS Skill Testing Framework/catalog.yaml`. When
 it exists, say so first: "`CCGS Skill Testing Framework/` was renamed
-`studio-tests/` in 1.2.0, and this skill reads only `studio-tests/`. Move any
-specs you wrote there; UPGRADING.md (v1.1.3 → v1.2.0, `studio-tests/`) says how."
-Then go on with `studio-tests/`.
+`.claude/ccgs/studio-tests/` in 1.2.0, and this skill reads only `.claude/ccgs/studio-tests/`. Move any
+specs you wrote there; UPGRADING.md (v1.1.3 → v1.2.0, `.claude/ccgs/studio-tests/`) says how."
+Then go on with `.claude/ccgs/studio-tests/`.
 
 **Resolve the name before `spec` or `category`.** Look it up in
-`studio-tests/catalog.yaml`: an entry under `skills:` is a skill
+`.claude/ccgs/studio-tests/catalog.yaml`: an entry under `skills:` is a skill
 (`.claude/skills/[name]/SKILL.md`); an entry under `agents:` is an agent
 (`.claude/agents/[name].md`). With no catalog entry, use whichever of those two
 files exists. Only when neither exists, report "'[name]' is neither a skill in
@@ -121,7 +123,7 @@ and writes configuration and has no verdict to give. Do not invent one to
 satisfy this check.
 
 > A narrower list — gate verdicts only, hard FAIL on anything else — would wrongly
-> fail skills for reasons that are not their fault: `/prototype` and
+> fail skills for reasons that are not their fault: `/gamedev-prototype` and
 > `/vertical-slice` advertise `PROCEED`/`PIVOT`/`KILL` in their own descriptions,
 > `/adopt` and `/security-audit` rank by severity, and `/settings` has no verdict
 > by design. A linter that produces false failures on legitimate patterns stops
@@ -292,7 +294,7 @@ No file writes in static mode.
 ### Step 1 — Locate Files
 
 Use the skill or agent file resolved in Phase 1.
-Look up the spec path from `studio-tests/catalog.yaml` — use the
+Look up the spec path from `.claude/ccgs/studio-tests/catalog.yaml` — use the
 `spec:` field on the matching `skills:` or `agents:` entry.
 
 If either is missing:
@@ -396,7 +398,7 @@ the floor, added when the list does not already cover them:
 ```
 === Skill Spec Test: /[name] ===
 Date: [date]
-Spec: studio-tests/skills/[category]/[name].md
+Spec: .claude/ccgs/studio-tests/skills/[category]/[name].md
 
 Static Assertions:
   [PASS] [assertion text]
@@ -430,17 +432,17 @@ FAIL, PARTIAL, NOT ASSESSED, PASS. An assertion nobody could evaluate keeps the
 overall result from reading PASS.
 
 For an agent, the header is `=== Agent Spec Test: [name] ===`, `Spec:` is its
-path under `studio-tests/agents/`, and a `Static Assertions:`
+path under `.claude/ccgs/studio-tests/agents/`, and a `Static Assertions:`
 block comes before Case 1.
 
 ### Step 5 — Offer to Write Results
 
-"May I write these results to `studio-tests/results/skill-test-spec-[name]-[date].md`
-and update `studio-tests/catalog.yaml`?"
+"May I write these results to `.claude/ccgs/studio-tests/results/skill-test-spec-[name]-[date].md`
+and update `.claude/ccgs/studio-tests/catalog.yaml`?"
 
 If yes:
-- Write results file to `studio-tests/results/`
-- Update the skill's or agent's entry in `studio-tests/catalog.yaml`:
+- Write results file to `.claude/ccgs/studio-tests/results/`
+- Update the skill's or agent's entry in `.claude/ccgs/studio-tests/catalog.yaml`:
   - `last_spec: [date]`
   - `last_spec_result: PASS|PARTIAL|FAIL|NOT ASSESSED` — the Overall Verdict
 
@@ -452,7 +454,7 @@ If yes:
 
 Use the skill or agent file resolved in Phase 1.
 Look up the `category:` field on its `skills:` or `agents:` entry in
-`studio-tests/catalog.yaml`.
+`.claude/ccgs/studio-tests/catalog.yaml`.
 
 If neither file exists: the Phase 1 message.
 If no `category:` field: "No category assigned for '[name]' in catalog.yaml.
@@ -469,7 +471,7 @@ excluded from the run.
 
 ### Step 2 — Read Rubric Section
 
-Read `studio-tests/quality-rubric.md`.
+Read `.claude/ccgs/studio-tests/quality-rubric.md`.
 Extract the section matching the category (e.g., `### gate`, `### team`; an
 agent's category is under `## Agent Categories`, e.g. `### director`).
 If the rubric has no section for the category, the result is **NOT ASSESSED**:
@@ -519,7 +521,7 @@ when every metric passes — the same ranking as static and spec mode. It is
 
 ### Step 6 — Offer to Update Catalog
 
-"May I update `studio-tests/catalog.yaml` to record this category check
+"May I update `.claude/ccgs/studio-tests/catalog.yaml` to record this category check
 (`last_category`, `last_category_result`) for [name]?"
 
 ---
@@ -528,7 +530,7 @@ when every metric passes — the same ranking as static and spec mode. It is
 
 ### Step 1 — Read Catalog
 
-Read `studio-tests/catalog.yaml`. If missing, note that catalog doesn't exist
+Read `.claude/ccgs/studio-tests/catalog.yaml`. If missing, note that catalog doesn't exist
 yet (first-run state).
 
 ### Step 2 — Enumerate All Skills and Agents
@@ -545,7 +547,7 @@ missing from the catalog by name, so an uncatalogued one cannot drop out silentl
 ### Step 3 — Build Skill Coverage Table
 
 For each skill:
-- Check if a spec file exists (use the `spec:` path from catalog, or glob `studio-tests/skills/*/[name].md`)
+- Check if a spec file exists (use the `spec:` path from catalog, or glob `.claude/ccgs/studio-tests/skills/*/[name].md`)
 - Look up `last_static`, `last_static_result`, `last_spec`, `last_spec_result`,
   `last_category`, `last_category_result`, `category` from catalog (or mark as
   "never" / "—" if not in catalog)
@@ -554,7 +556,7 @@ For each skill:
 ### Step 3b — Build Agent Coverage Table
 
 For each agent in catalog's `agents:` section:
-- Check if a spec file exists (use the `spec:` path from catalog, or glob `studio-tests/agents/*/[name].md`)
+- Check if a spec file exists (use the `spec:` path from catalog, or glob `.claude/ccgs/studio-tests/agents/*/[name].md`)
 - Look up `last_spec`, `last_spec_result`, `last_category`,
   `last_category_result`, `category` from catalog
 
@@ -605,10 +607,10 @@ After any mode completes, offer contextual follow-up:
   correctness if a test spec exists."
 - After `static all` with failures: "Address NON-COMPLIANT skills first. Run
   `/skill-test static [name]` individually for detailed remediation guidance."
-- After `spec [name]` PASS: "Update `studio-tests/catalog.yaml` to record this
+- After `spec [name]` PASS: "Update `.claude/ccgs/studio-tests/catalog.yaml` to record this
   pass date. Consider running `/skill-test audit` to find the next spec gap."
 - After `spec [name]` FAIL: "Review the failing assertions and update the skill
   or agent, or the test spec, to resolve the mismatch."
 - After `audit`: "Start with the critical-priority gaps. Use the spec template
-  at `studio-tests/templates/skill-test-spec.md` (agents:
+  at `.claude/ccgs/studio-tests/templates/skill-test-spec.md` (agents:
   `agent-test-spec.md`) to create new specs."

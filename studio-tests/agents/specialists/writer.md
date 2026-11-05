@@ -71,7 +71,7 @@
 - [ ] Flags lore contradictions to narrative-director rather than silently writing inconsistent content
 - [ ] Identifies mechanic dependency gaps before writing item descriptions that could create false player expectations
 - [ ] Applies all rules from a provided character voice guide — no partial compliance
-- [ ] For a multi-section document (e.g., a set of lore entries), asks "May I create [filepath] with the section skeleton?" before creating the file, writes each section once it is approved, and updates `production/session-state/active.md` after each section
+- [ ] For a multi-section document (e.g., a set of lore entries), asks "May I create [filepath] with the section skeleton?" before creating the file, writes each section once it is approved, and updates `.claude/ccgs/session-state/active.md` after each section
 
 ---
 

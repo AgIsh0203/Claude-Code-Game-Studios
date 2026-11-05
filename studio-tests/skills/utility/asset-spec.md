@@ -6,12 +6,12 @@
 prompts. The argument names a target — `system:<name>`, `level:<name>` or
 `character:<name>` (an `entity:` entry from the inventory is read like a
 character) — plus an optional `--review full|lean|solo`. It reads the art bible
-at `design/art/art-bible.md` (and stops if it is missing, unless the minimal-path
-exception applies), `performance.*` and `naming.*` from `project.yaml`, and the
+at `docs/design/art/art-bible.md` (and stops if it is missing, unless the minimal-path
+exception applies), `performance.*` and `naming.*` from `.claude/ccgs/project.yaml`, and the
 target's source doc. It confirms the identified asset list with the user, drafts
 one `ASSET-NNN` block per asset, and after approval writes **one file per target**
-to `design/assets/specs/[target-name]-assets.md`, then updates
-`design/assets/asset-manifest.md`. Asset IDs run sequentially across the whole
+to `docs/design/assets/specs/[target-name]-assets.md`, then updates
+`docs/design/assets/asset-manifest.md`. Asset IDs run sequentially across the whole
 project. A re-run for a target whose spec file exists updates that file in place
 (existing blocks and IDs kept, new assets appended) after "May I update".
 
@@ -53,9 +53,9 @@ No gate IDs and no `/gate-check`. The review mode controls drafting agents only:
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -65,11 +65,11 @@ Fixture defaults.
 ### Case 1: Happy Path — Character spec in lean mode
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard` (review mode resolves to `lean`) and
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard` (review mode resolves to `lean`) and
   has `performance.*` and `naming.*` values
-- `design/art/art-bible.md` exists with Shape Language, Color System and Section 8 Asset Standards
-- `design/narrative/characters/goblin-enemy.md` exists with a visual description
-- No `design/assets/asset-manifest.md`
+- `docs/design/art/art-bible.md` exists with Shape Language, Color System and Section 8 Asset Standards
+- `docs/story/characters/goblin-enemy.md` exists with a visual description
+- No `docs/design/assets/asset-manifest.md`
 
 **Input:** `/asset-spec character:goblin-enemy`
 
@@ -84,8 +84,8 @@ Fixture defaults.
 5. Phase 4 presents one `ASSET-NNN` block per asset with the field table
    (Category, Dimensions, Format, Naming, Polycount, Texture Res), Visual
    Description, Art Bible Anchors citing sections, Generation Prompt, and `Status: Needed`
-6. After approval asks "May I write the spec to `design/assets/specs/goblin-enemy-assets.md`?"
-7. Creates the manifest after asking "May I update `design/assets/asset-manifest.md`?";
+6. After approval asks "May I write the spec to `docs/design/assets/specs/goblin-enemy-assets.md`?"
+7. Creates the manifest after asking "May I update `docs/design/assets/asset-manifest.md`?";
    IDs start at `ASSET-001`
 8. Phase 6 `AskUserQuestion` offers another target or `/asset-audit`
 
@@ -94,7 +94,7 @@ Fixture defaults.
 - [ ] Only `art-director` is spawned (no `technical-artist` in lean mode)
 - [ ] The output names `technical-artist` as skipped and says technical constraints were not validated
 - [ ] Each asset block has the field table, Art Bible Anchors (by section), a Generation Prompt and `Status: Needed`
-- [ ] "May I write" names `design/assets/specs/goblin-enemy-assets.md`
+- [ ] "May I write" names `docs/design/assets/specs/goblin-enemy-assets.md`
 - [ ] Manifest is created with a Progress Summary and IDs starting at `ASSET-001`
 - [ ] Phase 6 offers `/asset-audit` among the next steps
 
@@ -103,15 +103,15 @@ Fixture defaults.
 ### Case 2: No Art Bible — Skill stops before speccing
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard`
-- `design/gdd/combat.md` exists with a Visual/Audio Requirements section
-- `design/art/art-bible.md` does NOT exist
-- `design/game-brief.md` does NOT exist
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard`
+- `docs/design/gdd/combat.md` exists with a Visual/Audio Requirements section
+- `docs/design/art/art-bible.md` does NOT exist
+- `docs/GDD.md` does NOT exist
 
 **Input:** `/asset-spec system:combat`
 
 **Expected behavior:**
-1. Phase 1 reads for `design/art/art-bible.md` and finds nothing
+1. Phase 1 reads for `docs/design/art/art-bible.md` and finds nothing
 2. The minimal-path exception does not apply (no game brief)
 3. Skill stops with: "No art bible found. Run `/art-bible` first — asset specs are
    anchored to the art bible's visual rules and asset standards."
@@ -128,22 +128,22 @@ Fixture defaults.
 ### Case 3: Manifest Already Exists — IDs continue and shared assets are reused
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard`; art bible exists
-- `design/assets/asset-manifest.md` exists; the highest ID is `ASSET-014`, and
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard`; art bible exists
+- `docs/design/assets/asset-manifest.md` exists; the highest ID is `ASSET-014`, and
   `ASSET-012` (Generic Hit Spark) is specced for the Combat system in
-  `design/assets/specs/combat-assets.md`
-- `design/gdd/tower-defense.md` Visual/Audio section lists a hit spark and a tower-build VFX
+  `docs/design/assets/specs/combat-assets.md`
+- `docs/design/gdd/tower-defense.md` Visual/Audio section lists a hit spark and a tower-build VFX
 
 **Input:** `/asset-spec system:tower-defense`
 
 **Expected behavior:**
-1. Skill reads the manifest and globs `design/assets/specs/*.md` for shareable assets
+1. Skill reads the manifest and globs `docs/design/assets/specs/*.md` for shareable assets
 2. Context summary lists the shared asset found in another spec
 3. The hit spark reuses `ASSET-012` instead of creating a duplicate, with a note like
    "ASSET-012 (Generic Hit Spark) already specced for Combat system. Reusing for Tower Defense"
 4. The new tower-build VFX is numbered `ASSET-015`
-5. After "May I write" for `design/assets/specs/tower-defense-assets.md`, the skill asks
-   "May I update `design/assets/asset-manifest.md`?", appends a Tower Defense context
+5. After "May I write" for `docs/design/assets/specs/tower-defense-assets.md`, the skill asks
+   "May I update `docs/design/assets/asset-manifest.md`?", appends a Tower Defense context
    block, and updates the Progress Summary counts
 
 **Assertions:**
@@ -157,8 +157,8 @@ Fixture defaults.
 ### Case 4: Several Assets in One Target — One file, per-asset revision before write
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard`; art bible exists; no manifest
-- `design/gdd/combat.md` Visual/Audio section names a hit-spark VFX, a floating
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard`; art bible exists; no manifest
+- `docs/design/gdd/combat.md` Visual/Audio section names a hit-spark VFX, a floating
   damage number (UI) and a hit sound (audio)
 
 **Input:** `/asset-spec system:combat`
@@ -170,23 +170,23 @@ Fixture defaults.
 3. User picks `[B] Revise a specific asset` for the damage number; the skill revises
    it inline and re-presents without re-spawning agents
 4. User approves all; the skill asks "May I write" **once**, for
-   `design/assets/specs/combat-assets.md`, which holds all three assets
+   `docs/design/assets/specs/combat-assets.md`, which holds all three assets
 
 **Assertions:**
 - [ ] One "May I write" ask covers all three assets in one file (not one ask or file per asset)
 - [ ] The audio asset has no image generation prompt
 - [ ] The minor revision does not re-spawn `art-director`
-- [ ] All three `ASSET-NNN` blocks are in `design/assets/specs/combat-assets.md`
+- [ ] All three `ASSET-NNN` blocks are in `docs/design/assets/specs/combat-assets.md`
 
 ---
 
 ### Case 5: Director Gate Check — Solo default, brief instead of art bible
 
 **Fixture:**
-- `project.yaml` has no `modes` block (review mode resolves to `solo` via `modes.rigor: minimal`)
-- `design/game-brief.md` exists with an Art & audio direction line
-- No `design/art/art-bible.md`
-- No character profile for `hero` in `design/narrative/` or `design/assets/entity-inventory.md`
+- `.claude/ccgs/project.yaml` has no `modes` block (review mode resolves to `solo` via `modes.rigor: minimal`)
+- `docs/GDD.md` exists with an Art & audio direction line
+- No `docs/design/art/art-bible.md`
+- No character profile for `hero` in `docs/story/` or `docs/design/assets/entity-inventory.md`
 
 **Input:** `/asset-spec character:hero`
 
@@ -207,7 +207,7 @@ Fixture defaults.
 - [ ] Missing profile triggers the "Describe it briefly" question rather than a failure
 - [ ] No `art-director` or `technical-artist` is spawned
 - [ ] Both skipped agents are named in the output, which says technical constraints were not validated
-- [ ] If the spec is written, its header names `design/game-brief.md` as the art direction (no `> **Art Bible**:` line), each asset carries a `**Brief anchor:**` line instead of Art Bible Anchors, and no Art Bible section or §8 tier is cited
+- [ ] If the spec is written, its header names `docs/GDD.md` as the art direction (no `> **Art Bible**:` line), each asset carries a `**Brief anchor:**` line instead of Art Bible Anchors, and no Art Bible section or §8 tier is cited
 - [ ] No gate IDs appear — the skip note names agents, not gates
 
 ---
@@ -215,11 +215,11 @@ Fixture defaults.
 ### Case 6: Re-run on an Existing Spec — Updated in place, not overwritten
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard`; art bible exists
-- `design/assets/specs/goblin-enemy-assets.md` exists with `ASSET-001` to
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard`; art bible exists
+- `docs/design/assets/specs/goblin-enemy-assets.md` exists with `ASSET-001` to
   `ASSET-004` (idle, walk and attack sprites; portrait); the manifest's highest ID
   is `ASSET-009`
-- `design/narrative/characters/goblin-enemy.md` has since gained a charge-attack
+- `docs/story/characters/goblin-enemy.md` has since gained a charge-attack
   ability
 
 **Input:** `/asset-spec character:goblin-enemy`
@@ -230,7 +230,7 @@ Fixture defaults.
    confirms the list with the user
 3. The new assets are numbered `ASSET-010` and `ASSET-011` (project-wide sequence)
 4. The skill shows what changes, then asks "May I update
-   `design/assets/specs/goblin-enemy-assets.md`?" — not "May I write"
+   `docs/design/assets/specs/goblin-enemy-assets.md`?" — not "May I write"
 5. `ASSET-001` to `ASSET-004` are kept unchanged in the file; the new blocks are appended
 
 **Assertions:**
@@ -255,7 +255,7 @@ Fixture defaults.
 ## Coverage Notes
 
 - The no-argument flow (pick the next "Needed" item from
-  `design/assets/entity-inventory.md`, or build the inventory in Phase 0b) is not
+  `docs/design/assets/entity-inventory.md`, or build the inventory in Phase 0b) is not
   separately tested.
 - `level:` targets and full-mode parallel spawning with a surfaced
   art-director / technical-artist conflict are not separately tested.

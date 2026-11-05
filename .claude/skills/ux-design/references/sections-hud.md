@@ -130,7 +130,7 @@ arrive at once, which are held during combat, and which are never queued.
 positions? Note per-platform overrides — touch targets, safe-area insets, and
 whether any element moves or is dropped on a given platform.
 
-**Accessibility.** Cross-reference `design/accessibility-requirements.md` if it
+**Accessibility.** Cross-reference `docs/design/accessibility-requirements.md` if it
 exists, then walk this checklist for the HUD:
 - Gamepad/keyboard focus order for any interactive HUD element
 - Text contrast and minimum readable font sizes at gameplay distance

@@ -37,7 +37,7 @@ paths:
         # Same alternatives as concept.engine-setup — see the notes there.
         artifact:
           any_of:
-            - glob: "project.yaml"
+            - glob: ".claude/ccgs/project.yaml"
               pattern: 'name:[[:space:]]*"?(Godot|Unity|Unreal)'
             - glob: ".claude/docs/technical-preferences.md"
               pattern: '\*\*Engine\*\*: [^[]'
@@ -48,7 +48,7 @@ paths:
         command: /brainstorm
         required: true
         artifact:
-          glob: "design/game-brief.md"
+          glob: "docs/GDD.md"
         description: "One page: pitch, MVP features, build order. Replaces the concept doc, art bible, systems map and GDDs at this tier"
 
       - id: create-stories
@@ -56,7 +56,7 @@ paths:
         command: /create-stories
         required: true
         artifact:
-          glob: "production/epics/*/story-*.md"
+          glob: "docs/production/epics/*/story-*.md"
         description: "One story per MVP feature, in build order. No /create-epics or /sprint-plan at this tier"
 
       - id: implement
@@ -92,7 +92,7 @@ phases:
         name: "Engine Setup"
         command: /setup-engine
         required: true
-        # engine.name in project.yaml is the primary source; technical-
+        # engine.name in .claude/ccgs/project.yaml is the primary source; technical-
         # preferences.md is the legacy fallback. Either one completes the step.
         # /setup-engine writes the value quoted (`name: "Godot"`), so the quote
         # is optional in the first alternative.
@@ -100,7 +100,7 @@ phases:
         # the outer quotes and does not unescape.
         artifact:
           any_of:
-            - glob: "project.yaml"
+            - glob: ".claude/ccgs/project.yaml"
               pattern: 'name:[[:space:]]*"?(Godot|Unity|Unreal)'
             # technical-preferences.md writes "- **Engine**: Godot 4.7", so the
             # pattern must clear the bold markers. The [^[] guard rejects the
@@ -114,7 +114,7 @@ phases:
         command: /brainstorm
         required: true
         artifact:
-          glob: "design/gdd/game-concept.md"
+          glob: "docs/GDD.md"
         description: "Formalize concept with pillars, MDA analysis, and scope tiers"
 
       - id: design-review-concept
@@ -128,7 +128,7 @@ phases:
         command: /art-bible
         required: true
         artifact:
-          glob: "design/art/art-bible.md"
+          glob: "docs/design/art/art-bible.md"
         description: "Author the visual identity specification (9 sections). Uses the Visual Identity Anchor produced by /brainstorm. Run after game concept is formed, before systems design."
 
       - id: map-systems
@@ -136,7 +136,7 @@ phases:
         command: /map-systems
         required: true
         artifact:
-          glob: "design/gdd/systems-index.md"
+          glob: "docs/GDD.md"
         description: "Decompose concept into systems with dependency ordering and priority tiers"
 
   systems-design:
@@ -150,7 +150,7 @@ phases:
         required: true
         repeatable: true
         artifact:
-          note: "Check design/gdd/systems-index.md — each MVP system needs Status: Approved"
+          note: "Check docs/GDD.md — each MVP system needs Status: Approved"
         description: "Author per-system GDDs (guided, section-by-section). Run once per system."
 
       - id: design-review
@@ -165,7 +165,7 @@ phases:
         command: /review-all-gdds
         required: true
         artifact:
-          glob: "design/gdd/gdd-cross-review-*.md"
+          glob: "docs/design/gdd/gdd-cross-review-*.md"
         description: "Holistic consistency check + design theory review across all GDDs simultaneously"
 
       - id: consistency-check
@@ -219,7 +219,7 @@ phases:
         command: /ux-design
         required: true
         artifact:
-          glob: "design/accessibility-requirements.md"
+          glob: "docs/design/accessibility-requirements.md"
         description: "Run `/ux-design accessibility`. Commit accessibility tier (Basic/Standard/Comprehensive/Exemplary) and feature matrix. UX specs (Phase 4) reference this tier."
 
       - id: interaction-patterns
@@ -227,7 +227,7 @@ phases:
         command: /ux-design
         required: true
         artifact:
-          glob: "design/ux/interaction-patterns.md"
+          glob: "docs/design/ux/interaction-patterns.md"
         description: "Run `/ux-design patterns` to start the pattern library that UX specs reuse. The Technical Setup → Pre-Production gate requires it at `full` (recommended at `standard`)."
 
       - id: test-setup
@@ -248,7 +248,7 @@ phases:
         command: /asset-spec
         required: false
         artifact:
-          glob: "design/assets/entity-inventory.md"
+          glob: "docs/design/assets/entity-inventory.md"
         description: "Enumerate everything the game needs visually: entities (characters, enemies, buildings, environment pieces), UI screens, HUD elements, panels. Run /asset-spec with no arguments to start a collaborative inventory session — brief or detailed based on your responses. Reads GDDs and art bible to propose a starting list; you add, remove, and adjust. Becomes the source of truth for all art and UX work. Not required if the game has very few distinct visual elements."
 
       - id: asset-spec
@@ -257,7 +257,7 @@ phases:
         required: false
         repeatable: true
         artifact:
-          glob: "design/assets/asset-manifest.md"
+          glob: "docs/design/assets/asset-manifest.md"
         description: "Generate per-asset visual specifications and AI generation prompts. Run once per entity, system, level, or character. If no source doc exists, /asset-spec interviews you inline — no narrative document required."
 
       - id: ux-design
@@ -266,7 +266,7 @@ phases:
         required: true
         repeatable: true
         artifact:
-          glob: "design/ux/*.md"
+          glob: "docs/design/ux/*.md"
           min_count: 3
         description: "Author UX specs for the screens identified in the entity inventory (or GDDs if no inventory). Minimum required: main menu, core gameplay HUD, pause menu. Add more screens as the inventory identifies them. Reads input method and platform from technical-preferences.md."
 
@@ -278,14 +278,14 @@ phases:
 
       - id: prototype
         name: "Prototype"
-        command: /prototype
+        command: /gamedev-prototype
         required: false
         artifact:
-          # /prototype writes prototypes/[name]-concept/REPORT.md. The `-concept`
+          # /gamedev-prototype writes docs/prototypes/[name]-concept/REPORT.md. The `-concept`
           # suffix matters: /vertical-slice writes the same REPORT.md basename
-          # under `-vertical-slice`, so a bare `prototypes/*/REPORT.md` here
+          # under `-vertical-slice`, so a bare `docs/prototypes/*/REPORT.md` here
           # would let either step satisfy the other.
-          glob: "prototypes/*-concept/REPORT.md"
+          glob: "docs/prototypes/*-concept/REPORT.md"
           min_count: 1
         description: "Build a throwaway prototype to validate the core mechanic is fun before committing to full production. Recommended for first-time mechanics or high-risk design decisions. Solo devs with proven concepts may skip."
 
@@ -295,7 +295,7 @@ phases:
         required: true
         repeatable: true
         artifact:
-          glob: "production/epics/*/EPIC.md"
+          glob: "docs/production/epics/*/EPIC.md"
           min_count: 1
         description: "Translate GDDs + ADRs into epics — one per architectural module. Run per layer: /create-epics layer: foundation, then /create-epics layer: core"
 
@@ -305,7 +305,7 @@ phases:
         required: true
         repeatable: true
         artifact:
-          glob: "production/epics/*/story-*.md"
+          glob: "docs/production/epics/*/story-*.md"
           min_count: 1
         description: "Break each epic into implementable story files. Run per epic: /create-stories [epic-slug]"
 
@@ -314,7 +314,7 @@ phases:
         command: /sprint-plan
         required: true
         artifact:
-          glob: "production/sprints/sprint-*.md"
+          glob: "docs/production/sprints/sprint-*.md"
           min_count: 1
         description: "Plan the first sprint with prioritized stories from epics"
 
@@ -324,10 +324,10 @@ phases:
         required: false
         artifact:
           # Scoped to `-vertical-slice`: an unscoped form would match
-          # /prototype's concept report, so running only /prototype would mark
+          # /gamedev-prototype's concept report, so running only /gamedev-prototype would mark
           # the vertical slice complete and skip the validation the
           # Pre-Production → Production gate exists to require.
-          glob: "prototypes/*-vertical-slice/REPORT.md"
+          glob: "docs/prototypes/*-vertical-slice/REPORT.md"
           min_count: 1
         description: "Build and playtest a vertical slice — a complete end-to-end pass through the core loop. Recommended before committing epics and stories to production. Skipping is a valid solo dev call but increases risk of late-stage design pivots. If built, must be played and documented before advancing."
 
@@ -342,7 +342,7 @@ phases:
         required: true
         repeatable: true
         artifact:
-          glob: "production/sprints/sprint-*.md"
+          glob: "docs/production/sprints/sprint-*.md"
         description: "Plan the current sprint with prioritized, ready stories"
 
       - id: story-readiness
@@ -357,12 +357,12 @@ phases:
         required: true
         repeatable: true
         artifact:
-          note: "Check the code root (src/, Assets/ or Source/ by engine) for active code and production/epics/**/*.md for In Progress stories"
+          note: "Check the code root (src/, Assets/ or Source/ by engine) for active code and docs/production/epics/**/*.md for In Progress stories"
         description: "Pick the next ready story and implement it with /dev-story [story-path]. Routes to the correct programmer agent."
 
       - id: code-review
         name: "Code Review"
-        command: /code-review
+        command: /gamedev-code-review
         required: false
         repeatable: true
         description: "Architectural code review after each story implementation. Run after /dev-story, before /story-done."
@@ -407,7 +407,7 @@ phases:
         required: false
         repeatable: true
         artifact:
-          glob: "production/sprints/sprint-*.md"
+          glob: "docs/production/sprints/sprint-*.md"
           note: "Run when stories are added mid-sprint, or before sprint retrospectives"
         description: "Detect scope creep by comparing current sprint scope to original epic scope. Run (a) when stories are added mid-sprint, or (b) before sprint retrospectives."
 
@@ -445,8 +445,8 @@ phases:
         command: /playtest-report
         required: true
         artifact:
-          # /playtest-report writes production/qa/playtests/, not production/playtests/.
-          glob: "production/qa/playtests/*.md"
+          # /playtest-report writes docs/production/qa/playtests/, not docs/production/playtests/.
+          glob: "docs/production/qa/playtests/*.md"
           min_count: 3
         description: "Cover: new player experience, mid-game systems, difficulty curve"
 
@@ -461,7 +461,7 @@ phases:
         command: /security-audit
         required: true
         artifact:
-          glob: "production/security/security-audit-*.md"
+          glob: "docs/production/security/security-audit-*.md"
         description: "The Polish -> Release gate reads the newest `full`-scope report (plus any later `quick` re-run) at standard and full: no open CRITICAL or HIGH finding"
 
       - id: localize-qa

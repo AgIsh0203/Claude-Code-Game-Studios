@@ -10,7 +10,7 @@
 # information and must win: a caller sitting inside another project means that
 # project, not this one. Resolving to the script's own location first would
 # override them. So, in order:
-#   1. cwd holds project.yaml   -> cwd   (a project root)
+#   1. cwd holds .claude/ccgs/project.yaml   -> cwd   (a project root)
 #   2. cwd holds .claude/       -> cwd   (a project root not yet configured),
 #      unless cwd is itself named .claude: a stray .claude/.claude/ would
 #      make .claude/ a root, and the hooks would write .claude/production/
@@ -21,7 +21,7 @@
 # overriding a caller that legitimately means somewhere else.
 #
 # NOT an upward search: that resolves a nested project to its parent's config.
-if [ -f "project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
+if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
   CCGS_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
@@ -31,8 +31,8 @@ fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
 # Claude Code PostToolUse hook: Validates asset files after Write/Edit
-# Checks JSON validity of data files and, in Godot's assets/, naming conventions.
-# Asset roots per engine: Godot assets/, Unity Assets/, Unreal Content/.
+# Checks JSON validity of data files and, in Godot's Content/, naming conventions.
+# Asset roots per engine: Godot Content/, Unity Assets/, Unreal Content/.
 #
 # Exit behavior:
 #   exit 0 = success or advisory warnings only
@@ -49,7 +49,7 @@ fi
 # a promise the hook cannot keep, delivered to the one party who cannot act on it.
 #
 # Input schema (PostToolUse for Write/Edit):
-# { "tool_name": "Write", "tool_input": { "file_path": "assets/data/foo.json", "content": "..." } }
+# { "tool_name": "Write", "tool_input": { "file_path": "Content/data/foo.json", "content": "..." } }
 
 INPUT=$(cat)
 
@@ -64,14 +64,14 @@ fi
 # Two rules, order significant -- see the long note in validate-skill-change.sh.
 # Short version: hook input is JSON, so a Windows path arrives as `\\`. Without
 # jq the fallback cannot unescape it, and a single-rule sed turns each escaped
-# pair into two slashes, so `assets/` never matches and this hook silently
+# pair into two slashes, so `Content/` never matches and this hook silently
 # validates nothing on Windows.
 FILE_PATH=$(printf '%s' "$FILE_PATH" | sed 's|\\\\|/|g; s|\\|/|g')
 
 # Make the path project-relative. Claude Code sends a file tool's path
 # ABSOLUTE, with native separators (C:\... on Windows), so an unanchored
-# `(^|/)assets/` matched every file in a project with any parent folder named
-# assets, and node_modules/*/assets/ too. Strip the project root in either
+# `(^|/)Content/` matched every file in a project with any parent folder named
+# assets, and node_modules/*/Content/ too. Strip the project root in either
 # spelling Git Bash gives it (/c/Users/... from pwd, C:/Users/... from pwd -W,
 # drive letter in either case); a path still absolute is outside the project.
 _VA_ROOT=$(pwd); _VA_ROOT_W=$(pwd -W 2>/dev/null || printf '%s' "$_VA_ROOT")
@@ -86,7 +86,7 @@ shopt -u nocasematch
 
 # Only check files under an asset root.
 case "$REL_PATH" in
-    assets/*|Assets/*|Content/*) ;;
+    Content/*|Assets/*|Content/*) ;;
     *) exit 0 ;;
 esac
 
@@ -95,12 +95,12 @@ WARNINGS=""   # Style/convention issues -- exit 0 with advisory message
 ERRORS=""     # Build-breaking issues -- exit 2 so Claude hears about it
 
 # ADVISORY: naming convention -- lowercase with underscores, the Godot
-# convention, so only in Godot's assets/. Unity and Unreal name assets in
+# convention, so only in Godot's Content/. Unity and Unreal name assets in
 # PascalCase with type prefixes; warning on every one of them trains the user
 # to ignore this hook. Naming issues warn, never block.
 # Uses grep -E (POSIX) not grep -P (Perl) for Windows Git Bash compatibility
 case "$REL_PATH" in
-    assets/*)
+    Content/*)
         if echo "$FILENAME" | grep -qE '[A-Z[:space:]-]'; then
             WARNINGS="$WARNINGS\n  NAMING: $REL_PATH must be lowercase with underscores (got: $FILENAME)"
         fi ;;

@@ -1,6 +1,6 @@
-# /prototype — Phase 6: Playtest Debrief
+# /gamedev-prototype — Phase 6: Playtest Debrief
 
-> Part of `/prototype`. `SKILL.md` names when to read this file; the settings it
+> Part of `/gamedev-prototype`. `SKILL.md` names when to read this file; the settings it
 > resolved and the rules under its later headings still apply here.
 
 ## Phase 6: Playtest Debrief
@@ -10,7 +10,7 @@ experienced. Do NOT skip to report generation — the report is only as good as 
 observations you collect here.
 
 **For HTML path:** Say exactly this:
-> "The prototype is ready. Open `prototypes/[name]-concept/prototype.html` in your
+> "The prototype is ready. Open `docs/prototypes/[name]-concept/prototype.html` in your
 > browser and play it. Take as long as you need. Don't rush through it — try to
 > approach it the way a new player would. Come back here when you're done."
 
@@ -20,7 +20,7 @@ behavior. Now ask for the overall assessment:
 > not the developer. Come back when you have a feel for it."
 
 **For Paper path:** Say exactly this:
-> "Read through `prototypes/[name]-concept/rules.md` and walk through the
+> "Read through `docs/prototypes/[name]-concept/rules.md` and walk through the
 > `play-log.md` as if you're playing it for the first time. If you have someone
 > nearby, try running the rules with them. Come back when you've seen at least one
 > full play cycle."

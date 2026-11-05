@@ -10,7 +10,7 @@
 # information and must win: a caller sitting inside another project means that
 # project, not this one. Resolving to the script's own location first would
 # override them. So, in order:
-#   1. cwd holds project.yaml   -> cwd   (a project root)
+#   1. cwd holds .claude/ccgs/project.yaml   -> cwd   (a project root)
 #   2. cwd holds .claude/       -> cwd   (a project root not yet configured),
 #      unless cwd is itself named .claude: a stray .claude/.claude/ would
 #      make .claude/ a root, and the hooks would write .claude/production/
@@ -21,7 +21,7 @@
 # overriding a caller that legitimately means somewhere else.
 #
 # NOT an upward search: that resolves a nested project to its parent's config.
-if [ -f "project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
+if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
   CCGS_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
@@ -31,7 +31,7 @@ fi
 [ -n "$CCGS_ROOT" ] && cd "$CCGS_ROOT" 2>/dev/null || true
 
 # Claude Code PreToolUse hook: warns when a Write or Edit of the entity registry
-# (design/registry/entities.yaml) or the TR-ID registry
+# (docs/design/registry/entities.yaml) or the TR-ID registry
 # (docs/architecture/tr-registry.yaml) would break either of their two rules:
 # entries are never deleted or renumbered (append-only), and a status takes only
 # the values the file's header lists. It runs BEFORE the write, the only point
@@ -80,7 +80,7 @@ REL_PATH=$(vr_row path)
 # The two registries the rules guard (the architecture registry has no
 # append-only rule in its header).
 case "$REL_PATH" in
-  design/registry/entities.yaml)      REG=entities ;;
+  docs/design/registry/entities.yaml)      REG=entities ;;
   docs/architecture/tr-registry.yaml) REG=tr ;;
   *) exit 0 ;;
 esac

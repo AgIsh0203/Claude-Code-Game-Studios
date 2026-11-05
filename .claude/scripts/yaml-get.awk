@@ -2,7 +2,7 @@
 # The one YAML reader the bash/awk helpers share (project-state.sh,
 # config-set.sh), so they read a file the same way:
 #
-#   YG_PATH=project.stage awk -f .claude/scripts/yaml-get.awk project.yaml
+#   YG_PATH=project.stage awk -f .claude/scripts/yaml-get.awk .claude/ccgs/project.yaml
 #
 # The rules are get_yaml_key's (yaml-helper.sh, which needs Python), so the
 # two readers give one answer for one file; the test suite holds them to it:

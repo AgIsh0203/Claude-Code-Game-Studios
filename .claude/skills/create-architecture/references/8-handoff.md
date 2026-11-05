@@ -5,7 +5,7 @@
 
 ## Phase 8: Handoff
 
-**Step 1 — Update session state**: Write a summary to `production/session-state/active.md` covering: artifact written, TD/LP sign-off verdicts, any blockers, required ADRs remaining, and next step.
+**Step 1 — Update session state**: Write a summary to `.claude/ccgs/session-state/active.md` covering: artifact written, TD/LP sign-off verdicts, any blockers, required ADRs remaining, and next step.
 
 **Step 2 — Output the handoff** using exactly this template (no freeform prose, no rephrasing of section titles):
 
@@ -41,7 +41,7 @@ List top 3 from Phase 6 in priority order. If fewer than 3 remain, list only wha
 > - [ ] Write ADRs: [list ADR IDs that must still be written]
 > - [ ] Run `/architecture-review` — writes the review report and the traceability index (`docs/architecture/requirements-traceability.md`) the gate reads
 > - [ ] Run `/test-setup` — scaffolds `tests/unit/`, `tests/integration/`, CI workflow, and an example test file
-> - [ ] Run `/ux-design` — creates `design/ux/interaction-patterns.md` and `design/accessibility-requirements.md`
+> - [ ] Run `/ux-design` — creates `docs/design/ux/interaction-patterns.md` and `docs/design/accessibility-requirements.md`
 >
 > Run `/gate-check pre-production` when all boxes are checked.
 

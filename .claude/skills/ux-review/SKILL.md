@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Bash(bash "*/.claude/skills/ux-review/../../hoo
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys workflow`
 
 Resolved above — use as-is. No block → defaults in
@@ -46,11 +48,11 @@ when the accessibility tier is uncommitted (below).
 
 ## Phase 1: Parse Arguments
 
-- **Specific file path** (e.g., `/ux-review design/ux/inventory.md`): validate
+- **Specific file path** (e.g., `/ux-review docs/design/ux/inventory.md`): validate
   that one document
-- **`all`**: find all files in `design/ux/` and validate each
-- **`hud`**: validate `design/ux/hud.md` specifically
-- **`patterns`**: validate `design/ux/interaction-patterns.md` specifically
+- **`all`**: find all files in `docs/design/ux/` and validate each
+- **`hud`**: validate `docs/design/ux/hud.md` specifically
+- **`patterns`**: validate `docs/design/ux/interaction-patterns.md` specifically
 - **No argument**: ask the user which spec to validate
 
 For `all`, output a summary table first (file | verdict | primary issue) then
@@ -68,26 +70,26 @@ else → 3A — and the report says which checklist it assumed, and why.
 
 Before validating any spec, load:
 
-1. **Input & Platform config**: Read the `platform` block from `project.yaml`
+1. **Input & Platform config**: Read the `platform` block from `.claude/ccgs/project.yaml`
    (`platform.targets`, `platform.primary_input`, `platform.gamepad_support`,
-   `platform.touch_support`); if `project.yaml` has no `platform` block, fall
+   `platform.touch_support`); if `.claude/ccgs/project.yaml` has no `platform` block, fall
    back to the `## Input & Platform` section of
    `.claude/docs/technical-preferences.md`. For the set of supported input
-   methods: when reading from `project.yaml`, derive it — keyboard/mouse if
+   methods: when reading from `.claude/ccgs/project.yaml`, derive it — keyboard/mouse if
    `PC` or `Web` is in `targets`; gamepad if `gamepad_support` is Full or
    Partial; touch if `touch_support` is Full or Partial; plus `primary_input`.
    When falling back to `technical-preferences.md`, use its explicit Input
    Methods field instead. This is the authoritative source for the Input Method
    Coverage checks in Phase 3A — not the spec's own header. If neither source is
    configured, fall back to the spec header.
-2. The accessibility tier committed to in `design/accessibility-requirements.md`
+2. The accessibility tier committed to in `docs/design/accessibility-requirements.md`
    (if it exists)
-3. The interaction pattern library at `design/ux/interaction-patterns.md` (if
+3. The interaction pattern library at `docs/design/ux/interaction-patterns.md` (if
    it exists)
 4. The GDDs referenced in the spec's header (read their UI Requirements sections:
    find the headings with the Grep tool (pattern `^#`, content mode) and Read
    those ranges with offset and limit)
-5. The player journey map at `design/player-journey.md` (if it exists) for
+5. The player journey map at `docs/design/player-journey.md` (if it exists) for
    context-arrival validation
 
 ---
@@ -214,7 +216,7 @@ Run all checks against a `hud-design.md`-based document.
 
 ### GDD Alignment
 
-- [ ] All systems in `design/gdd/systems-index.md` with UI category have
+- [ ] All systems in `docs/GDD.md` with UI category have
   representation in HUD (or justified absence)
 
 ---
@@ -264,9 +266,9 @@ Run all checks against a `hud-design.md`-based document.
 - Target tier: [tier]
 - [list specific accessibility findings]
 
-> **If `design/accessibility-requirements.md` is absent there is no committed
+> **If `docs/design/accessibility-requirements.md` is absent there is no committed
 > tier, so this dimension has no criterion.** Report
-> `Accessibility: NOT ASSESSED — no committed tier (design/accessibility-requirements.md absent)`
+> `Accessibility: NOT ASSESSED — no committed tier (docs/design/accessibility-requirements.md absent)`
 > and do NOT report it as COMPLIANT — a gate compared against an absent standard
 > passes the way an assertion that can never fail passes. The same rule lives in
 > `/team-ui` Phase 4 and is mirrored here so the two cannot drift. If the spec's own
@@ -282,11 +284,11 @@ Run all checks against a `hud-design.md`-based document.
 > type`.
 >
 > For a UX spec, this dimension does have a checklist — it is checked against
-> `design/ux/interaction-patterns.md`. If that file is absent: N/A only where
+> `docs/design/ux/interaction-patterns.md`. If that file is absent: N/A only where
 > the workflow tier does not require the library (`minimal`) — report
 > `Pattern Library: N/A — interaction pattern library not required at this
 > tier`. At any tier that requires or recommends it (`standard`, `full`), report
-> `Pattern Library: NOT ASSESSED — design/ux/interaction-patterns.md not found`
+> `Pattern Library: NOT ASSESSED — docs/design/ux/interaction-patterns.md not found`
 > instead: the library is missing, not out of scope, and NOT ASSESSED counts it
 > against the verdict as the unresolved item it is.
 

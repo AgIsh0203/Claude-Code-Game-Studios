@@ -31,7 +31,7 @@ GDD without it silently forces those consumers back to full reads.
   player, why it exists in this game. No jargon; a reader who has not seen the
   GDD should learn whether it is relevant to their task.
 - **Quick reference**: `Layer` and `Priority` from the systems index
-  (`design/gdd/systems-index.md`); `Key deps` from the Dependencies section just
+  (`docs/GDD.md`); `Key deps` from the Dependencies section just
   written (system names, or `None`).
 
 Replace the `[To be designed]` Summary placeholder in the skeleton. Then apply
@@ -62,7 +62,7 @@ Read over 40 KB is refused. Verify:
 
 Before finalizing the GDD, spawn `creative-director` via `Agent` using gate **CD-GDD-ALIGN** (`.claude/docs/director-gates/cd-gdd-align.md`).
 
-Pass: completed GDD file path, game pillars (from `design/gdd/game-concept.md` or `design/gdd/game-pillars.md`; if there is neither, the pitch and "what they feel" line of `design/game-brief.md`), MDA aesthetics target, and the GDD's Player Fantasy section — or, when this tier did not author one, say so.
+Pass: completed GDD file path, game pillars (from `docs/GDD.md` or `docs/GDD.md`; if there is neither, the pitch and "what they feel" line of `docs/GDD.md`), MDA aesthetics target, and the GDD's Player Fantasy section — or, when this tier did not author one, say so.
 
 Handle verdict per the standard rules in `director-gates.md`.
 On `Revise flagged items`, or to resolve a REJECT, each flagged section runs its
@@ -90,14 +90,14 @@ absent, and a grep against a missing path returns nothing, which is
 indistinguishable from "no candidate is registered yet":
 
 - **Absent** — say so, and ask whether to create it:
-  *"`design/registry/entities.yaml` does not exist. May I create it with these
+  *"`docs/design/registry/entities.yaml` does not exist. May I create it with these
   [N] entries?"* If the user declines, skip 5b and say the registry was not
   written — do not treat the skip as a clean pass.
 - **Present but empty** — every list is `[]`, or the only matches are inside
   comment blocks. Treat it as present, register the candidates, but say which
   state you found: *"registry exists and is empty — all [N] entries are new."*
   The shipped template's comments carry fully-formed examples referencing
-  `design/gdd/inventory.md` with real-looking values (`base_inventory_slots: 20`,
+  `docs/design/gdd/inventory.md` with real-looking values (`base_inventory_slots: 20`,
   `gold_carry_limit: 9999`), so §2a's registry greps return **comment
   lines** on an empty registry — and §2d would then present those invented numbers to the user as
   *"These values are locked."* Match entries under a live `entities:`/`items:`/
@@ -105,7 +105,7 @@ indistinguishable from "no candidate is registered yet":
 - **Present** — for each candidate, check whether it is already registered:
 
 ```
-Grep pattern="  - name: [candidate_name]" path="design/registry/entities.yaml"
+Grep pattern="  - name: [candidate_name]" path="docs/design/registry/entities.yaml"
 ```
 
 Present a summary:
@@ -119,7 +119,7 @@ Registry candidates from this GDD:
     - [constant_name] [constant]: value=[N] ← matches registry ✅
 ```
 
-Ask: "May I update `design/registry/entities.yaml` with these [N] new entries
+Ask: "May I update `docs/design/registry/entities.yaml` with these [N] new entries
 and update `referenced_by` for the existing entries?" (If the file was absent
 and the user approved creating it, the wording is *create*, not *update*, and
 there are no `referenced_by` arrays to merge.)
@@ -144,7 +144,7 @@ Present a completion summary:
 > - Cross-system conflicts found: [list or "none"]
 
 > **To validate this GDD, open a fresh Claude Code session and run:**
-> `/design-review design/gdd/[system-name].md`
+> `/design-review docs/design/gdd/[system-name].md`
 >
 > **Never run `/design-review` in the same session as `/design-system`.** The reviewing
 > agent must be independent of the authoring context. Running it here would inherit
@@ -162,7 +162,7 @@ matters most on a `minimal` project with a
 `system_overrides` bump, where the effective tier is `standard` or `full` and
 nothing else in §5 hints the file may be absent.
 
-- **Absent** — say so in one line (*"no `design/gdd/systems-index.md` at this
+- **Absent** — say so in one line (*"no `docs/GDD.md` at this
   workflow tier; nothing to update"*) and skip to §5e. Do **not** offer to create
   one: `/map-systems` owns that file, and a stub written here would be a systems
   index listing exactly one system.
@@ -176,17 +176,17 @@ nothing else in §5 hints the file may be absent.
   - If design-review was run and verdict is NEEDS REVISION or MAJOR REVISION NEEDED: Status → "Needs Revision" (that exact string — `/design-review` sets "In Review" only once the revisions are applied)
   - If design-review was skipped: Status → "Designed" (pending review)
   - If the user chose "I'll review it myself first": Status → "Designed"
-  - Design Doc: link to `design/gdd/[system-name].md`
+  - Design Doc: link to `docs/design/gdd/[system-name].md`
 - Update the Progress Tracker counts
 
-Ask: "May I update the systems index at `design/gdd/systems-index.md`?"
+Ask: "May I update the systems index at `docs/GDD.md`?"
 
 ### 5e: Update Session State
 
-Update `production/session-state/active.md` with:
+Update `.claude/ccgs/session-state/active.md` with:
 - Task: [system-name] GDD
 - Status: Complete (or In Review if design-review was run)
-- File: design/gdd/[system-name].md
+- File: docs/design/gdd/[system-name].md
 - Sections: [list the sections actually authored, by name] — **never a fixed
   count**; §5a forbids verifying against `/8`, and the same reasoning applies to
   recording it. Below `full` a correctly-authored GDD has fewer than 8 sections,

@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/.claude/skills/team-live-ops/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 # Team Live Ops
 
 **Argument check:** If no season name or event description is provided, output:
@@ -93,24 +95,24 @@ Use the `Agent` tool to spawn each team member as a subagent:
 **End every agent prompt with a return contract:** "Write your full output to `[path]` — that named path is your write authorisation under the bounded exception below, so write it without a separate approval prompt. Return **only** (1) the path written, (2) a ≤5-bullet summary of decisions, (3) any BLOCKED/CONCERNS items, one line each. Do not restate the documents you read." Without it, an agent returns everything it read back into this session.
 
 **Substitute a real path for `[path]`.** Working artifacts go under
-`production/live-ops/[season-slug]/`, where `[season-slug]` is the argument as a
+`docs/production/live-ops/[season-slug]/`, where `[season-slug]` is the argument as a
 slug — lowercase, spaces → hyphens. One file per agent, so the parallel phases
 never share one:
 
 | Phase / agent | Writes to |
 |---|---|
-| 1 live-ops-designer | `production/live-ops/[season-slug]/brief.md` |
-| 2 narrative-director | `production/live-ops/[season-slug]/narrative.md` |
-| 3 economy-designer | `production/live-ops/[season-slug]/economy.md` |
-| 4 analytics-engineer | `production/live-ops/[season-slug]/analytics.md` |
-| 5 narrative-director | `production/live-ops/[season-slug]/narrative-text.md` |
-| 5 writer | `production/live-ops/[season-slug]/copy.md` |
-| 6 community-manager | `production/live-ops/[season-slug]/comms.md` |
+| 1 live-ops-designer | `docs/production/live-ops/[season-slug]/brief.md` |
+| 2 narrative-director | `docs/production/live-ops/[season-slug]/narrative.md` |
+| 3 economy-designer | `docs/production/live-ops/[season-slug]/economy.md` |
+| 4 analytics-engineer | `docs/production/live-ops/[season-slug]/analytics.md` |
+| 5 narrative-director | `docs/production/live-ops/[season-slug]/narrative-text.md` |
+| 5 writer | `docs/production/live-ops/[season-slug]/copy.md` |
+| 6 community-manager | `docs/production/live-ops/[season-slug]/comms.md` |
 
-These are working drafts; the final documents under `design/live-ops/seasons/`
+These are working drafts; the final documents under `docs/design/live-ops/seasons/`
 are compiled from them (Output Documents).
 
-> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
+> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `docs/production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
 
 Launch independent agents in parallel where the pipeline allows it (Phases 3 and 4 can run simultaneously).
 
@@ -134,7 +136,7 @@ Delegate to **narrative-director**:
 
 ### Phase 3: Economy Design (parallel with Phase 4)
 Delegate to **economy-designer**:
-- Read the season brief and existing economy rules from `design/live-ops/economy-rules.md`
+- Read the season brief and existing economy rules from `docs/design/live-ops/economy-rules.md`
 - Design the reward track: free tier progression, premium tier value proposition
 - Plan the in-season economy: seasonal currency, store rotation contents, pricing
 - Define pity timer mechanics and bad-luck protection for any random elements
@@ -176,8 +178,8 @@ Present a summary to the user with:
 - **Content scope**: what is being created
 - **Economy health check**: does the reward track feel fair and non-predatory?
 - **Analytics readiness**: are success criteria defined and instrumented?
-- **Ethics review**: check the Phase 3 economy design against `design/live-ops/ethics-policy.md`
-  - If the file does not exist: flag "ETHICS REVIEW SKIPPED: `design/live-ops/ethics-policy.md` not found. Economy design was not reviewed against an ethics policy. Recommend creating one before production begins." Include this flag in the season design output document. Add to next steps: create `design/live-ops/ethics-policy.md`.
+- **Ethics review**: check the Phase 3 economy design against `docs/design/live-ops/ethics-policy.md`
+  - If the file does not exist: flag "ETHICS REVIEW SKIPPED: `docs/design/live-ops/ethics-policy.md` not found. Economy design was not reviewed against an ethics policy. Recommend creating one before production begins." Include this flag in the season design output document. Add to next steps: create `docs/design/live-ops/ethics-policy.md`.
   - If the file exists and a violation is found: flag "ETHICS FLAG: [element] in Phase 3 economy design violates [policy rule]. Approval is blocked until this is resolved." Do NOT issue a COMPLETE verdict or write output documents. Use `AskUserQuestion` with options: revise economy design / override with documented rationale / cancel. If user chooses to revise: re-spawn economy-designer to produce a corrected design, then return to Phase 7 review. If user selects Cancel: end with Verdict: BLOCKED — "Live ops design cancelled due to unresolved ethics violation. Resolve the flagged issues and re-run /team-live-ops."
 - **Open questions**: decisions still needed before production begins
 
@@ -185,14 +187,14 @@ Ask the user to approve the season plan before delegating to production teams. I
 
 ## Output Documents
 
-All documents save to `design/live-ops/` — **but the orchestrator asks before
-writing them.** `design/` is NOT one of the three directories the bounded write
-exception covers (`production/`, `docs/`, `tests/`), so a sub-agent handed one of
+All documents save to `docs/design/live-ops/` — **but the orchestrator asks before
+writing them.** `docs/design/` is NOT one of the three directories the bounded write
+exception covers (`docs/production/`, `docs/`, `tests/`), so a sub-agent handed one of
 these paths must prompt. Do not widen the exception to silence that.
 Follow `team-level`'s pattern instead: sub-agents write their working artifacts
-under `production/`, where the exception does reach them; **you** compile the
+under `docs/production/`, where the exception does reach them; **you** compile the
 final documents and ask via `AskUserQuestion` — "May I write the season plan to
-`design/live-ops/…`?" — writing them only on approval.
+`docs/design/live-ops/…`?" — writing them only on approval.
 
 Paths:
 - `seasons/S[N]_[name].md` — Season design document (from Phase 1-3)
@@ -217,12 +219,12 @@ If a BLOCKED state is unresolvable, end with Verdict: **BLOCKED** instead of COM
 
 ## File Write Protocol
 
-Sub-agents write their working artifacts under `production/`, following the
+Sub-agents write their working artifacts under `docs/production/`, following the
 **bounded exception** documented above under "Why this does not violate the
 Collaboration Protocol" — the path is one you named, the artifact is new under
-`production/`, `docs/` or `tests/`, and the phase is gated by an `AskUserQuestion`.
+`docs/production/`, `docs/` or `tests/`, and the phase is gated by an `AskUserQuestion`.
 A sub-agent does **not** prompt per write inside those bounds; outside them it must
-ask. The **final documents under `design/live-ops/`** — season design, analytics
+ask. The **final documents under `docs/design/live-ops/`** — season design, analytics
 plan, communication calendar — are the exception: the orchestrator compiles and
 writes them itself after its own "May I write …?" prompt (Output Documents above).
 
@@ -238,5 +240,5 @@ Verdict: **COMPLETE** — season plan produced and handed off for production.
 - Run `/sprint-plan` to schedule content creation work for the season (at `workflow: minimal`, which has no sprints, add it to the brief's build order instead).
 - Run `/team-release` when the season content is ready to deploy.
 - If the run ended **BLOCKED** on an ethics flag: revise the economy design against
-  `design/live-ops/ethics-policy.md` and re-run `/team-live-ops`; the three steps
+  `docs/design/live-ops/ethics-policy.md` and re-run `/team-live-ops`; the three steps
   above wait for a COMPLETE plan.

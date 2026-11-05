@@ -1,7 +1,7 @@
 # Agent Test Spec: community-manager
 
 ## Agent Summary
-- **Domain**: Player-facing communications — patch notes (`production/releases/[version]/patch-notes.md`), dev blogs and community updates, social post drafts, crisis communication, player feedback collection and triage (categorizing, tagging and surfacing to the team, not fixing), community guidelines and moderation
+- **Domain**: Player-facing communications — patch notes (`docs/production/releases/[version]/patch-notes.md`), dev blogs and community updates, social post drafts, crisis communication, player feedback collection and triage (categorizing, tagging and surfacing to the team, not fixing), community guidelines and moderation
 - **Does NOT own**: Bug fixes and technical investigation (programmers; bug status via qa-lead), messaging approval, promises and dates (producer), the reasoning behind gameplay changes and whether to revert them (game-designer)
 - **Gate IDs**: None; messaging approval and timing go to producer
 
@@ -21,14 +21,14 @@
 ## Test Cases
 
 ### Case 1: In-domain request — patch notes for a bug fix
-**Input context**: A QA record in `production/qa/` confirms the fix below shipped in this build.
+**Input context**: A QA record in `docs/production/qa/` confirms the fix below shipped in this build.
 **Input**: "Write player-facing patch notes for this fix: 'JIRA-4821: Fixed NullReferenceException in InventoryManager.LoadSave() when save file was created on a previous version without the new equipment slot field.'"
 **Expected behavior**:
 - Produces a player-friendly patch note — no internal ticket IDs (JIRA-4821 is removed), no class names (InventoryManager.LoadSave()), no technical stack trace language
 - Conveys the player impact without implementation detail: e.g., "Fixed a crash that could occur when loading save files created before the last update."
 - Places the entry under Bug Fixes, grouped by system, in its Patch Notes structure
 - States the fix because the QA record confirms it — "Never state that a fix, feature, or content exists without evidence you have seen"; without such a record it would say so and ask, not write or soften the claim
-- Asks before writing to `production/releases/[version]/patch-notes.md`
+- Asks before writing to `docs/production/releases/[version]/patch-notes.md`
 
 ### Case 2: Out-of-domain request — fixing a reported bug
 **Input**: "A player reported that their save file is corrupted. Can you fix the save system?"

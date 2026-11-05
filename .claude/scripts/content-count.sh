@@ -18,7 +18,7 @@
 # is a gameplay level or a UI scene is not known here (see by levels).
 #
 # Usage: bash .claude/scripts/content-count.sh [--root DIR] COMMAND [ARGS]
-#   registry        the planned named content: the entries of design/registry/
+#   registry        the planned named content: the entries of docs/design/registry/
 #                   entities.yaml's entities and items sections, read through
 #                   registry.sh, deprecated ones left out
 #   found [--engine E] [--files]
@@ -43,15 +43,15 @@
 # far side of a band edge (99.96% prints 99.9, never 100.0).
 #
 # Where `found` looks, per engine (the skill's Phase 2 globs, with the engine
-# rules it gives): assets/ and
+# rules it gives): Content/ and
 #   godot   src/            levels and characters only; no data/ needed under src/
 #   unity   Assets/         every type; no data/ segment needed
 #   unreal  Content/        every type; no data/ segment needed (Source/ holds
 #                           C++ only and is not searched)
-# A root is looked for by its exact name, so Assets/ and assets/ are two roots
+# A root is looked for by its exact name, so Assets/ and Content/ are two roots
 # even on a case-insensitive disk. Each root is printed present or absent.
-# Under assets/ the four data types (characters, items, abilities, quests)
-# need a data/ folder as the first folder, as the skill's assets/data/** globs
+# Under Content/ the four data types (characters, items, abilities, quests)
+# need a data/ folder as the first folder, as the skill's Content/data/** globs
 # do; levels and dialogue do not.
 #   levels      the engine's scene files: .tscn, .unity, .umap (one extension
 #               per engine, not all three); by levels counts them in folders
@@ -79,7 +79,7 @@
 #              source <gdd> <n> per source GDD of the planned entries, then
 #              PLANNED <section> <name> <source> and
 #              SKIPPED <section> <name> <source> deprecated, in registry order
-#   found:     engine <name> <source: project.yaml, project.local.yaml, flag...>,
+#   found:     engine <name> <source: .claude/ccgs/project.yaml, .claude/ccgs/project.local.yaml, flag...>,
 #              root <dir> <present|absent>, found <type> <n> (six types), by
 #              <type> <folder | extension> <n>, and with --files
 #              FILE <type> <path>
@@ -252,7 +252,7 @@ if [ "$CMD" = registry ]; then
       }
     }
     END {
-      printf "registry\t%s\t%s\n", (rpath == "") ? "design/registry/entities.yaml" : rpath, (rstate == "") ? "missing" : rstate
+      printf "registry\t%s\t%s\n", (rpath == "") ? "docs/design/registry/entities.yaml" : rpath, (rstate == "") ? "missing" : rstate
       if (rstate == "layout") { for (i = 1; i <= nlay; i++) print lay[i]; exit 4 }
       printf "planned\tentities\t%d\nplanned\titems\t%d\nplanned_total\t%d\n", planned["entities"], planned["items"], total
       printf "deprecated_skipped\t%d\nno_status\t%d\nstatus_other\t%d\t%s\nduplicate_names\t%d\n", nskip, nostat, nother, (olist == "") ? "-" : olist, ndup
@@ -272,12 +272,12 @@ fi
 if [ -n "$ENGINE_ARG" ]; then
   RAW="$ENGINE_ARG"; ESRC="flag"
 else
-  # engine.name from project.local.yaml, then project.yaml, read by the shared
+  # engine.name from .claude/ccgs/project.local.yaml, then .claude/ccgs/project.yaml, read by the shared
   # yaml-get.awk as project-state.sh reads it (and much faster than running it);
   # only when neither names one, project-state.sh's legacy fallback decides.
   RAW=""; ESRC=""
   [ -f "$HERE/yaml-get.awk" ] || { echo "content-count: $HERE/yaml-get.awk is missing; pass --engine" >&2; exit 1; }
-  for yf in project.local.yaml project.yaml; do
+  for yf in .claude/ccgs/project.local.yaml .claude/ccgs/project.yaml; do
     if [ -z "$RAW" ] && [ -f "$yf" ]; then
       RAW=$(YG_PATH=engine.name awk -f "$HERE/yaml-get.awk" "$yf")
       [ -z "$RAW" ] || ESRC="$yf"
@@ -290,7 +290,7 @@ else
 fi
 if [ -z "$RAW" ] || [ "$RAW" = "-" ]; then
   printf 'engine\t-\tunset\n'
-  echo "content-count: no engine is set (engine.name in project.yaml); pass --engine" >&2
+  echo "content-count: no engine is set (engine.name in .claude/ccgs/project.yaml); pass --engine" >&2
   exit 3
 fi
 LOW=$(printf '%s' "$RAW" | tr '[:upper:]' '[:lower:]')
@@ -353,9 +353,9 @@ printf '%s\n' "$LIST" | ENG="$ENG" SHOWFILES="$SHOWFILES" awk '
     root = seg[1]; fname = seg[n]
     ext = ""
     if (match(fname, /\.[^.]*$/)) ext = tolower(substr(fname, RSTART + 1))
-    # The first folder to look in: under assets/ only below assets/data/.
+    # The first folder to look in: under Content/ only below Content/data/.
     first = 2; datalock = 0
-    if (root == "assets") { datalock = 1; first = (n >= 3 && tolower(seg[2]) == "data") ? 3 : n }
+    if (root == "Content") { datalock = 1; first = (n >= 3 && tolower(seg[2]) == "data") ? 3 : n }
     srcroot = (eng == "godot" && root == "src")
     for (gi = 1; gi <= ng; gi++) {
       g = G[gi]; hit = 0; nh = 0

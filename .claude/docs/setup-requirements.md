@@ -12,7 +12,7 @@ runs at all.
 | ---- | ---- | ---- |
 | **Git** | Version control, branch management | [git-scm.com](https://git-scm.com/) |
 | **Claude Code** | AI agent CLI | Native installer: `curl -fsSL https://claude.ai/install.sh \| bash` (macOS, Linux, WSL) or `irm https://claude.ai/install.ps1 \| iex` (Windows PowerShell). npm also works: `npm install -g @anthropic-ai/claude-code` (Node.js 22+). See [code.claude.com/docs/en/setup](https://code.claude.com/docs/en/setup) |
-| **Python 3** | Reads `project.yaml` for every skill and hook | [python.org](https://www.python.org/). Without it every setting silently falls back to its default, and a commit that stages data JSON is blocked because it cannot be validated |
+| **Python 3** | Reads `.claude/ccgs/project.yaml` for every skill and hook | [python.org](https://www.python.org/). Without it every setting silently falls back to its default, and a commit that stages data JSON is blocked because it cannot be validated |
 | **Bash** | Runs every hook | Built into macOS and Linux. On Windows, install [Git for Windows](https://git-scm.com/downloads/win) — Claude Code runs without it, but no CCGS hook does |
 
 ## Recommended
@@ -73,7 +73,7 @@ python --version       # Required: Python 3 (python3 or py also work)
 | Missing Tool | Effect |
 | ---- | ---- |
 | **jq** | Nothing is lost: every hook falls back to `grep` to read its JSON input. jq is only more robust with unusual input. |
-| **Python 3** | Not optional (see Required). Every setting falls back to its default, because `project.yaml` is read through Python; the asset hook skips JSON validation and says so; a commit that stages data JSON is blocked. |
+| **Python 3** | Not optional (see Required). Every setting falls back to its default, because `.claude/ccgs/project.yaml` is read through Python; the asset hook skips JSON validation and says so; a commit that stages data JSON is blocked. |
 | **Both** | As without Python. |
 
 ## Optional Performance Settings
@@ -105,7 +105,7 @@ own config sets `acceptEdits` or `auto`.
 It sets the mode a session starts in. It is a backstop, not a guarantee, and
 these routes go around it:
 
-- **Starting in a subfolder** such as `design/` or the code root (`src/`,
+- **Starting in a subfolder** such as `docs/design/` or the code root (`src/`,
   `Assets/` or `Source/`, depending on the engine). Claude Code loads
   `.claude/settings.json` only from the folder it starts in, so that session has
   none of this project's hooks, deny rules or permission mode. Start at the root.

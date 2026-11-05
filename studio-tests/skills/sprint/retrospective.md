@@ -3,10 +3,10 @@
 ## Skill Summary
 
 `/retrospective` generates a sprint or milestone retrospective. Before loading
-any data it checks `production/retrospectives/` for an existing retrospective and
+any data it checks `docs/production/retrospectives/` for an existing retrospective and
 offers to update it or start fresh (archiving the old file). It reads the sprint
-plan from `production/sprints/` (or the milestone definition), uses
-`production/sprint-status.yaml` as the primary source for completion when it
+plan from `docs/production/sprints/` (or the milestone definition), uses
+`docs/production/sprint-status.yaml` as the primary source for completion when it
 exists, runs `git log` for the sprint period, counts TODO/FIXME/HACK markers, and
 reads previous retrospectives to follow up their action items. The output covers
 Metrics, Velocity Trend, What Went Well, What Went Poorly, Blockers Encountered,
@@ -17,7 +17,7 @@ every `blocked` story in the yaml is a Blocker with an action item. When no
 sprint data exists it offers manual input or stop — and, at `workflow: minimal`,
 a look back over the closed stories. No director gates are used —
 retrospectives are team self-reflection artifacts. The skill asks "May I write
-this to `production/retrospectives/retro-sprint-[N]-[date].md`?" (naming the
+this to `docs/production/retrospectives/retro-sprint-[N]-[date].md`?" (naming the
 archive rename too after Start fresh) and afterwards offers to start
 `/sprint-plan new`. Verdicts: COMPLETE
 (retrospective saved) or BLOCKED (user stopped at the no-data prompt or declined
@@ -45,9 +45,9 @@ None. Retrospectives are team self-reflection documents; no gates are invoked.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -57,18 +57,18 @@ Fixture defaults.
 ### Case 1: Happy Path — Sprint with mixed outcomes
 
 **Fixture:**
-- `production/sprints/sprint-005.md` exists with 6 stories; no earlier sprint
-  plan exists in `production/sprints/`
-- `production/sprint-status.yaml` covers sprint 5: 4 stories `done`, 1 `blocked`
+- `docs/production/sprints/sprint-005.md` exists with 6 stories; no earlier sprint
+  plan exists in `docs/production/sprints/`
+- `docs/production/sprint-status.yaml` covers sprint 5: 4 stories `done`, 1 `blocked`
   (`blocker: "Waiting on the save-format decision"`), 1 still `backlog`
-- `project.yaml` sets `modes.workflow: standard`
-- `production/retrospectives/` holds no retrospective at all
+- `.claude/ccgs/project.yaml` sets `modes.workflow: standard`
+- `docs/production/retrospectives/` holds no retrospective at all
 
 **Input:** `/retrospective sprint-005`
 
 **Expected behavior:**
-1. Skill globs `production/retrospectives/retro-sprint-005-*.md` — no match
-2. Skill reads the sprint plan and `production/sprint-status.yaml`, using the
+1. Skill globs `docs/production/retrospectives/retro-sprint-005-*.md` — no match
+2. Skill reads the sprint plan and `docs/production/sprint-status.yaml`, using the
    yaml as the primary source for completion (4 of 6 done)
 3. Skill runs `git log` for the sprint period and counts TODO/FIXME/HACK markers
 4. Skill generates the retrospective in its template. With no earlier sprint or
@@ -77,17 +77,17 @@ Fixture defaults.
 5. Skill presents the retrospective and top findings (completion rate, velocity
    trend — reported as not assessed — top blocker, most important action item)
 6. Skill asks "May I write this to
-   `production/retrospectives/retro-sprint-005-[today's date].md`?"
+   `docs/production/retrospectives/retro-sprint-005-[today's date].md`?"
 7. User approves; file is written; verdict COMPLETE
 8. Skill asks whether to start sprint planning now (`/sprint-plan new`)
 
 **Assertions:**
 - [ ] Retrospective contains What Went Well, What Went Poorly and Action Items for Next Iteration sections
-- [ ] Completion metrics come from `production/sprint-status.yaml` (4 of 6 done), not from markdown scanning
+- [ ] Completion metrics come from `docs/production/sprint-status.yaml` (4 of 6 done), not from markdown scanning
 - [ ] The blocked story appears under Blockers Encountered with "Waiting on the save-format decision" as its Blocker, and an action item addresses it
 - [ ] Velocity Trend reads `NOT ASSESSED — NO DATA` — no Increasing / Stable / Decreasing trend and no earlier-sprint rows are invented from a single sprint
 - [ ] Previous Action Items Follow-Up reads `NOT ASSESSED — NO DATA` (no earlier retrospective), not an empty table
-- [ ] "May I write" prompt names `production/retrospectives/retro-sprint-005-[today's date].md` and appears before the write
+- [ ] "May I write" prompt names `docs/production/retrospectives/retro-sprint-005-[today's date].md` and appears before the write
 - [ ] Verdict is COMPLETE after the write, followed by the offer to start `/sprint-plan new`
 
 ---
@@ -96,9 +96,9 @@ Fixture defaults.
 
 **Fixture:**
 - User calls `/retrospective sprint-009`
-- `production/sprints/sprint-009.md` does NOT exist and
-  `production/sprint-status.yaml` has no sprint 9
-- `project.yaml` sets `modes.workflow: standard`
+- `docs/production/sprints/sprint-009.md` does NOT exist and
+  `docs/production/sprint-status.yaml` has no sprint 9
+- `.claude/ccgs/project.yaml` sets `modes.workflow: standard`
 - No retrospective for sprint-009 exists
 
 **Input:** `/retrospective sprint-009`
@@ -123,23 +123,23 @@ Fixture defaults.
 ### Case 3: Prior Retrospective Exists — Update existing or start fresh
 
 **Fixture:**
-- `production/retrospectives/retro-sprint-005-[earlier date].md` already exists
+- `docs/production/retrospectives/retro-sprint-005-[earlier date].md` already exists
   with content
-- `production/sprints/sprint-005.md` exists
+- `docs/production/sprints/sprint-005.md` exists
 - User re-runs `/retrospective sprint-005` and, when asked, selects [B] Start fresh
 
 **Input:** `/retrospective sprint-005`
 
 **Expected behavior:**
 1. Before loading any sprint data, skill globs
-   `production/retrospectives/retro-sprint-005-*.md` and finds the existing file
+   `docs/production/retrospectives/retro-sprint-005-*.md` and finds the existing file
 2. Skill asks via `AskUserQuestion`: "An existing retrospective was found:
    [filename]. How do you want to proceed?" with [A] Update existing and
    [B] Start fresh (archive the old one)
 3. User selects [B]; skill compiles from a blank slate — the old file is not
    touched yet
 4. Skill asks "May I write this to
-   `production/retrospectives/retro-sprint-005-[today's date].md`?", and the
+   `docs/production/retrospectives/retro-sprint-005-[today's date].md`?", and the
    same ask names the rename of the old file to its `-archived-[date]` name
 5. User approves; skill renames the old file, then writes the new one; verdict
    COMPLETE
@@ -156,22 +156,22 @@ Fixture defaults.
 ### Case 4: Edge Case — Unresolved action items from previous retrospective
 
 **Fixture:**
-- `production/retrospectives/retro-sprint-004-[date].md` exists with 2 action
+- `docs/production/retrospectives/retro-sprint-004-[date].md` exists with 2 action
   items marked `[ ]` (not done)
-- `production/sprints/sprint-005.md` exists; no retrospective for sprint-005 exists
+- `docs/production/sprints/sprint-005.md` exists; no retrospective for sprint-005 exists
 - User runs `/retrospective sprint-005`
 
 **Input:** `/retrospective sprint-005`
 
 **Expected behavior:**
-1. Skill reads previous retrospectives in `production/retrospectives/`
+1. Skill reads previous retrospectives in `docs/production/retrospectives/`
 2. Skill checks whether the sprint-004 action items were addressed — 2 were not
 3. The new retrospective's "Previous Action Items Follow-Up" table lists both
    items with a status other than Done
 4. The follow-up table is separate from "Action Items for Next Iteration"
 
 **Assertions:**
-- [ ] Skill reads the prior retrospective in `production/retrospectives/` to check its action items
+- [ ] Skill reads the prior retrospective in `docs/production/retrospectives/` to check its action items
 - [ ] Both unresolved items appear in the "Previous Action Items Follow-Up" table
 - [ ] Their Status is Not Started or In Progress — not Done
 - [ ] The follow-up table is distinct from the newly generated "Action Items for Next Iteration"
@@ -181,8 +181,8 @@ Fixture defaults.
 ### Case 5: Gate Compliance — No gate invoked in any mode
 
 **Fixture:**
-- `production/sprints/sprint-005.md` exists with complete stories
-- `project.yaml` sets `modes.review_mode: full`
+- `docs/production/sprints/sprint-005.md` exists with complete stories
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full`
 
 **Input:** `/retrospective sprint-005`
 
@@ -203,11 +203,11 @@ Fixture defaults.
 ### Case 6: Minimal Workflow — Look back over the closed stories
 
 **Fixture:**
-- `project.yaml` sets neither `modes.rigor` nor `modes.workflow`, so the injected
+- `.claude/ccgs/project.yaml` sets neither `modes.rigor` nor `modes.workflow`, so the injected
   block reads `workflow: minimal (rigor:minimal)`
-- `production/sprints/`, `production/milestones/` and
-  `production/retrospectives/` do not exist
-- 3 stories under `production/epics/core/` have `Status: Complete`; 1 has
+- `docs/production/sprints/`, `docs/production/milestones/` and
+  `docs/production/retrospectives/` do not exist
+- 3 stories under `docs/production/epics/core/` have `Status: Complete`; 1 has
   `Status: In Progress`
 
 **Input:** `/retrospective sprint-001`
@@ -222,7 +222,7 @@ Fixture defaults.
    (planned vs actual, velocity, carryover, estimation accuracy) read
    `NOT ASSESSED — NO DATA`
 5. Skill asks "May I write this to
-   `production/retrospectives/retro-sprint-001-[today's date].md`?"; user
+   `docs/production/retrospectives/retro-sprint-001-[today's date].md`?"; user
    approves; verdict COMPLETE
 6. Phase 6 skips the start-sprint-planning question: the skill points to the
    retrospective file and says its action items go into the brief's build order

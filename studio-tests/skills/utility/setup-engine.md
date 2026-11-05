@@ -13,13 +13,13 @@ or Both) before showing the Technology Stack. It then:
   conventions, specialist routing table, input/platform, performance budgets)
   after the user approves the presented defaults
 - dual-writes the `engine`, `specialists`, `naming` and `commands` blocks to
-  `project.yaml` — the primary config store — after "May I write the `engine`,
-  `specialists`, `naming`, and `commands` blocks to `project.yaml`?"
+  `.claude/ccgs/project.yaml` — the primary config store — after "May I write the `engine`,
+  `specialists`, `naming`, and `commands` blocks to `.claude/ccgs/project.yaml`?"
 - updates or creates `docs/engine-reference/<engine>/`, scaffolds
   `project.godot` for Godot (never for Unity or Unreal), and reads everything
   back with `project-coherence.sh`
 
-On a re-run it edits existing `project.yaml` blocks in place rather than
+On a re-run it edits existing `.claude/ccgs/project.yaml` blocks in place rather than
 duplicating them. No director gates apply. The verdict is COMPLETE when the
 engine is configured.
 
@@ -32,7 +32,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keyword: COMPLETE
-- [ ] Contains "May I write" language before writing `CLAUDE.md` and before writing the `project.yaml` blocks
+- [ ] Contains "May I write" language before writing `CLAUDE.md` and before writing the `.claude/ccgs/project.yaml` blocks
 - [ ] Has a next-step handoff (Section 12 prints one tier-matched Next-Steps list, e.g. `/brainstorm` at `minimal`)
 
 ---
@@ -45,9 +45,9 @@ None. `/setup-engine` is a technical configuration skill. No director gates appl
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -57,8 +57,8 @@ Fixture defaults.
 ### Case 1: Godot 4 + GDScript — Full engine configuration
 
 **Fixture:**
-- `project.yaml` has no `engine` block; `technical-preferences.md` holds only placeholders
-- No `design/gdd/game-concept.md` and no `design/game-brief.md`
+- `.claude/ccgs/project.yaml` has no `engine` block; `technical-preferences.md` holds only placeholders
+- No `docs/GDD.md` and no `docs/GDD.md`
 - `docs/engine-reference/godot/VERSION.md` already pins 4.7
 - No `project.godot` at the repo root; the user approves every write
 
@@ -76,7 +76,7 @@ Fixture defaults.
    `Forward+`/`Jolt` from the engine name
 6. `commands.build` export preset is asked, never defaulted; `commands.test` is
    the gdUnit4 `GdUnitCmdTool.gd` command
-7. Skill asks "May I write the `engine`, `specialists`, `naming`, and `commands` blocks to `project.yaml`?"
+7. Skill asks "May I write the `engine`, `specialists`, `naming`, and `commands` blocks to `.claude/ccgs/project.yaml`?"
 8. Section 6 reads its coverage table: 4.7 is beyond the Godot row (~4.3), so
    the knowledge risk is HIGH
 9. VERSION.md already pins 4.7 → nothing to regenerate; only its
@@ -84,11 +84,11 @@ Fixture defaults.
 10. Skill proposes `project.godot` and asks before creating it; verdict COMPLETE
 
 **Assertions:**
-- [ ] `engine.name` is Godot and `engine.language` is GDScript in `project.yaml`
+- [ ] `engine.name` is Godot and `engine.language` is GDScript in `.claude/ccgs/project.yaml`
 - [ ] `naming.variables` and `naming.files` are `snake_case`
 - [ ] Routing table includes `.gd`, `.gdshader`, and `.tscn` entries; `specialists.code` is `godot-gdscript-specialist`
 - [ ] The rendering/physics shape is asked, not inferred from the engine name
-- [ ] "May I write" is asked before `CLAUDE.md` and before `project.yaml` are written
+- [ ] "May I write" is asked before `CLAUDE.md` and before `.claude/ccgs/project.yaml` are written
 - [ ] Knowledge Risk is HIGH — the Section 6 table's cutoff is May 2025 and its Godot row ~4.3, as in the shipped VERSION.md
 - [ ] Verdict is COMPLETE
 
@@ -97,7 +97,7 @@ Fixture defaults.
 ### Case 2: Unity + C# — Unity-specific configuration
 
 **Fixture:**
-- Placeholders only in `technical-preferences.md`; no `engine` block in `project.yaml`
+- Placeholders only in `technical-preferences.md`; no `engine` block in `.claude/ccgs/project.yaml`
 - The user supplies the version and the build target when asked
 
 **Input:** `/setup-engine unity`
@@ -136,7 +136,7 @@ Fixture defaults.
    `C++ (primary), Blueprint (gameplay prototyping)` — the line follows the
    answer, and a Blueprint-primary answer would write
    `Blueprint (primary), C++ where needed`
-2. `project.yaml` gets `engine.language: "C++"` (Blueprint only when the project is Blueprint-primary)
+2. `.claude/ccgs/project.yaml` gets `engine.language: "C++"` (Blueprint only when the project is Blueprint-primary)
 3. Routing: `.uasset` BP classes → ue-blueprint-specialist; `.umap`/`.uasset` → unreal-specialist;
    `specialists.additional` includes ue-blueprint-specialist
 4. `commands` are written as single-quoted scalars under a
@@ -157,7 +157,7 @@ Fixture defaults.
 ### Case 4: Re-run on a Configured Project — blocks edited in place
 
 **Fixture:**
-- `project.yaml` already has `engine` (Godot 4.7), `specialists`, `naming`, a
+- `.claude/ccgs/project.yaml` already has `engine` (Godot 4.7), `specialists`, `naming`, a
   `modes` block, and a `commands` block missing its `smoke` key
 - `project.godot` exists at the repo root
 - `docs/engine-reference/godot/VERSION.md` pins 4.7
@@ -165,7 +165,7 @@ Fixture defaults.
 **Input:** `/setup-engine godot 4.7`
 
 **Expected behavior:**
-1. Skill reads `project.yaml` before editing it
+1. Skill reads `.claude/ccgs/project.yaml` before editing it
 2. Each existing block is edited in place; `commands.smoke` is added to the
    partial block; no second copy of any block is appended
 3. `modes` and every other non-engine block are preserved untouched
@@ -176,7 +176,7 @@ Fixture defaults.
 6. Verdict COMPLETE
 
 **Assertions:**
-- [ ] No block is duplicated in `project.yaml`, and the missing `commands.smoke` key is added
+- [ ] No block is duplicated in `.claude/ccgs/project.yaml`, and the missing `commands.smoke` key is added
 - [ ] `modes` (and all other non-engine content) is unchanged
 - [ ] `project.godot` is not overwritten
 - [ ] For a same-version pin, Engine Version, Project Pinned and Last Docs Verified are untouched and `Installed at pin time` is written
@@ -258,7 +258,7 @@ Fixture defaults.
 ### Case 8: A skipped question is not an answer
 
 **Fixture:**
-- Fresh project: no engine configured, no `project.yaml` engine block
+- Fresh project: no engine configured, no `.claude/ccgs/project.yaml` engine block
 - The engine question comes back skipped: the user closes it, or a headless run
   returns every question as skipped
 - The sandbox carries the framework's `CLAUDE.md`. The rule this case checks is
@@ -272,7 +272,7 @@ Fixture defaults.
 **Expected behavior:**
 1. The skill does not choose an engine, language or version itself
 2. It asks again in plain text, saying what is waiting on the answer, and waits
-3. Nothing is written to `CLAUDE.md`, `project.yaml`, `technical-preferences.md`
+3. Nothing is written to `CLAUDE.md`, `.claude/ccgs/project.yaml`, `technical-preferences.md`
    or `VERSION.md` before the user answers
 4. In a run where nobody can answer, it stops and reports what is waiting
 
@@ -286,10 +286,10 @@ Fixture defaults.
 ## Protocol Compliance
 
 - [ ] Presents draft configuration before asking to write
-- [ ] Asks "May I write" before writing `CLAUDE.md` and the `project.yaml` blocks; technical preferences are written only after the user approves the presented defaults
+- [ ] Asks "May I write" before writing `CLAUDE.md` and the `.claude/ccgs/project.yaml` blocks; technical preferences are written only after the user approves the presented defaults
 - [ ] Respects engine argument when provided (skips guided selection)
-- [ ] Dual-writes `project.yaml` and `technical-preferences.md`, then reads `project.yaml` back to confirm they agree
-- [ ] On re-run, edits existing `project.yaml` blocks in place without duplicating them
+- [ ] Dual-writes `.claude/ccgs/project.yaml` and `technical-preferences.md`, then reads `.claude/ccgs/project.yaml` back to confirm they agree
+- [ ] On re-run, edits existing `.claude/ccgs/project.yaml` blocks in place without duplicating them
 - [ ] Writes the probed editor path into `commands.*` — for Unity always, for Godot whenever `godot` is not on `PATH` — never a bare executable that does not resolve
 - [ ] Never defaults the Godot export preset or the Unity build target — asks for it; Unreal's `commands` are best-effort values matched to the machine's OS (`-platform=Win64` on Windows, `Linux` on Linux) under a `# TODO` comment; on macOS only `build` is written, and `test`, `run` and `smoke` stay TODO lines
 - [ ] Writes the Section 3 probe into VERSION.md's `Installed at pin time` row whatever the outcome, after asking "May I record `Installed at pin time: …` in `docs/engine-reference/<engine>/VERSION.md`?"

@@ -12,7 +12,7 @@ tier resolved for the story's system decides which groups block (`full`: all;
 `standard`: architecture items advisory except a critical ADR; `minimal`:
 architecture N/A) — except one rule at every tier: an ADR the story references that
 is missing, `Proposed`, `Deprecated` or `Superseded` BLOCKS, because `/dev-story`
-stops on it. At `minimal`, `design/game-brief.md` stands in for the GDD. It produces a READY / NEEDS WORK / BLOCKED / NOT ASSESSED
+stops on it. At `minimal`, `docs/GDD.md` stands in for the GDD. It produces a READY / NEEDS WORK / BLOCKED / NOT ASSESSED
 verdict. It is read-only — it never writes or edits a file. In `full` review
 mode it then runs the QL-STORY-READY gate (`qa-lead`).
 
@@ -37,9 +37,9 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -49,9 +49,9 @@ Fixture defaults.
 ### Case 1: Happy Path — Fully ready story
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full` and `modes.review_mode: solo`
-- Story file exists at `production/epics/core/story-light-pickup.md` containing:
-  - A `GDD: design/gdd/light-system.md` reference quoting the specific requirement
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full` and `modes.review_mode: solo`
+- Story file exists at `docs/production/epics/core/story-light-pickup.md` containing:
+  - A `GDD: docs/design/gdd/light-system.md` reference quoting the specific requirement
   - `TR-light-001`, present with `status: active` in `docs/architecture/tr-registry.yaml`
   - `ADR: ADR-0003`; `docs/architecture/adr-0003-inventory.md` has `## Status` Accepted
   - `Type: Logic`, an `## Acceptance Criteria` section with 3 testable items, and a `## Test Evidence` section naming the test path
@@ -59,9 +59,9 @@ Fixture defaults.
   - Engine notes (or "N/A — no engine API involved"), the relevant manifest rules, and a performance note
   - A `Manifest Version:` equal to the one in `docs/architecture/control-manifest.md`
   - No TBD / UNRESOLVED markers and no asset paths
-- A sprint plan in `production/sprints/` lists other stories
+- A sprint plan in `docs/production/sprints/` lists other stories
 
-**Input:** `/story-readiness production/epics/core/story-light-pickup.md`
+**Input:** `/story-readiness docs/production/epics/core/story-light-pickup.md`
 
 **Expected behavior:**
 1. Skill reports "Validating 1 story files."
@@ -87,12 +87,12 @@ Fixture defaults.
 ### Case 2: Blocked Path — Referenced ADR is Proposed (not Accepted)
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- Story `production/epics/core/story-light-system.md` references `ADR-0005`
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- Story `docs/production/epics/core/story-light-system.md` references `ADR-0005`
 - `docs/architecture/adr-0005-light-system.md` exists with `## Status` Proposed
 - All other story content is complete
 
-**Input:** `/story-readiness production/epics/core/story-light-system.md`
+**Input:** `/story-readiness docs/production/epics/core/story-light-system.md`
 
 **Expected behavior:**
 1. The status scan finds ADR-0005 `Proposed`
@@ -112,11 +112,11 @@ Fixture defaults.
 ### Case 3: Needs Work — Missing Acceptance Criteria (checked at every tier)
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: minimal`
-- Story `production/epics/core/story-oxygen-drain.md` has `Type: Logic` but no `## Acceptance Criteria` section
+- `.claude/ccgs/project.yaml` sets `modes.workflow: minimal`
+- Story `docs/production/epics/core/story-oxygen-drain.md` has `Type: Logic` but no `## Acceptance Criteria` section
 - The story references no ADR, no TR-ID and no manifest version
 
-**Input:** `/story-readiness production/epics/core/story-oxygen-drain.md`
+**Input:** `/story-readiness docs/production/epics/core/story-oxygen-drain.md`
 
 **Expected behavior:**
 1. At `minimal`, skill evaluates Design Completeness and Scope Clarity and treats Architecture Completeness as N/A
@@ -128,7 +128,7 @@ Fixture defaults.
 - [ ] Output identifies the missing Acceptance Criteria specifically, with a `Fix:` line proposing measurable criteria
 - [ ] No ADR, TR-ID or manifest gap is flagged — Architecture Completeness is N/A at `minimal`
 - [ ] The story is not BLOCKED: nothing requires outside action (no missing/DRAFT dependency, no unowned UNRESOLVED question)
-- [ ] Variant — the same `minimal` story with acceptance criteria traced to `design/game-brief.md`'s MVP feature (no `design/gdd/` path): "GDD requirement referenced" passes — the brief stands in for the GDD at `minimal`
+- [ ] Variant — the same `minimal` story with acceptance criteria traced to `docs/GDD.md`'s MVP feature (no `docs/design/gdd/` path): "GDD requirement referenced" passes — the brief stands in for the GDD at `minimal`
 - [ ] Variant — the story also names `ADR-0005`, whose `## Status` is `Proposed`: the verdict is BLOCKED at `minimal` too — the referenced-ADR rule is the one Architecture Completeness item that is not N/A
 
 ---
@@ -136,12 +136,12 @@ Fixture defaults.
 ### Case 4: Edge Case — Stale manifest version
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
 - Story has `Manifest Version: 2026-01-15` in its header
 - `docs/architecture/control-manifest.md` has `Manifest Version: 2026-03-10`
 - Everything else in the story passes
 
-**Input:** `/story-readiness production/epics/core/story-mirror-rotation.md`
+**Input:** `/story-readiness docs/production/epics/core/story-mirror-rotation.md`
 
 **Expected behavior:**
 1. Skill extracts `2026-01-15` from the story
@@ -160,11 +160,11 @@ Fixture defaults.
 ### Case 5: Director Gate — QL-STORY-READY behavior across review modes
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
 - Story file exists and passes every checklist item
-- Review mode comes from `modes.review_mode` (legacy mirror `production/review-mode.txt`) or `--review`
+- Review mode comes from `modes.review_mode` (legacy mirror `.claude/ccgs/review-mode.txt`) or `--review`
 
-**Case 5a — full mode:** `/story-readiness production/epics/core/story-light-pickup.md --review full`
+**Case 5a — full mode:** `/story-readiness docs/production/epics/core/story-light-pickup.md --review full`
 
 **Expected behavior:**
 1. Skill completes its own checklist and verdict first
@@ -205,19 +205,19 @@ Fixture defaults.
 ### Case 6: UI story at `qa.level: minimal` — the screenshot plan is never waived
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: standard` and `qa.level: minimal` (set on
+- `.claude/ccgs/project.yaml` sets `modes.workflow: standard` and `qa.level: minimal` (set on
   its own, so only the test-evidence axis is at `minimal` and every checklist
   group is evaluated)
 - No `docs/architecture/control-manifest.md` and no `tr-registry.yaml` yet
-- Story `production/epics/ui/story-003-shop-panel.md` has `Type: UI`, a
-  `GDD: design/gdd/shop.md` reference quoting the requirement it implements, two
+- Story `docs/production/epics/ui/story-003-shop-panel.md` has `Type: UI`, a
+  `GDD: docs/design/gdd/shop.md` reference quoting the requirement it implements, two
   testable acceptance criteria naming what the shop panel shows, "No ADR applies —
   pure layout", engine notes, an estimate, an Out of Scope statement,
   `Dependencies: None` and a performance note — and no `## Test Evidence` section,
   nor any other mention of where a screenshot will go
 - No TBD / UNRESOLVED markers and no asset paths
 
-**Input:** `/story-readiness production/epics/ui/story-003-shop-panel.md`
+**Input:** `/story-readiness docs/production/epics/ui/story-003-shop-panel.md`
 
 **Expected behavior:**
 1. The architecture items pass or auto-pass (explicit "No ADR applies"; no
@@ -227,11 +227,11 @@ Fixture defaults.
 3. `testing.strict.ui` is unset, so the item is strict by default: the missing
    section makes the story NEEDS WORK
 4. The `Fix:` asks for a `## Test Evidence` section naming where the retained
-   screenshot of each screen touched will go under `production/qa/evidence/`
+   screenshot of each screen touched will go under `docs/production/qa/evidence/`
 
 **Assertions:**
 - [ ] Verdict is NEEDS WORK, not READY — the evidence item does not auto-pass for a UI story at `qa.level: minimal`
-- [ ] The gap names the missing screenshot plan, and its `Fix:` points at `production/qa/evidence/`
+- [ ] The gap names the missing screenshot plan, and its `Fix:` points at `docs/production/qa/evidence/`
 - [ ] The missing screenshot plan is the only gap — no ADR, TR-ID or manifest gap is flagged
 - [ ] Variant — a `Type: Logic` story with three testable criteria and no `## Test Evidence` section, same config: the evidence item auto-passes at `qa.level: minimal`, so the missing section alone does not make it NEEDS WORK
 
@@ -240,20 +240,20 @@ Fixture defaults.
 ### Case 7: NOT ASSESSED — nothing to evaluate, or an ADR nobody can read
 
 **Case 7a — zero stories in scope:**
-- `production/epics/` holds only `EPIC.md` index files, no story files
+- `docs/production/epics/` holds only `EPIC.md` index files, no story files
 - **Input:** `/story-readiness all`
 
 **Assertions (7a):**
-- [ ] Output is `NOT ASSESSED — no stories in scope`, naming `production/epics/**/*.md` as the path searched
+- [ ] Output is `NOT ASSESSED — no stories in scope`, naming `docs/production/epics/**/*.md` as the path searched
 - [ ] It routes to `/create-epics [layer]` then `/create-stories [epic-slug]`
 - [ ] No `Ready: 0 / Needs Work: 0 / Blocked: 0` summary is printed over an empty list
 
 **Case 7b — a referenced ADR with no readable status:**
-- `project.yaml` sets `modes.workflow: full`
-- Story `production/epics/core/story-save-slots.md` passes every other item and
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- Story `docs/production/epics/core/story-save-slots.md` passes every other item and
   references `ADR-0007`; `docs/architecture/adr-0007-save-format.md` exists but has
   no `## Status` section
-- **Input:** `/story-readiness production/epics/core/story-save-slots.md`
+- **Input:** `/story-readiness docs/production/epics/core/story-save-slots.md`
 
 **Assertions (7b):**
 - [ ] The ADR check is NOT ASSESSED — the status is unknown, not failed — and the verdict is NOT ASSESSED: not BLOCKED, not READY
@@ -265,16 +265,16 @@ Fixture defaults.
 ### Case 8: A Deprecated or Superseded ADR blocks, and the fix points at the story's ADR field
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: standard` (a referenced dead ADR blocks at
+- `.claude/ccgs/project.yaml` sets `modes.workflow: standard` (a referenced dead ADR blocks at
   every tier; `standard` shows it is not left to the advisory rule)
-- Story A `production/epics/core/story-save-format.md` references `ADR-0006`;
+- Story A `docs/production/epics/core/story-save-format.md` references `ADR-0006`;
   `docs/architecture/adr-0006-save-format.md` has `## Status` Superseded by ADR-0009
-- Story B `production/epics/core/story-input-map.md` references `ADR-0008`;
+- Story B `docs/production/epics/core/story-input-map.md` references `ADR-0008`;
   `docs/architecture/adr-0008-input-map.md` has `## Status` Deprecated
 - Both stories are otherwise complete
 
-**Input:** `/story-readiness production/epics/core/story-save-format.md`, then
-`/story-readiness production/epics/core/story-input-map.md`
+**Input:** `/story-readiness docs/production/epics/core/story-save-format.md`, then
+`/story-readiness docs/production/epics/core/story-input-map.md`
 
 **Expected behavior:**
 1. The status scan reads `Superseded by ADR-0009` for A and `Deprecated` for B
@@ -297,7 +297,7 @@ Fixture defaults.
 ### Case 9: A deprecated or superseded TR-ID needs work, quoted or not
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
 - `docs/architecture/tr-registry.yaml` has `TR-light-001` with `status: active`,
   `TR-light-004` with `status: deprecated`, `TR-light-005` with
   `status: "superseded-by: TR-light-009"` (quoted) and `TR-light-006` with
@@ -306,7 +306,7 @@ Fixture defaults.
   `TR-light-005` and `TR-light-006`; every other checklist item passes (ADR
   Accepted, current manifest version, criteria, estimate)
 
-**Input:** `/story-readiness production/epics/core/story-S4.md`, then S5, then S6, then S1
+**Input:** `/story-readiness docs/production/epics/core/story-S4.md`, then S5, then S6, then S1
 
 **Expected behavior:**
 1. The registry lookup finds each id and reads its status

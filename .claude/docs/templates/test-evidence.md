@@ -30,7 +30,7 @@ the acceptance criteria numbers from the story that this evidence covers.]
 ## Screenshots / Video
 
 List all captured evidence below. Store files in the same directory as this
-document or in `production/qa/evidence/[story-slug]/`.
+document or in `docs/production/qa/evidence/[story-slug]/`.
 
 **The file must actually be on disk.** Visual/Feel and UI gates are BLOCKING by
 default, and `/story-done` and `/test-evidence-review` glob for the image — a
@@ -93,4 +93,4 @@ past the sprint review.
 
 *Template: `.claude/docs/templates/test-evidence.md`*
 *Used for: Visual/Feel and UI story type evidence records*
-*Location: `production/qa/evidence/[story-slug]-evidence.md`*
+*Location: `docs/production/qa/evidence/[story-slug]-evidence.md`*

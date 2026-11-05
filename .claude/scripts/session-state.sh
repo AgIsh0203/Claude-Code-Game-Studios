@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# session-state.sh — read and write production/session-state/active.md in the
+# session-state.sh — read and write .claude/ccgs/session-state/active.md in the
 # layout .claude/docs/templates/session-state.md defines, so a skill hands
 # over the words and this script places them.
 #
@@ -30,7 +30,7 @@
 # over active.md in place, so it keeps its mode and a symlink stays one.
 #
 # Output (checkpoint, append): TSV
-#   file   production/session-state/active.md   <created|replaced|inserted|appended|unchanged>
+#   file   .claude/ccgs/session-state/active.md   <created|replaced|inserted|appended|unchanged>
 #   lines  <lines written from stdin>           -
 # show prints the block lines themselves.
 #
@@ -48,7 +48,7 @@ set -u
 LC_ALL=C
 export LC_ALL
 
-STATE="production/session-state/active.md"
+STATE=".claude/ccgs/session-state/active.md"
 TEMPLATE=".claude/docs/templates/session-state.md"
 # The template asks for a checkpoint under ~25 lines because session-start.sh
 # shows it whole in every new session; longer is allowed but warned about.

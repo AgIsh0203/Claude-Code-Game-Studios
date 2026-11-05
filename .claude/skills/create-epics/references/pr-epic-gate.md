@@ -10,7 +10,7 @@ Hand the review to the `producer` agent with gate **PR-EPIC**. Brief:
   deliver.
 - **Give it:** every epic defined in Phase 3 with its scope summary and governing
   ADR count, the layer being processed, the milestone timeline and the team's
-  capacity (from `production/milestones/` and `project.yaml`'s `team.size`, or
+  capacity (from `docs/production/milestones/` and `.claude/ccgs/project.yaml`'s `team.size`, or
   "none recorded").
 - **Return:** REALISTIC, CONCERNS, UNREALISTIC, or NOT ASSESSED naming a missing
   input, with reasons.

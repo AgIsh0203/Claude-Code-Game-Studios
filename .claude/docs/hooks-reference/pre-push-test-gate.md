@@ -59,7 +59,7 @@ if [ "$FULL_GATE" = true ]; then
 
     # Step 5: Performance regression check
     echo "Checking performance baselines..."
-    # python tools/ci/perf_check.py || exit 1
+    # python Tools/ci/perf_check.py || exit 1
     echo "Performance: PASS"
 fi
 

@@ -39,7 +39,7 @@ Catch both by verifying the files after writing them:
 bash .claude/scripts/project-coherence.sh
 ```
 
-It compares `project.yaml` against `docs/engine-reference/<engine>/VERSION.md`,
+It compares `.claude/ccgs/project.yaml` against `docs/engine-reference/<engine>/VERSION.md`,
 against `project.godot`, and against the engine binary actually on PATH, and it
 checks that the files `commands.build` and `commands.test` name exist.
 

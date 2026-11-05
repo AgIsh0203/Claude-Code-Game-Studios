@@ -10,7 +10,7 @@
 # information and must win: a caller sitting inside another project means that
 # project, not this one. Resolving to the script's own location first would
 # override them. So, in order:
-#   1. cwd holds project.yaml   -> cwd   (a project root)
+#   1. cwd holds .claude/ccgs/project.yaml   -> cwd   (a project root)
 #   2. cwd holds .claude/       -> cwd   (a project root not yet configured),
 #      unless cwd is itself named .claude: a stray .claude/.claude/ would
 #      make .claude/ a root, and the hooks would write .claude/production/
@@ -21,7 +21,7 @@
 # overriding a caller that legitimately means somewhere else.
 #
 # NOT an upward search: that resolves a nested project to its parent's config.
-if [ -f "project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
+if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
   CCGS_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
@@ -43,10 +43,10 @@ echo "=== Checking for Documentation Gaps ==="
 # --- Check 0: Fresh project detection (suggests /start) ---
 FRESH_PROJECT=true
 
-# Check if engine is configured (project.yaml first, fall back to technical-preferences.md)
-if [ -f "project.yaml" ] && [ -f ".claude/hooks/yaml-helper.sh" ]; then
+# Check if engine is configured (.claude/ccgs/project.yaml first, fall back to technical-preferences.md)
+if [ -f ".claude/ccgs/project.yaml" ] && [ -f ".claude/hooks/yaml-helper.sh" ]; then
   source .claude/hooks/yaml-helper.sh
-  ENGINE_NAME=$(get_yaml_key project.yaml engine.name 2>/dev/null)
+  ENGINE_NAME=$(get_yaml_key .claude/ccgs/project.yaml engine.name 2>/dev/null)
   if [ -n "$ENGINE_NAME" ]; then
     FRESH_PROJECT=false
   fi
@@ -61,16 +61,16 @@ fi
 # Check if a design record exists.
 #
 # TWO FILES, NOT ONE. `game-concept.md` is the `standard`/`full` concept doc;
-# at `minimal` the design record is the one-page `design/game-brief.md`, which
+# at `minimal` the design record is the one-page `docs/GDD.md`, which
 # `/brainstorm` writes in its place. workflow-modes.md states the rule this
 # check has to satisfy: any check, gate or glob for the minimal design artifact
-# must target `design/game-brief.md`.
+# must target `docs/GDD.md`.
 #
 # Testing only for `game-concept.md` means a minimal-tier project that has
 # already run `/start` AND `/brainstorm` is greeted with "NEW PROJECT ... Run:
 # /start" at every session start -- the banner wrong about the one artifact
 # that tier produces.
-if [ -f "design/gdd/game-concept.md" ] || [ -f "design/game-brief.md" ]; then
+if [ -f "docs/GDD.md" ] || [ -f "docs/GDD.md" ]; then
   FRESH_PROJECT=false
 fi
 
@@ -93,16 +93,16 @@ for _root in src Assets Source; do
   fi
 done
 
-# --- Check 0b: v1.0 project — legacy config present, project.yaml absent ---
+# --- Check 0b: v1.0 project — legacy config present, .claude/ccgs/project.yaml absent ---
 # The migration story depends on users discovering /adopt; UPGRADING.md only
 # reaches people who read it. An unconfigured technical-preferences.md template
 # does not count as legacy data (same rule as migrate-v1-config.sh), and legacy
 # config also means the project is not fresh — the NEW PROJECT banner below
 # would be wrong for it.
-if [ ! -f "project.yaml" ]; then
+if [ ! -f ".claude/ccgs/project.yaml" ]; then
   LEGACY_FILES=""
-  [ -f "production/stage.txt" ] && LEGACY_FILES="production/stage.txt"
-  [ -f "production/review-mode.txt" ] && LEGACY_FILES="${LEGACY_FILES:+$LEGACY_FILES, }production/review-mode.txt"
+  [ -f ".claude/ccgs/stage.txt" ] && LEGACY_FILES=".claude/ccgs/stage.txt"
+  [ -f ".claude/ccgs/review-mode.txt" ] && LEGACY_FILES="${LEGACY_FILES:+$LEGACY_FILES, }.claude/ccgs/review-mode.txt"
   if [ -f ".claude/docs/technical-preferences.md" ]; then
     TP_ENGINE=$(grep -E "^[[:space:]]*-[[:space:]]+\*\*Engine\*\*:" .claude/docs/technical-preferences.md 2>/dev/null)
     if [ -n "$TP_ENGINE" ] && ! echo "$TP_ENGINE" | grep -q "TO BE CONFIGURED" 2>/dev/null; then
@@ -112,7 +112,7 @@ if [ ! -f "project.yaml" ]; then
   if [ -n "$LEGACY_FILES" ]; then
     FRESH_PROJECT=false
     echo ""
-    echo "⬆️  v1.0 PROJECT: legacy config ($LEGACY_FILES) but no project.yaml."
+    echo "⬆️  v1.0 PROJECT: legacy config ($LEGACY_FILES) but no .claude/ccgs/project.yaml."
     echo "   Run: /adopt — it detects this and drives the migration (non-destructive)."
     echo "   Preview first: bash .claude/scripts/migrate-v1-config.sh --dry-run"
   fi
@@ -130,10 +130,10 @@ fi
 
 # --- Resolve the workflow tier once, for the checks below ---
 #
-# Checks 1, 3 and 4 all ask "where is the design/architecture document for this
+# Checks 1, 3 and 4 all ask "where is the docs/design/architecture document for this
 # code?". At `minimal` the answer is that there deliberately is none:
 # workflow-modes.md requires only engine choice and a filled
-# `design/game-brief.md` before code starts, and says everything else can be
+# `docs/GDD.md` before code starts, and says everything else can be
 # skipped. Reporting their absence as a GAP nags the user about work their own
 # configuration told them to skip -- and a warning that fires when nothing is
 # wrong trains the user to ignore the ones that matter.
@@ -189,7 +189,7 @@ if [ "$DOC_CHECKS" = true ] && [ -z "$CODE_ROOT" ]; then
   if [ -d src ] || [ -d Assets ] || [ -d Source ]; then
     echo "ℹ️  NOT CHECKED: code exists but the code root is ambiguous (engine.name unset, and the tree does not name one unambiguously)."
     echo "    Checks 1, 3 and 4 (design and architecture docs for existing code) did NOT run."
-    echo "    Suggested action: /setup-engine, or set engine.name in project.yaml"
+    echo "    Suggested action: /setup-engine, or set engine.name in .claude/ccgs/project.yaml"
   fi
 fi
 
@@ -201,14 +201,19 @@ else
   SRC_FILES=0
 fi
 
-# Only the GDDs at the top of design/gdd/ count, as in the commit check: copies
+# Only the GDDs at the top of docs/design/gdd/ count, as in the commit check: copies
 # in a subfolder such as archive/ are not the project's design.
-if [ -d "design/gdd" ]; then
-  DESIGN_FILES=$(find design/gdd -maxdepth 1 -type f -name "*.md" 2>/dev/null | wc -l)
-  SUB_DESIGN_FILES=$(find design/gdd -mindepth 2 -type f -name "*.md" 2>/dev/null | wc -l)
+if [ -d "docs/design/gdd" ]; then
+  DESIGN_FILES=$(find docs/design/gdd -maxdepth 1 -type f -name "*.md" 2>/dev/null | wc -l)
+  SUB_DESIGN_FILES=$(find docs/design/gdd -mindepth 2 -type f -name "*.md" 2>/dev/null | wc -l)
 else
   DESIGN_FILES=0
   SUB_DESIGN_FILES=0
+fi
+# ProjectI: docs/GDD.md is the design record, one "## " section per system
+# (.claude/docs/projecti-layout.md), so each section counts as a design doc.
+if [ -f "docs/GDD.md" ]; then
+  DESIGN_FILES=$(( DESIGN_FILES + $(grep -c '^## ' docs/GDD.md 2>/dev/null || echo 0) ))
 fi
 
 # Normalize whitespace from wc output
@@ -218,7 +223,7 @@ SUB_DESIGN_FILES=$(echo "$SUB_DESIGN_FILES" | tr -d ' ')
 
 if [ "$DOC_CHECKS" = true ] && [ "$SRC_FILES" -gt 50 ] && [ "$DESIGN_FILES" -lt 5 ]; then
   echo "⚠️  GAP: Substantial codebase ($SRC_FILES source files) but sparse design docs ($DESIGN_FILES files)"
-  [ "$SUB_DESIGN_FILES" -gt 0 ] && echo "    Not counted: $SUB_DESIGN_FILES .md file(s) in design/gdd/ subfolders (such as archive/)"
+  [ "$SUB_DESIGN_FILES" -gt 0 ] && echo "    Not counted: $SUB_DESIGN_FILES .md file(s) in docs/design/gdd/ subfolders (such as archive/)"
   echo "    Suggested action: /reverse-document design ${CODE_ROOT:-<code root>}/[system]"
   echo "    Or run: /project-stage-detect to get full analysis"
 fi
@@ -243,9 +248,9 @@ if [ -d "prototypes" ]; then
     if [ ${#UNDOCUMENTED_PROTOS[@]} -gt 0 ]; then
       echo "⚠️  GAP: ${#UNDOCUMENTED_PROTOS[@]} undocumented prototype(s) found:"
       for proto in "${UNDOCUMENTED_PROTOS[@]}"; do
-        echo "    - prototypes/$proto/ (no README or CONCEPT doc)"
+        echo "    - docs/prototypes/$proto/ (no README or CONCEPT doc)"
       done
-      echo "    Suggested action: /reverse-document concept prototypes/[name]"
+      echo "    Suggested action: /reverse-document concept docs/prototypes/[name]"
     fi
   fi
 fi
@@ -281,12 +286,12 @@ if [ "$DOC_CHECKS" = true ] && [ -n "$CODE_ROOT" ] && [ -d "$CODE_ROOT/gameplay"
       # If system has 5+ files, check for corresponding design doc
       if [ "$file_count" -ge 5 ]; then
         # Check for design doc (allow variations: combat-system.md, combat.md)
-        design_doc_1="design/gdd/${system_name}-system.md"
-        design_doc_2="design/gdd/${system_name}.md"
+        design_doc_1="docs/design/gdd/${system_name}-system.md"
+        design_doc_2="docs/design/gdd/${system_name}.md"
 
         if [ ! -f "$design_doc_1" ] && [ ! -f "$design_doc_2" ]; then
           echo "⚠️  GAP: Gameplay system '$CODE_ROOT/gameplay/$system_name/' ($file_count files) has no design doc"
-          echo "    Expected: design/gdd/${system_name}-system.md or design/gdd/${system_name}.md"
+          echo "    Expected: docs/design/gdd/${system_name}-system.md or docs/design/gdd/${system_name}.md"
           echo "    Suggested action: /reverse-document design $CODE_ROOT/gameplay/$system_name"
         fi
       fi
@@ -297,9 +302,10 @@ fi
 # --- Check 5: Production planning ---
 if [ "$SRC_FILES" -gt 100 ]; then
   # For projects with substantial code, check for production planning
-  if [ ! -d "production/sprints" ] && [ ! -d "production/milestones" ]; then
+  # ProjectI plans in docs/Roadmap.md and on the Trello board.
+  if [ ! -f "docs/Roadmap.md" ] && [ ! -d "docs/production/sprints" ] && [ ! -d "docs/production/milestones" ]; then
     echo "⚠️  GAP: Large codebase ($SRC_FILES files) but no production planning found"
-    echo "    Suggested action: /sprint-plan or create production/ directory"
+    echo "    Suggested action: /sprint-plan or create docs/production/ directory"
   fi
 fi
 
@@ -324,13 +330,13 @@ STAGE=""
 if [ "$WORKFLOW" != "minimal" ] && [ -f .claude/hooks/yaml-helper.sh ]; then
     # get_yaml_key takes the file first; called with the key alone it returned
     # nothing, and only the legacy stage.txt was ever read.
-    STAGE=$(get_yaml_key project.yaml project.stage 2>/dev/null)
+    STAGE=$(get_yaml_key .claude/ccgs/project.yaml project.stage 2>/dev/null)
 fi
-[ "$WORKFLOW" != "minimal" ] && [ -z "$STAGE" ] && [ -f production/stage.txt ] && STAGE=$(head -1 production/stage.txt 2>/dev/null | tr -d '
+[ "$WORKFLOW" != "minimal" ] && [ -z "$STAGE" ] && [ -f .claude/ccgs/stage.txt ] && STAGE=$(head -1 .claude/ccgs/stage.txt 2>/dev/null | tr -d '
 ' | tr -d ' ')
 
 if [ -n "$STAGE" ]; then
-    STORY_COUNT=$(find production/epics -name "story-*.md" 2>/dev/null | wc -l | tr -d ' ')
+    STORY_COUNT=$(find docs/production/epics -name "story-*.md" 2>/dev/null | wc -l | tr -d ' ')
     case "$STAGE" in
       Concept|concept|Pre-Production|"Pre-Production")
         if [ "$STORY_COUNT" -gt 0 ] && [ "$SRC_FILES" -gt 0 ]; then

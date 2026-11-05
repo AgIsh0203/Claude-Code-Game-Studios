@@ -94,7 +94,7 @@ Context  ->  Questions  ->  Options  ->  Decision  ->  Draft  ->  Approval  ->  
    - If new (not in registry): flag it as a candidate for registry registration
      (will be handled in Phase 5).
 
-After writing each section, update `production/session-state/active.md` with the
+After writing each section, update `.claude/ccgs/session-state/active.md` with the
 completed section name. Use Glob to check if the file exists — use Write to create
 it if absent, Edit to update it if present.
 
@@ -507,7 +507,7 @@ UI requirements, output this flag immediately:
 > **📌 UX Flag — [System Name]**: This system has UI requirements. In Phase 4
 > (Pre-Production), run `/ux-design` to create a UX spec for each screen or
 > HUD element this system contributes to **before** writing epics. Stories that
-> reference UI should cite `design/ux/[screen].md`, not the GDD directly.
+> reference UI should cite `docs/design/ux/[screen].md`, not the GDD directly.
 >
 > Note this in the systems index for this system if you update it.
 

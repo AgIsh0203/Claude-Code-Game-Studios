@@ -10,9 +10,9 @@ presented (layer, GDD, architecture module, governing ADRs, engine risk, ADR
 coverage, untraced requirements) and the user is asked "Shall I create Epic:
 [name]?" before anything is written.
 
-Epics are written to `production/epics/[epic-slug]/EPIC.md`, each after its own
-"May I write `production/epics/[epic-slug]/EPIC.md` and add its row to
-`production/epics/index.md` (creating it if absent)?" ask, which names the index
+Epics are written to `docs/production/epics/[epic-slug]/EPIC.md`, each after its own
+"May I write `docs/production/epics/[epic-slug]/EPIC.md` and add its row to
+`docs/production/epics/index.md` (creating it if absent)?" ask, which names the index
 it then creates or updates. An EPIC.md that already exists
 is never overwritten: the user chooses update-in-place (its Stories table kept) or
 skip. In `full` review mode the
@@ -58,9 +58,9 @@ In `solo` mode: PR-EPIC is skipped. Output notes: "PR-EPIC skipped — Solo mode
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -70,41 +70,41 @@ Fixture defaults.
 ### Case 1: Happy Path — Two approved GDDs create two epics
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: full`, `modes.review_mode: lean`
-- `design/gdd/systems-index.md` lists 2 Foundation systems
-- Both systems have Approved GDDs in `design/gdd/`, each with a `## Summary`
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `modes.workflow: full`, `modes.review_mode: lean`
+- `docs/GDD.md` lists 2 Foundation systems
+- Both systems have Approved GDDs in `docs/design/gdd/`, each with a `## Summary`
 - `docs/architecture/architecture.md` has a module for each system
 - Accepted ADRs cover every TR-ID for both systems in `docs/architecture/tr-registry.yaml`;
   the first system has two governing ADRs whose Engine Compatibility rates
   Knowledge Risk LOW and HIGH
 - `docs/architecture/control-manifest.md` exists
-- No `production/epics/` directory
+- No `docs/production/epics/` directory
 
 **Input:** `/create-epics layer: foundation`
 
 **Expected behavior:**
-1. Globs `design/gdd/*.md` (excluding systems-index and other non-system docs)
+1. Globs `docs/design/gdd/*.md` (excluding systems-index and other non-system docs)
    to establish N, then Greps `^## Summary` to scope the Foundation systems
 2. Reads the 2 in-scope GDDs, `architecture.md`, the Decision / GDD Requirements
    Addressed / Engine Compatibility sections of the in-scope ADRs, the TR
    registry and the manifest header; reports "Loaded 2 GDDs, [M] ADRs, engine: …"
 3. For each system: presents the epic block and asks "Shall I create Epic: [name]?"
 4. Notes "PR-EPIC skipped — Lean mode."
-5. For each epic: asks "May I write `production/epics/[epic-slug]/EPIC.md` and
-   add its row to `production/epics/index.md` (creating it if absent)?" and writes
+5. For each epic: asks "May I write `docs/production/epics/[epic-slug]/EPIC.md` and
+   add its row to `docs/production/epics/index.md` (creating it if absent)?" and writes
    both after approval
-6. Creates or updates `production/epics/index.md`
+6. Creates or updates `docs/production/epics/index.md`
 7. Verdict: COMPLETE — 2 epic(s) written; next step `/create-stories [epic-slug]`
 
 **Assertions:**
 - [ ] Each epic block is shown and "Shall I create Epic: [name]?" asked before any write ask
 - [ ] "May I write" is asked per epic (not once for both)
-- [ ] Files land at `production/epics/[epic-slug]/EPIC.md`
+- [ ] Files land at `docs/production/epics/[epic-slug]/EPIC.md`
 - [ ] Each EPIC.md contains Layer, GDD path, Architecture Module, Governing ADRs table, GDD Requirements table, Definition of Done
 - [ ] The first epic's Engine Risk is HIGH — the highest among its governing ADRs, not the first or the average
-- [ ] The Definition of Done asks Logic and Integration stories for passing tests under `tests/` (the Godot test root) and Visual/Feel and UI stories for retained screenshots in `production/qa/evidence/` — each screen touched for UI, plus a lead sign-off for Visual/Feel
+- [ ] The Definition of Done asks Logic and Integration stories for passing tests under `tests/` (the Godot test root) and Visual/Feel and UI stories for retained screenshots in `docs/production/qa/evidence/` — each screen touched for UI, plus a lead sign-off for Visual/Feel
 - [ ] "PR-EPIC skipped — Lean mode." appears; no producer is spawned
-- [ ] `production/epics/index.md` is created or updated after writing, and only after an ask that named it
+- [ ] `docs/production/epics/index.md` is created or updated after writing, and only after an ask that named it
 - [ ] Verdict is COMPLETE and names `/create-stories [epic-slug]`
 
 ---
@@ -112,15 +112,15 @@ Fixture defaults.
 ### Case 2: Failure Path — No system GDDs found
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: full`
-- `design/gdd/` contains only `game-concept.md` and `systems-index.md` (no
+- `.claude/ccgs/project.yaml`: `modes.workflow: full`
+- `docs/design/gdd/` contains only `game-concept.md` and `systems-index.md` (no
   system GDDs)
 
 **Input:** `/create-epics all`
 
 **Expected behavior:**
-1. Globs `design/gdd/*.md` excluding the non-system docs — N = 0
-2. Reports "No system GDDs found in `design/gdd/` — run `/design-system` first"
+1. Globs `docs/design/gdd/*.md` excluding the non-system docs — N = 0
+2. Reports "No system GDDs found in `docs/design/gdd/` — run `/design-system` first"
    and stops
 3. No epic is presented, no gate runs, no file is written
 
@@ -136,7 +136,7 @@ Fixture defaults.
 
 **Fixture:**
 - 2 Approved GDDs, architecture, ADRs, TR registry and control manifest as in Case 1
-- `project.yaml`: `modes.workflow: full`, `modes.review_mode: full` — the workflow
+- `.claude/ccgs/project.yaml`: `modes.workflow: full`, `modes.review_mode: full` — the workflow
   is pinned because an unset one resolves to `minimal`, where the skill reads the
   brief instead of the GDDs and the gate never comes into play
 - PR-EPIC returns REALISTIC
@@ -173,7 +173,7 @@ Fixture defaults.
 ### Case 4: Edge Case — Untraced requirements at full workflow
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: full`, `modes.review_mode: solo`
+- `.claude/ccgs/project.yaml`: `modes.workflow: full`, `modes.review_mode: solo`
 - One Approved Foundation GDD whose system has 5 TR-IDs in `tr-registry.yaml`;
   Accepted ADRs cover 3 of them (2 untraced)
 
@@ -204,7 +204,7 @@ Fixture defaults.
 
 **Fixture:**
 - 2 Approved GDDs, architecture, ADRs, TR registry and control manifest as in Case 1
-- `project.yaml`: `modes.workflow: full`, `modes.review_mode: full`
+- `.claude/ccgs/project.yaml`: `modes.workflow: full`, `modes.review_mode: full`
 - PR-EPIC returns CONCERNS (one epic's scope is too large)
 
 **Input:** `/create-epics layer: foundation`
@@ -232,9 +232,9 @@ Fixture defaults.
 
 **Fixture:**
 - As Case 1 (`modes.workflow: full`, `modes.review_mode: lean`)
-- `production/epics/[first-slug]/EPIC.md` already exists, with
+- `docs/production/epics/[first-slug]/EPIC.md` already exists, with
   `**Stories**: 3 stories` in its header and a 3-row `## Stories` table;
-  `production/epics/index.md` has its row with `3 stories`
+  `docs/production/epics/index.md` has its row with `3 stories`
 - The second system has no EPIC.md
 
 **Input:** `/create-epics layer: foundation`
@@ -248,8 +248,8 @@ Fixture defaults.
    Governing ADRs, GDD Requirements and Definition of Done, and leaves the
    `**Stories**` line and the `## Stories` table as they were
 4. For the second system the normal "May I write `…/EPIC.md` and add its row to
-   `production/epics/index.md`…?" ask follows
-5. `production/epics/index.md` keeps one row for the first epic, still `3 stories`,
+   `docs/production/epics/index.md`…?" ask follows
+5. `docs/production/epics/index.md` keeps one row for the first epic, still `3 stories`,
    and gains a row for the second
 
 **Assertions:**
@@ -263,8 +263,8 @@ Fixture defaults.
 ### Case 7: Standard tier — GDDs without `## Summary`, one untraced non-critical requirement
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: standard`, `modes.review_mode: solo`
-- `design/gdd/systems-index.md` lists one Foundation and one Core system; both
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`, `modes.review_mode: solo`
+- `docs/GDD.md` lists one Foundation and one Core system; both
   GDDs predate `## Summary` (the Summary scan matches none of them)
 - `docs/architecture/architecture.md` has a module for each system, and
   `docs/architecture/tr-registry.yaml` holds both systems' TR-IDs
@@ -275,7 +275,7 @@ Fixture defaults.
 **Input:** `/create-epics all`
 
 **Expected behavior:**
-1. Globs `design/gdd/*.md` for N = 2; the `^## Summary` scan returns 0 matches
+1. Globs `docs/design/gdd/*.md` for N = 2; the `^## Summary` scan returns 0 matches
 2. Notes once: "No `## Summary` sections found across 2 GDDs — scoping from
    `systems-index.md` instead of Summary." and full-reads both in-scope GDDs
 3. Proceeds without the control manifest (read if present, not required at
@@ -308,7 +308,7 @@ Fixture defaults.
 
 - Feature and Presentation layers follow the same per-epic pattern as Foundation
   and Core — layer-specific ordering is not independently tested.
-- The `minimal` tier (optional; decomposes from `design/game-brief.md`, stops
+- The `minimal` tier (optional; decomposes from `docs/GDD.md`, stops
   without one) is not given a fixture.
 - The `## Summary` partial-adoption row (0 < M < N) is not separately tested; the
   zero-match row is Case 7.

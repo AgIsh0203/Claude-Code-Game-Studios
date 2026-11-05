@@ -32,7 +32,7 @@
 **Input**: "Write me a C# MonoBehaviour that handles player health and fires a Unity event on death."
 **Expected behavior**:
 - Does not produce Unity C# code
-- Confirms the project's engine from `engine.name` in `project.yaml` before answering: with Unreal configured, states that the project is built in Unreal Engine 5; with it unset, asks which engine the project uses rather than assuming
+- Confirms the project's engine from `engine.name` in `.claude/ccgs/project.yaml` before answering: with Unreal configured, states that the project is built in Unreal Engine 5; with it unset, asks which engine the project uses rather than assuming
 - With Unreal configured, maps the request to the Unreal equivalent its own standards prescribe: health as an Attribute Set attribute changed only through Gameplay Effects when GAS is in use, otherwise a C++ `UActorComponent` exposing a death event to Blueprint
 - Does not redirect to unity-specialist — that agent serves Unity projects only, and this agent's `Agent` grant covers only its four Unreal sub-specialists
 

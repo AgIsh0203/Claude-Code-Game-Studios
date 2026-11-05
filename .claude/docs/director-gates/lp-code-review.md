@@ -5,7 +5,7 @@
 Agent: `lead-programmer` | Model tier: Sonnet
 
 **Trigger**: After a dev story is implemented (`/dev-story`, `/story-done`), or
-as part of `/code-review`
+as part of `/gamedev-code-review`
 
 **Context to pass**:
 - Implementation file paths

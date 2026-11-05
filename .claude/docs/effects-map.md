@@ -1,4 +1,4 @@
-# project.yaml — Effects Map
+# .claude/ccgs/project.yaml — Effects Map
 
 > ## READ ONE SECTION, NEVER THIS WHOLE FILE
 >
@@ -22,7 +22,7 @@
 > the cost of accepting that invitation is silent. Name the `## <key>` section
 > you need instead.
 
-This document defines what each `project.yaml` setting actually does across
+This document defines what each `.claude/ccgs/project.yaml` setting actually does across
 every skill that reads it. It is the tracked, authoritative reference.
 
 **Purpose:** When a skill reads a setting, this document is the authoritative
@@ -38,12 +38,12 @@ this file when adding a new setting or changing how a skill responds to one.
 Skills not listed (e.g. `ux-review`, `balance-check`, `test-flakiness`, `test-helpers`,
 `test-setup`, `soak-test`, `perf-profile`, `launch-checklist`, `release-checklist`,
 `skill-test`, `skill-improve`, `vertical-slice`) are not meaningfully affected by
-`project.yaml` settings and do not need entries here. Add a skill only when its
+`.claude/ccgs/project.yaml` settings and do not need entries here. Add a skill only when its
 behavior genuinely branches on a setting value.
 
-**Local override pattern:** `project.yaml` is committed to git as the shared team
-config. Per-developer overrides live in `project.local.yaml` (gitignored). Priority
-chain across all settings: `project.local.yaml` → `project.yaml` → legacy mirror →
+**Local override pattern:** `.claude/ccgs/project.yaml` is committed to git as the shared team
+config. Per-developer overrides live in `.claude/ccgs/project.local.yaml` (gitignored). Priority
+chain across all settings: `.claude/ccgs/project.local.yaml` → `.claude/ccgs/project.yaml` → legacy mirror →
 `modes.rigor` expansion → hardcoded default. The expansion step applies only to the
 six knobs `rigor` fronts (`modes.workflow`, `docs.density`, `qa.level`,
 `modes.story_granularity`, `modes.review_mode`, `team.size`), which for that reason have **no** hardcoded default —
@@ -54,18 +54,18 @@ which settings can be locally overridden.
 
 ---
 
-## Local Override Pattern — `project.local.yaml`
+## Local Override Pattern — `.claude/ccgs/project.local.yaml`
 
-The `project.local.yaml` file lets each developer override specific settings for
+The `.claude/ccgs/project.local.yaml` file lets each developer override specific settings for
 their own use without affecting the team. The file is gitignored and never
 committed.
 
 ### How it works
 
-Priority chain (every setting): `project.local.yaml` → `project.yaml` → hardcoded default
+Priority chain (every setting): `.claude/ccgs/project.local.yaml` → `.claude/ccgs/project.yaml` → hardcoded default
 
-If a setting is present in `project.local.yaml`, that value wins. If absent, the
-value from `project.yaml` is used. If absent there too, the hardcoded default
+If a setting is present in `.claude/ccgs/project.local.yaml`, that value wins. If absent, the
+value from `.claude/ccgs/project.yaml` is used. If absent there too, the hardcoded default
 takes over.
 
 ---
@@ -77,7 +77,7 @@ Sibling keys in the same block are preserved.
 
 Example:
 
-`project.yaml`:
+`.claude/ccgs/project.yaml`:
 ```yaml
 testing:
   strict:
@@ -86,7 +86,7 @@ testing:
     visual: false
 ```
 
-`project.local.yaml` (sparse override):
+`.claude/ccgs/project.local.yaml` (sparse override):
 ```yaml
 testing:
   strict:
@@ -95,7 +95,7 @@ testing:
 
 Effective config seen by skills: `logic: false, integration: true, visual: false`.
 Only the explicitly-set `logic` key is overridden; sibling keys come through from
-`project.yaml`.
+`.claude/ccgs/project.yaml`.
 
 ---
 
@@ -103,12 +103,12 @@ Only the explicitly-set `logic` key is overridden; sibling keys come through fro
 
 Only personal-experience settings can be locally overridden. Project-wide facts
 (engine, stage, naming conventions, what's required on disk) are locked to
-`project.yaml` because divergence between developers would break team coordination.
+`.claude/ccgs/project.yaml` because divergence between developers would break team coordination.
 
 The rule for deciding which side a setting belongs on:
 
 > **If a setting affects what artifacts exist or what they look like on disk,
-> it must be locked to `project.yaml`. If a setting only changes your personal
+> it must be locked to `.claude/ccgs/project.yaml`. If a setting only changes your personal
 > experience (which agents spawn for you, whether you get prompts, your local
 > CI bypass), it can be locally overridden.**
 
@@ -120,7 +120,7 @@ The rule for deciding which side a setting belongs on:
 | `modes.automation` | How often the AI prompts you |
 | `modes.automation_always_ask` | Your personal safety categories |
 | `team.size` | Which agents spawn for your reviews (review depth differs, artifacts don't) |
-| `testing.strict.*` (each type) | Whether failures block your local work (CI still enforces project.yaml defaults) |
+| `testing.strict.*` (each type) | Whether failures block your local work (CI still enforces .claude/ccgs/project.yaml defaults) |
 | `performance.enforce` | Whether budget violations block your local work (CI enforces project defaults) |
 | `features.session_state` | Your session tracking preference |
 | `features.token_budget_warn_at` | Your personal cost threshold |
@@ -128,11 +128,11 @@ The rule for deciding which side a setting belongs on:
 | `features.read_guard_kb` | The size over which they are |
 | `updates.check` | Whether you see the new-release line; turning it off for you leaves it on for teammates |
 
-**Locked to `project.yaml`** (project-wide — would create artifact divergence if local):
+**Locked to `.claude/ccgs/project.yaml`** (project-wide — would create artifact divergence if local):
 
 | Setting | Why it must be project-wide |
 |---------|----------------------------|
-| `schema_version`, `framework.*` | File metadata, not preferences — **exempt from the report below**, since a `project.local.yaml` carrying `schema_version: 1` is correct as written |
+| `schema_version`, `framework.*` | File metadata, not preferences — **exempt from the report below**, since a `.claude/ccgs/project.local.yaml` carrying `schema_version: 1` is correct as written |
 | `project.name`, `version`, `genre`, `kind`, `stage` | Project identity |
 | `engine.*`, `specialists.*` | Whole team must use same engine |
 | `naming.*` | Code conventions must be consistent across team |
@@ -150,7 +150,7 @@ The rule for deciding which side a setting belongs on:
 | `commands.*` | Build/test commands are project facts |
 | `testing.framework` | Whole project uses one framework |
 
-> **A locked key written into `project.local.yaml` by hand is reported, not
+> **A locked key written into `.claude/ccgs/project.local.yaml` by hand is reported, not
 > swallowed.** `/settings --local` refuses to write one, but the
 > file is meant to be hand-edited and that path had no guard: `modes.rigor: full`
 > there is a real key with a legal value, so enum validation passes it, and then
@@ -170,20 +170,20 @@ The rule for deciding which side a setting belongs on:
 ### `/settings --local` flag behavior
 
 ```
-/settings workflow=minimal               → writes to project.yaml (team-wide)
-/settings --local automation=autonomous  → writes to project.local.yaml (just you)
+/settings workflow=minimal               → writes to .claude/ccgs/project.yaml (team-wide)
+/settings --local automation=autonomous  → writes to .claude/ccgs/project.local.yaml (just you)
 ```
 
 **Behavior rules:**
 
-- Default (no flag): writes to `project.yaml`
-- `--local` flag: writes to `project.local.yaml` (creates it if absent)
+- Default (no flag): writes to `.claude/ccgs/project.yaml`
+- `--local` flag: writes to `.claude/ccgs/project.local.yaml` (creates it if absent)
 - `--local` on a locked setting → error:
   > *"`<setting>` cannot be locally overridden — it's a project-wide setting.
   > Use `/settings <setting>=<value>` (no `--local`) to change it for the whole team."*
-- Writing to `project.yaml` when the same setting is currently locally overridden → warning:
-  > *"This setting is currently locally overridden in `project.local.yaml`.
-  > Writing to `project.yaml` will not affect your effective value."*
+- Writing to `.claude/ccgs/project.yaml` when the same setting is currently locally overridden → warning:
+  > *"This setting is currently locally overridden in `.claude/ccgs/project.local.yaml`.
+  > Writing to `.claude/ccgs/project.yaml` will not affect your effective value."*
 
 ---
 
@@ -193,7 +193,7 @@ When skills or hooks read either file:
 
 | Issue | Behavior |
 |-------|----------|
-| Unknown key (typo or stale setting) | Session-start warning: *"`project.local.yaml` has unknown key `modes.automaton` — typo? Ignored."* Does NOT block (forwards-compat with future settings). |
+| Unknown key (typo or stale setting) | Session-start warning: *"`.claude/ccgs/project.local.yaml` has unknown key `modes.automaton` — typo? Ignored."* Does NOT block (forwards-compat with future settings). |
 | Invalid value not in enum (e.g. `automation: chaotic`) | Hard error: skill exits with explanation of valid values. |
 | Type mismatch (e.g. integer field set to a string) | Hard error: skill exits with type expected. |
 
@@ -203,18 +203,18 @@ When skills or hooks read either file:
 
 | Scenario | Behavior |
 |----------|----------|
-| `/start` on fresh project | Creates `project.yaml` only. Does NOT create `project.local.yaml`. |
-| `/settings --local <x>=<y>` when local.yaml doesn't exist | Creates `project.local.yaml` containing just that setting. |
-| `project.local.yaml` exists but `project.yaml` doesn't | Hard error: *"`project.yaml` missing — run `/start` to create one. Local overrides require a base."* |
-| Both files exist | Read `project.yaml` first, deep-merge `project.local.yaml` on top. Normal operation. |
-| Both files set the same key | `project.local.yaml` wins. No prompting. |
+| `/start` on fresh project | Creates `.claude/ccgs/project.yaml` only. Does NOT create `.claude/ccgs/project.local.yaml`. |
+| `/settings --local <x>=<y>` when local.yaml doesn't exist | Creates `.claude/ccgs/project.local.yaml` containing just that setting. |
+| `.claude/ccgs/project.local.yaml` exists but `.claude/ccgs/project.yaml` doesn't | Hard error: *"`.claude/ccgs/project.yaml` missing — run `/start` to create one. Local overrides require a base."* |
+| Both files exist | Read `.claude/ccgs/project.yaml` first, deep-merge `.claude/ccgs/project.local.yaml` on top. Normal operation. |
+| Both files set the same key | `.claude/ccgs/project.local.yaml` wins. No prompting. |
 
 ---
 
 ### Two-developer clash scenarios — and why the whitelist prevents them
 
-**File-level conflict (`project.yaml`):**
-Standard git merge conflict. Each developer's `project.local.yaml` is gitignored
+**File-level conflict (`.claude/ccgs/project.yaml`):**
+Standard git merge conflict. Each developer's `.claude/ccgs/project.local.yaml` is gitignored
 and never collides with another developer's. Normal git workflow handles team-wide
 changes.
 
@@ -224,10 +224,10 @@ Example of what the whitelist prevents:
 
 > Sarah sets `modes.workflow: minimal` locally to skip GDD requirements. She
 > doesn't write GDDs because her local mode doesn't require them. Mike runs
-> `/gate-check` with the team's `project.yaml` value, `standard`; gate-check sees missing
+> `/gate-check` with the team's `.claude/ccgs/project.yaml` value, `standard`; gate-check sees missing
 > GDDs and fails.
 
-This can't happen because `modes.workflow` is locked to `project.yaml`. Same
+This can't happen because `modes.workflow` is locked to `.claude/ccgs/project.yaml`. Same
 for `qa.level`, `docs.density`, `strict_gate_checks`, `naming.*`, and every
 other setting that affects what artifacts exist on disk.
 
@@ -248,7 +248,7 @@ The answer depends on which kind of difference you're talking about:
 
 - Teammate A: local `review_mode: full`, `automation: collaborative`, `testing.strict.logic: true`
 - Teammate B: local `review_mode: solo`, `automation: autonomous`, `testing.strict.logic: false`
-- Both bound by the same project.yaml-locked settings (e.g. `workflow: standard`, `qa.level: standard`)
+- Both bound by the same .claude/ccgs/project.yaml-locked settings (e.g. `workflow: standard`, `qa.level: standard`)
 
 B writes a GDD that meets `workflow: standard` (all 5 required sections present).
 B's `/design-review` runs with `review_mode: solo` — fast advisory check, no
@@ -273,7 +273,7 @@ If `qa.level` were locally overridable:
 - A's next `/gate-check` fails because evidence is missing across multiple of B's "Complete" stories.
 
 This is the artifact divergence problem. To prevent it, `qa.level` is locked to
-`project.yaml`. The team agrees together on what's required; individuals override
+`.claude/ccgs/project.yaml`. The team agrees together on what's required; individuals override
 only their personal experience, never the team's standards.
 
 **The pattern to remember:**
@@ -281,20 +281,20 @@ only their personal experience, never the team's standards.
 | Difference type | Outcome |
 |----------------|---------|
 | Different review depth (review_mode, team.size) | Stricter reviewer surfaces more findings — healthy. Artifacts unchanged. |
-| Different local strictness on failures (testing.strict.*, performance.enforce) | Stricter dev's local /story-done blocks earlier — they fix it locally. CI uses project.yaml defaults so team-wide quality bar stays. |
-| Different artifact requirements (workflow, qa.level, docs.density, etc.) | **Can't happen — these are locked.** Team agrees once in project.yaml. |
+| Different local strictness on failures (testing.strict.*, performance.enforce) | Stricter dev's local /story-done blocks earlier — they fix it locally. CI uses .claude/ccgs/project.yaml defaults so team-wide quality bar stays. |
+| Different artifact requirements (workflow, qa.level, docs.density, etc.) | **Can't happen — these are locked.** Team agrees once in .claude/ccgs/project.yaml. |
 
 ---
 
 ### CI behavior
 
-CI environments have no `project.local.yaml` — the file is gitignored and never
-present in a fresh clone. CI therefore always runs against `project.yaml`
+CI environments have no `.claude/ccgs/project.local.yaml` — the file is gitignored and never
+present in a fresh clone. CI therefore always runs against `.claude/ccgs/project.yaml`
 defaults: strict project standards, no developer-specific overrides.
 
 This is intentional and important:
 
-| Setting | Local default for fast iteration | CI default (`project.yaml`) |
+| Setting | Local default for fast iteration | CI default (`.claude/ccgs/project.yaml`) |
 |---------|----------------------------------|------------------------------|
 | `modes.review_mode` (locally overridable) | `solo` for one developer | `lean` (a team's usual choice — phase gates always run) |
 | `testing.strict.logic` (locally overridable) | `false` for fast WIP commits | `true` (failing tests block CI) |
@@ -308,19 +308,19 @@ regardless of any individual developer's local config.
 
 ### Secrets — never in either file
 
-`project.yaml` and `project.local.yaml` are for **preferences and configuration**,
+`.claude/ccgs/project.yaml` and `.claude/ccgs/project.local.yaml` are for **preferences and configuration**,
 never for **secrets**. API keys, tokens, and credentials belong in:
 
-- **Environment variables** (preferred for production/CI)
+- **Environment variables** (preferred for docs/production/CI)
 - **`.env` file** (gitignored, local dev)
 - **OS keychain** (when integrating with services that support it)
 
 When a skill needs an API key (e.g. `/asset-spec` calling Midjourney), it reads
-from the environment, not from `project.yaml`. `project.yaml` only stores **which**
+from the environment, not from `.claude/ccgs/project.yaml`. `.claude/ccgs/project.yaml` only stores **which**
 generator is used (`art.generator: midjourney`), not the API key for it.
 
-CI environments typically have no `project.local.yaml` (gitignored, not in the
-clone) — so CI always runs against `project.yaml` defaults. This is correct
+CI environments typically have no `.claude/ccgs/project.local.yaml` (gitignored, not in the
+clone) — so CI always runs against `.claude/ccgs/project.yaml` defaults. This is correct
 behavior: strict project defaults for CI, looser developer overrides for local work.
 
 ---
@@ -330,10 +330,10 @@ behavior: strict project defaults for CI, looser developer overrides for local w
 **Controls:** How many specialist and director agents are spawned during skill execution  
 **Values:** `full` | `lean` | `solo`  
 **Default:** *none* — supplied by `modes.rigor` (`minimal`, the default, yields `solo`; `standard` yields `lean`; `full` yields `full`)  
-**Set by:** `/settings`, or `migrate-v1-config.sh` (which `/adopt` runs) when it carries over a v1.0 `production/review-mode.txt`. `/start` and `/adopt` never write it themselves — unset, it follows `modes.rigor`  
+**Set by:** `/settings`, or `migrate-v1-config.sh` (which `/adopt` runs) when it carries over a v1.0 `.claude/ccgs/review-mode.txt`. `/start` and `/adopt` never write it themselves — unset, it follows `modes.rigor`  
 **Read by:** See skill table below
 
-**Priority chain (all skills):** inline argument flag → `modes.review_mode` in `project.yaml` → `production/review-mode.txt` (legacy fallback) → `modes.rigor` expansion (no terminal default; `minimal`→`solo`, `standard`→`lean`, `full`→`full`)
+**Priority chain (all skills):** inline argument flag → `modes.review_mode` in `.claude/ccgs/project.yaml` → `.claude/ccgs/review-mode.txt` (legacy fallback) → `modes.rigor` expansion (no terminal default; `minimal`→`solo`, `standard`→`lean`, `full`→`full`)
 
 > **design-review follows the standard chain.** `modes.review_mode` controls
 > design-review depth, its inline flag is `--review` for consistency with every
@@ -464,8 +464,8 @@ reach working code without producing a better result.
 **Set by:** `/start` (Phase 4: inferred from the user's description, shown, saved on a yes), `/settings`
 **Read by:** nothing directly — it is read *through* the six knobs it supplies
 
-**Priority chain:** `modes.rigor` in `project.yaml` → hardcoded default `minimal`
-(**locked** — not overridable from `project.local.yaml`, like the four *on-disk*
+**Priority chain:** `modes.rigor` in `.claude/ccgs/project.yaml` → hardcoded default `minimal`
+(**locked** — not overridable from `.claude/ccgs/project.local.yaml`, like the four *on-disk*
 knobs it fronts — `modes.workflow`, `docs.density`, `qa.level`,
 `modes.story_granularity` — because those five change what artifacts exist on
 disk. The two personal-experience knobs it also fronts, `modes.review_mode` and
@@ -487,15 +487,15 @@ The expansion sits **below every explicit source and above the terminal
 default**:
 
 ```
-project.local.yaml → project.yaml → legacy file → rigor expansion → default
+.claude/ccgs/project.local.yaml → .claude/ccgs/project.yaml → legacy file → rigor expansion → default
 ```
 
 That ordering is the back-compat guarantee, and it is what makes the migration
 free. Three consequences worth stating plainly:
 
-- **An existing `project.yaml` behaves identically.** If it already sets
+- **An existing `.claude/ccgs/project.yaml` behaves identically.** If it already sets
   `docs.density: terse`, step 2 answers before the expansion is consulted — so
-  the value and its reported source (`project.yaml`) are unchanged whether or not
+  the value and its reported source (`.claude/ccgs/project.yaml`) are unchanged whether or not
   `rigor` is present. No migration, no `schema_version` bump.
 - **Overrides go both ways.** Unlike the `workflow_overrides` **boolean flags** —
   which are additive and stricter-only — an explicit knob may be *looser* than
@@ -515,7 +515,7 @@ for anyone who had not also set the sub-knob.
 ### Provenance
 
 Derived values report their source as `rigor:<level>`, so the vocabulary is
-`{project.local.yaml, project.yaml, <legacy path>, rigor:<level>, default,
+`{.claude/ccgs/project.local.yaml, .claude/ccgs/project.yaml, <legacy path>, rigor:<level>, default,
 unset}`. `/settings` renders this as `(derived from rigor: standard)` and
 force-appends the five to its view-all list — none of them is a leaf of either
 YAML file, so enumerating file leaves alone would hide exactly the settings the
@@ -533,7 +533,7 @@ working code
 **Set by:** `/start` (via `modes.rigor`), `/settings`  
 **Read by:** See skill tables below
 
-**Priority chain:** `modes.workflow` in `project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
+**Priority chain:** `modes.workflow` in `.claude/ccgs/project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
 
 > **Why the middle level is `standard`, not `indie`.** A developer-type label
 > would conflate "type of developer" with "level of process". `standard`
@@ -546,7 +546,7 @@ working code
 > validate, not what the user can invoke.
 
 > **`minimal` floor:** Even in minimal mode, engine choice and a filled
-> **`design/game-brief.md`** are required before code starts — the brief's
+> **`docs/GDD.md`** are required before code starts — the brief's
 > build-order field is the plan, so there is no separate `sprint-plan` step.
 > Both take minutes and prevent real problems downstream. Everything else can
 > be skipped.
@@ -563,7 +563,7 @@ working code
 |-------|----------------|---------------------|----------|
 | `full` | High | All 8 GDD sections per system, full architecture, all ADRs, art bible, UX specs per screen | Projects where design correctness matters more than speed — teams, commercial titles, learning the full pipeline |
 | `standard` | Balanced | 5 GDD sections per system, one architecture doc, critical ADRs, game concept, systems index | Projects that have outgrown a brief — several interacting systems, or a design someone else has to implement |
-| `minimal` | Low | One-page `design/game-brief.md` + engine choice (build order in the brief = the plan; no separate sprint plan) | **Default.** Get to code fast — small scope, jam projects, or the design already in your head. Raise it when the project grows |
+| `minimal` | Low | One-page `docs/GDD.md` + engine choice (build order in the brief = the plan; no separate sprint plan) | **Default.** Get to code fast — small scope, jam projects, or the design already in your head. Raise it when the project grows |
 
 **standard required GDD sections:** Overview, Detailed Rules, Edge Cases, Dependencies,
 Acceptance Criteria.
@@ -629,10 +629,10 @@ checklists differ per phase per mode.
 
 | Gate | full | standard | minimal |
 |------|------|----------|---------|
-| Concept → Systems Design | game-concept.md, pillars, Visual Identity Anchor | game-concept.md only | `design/game-brief.md` only (content check, not section check) |
+| Concept → Systems Design | game-concept.md, pillars, Visual Identity Anchor | game-concept.md only | `docs/GDD.md` only (content check, not section check) |
 | Systems Design → Technical Setup | systems-index, all MVP GDDs reviewed (8 sections), cross-GDD review | systems-index, 5-section GDDs reviewed, cross-GDD review optional | Not applicable — no gates between brief and code; the gate PASSes with that note |
 | Technical Setup → Pre-Production | engine, art bible sections 1–4+, 3+ ADRs, architecture, UX specs started | engine, art bible only if visual assets, critical ADRs, architecture | engine configured (required floor) |
-| Pre-Production → Production | sprint plan, complete art bible, epics, UX specs, control manifest; Vertical Slice + its playtest recommended (absent → CONCERNS) | epics, sprint plan; complete art bible, UX specs, control manifest recommended; Vertical Slice recommended | the brief's Build order + stories under `production/epics/`; the Vertical Slice items drop — the core loop is fun and runs end to end, checked on the current build |
+| Pre-Production → Production | sprint plan, complete art bible, epics, UX specs, control manifest; Vertical Slice + its playtest recommended (absent → CONCERNS) | epics, sprint plan; complete art bible, UX specs, control manifest recommended; Vertical Slice recommended | the brief's Build order + stories under `docs/production/epics/`; the Vertical Slice items drop — the core loop is fun and runs end to end, checked on the current build |
 | Production → Polish | core mechanics, tests, smoke check, QA sign-off, 3+ playtests | core mechanics, smoke check, playable end to end, 1+ playtest, no open S1 bugs | smoke check, playable end to end, no open S1 bugs |
 | Polish → Release | all features, content complete, localization (`/localize qa` per locale), QA, smoke, no open S1–S3 bugs, newest `/security-audit` with no open CRITICAL/HIGH | all features, smoke, no open S1 bugs, the security audit | smoke, no open S1 bugs |
 
@@ -666,14 +666,14 @@ never softens a verdict — the strictest verdict from whoever ran still wins, a
 
 | Skill | full | standard | minimal |
 |-------|------|----------|---------|
-| **create-epics** | Requires all GDDs approved (8 sections) | Requires 5-section GDDs approved | **Skipped** (Option A) — no separate epic doc. `/create-stories` reads `design/game-brief.md` directly and synthesizes the implicit epic container itself. |
+| **create-epics** | Requires all GDDs approved (8 sections) | Requires 5-section GDDs approved | **Skipped** (Option A) — no separate epic doc. `/create-stories` reads `docs/GDD.md` directly and synthesizes the implicit epic container itself. |
 | **create-stories** | Requires all ADRs on required list present | Requires critical ADRs present | No ADR requirement |
-| **dev-story** | Requires TR registry + governing ADR — blocks without them, and on a `Proposed`, `Deprecated` or `Superseded` ADR; a missing control manifest warns | TR registry optional; blocks only on a referenced ADR that is missing, `Proposed`, `Deprecated` or `Superseded` | No TR registry or ADR required — implements against `design/game-brief.md`; a referenced ADR that is missing, `Proposed`, `Deprecated` or `Superseded` still blocks |
+| **dev-story** | Requires TR registry + governing ADR — blocks without them, and on a `Proposed`, `Deprecated` or `Superseded` ADR; a missing control manifest warns | TR registry optional; blocks only on a referenced ADR that is missing, `Proposed`, `Deprecated` or `Superseded` | No TR registry or ADR required — implements against `docs/GDD.md`; a referenced ADR that is missing, `Proposed`, `Deprecated` or `Superseded` still blocks |
 | **story-readiness** | Full TR registry + ADR + control manifest validation; any referenced ADR that is missing, `Proposed`, `Deprecated` or `Superseded` BLOCKS | TR registry optional; critical ADR check, and any referenced ADR that is missing, `Proposed`, `Deprecated` or `Superseded` BLOCKS | Acceptance-criteria check (the brief stands in for the GDD); any referenced ADR that is missing, `Proposed`, `Deprecated` or `Superseded` still BLOCKS |
 | **story-done** | Full GDD traceability + ADR consistency check | 5-section GDD traceability check | Acceptance criteria check only |
 | **qa-plan** | Full test plan derived from all 8 GDD sections | Test plan from 5 required sections | Test plan from acceptance criteria only |
 | **regression-suite** | Critical paths mapped from all sections including Edge Cases | Critical paths from required sections (including Edge Cases) | Smoke test coverage only |
-| **release-checklist** | Open S1, S2 or S3 bug in `production/qa/bugs/` fails its Quality Gates item | Open S1 fails; open S2/S3 listed as risks | Open S1 fails; open S2/S3 listed as risks |
+| **release-checklist** | Open S1, S2 or S3 bug in `docs/production/qa/bugs/` fails its Quality Gates item | Open S1 fails; open S2/S3 listed as risks | Open S1 fails; open S2/S3 listed as risks |
 | **launch-checklist** | Zero open S1–S3 bugs, no exceptions | Zero open S1; S2 or a documented exception | Zero open S1; S2 or a documented exception |
 | **team-release** | qa-lead verifies no open S1–S3 bugs | qa-lead verifies no open S1 bugs | qa-lead verifies no open S1 bugs |
 
@@ -683,11 +683,11 @@ never softens a verdict — the strictest verdict from whoever ran still wins, a
 
 | Skill | full | standard | minimal |
 |-------|------|----------|---------|
-| **project-stage-detect** | Checks for all doc types; missing art bible or UX specs flagged as gaps | Adjusts expectations — art bible only flagged if visual-asset stories exist; non-core UX specs not flagged | `design/game-brief.md` + engine present = normal state; no gaps flagged for absent GDDs |
-| **adopt** | Full format compliance audit across all doc types | Audit scope reduced to required docs only | `design/game-brief.md` format check only |
-| **reverse-document** | Generates full 8-section GDD from code | Generates 5-section GDD from code | Generates `design/game-brief.md` from code |
+| **project-stage-detect** | Checks for all doc types; missing art bible or UX specs flagged as gaps | Adjusts expectations — art bible only flagged if visual-asset stories exist; non-core UX specs not flagged | `docs/GDD.md` + engine present = normal state; no gaps flagged for absent GDDs |
+| **adopt** | Full format compliance audit across all doc types | Audit scope reduced to required docs only | `docs/GDD.md` format check only |
+| **reverse-document** | Generates full 8-section GDD from code | Generates 5-section GDD from code | Generates `docs/GDD.md` from code |
 | **propagate-design-change** | Full cascading impact analysis across all ADRs | Checks critical ADRs for references only | Not applicable |
-| **help** | Full artifact detection — surfaces all missing docs as next steps | Adjusts "what's missing" to required docs only — optional docs not surfaced as gaps | `design/game-brief.md` + engine present = next step is code |
+| **help** | Full artifact detection — surfaces all missing docs as next steps | Adjusts "what's missing" to required docs only — optional docs not surfaced as gaps | `docs/GDD.md` + engine present = next step is code |
 
 ---
 
@@ -706,7 +706,7 @@ No documents are auto-deleted, auto-generated, or blocked. The setting only affe
 ## workflow_overrides
 
 **Controls:** Opt-in granular requirements that override the chosen workflow level
-**Location:** **top level of `project.yaml`** — a sibling of `modes:`, *not* a child of it
+**Location:** **top level of `.claude/ccgs/project.yaml`** — a sibling of `modes:`, *not* a child of it
 **Values:** object with sub-flags (see below)
 **Default:** all false / empty
 **Set by:** `/settings`
@@ -780,7 +780,7 @@ recommend and proceed — the tradeoff between user control and speed
 **Set by:** `/start`, `/settings`  
 **Read by:** All 68 skills that use `AskUserQuestion` or write files
 
-**Priority chain:** `modes.automation` in `project.yaml` → hardcoded default
+**Priority chain:** `modes.automation` in `.claude/ccgs/project.yaml` → hardcoded default
 
 > **Unlike review_mode and workflow, this setting is not a per-skill table.**
 > It defines universal interaction rules that apply across all skills. A
@@ -838,7 +838,7 @@ recommend and proceed — the tradeoff between user control and speed
 - No draft review
 - No "May I write?" prompts — writes directly
 - Picks the recommended option for every decision without presenting alternatives
-- All decisions logged immediately to `production/session-logs/decision-log.md`
+- All decisions logged immediately to `.claude/ccgs/session-logs/decision-log.md`
   with: timestamp, skill, decision point, option chosen, reasoning
 - User reviews decision log post-session to audit choices made
 
@@ -887,7 +887,7 @@ recommend and proceed — the tradeoff between user control and speed
 
 `brainstorm`, `design-system`, `art-bible`, `create-architecture`, `ux-design`,
 `map-systems`, `architecture-decision`, `create-epics`, `create-stories`,
-`sprint-plan`, `prototype`
+`sprint-plan`, `gamedev-prototype`
 
 **Review skills — medium impact.** Pause after presenting findings to ask what
 to do next. In `guided` routing decisions proceed automatically. In `autonomous`
@@ -907,7 +907,7 @@ check-in. In `guided` the pipeline advances automatically unless BLOCKED. In
 before writing code. In `guided` only genuinely ambiguous decisions stop. In
 `autonomous` the conventional approach is picked and logged.
 
-`dev-story`, `code-review`
+`dev-story`, `gamedev-code-review`
 
 **Setup and utility skills — lowest impact.** Pause for initial configuration
 or routing questions. In `guided` defaults are applied automatically. In
@@ -934,7 +934,7 @@ The reasons are noted.
 
 ### Decision log format (autonomous mode)
 
-Written to `production/session-logs/decision-log.md` — append-only.
+Written to `.claude/ccgs/session-logs/decision-log.md` — append-only.
 
 ```markdown
 ## [timestamp] — [skill-name]
@@ -971,7 +971,7 @@ appends to the existing log.
 |----------|----------------------------------------|
 | `scope_changes` | Cutting a feature, slipping a deadline, splitting/merging an epic, removing acceptance criteria |
 | `file_deletions` | Removing a story, deleting a GDD, removing a system, removing a test file |
-| `schema_changes` | Changes to project.yaml, story template, control manifest, ADR template, GDD template |
+| `schema_changes` | Changes to .claude/ccgs/project.yaml, story template, control manifest, ADR template, GDD template |
 | `architecture_decisions` | New ADR creation, ADR replacement, system boundary changes |
 | `version_bumps` | Engine version change, framework version bump, dependency major version change |
 | `external_calls` | Invoking external APIs (asset gen, AI services) when in autonomous mode |
@@ -1001,7 +1001,7 @@ The list is a YAML list of these strings. Skills check whether the current decis
 **Set by:** `/start` (via `modes.rigor`), `/settings`
 **Read by:** `/create-stories`, `/sprint-plan`, `/sprint-status`, `/story-readiness`
 
-**Priority chain:** `modes.story_granularity` in `project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
+**Priority chain:** `modes.story_granularity` in `.claude/ccgs/project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
 
 ---
 
@@ -1033,7 +1033,7 @@ The list is a YAML list of these strings. Skills check whether the current decis
 **Set by:** `/start` (via `modes.rigor`), `/settings`
 **Read by:** `/design-system`, `/art-bible`, `/create-architecture`, `/ux-design`, `/map-systems`, `/brainstorm`
 
-**Priority chain:** `docs.density` in `project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
+**Priority chain:** `docs.density` in `.claude/ccgs/project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
 
 > **Distinct from `workflow`, but not independent by default.** `workflow`
 > controls which sections exist; `density` controls how deep each section goes.
@@ -1087,7 +1087,7 @@ The list is a YAML list of these strings. Skills check whether the current decis
 **Read by:** `/test-helpers` — the only skill that references it. `/qa-plan`, `/dev-story`, `/regression-suite`, `/test-setup` and `/smoke-check` do **not** name the key, despite being plausible readers.
   *(Derived by grep. A helper-based read such as `session_state_enabled()` would not show up, so treat this list as the verified floor, not a ceiling.)*
 
-**Priority chain:** `testing.framework` in `project.yaml` → engine default
+**Priority chain:** `testing.framework` in `.claude/ccgs/project.yaml` → engine default
 
 > **Migrated from `technical-preferences.md`.**
 
@@ -1177,7 +1177,7 @@ closing, or produces a warning and lets work continue — per test type
 **Set by:** `/start` (via `modes.rigor`), `/settings`
 **Read by:** `/story-done`, `/story-readiness`, `/dev-story`, `/smoke-check`, `/gate-check`, `/qa-plan`, `/regression-suite`, `/team-qa`, `/test-evidence-review`, `/create-stories`, `/retrospective`, `/test-setup`
 
-**Priority chain:** `qa.level` in `project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
+**Priority chain:** `qa.level` in `.claude/ccgs/project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
 
 > **Different axis from `testing.strict`.** `qa.level` = what evidence is required.
 > `testing.strict` = do failures block. A user wanting "minimal QA" sets
@@ -1227,7 +1227,7 @@ closing, or produces a warning and lets work continue — per test type
 **Read by:** `/gate-check` only. `/story-done` does not reference the key, and no CI runner reads it.
   *(Derived by grep. A helper-based read such as `session_state_enabled()` would not show up, so treat this list as the verified floor, not a ceiling.)*
 
-**Priority chain:** `qa.coverage_minimum` in `project.yaml` → no enforcement if `null`
+**Priority chain:** `qa.coverage_minimum` in `.claude/ccgs/project.yaml` → no enforcement if `null`
 
 > **Only meaningful at `qa.level: full`.** Ignored at minimal and standard. A
 > non-null value at standard or minimal level emits a warning at session-start:
@@ -1256,7 +1256,7 @@ closing, or produces a warning and lets work continue — per test type
 **Set by:** `/settings`
 **Read by:** nothing yet (intended reader: `/gate-check`)
 
-**Priority chain:** `strict_gate_checks` in `project.yaml` → hardcoded default of `true`
+**Priority chain:** `strict_gate_checks` in `.claude/ccgs/project.yaml` → hardcoded default of `true`
 
 > **Different from `review_mode: solo`.** `review_mode: solo` skips the gate
 > *entirely* — directors don't even run. `strict_gate_checks: false` runs the
@@ -1289,7 +1289,7 @@ closing, or produces a warning and lets work continue — per test type
 **Set by:** `/start` (via `modes.rigor`), `/settings`
 **Read by:** All `team-*` skills, `/gate-check`, all skills that spawn agents via `Agent`
 
-**Priority chain:** `team.size` in `project.local.yaml` → `project.yaml` → the `modes.rigor` expansion (`full` → `studio`, else `individual`) → no terminal default. Locally overridable — it is a personal-experience knob, not an on-disk artifact.
+**Priority chain:** `team.size` in `.claude/ccgs/project.local.yaml` → `.claude/ccgs/project.yaml` → the `modes.rigor` expansion (`full` → `studio`, else `individual`) → no terminal default. Locally overridable — it is a personal-experience knob, not an on-disk artifact.
 
 > **`individual` at `minimal`/`standard`, `studio` at `full`.** CCGS's audience is
 > overwhelmingly solo indie developers, so the two lighter rigor tiers resolve
@@ -1350,7 +1350,7 @@ which specialists are routed and which architecture sections are required
 **Set by:** `/settings`  
 **Read by:** `security-audit`, `team-release` (and the `security-engineer` agent)
 
-**Priority chain:** `platform.multiplayer` in `project.yaml` → unset (`platform.*` is locked to `project.yaml`, so `project.local.yaml` cannot set it). Nothing writes it except `/settings`, so on most projects it is unset: `/security-audit` and `/team-release` ask whether the game is multiplayer rather than reading unset as `false`.
+**Priority chain:** `platform.multiplayer` in `.claude/ccgs/project.yaml` → unset (`platform.*` is locked to `.claude/ccgs/project.yaml`, so `.claude/ccgs/project.local.yaml` cannot set it). Nothing writes it except `/settings`, so on most projects it is unset: `/security-audit` and `/team-release` ask whether the game is multiplayer rather than reading unset as `false`.
 
 > **Distinct from `platform.online`.** `multiplayer` is *real-time multiplayer
 > specifically* (network specialist, netcode review, replication architecture).
@@ -1392,7 +1392,7 @@ decide networking scope from the story, GDD or architecture in front of them.
 **Set by:** `/settings`
 **Read by:** `security-audit`, `team-release` (and the `security-engineer` agent)
 
-**Priority chain:** `platform.online` in `project.yaml` → unset (`platform.*` is locked to `project.yaml`, so `project.local.yaml` cannot set it). Nothing writes it except `/settings`: `/security-audit` and `/team-release` ask rather than reading unset as `false`.
+**Priority chain:** `platform.online` in `.claude/ccgs/project.yaml` → unset (`platform.*` is locked to `.claude/ccgs/project.yaml`, so `.claude/ccgs/project.local.yaml` cannot set it). Nothing writes it except `/settings`: `/security-audit` and `/team-release` ask rather than reading unset as `false`.
 
 > **Independent of `platform.multiplayer`.** A single-player game with Steam
 > Cloud and leaderboards is `online: true, multiplayer: false`. The two settings
@@ -1436,7 +1436,7 @@ and `/gate-check` decide online scope from the documents in front of them.
 **Set by:** `/settings` — nothing else writes it, so it stays unset (and the skills ask) until you set it
 **Read by:** `/launch-checklist`, `/release-checklist`
 
-**Priority chain:** `platform.cert_tier` in `project.yaml` → unset (no default is
+**Priority chain:** `platform.cert_tier` in `.claude/ccgs/project.yaml` → unset (no default is
 substituted: unset is a missing decision, `none` is a made one, and the skills
 must tell them apart)
 
@@ -1481,7 +1481,7 @@ must tell them apart)
 **Set by:** `/settings`
 **Read by:** nothing yet (intended readers: `/team-ui`, `/team-level`, `/team-polish`, `/gate-check`)
 
-**Priority chain:** `accessibility.target` in `project.yaml` → hardcoded default of `none`
+**Priority chain:** `accessibility.target` in `.claude/ccgs/project.yaml` → hardcoded default of `none`
 
 > **Default is `none`, not `standard`.** Most CCGS users are solo devs and jam-game
 > makers — defaulting to `standard` would auto-spawn the accessibility specialist
@@ -1528,7 +1528,7 @@ must tell them apart)
 **Set by:** `/settings`
 **Read by:** nothing yet (intended readers: `/sprint-plan`, `/milestone-review`, `/sprint-status`, future velocity tracking)
 
-**Priority chain:** `cadence.*` in `project.yaml` → hardcoded defaults
+**Priority chain:** `cadence.*` in `.claude/ccgs/project.yaml` → hardcoded defaults
 
 > **`none` for `sprint_length`** means continuous-flow / kanban-style — no sprint boundaries.
 > `/sprint-plan` is then invoked manually as needed. Velocity tracking
@@ -1584,9 +1584,9 @@ must tell them apart)
 **Set by:** `/settings`
 **Read by:** `/perf-profile`, `/gate-check`, CI runner
 
-**Priority chain:** `performance.enforce` in `project.local.yaml` → `project.yaml` → hardcoded default of `warn`, resolved by `resolve_config --keys performance.enforce`
+**Priority chain:** `performance.enforce` in `.claude/ccgs/project.local.yaml` → `.claude/ccgs/project.yaml` → hardcoded default of `warn`, resolved by `resolve_config --keys performance.enforce`
 
-> **Read it from the resolved block, never from `project.yaml` directly.** The key is on the `/settings --local` whitelist. `/perf-profile` Phase 0 and `/gate-check` Section 3 are the two readers the table above promises — a key that is enum-validated, accepted and displayed while nothing reads it is exactly the failure this warning guards against.
+> **Read it from the resolved block, never from `.claude/ccgs/project.yaml` directly.** The key is on the `/settings --local` whitelist. `/perf-profile` Phase 0 and `/gate-check` Section 3 are the two readers the table above promises — a key that is enum-validated, accepted and displayed while nothing reads it is exactly the failure this warning guards against.
 
 > **Mirrors the `testing.strict` pattern.** Defines what happens when a budget
 > defined in `performance.target_framerate`, `frame_budget_ms`, `draw_call_limit`,
@@ -1624,9 +1624,9 @@ validates and what artifacts are expected to exist
 > Never write it manually mid-session except to correct an incorrect auto-detect.
 
 > **Legacy fallback + dual-write.** Stage is read from `project.stage` in
-> `project.yaml` first, then legacy `production/stage.txt`, then artifact
+> `.claude/ccgs/project.yaml` first, then legacy `.claude/ccgs/stage.txt`, then artifact
 > auto-detection. When `/gate-check` advances the stage it dual-writes BOTH
-> `project.yaml` and `production/stage.txt`, so hooks that have not migrated
+> `.claude/ccgs/project.yaml` and `.claude/ccgs/stage.txt`, so hooks that have not migrated
 > still resolve correctly. `/start` also dual-writes the initial stage. The
 > legacy `.txt` file is retired at `.claude/scripts/migrate-v1-config.sh --finalize`.
 
@@ -1678,7 +1678,7 @@ required at `standard` and `minimal` levels.
 **Set by:** `/start`, `/setup-engine`
 **Read by:** Many skills (advisory routing — see below)
 
-**Priority chain:** `project.kind` in `project.yaml` → hardcoded default of `game`
+**Priority chain:** `project.kind` in `.claude/ccgs/project.yaml` → hardcoded default of `game`
 
 ---
 
@@ -1713,11 +1713,11 @@ implementation, review, and architecture validation
 **Values:** `Godot` | `Unity` | `Unreal`  
 **Default:** `[UNSET]` — must be configured via `/setup-engine`  
 **Set by:** `/setup-engine`  
-**Read by:** `dev-story`, `code-review`, `architecture-decision`, `create-architecture`, `team-combat`, `team-ui`, `team-audio`
+**Read by:** `dev-story`, `gamedev-code-review`, `architecture-decision`, `create-architecture`, `team-combat`, `team-ui`, `team-audio`
 
-> **Currently stored in `technical-preferences.md`**, not `project.yaml`. After
+> **Currently stored in `technical-preferences.md`**, not `.claude/ccgs/project.yaml`. After
 > YAML expansion, `engine.name` and the specialist routing table move to
-> `project.yaml specialists` block. Skill behavior is unchanged — only the
+> `.claude/ccgs/project.yaml specialists` block. Skill behavior is unchanged — only the
 > source file changes.
 
 > **This is a project attribute, not a mode.** Engine choice drives specialist
@@ -1765,7 +1765,7 @@ implementation, review, and architecture validation
 **Written by:** `/setup-engine`, `/settings`. **Read by:** `test` — `/smoke-check`, `/hotfix` (narrowed to the affected suite), `/bug-report` (verify mode, narrowed to the affected suite), `/day-one-patch` (targeted fix and, when set, the broader regression — NOT ASSESSED if unset), `/dev-story` (Godot parse-check executable resolution), `/test-setup` (the `<Project>.` filter root on Unreal), `project-coherence.sh`; `smoke` — `/dev-story` (Unity parse check), `/smoke-check` (build check when tests are WAIVED); `build` — `/smoke-check` (build check when tests are WAIVED and `smoke` is unset), `project-coherence.sh`; `run` — `/dev-story` (Phase 6 step 4, the run-and-observe step). `/launch-checklist` and `/regression-suite` name these commands but do not run them.
   *(Derived by grep. A helper-based read would not show up, so treat this list as the verified floor, not a ceiling.)*
 
-**Priority chain:** `commands.*` in `project.yaml` → engine-typical default → no command available
+**Priority chain:** `commands.*` in `.claude/ccgs/project.yaml` → engine-typical default → no command available
 
 > **Why explicit:** Without this block, CCGS has to guess engine-typical conventions
 > for invoking the project. Better to be explicit per-project — covers cases where
@@ -1812,7 +1812,7 @@ value is a map, skills/hooks read the current OS and pick the matching key
 matches.
 
 This solves the Windows/Linux/macOS path-and-binary-name differences without
-breaking the whitelist (commands stays locked to project.yaml — the OS-specific
+breaking the whitelist (commands stays locked to .claude/ccgs/project.yaml — the OS-specific
 keys are inside the locked file, not a local override).
 
 | Field | Purpose |
@@ -1840,7 +1840,7 @@ engine reference in this repo can source it. See `/setup-engine` §"The Godot
 
 The Unreal row is Windows'. `/setup-engine` writes the Linux block (`Engine/Build/BatchFiles/RunUAT.sh`,
 `Engine/Binaries/Linux/UnrealEditor`) on Linux, and on macOS only `build`, leaving `test`, `run` and
-`smoke` unset, with a comment in `project.yaml` asking you to set them via `/settings` — see
+`smoke` unset, with a comment in `.claude/ccgs/project.yaml` asking you to set them via `/settings` — see
 `docs/engine-reference/unreal/current-best-practices.md`, "Command Line".
 
 > **`<PRESET>` and `<TARGET>` are placeholders, not values to copy.** A Godot
@@ -1853,7 +1853,7 @@ The Unreal row is Windows'. `/setup-engine` writes the Linux block (`Engine/Buil
 > `/setup-engine` usually runs before the project has any — write
 > `[TO BE CONFIGURED]` rather than guessing a name.
 
-Users override per-project as needed via `/settings commands.<field>=<value>` or by editing `project.yaml` directly.
+Users override per-project as needed via `/settings commands.<field>=<value>` or by editing `.claude/ccgs/project.yaml` directly.
 
 ---
 
@@ -1877,20 +1877,20 @@ Users override per-project as needed via `/settings commands.<field>=<value>` or
 **Set by:** `/setup-engine`, `/settings`
 **Read by:** `/adopt`, `/architecture-review`, `/asset-spec`,
 `/create-architecture`, `/create-control-manifest`, `/dev-story`,
-`/vertical-slice` — each reads `naming.*` from `project.yaml` and feeds the
-conventions into a brief, manifest or spec. **NOT by `/code-review` and NOT by
+`/vertical-slice` — each reads `naming.*` from `.claude/ccgs/project.yaml` and feeds the
+conventions into a brief, manifest or spec. **NOT by `/gamedev-code-review` and NOT by
 `validate-commit.sh`**.
   *(Reader list derived by grep, so treat it as the verified floor rather than
   a ceiling — a skill reading the value through a helper would not show up.)*
 
 > **These conventions are guidance, not a gate.** They reach your project by
 > being passed into briefs, manifests and specs for whoever writes the code.
-> Nothing checks the result: `/code-review` does not validate files against them
+> Nothing checks the result: `/gamedev-code-review` does not validate files against them
 > and `validate-commit.sh` does not warn on violations — neither contains any
 > naming logic. If you need enforcement, it has to be added.
 >
 > **Asset filenames.** `validate-assets.sh` warns when a file under Godot's
-> `assets/` has an uppercase letter, a space or a hyphen in its name (it expects
+> `Content/` has an uppercase letter, a space or a hyphen in its name (it expects
 > lowercase with underscores), and it takes no config input. `/asset-spec`
 > specifies asset names from `naming.*`. Unity's `Assets/` and Unreal's `Content/`
 > are not naming-checked: those engines name assets in PascalCase. On Godot-C#,
@@ -1901,7 +1901,7 @@ conventions into a brief, manifest or spec. **NOT by `/code-review` and NOT by
 
 > **Moved from `technical-preferences.md`**, which is being deleted. Naming
 > conventions are project-level facts shared by everyone on the project, so they
-> belong in `project.yaml` alongside the rest of your structured config.
+> belong in `.claude/ccgs/project.yaml` alongside the rest of your structured config.
 
 ---
 
@@ -1918,7 +1918,7 @@ conventions into a brief, manifest or spec. **NOT by `/code-review` and NOT by
 
 > **`signals` vs `events`:** Godot uses signals natively; Unity uses C# events
 > or UnityEvents; Unreal uses delegates and dynamic multicast. The field stays
-> named `signals` in project.yaml for consistency across engines — interpret as
+> named `signals` in .claude/ccgs/project.yaml for consistency across engines — interpret as
 > "event-like callbacks" regardless of engine.
 
 ---
@@ -1954,14 +1954,14 @@ skeleton-first output files for recovery
 > archive and the subagent tally. Turn it `off` only to save that preview's
 > tokens.
 
-> **Priority chain:** `features.session_state` in `project.local.yaml` →
-> `project.yaml` → hardcoded default of **`on`**. Hooks read it via
+> **Priority chain:** `features.session_state` in `.claude/ccgs/project.local.yaml` →
+> `.claude/ccgs/project.yaml` → hardcoded default of **`on`**. Hooks read it via
 > `session_state_enabled()` in `yaml-helper.sh` and exit early when `off`.
 > Skills do not read it: `/dev-story` and `/story-done` update the checkpoint in
 > `active.md` whatever its value.
 
 > **The default is `on`, deliberately.** `.claude/docs/context-management.md`
-> tells you to rely on `production/session-state/active.md` as your
+> tells you to rely on `.claude/ccgs/session-state/active.md` as your
 > crash-recovery checkpoint, so defaulting this off would quietly take away
 > recovery, the session archive and the subagent tally. What `off` saves — the
 > checkpoint preview, at most ~750 tokens per session start — is an explicit
@@ -1989,7 +1989,7 @@ skeleton-first output files for recovery
 > **Implementation note:** The feature flag check lives inside each hook script,
 > not at the harness level. Every session-state-aware hook calls
 > `session_state_enabled()` from `yaml-helper.sh` at its top (an awk read of
-> `project.local.yaml`, then `project.yaml`) and exits silently with no output if
+> `.claude/ccgs/project.local.yaml`, then `.claude/ccgs/project.yaml`) and exits silently with no output if
 > the value is `off` — except `session-start.sh`, which skips only its recovery
 > preview. This ensures
 > the harness always fires the hook — the hook decides whether to act.
@@ -2009,10 +2009,10 @@ skeleton-first output files for recovery
 
 | File | session_state: off | session_state: on |
 |------|--------------------|-------------------|
-| `production/session-state/active.md` | Still written by skills; session start does not show it | Written by skills; session start shows its checkpoint |
-| `production/session-logs/session-log.md` | Not written | Append-only archive of each session's `active.md` |
-| `production/session-logs/compaction-log.txt` | Not written | Append-only timestamp log of compaction events |
-| `production/session-logs/agent-audit.log` | Not written | Append-only log of agent spawn/complete events |
+| `.claude/ccgs/session-state/active.md` | Still written by skills; session start does not show it | Written by skills; session start shows its checkpoint |
+| `.claude/ccgs/session-logs/session-log.md` | Not written | Append-only archive of each session's `active.md` |
+| `.claude/ccgs/session-logs/compaction-log.txt` | Not written | Append-only timestamp log of compaction events |
+| `.claude/ccgs/session-logs/agent-audit.log` | Not written | Append-only log of agent spawn/complete events |
 
 ---
 
@@ -2045,14 +2045,14 @@ and resumes at the first `incomplete` section. No `active.md` needed.
 
 | Skill | Output file | Skeleton written when |
 |-------|-------------|----------------------|
-| **design-system** | `design/gdd/[system].md` | Before Phase 1 (section discussion) |
-| **art-bible** | `design/art/art-bible.md` | From `.claude/docs/templates/art-bible.md`, after asking, when section 1 is approved |
+| **design-system** | `docs/design/gdd/[system].md` | Before Phase 1 (section discussion) |
+| **art-bible** | `docs/design/art/art-bible.md` | From `.claude/docs/templates/art-bible.md`, after asking, when section 1 is approved |
 | **create-architecture** | `docs/architecture/architecture.md` | Not skeleton-first: written once at Phase 7 after its ask (an existing document is updated in place) |
-| **ux-design** | `design/ux/[screen].md` | Before screen discussion |
-| **create-stories** | `production/epics/[epic-slug]/story-NNN-[slug].md` | Not skeleton-first: written in Step 6, after the ask names every file |
-| **create-epics** | `production/epics/[epic-slug]/EPIC.md` | Not skeleton-first: written after its per-epic "May I write `production/epics/[epic-slug]/EPIC.md` and add its row to `production/epics/index.md`" ask |
-| **map-systems** | `design/gdd/systems-index.md` | Before system enumeration |
-| **brainstorm** | `design/gdd/game-concept.md` (`standard`/`full`) · `design/game-brief.md` (`minimal`) | Before concept discussion |
+| **ux-design** | `docs/design/ux/[screen].md` | Before screen discussion |
+| **create-stories** | `docs/production/epics/[epic-slug]/story-NNN-[slug].md` | Not skeleton-first: written in Step 6, after the ask names every file |
+| **create-epics** | `docs/production/epics/[epic-slug]/EPIC.md` | Not skeleton-first: written after its per-epic "May I write `docs/production/epics/[epic-slug]/EPIC.md` and add its row to `docs/production/epics/index.md`" ask |
+| **map-systems** | `docs/GDD.md` | Before system enumeration |
+| **brainstorm** | `docs/GDD.md` (`standard`/`full`) · `docs/GDD.md` (`minimal`) | Before concept discussion |
 
 > **Note on agents:** `world-builder` and `narrative-director` are agents, not
 > invocable skills — they do not have SKILL.md files. Long-form output from these
@@ -2064,7 +2064,7 @@ and resumes at the first `incomplete` section. No `active.md` needed.
 ### Status line behavior
 
 > **Stage detection is always independent of session state.** `statusline.sh`
-> auto-detects stage from `project.yaml` `project.stage` or artifact heuristics regardless
+> auto-detects stage from `.claude/ccgs/project.yaml` `project.stage` or artifact heuristics regardless
 > of `session_state` value, and so is the breadcrumb: `statusline.sh` never reads
 > `session_state`. (At `workflow: minimal` the status line shows the story count
 > instead of the stage.)
@@ -2073,7 +2073,7 @@ and resumes at the first `incomplete` section. No `active.md` needed.
 |---------|--------------------|-------------------|
 | Context % display | Always shown | Always shown |
 | Model display | Always shown | Always shown |
-| Stage display | From project.yaml or heuristics — except at `workflow: minimal`, where `Minimal · <done>/<total> stories` (or `Minimal · brief` before any story exists) replaces it | Same |
+| Stage display | From .claude/ccgs/project.yaml or heuristics — except at `workflow: minimal`, where `Minimal · <done>/<total> stories` (or `Minimal · brief` before any story exists) replaces it | Same |
 | Epic/Feature/Task breadcrumb | Parsed from the `<!-- STATUS -->` block in `active.md` (not gated) | Parsed from the `<!-- STATUS -->` block in `active.md` |
 
 ---
@@ -2148,7 +2148,7 @@ the `<!-- CHECKPOINT -->` block; the others append a SESSION EXTRACT.
 **Set by:** `/settings`
 **Read by:** nothing yet (intended readers: `session-start.sh`, `statusline.sh`)
 
-**Priority chain:** `features.token_budget_warn_at` in `project.yaml` → hardcoded default of `0.7`
+**Priority chain:** `features.token_budget_warn_at` in `.claude/ccgs/project.yaml` → hardcoded default of `0.7`
 
 > Surfaces a warning when session context usage exceeds the threshold. Helps
 > cost-conscious users hit `/clear` before runaway sessions. Set to `1.0` to
@@ -2174,11 +2174,11 @@ the `<!-- CHECKPOINT -->` block; the others append a SESSION EXTRACT.
 **Set by:** `/settings`  
 **Read by:** `validate-read.sh` (PreToolUse Read), through `.claude/scripts/read-guard.sh check`
 
-> **Priority chain:** `features.read_guard` in `project.local.yaml` →
-> `project.yaml` → default **`on`**.
+> **Priority chain:** `features.read_guard` in `.claude/ccgs/project.local.yaml` →
+> `.claude/ccgs/project.yaml` → default **`on`**.
 
-A Read with no offset and no limit of a file under `design/`, `docs/architecture/`
-or `production/session-state/` that is over `features.read_guard_kb` is refused.
+A Read with no offset and no limit of a file under `docs/design/`, `docs/architecture/`
+or `.claude/ccgs/session-state/` that is over `features.read_guard_kb` is refused.
 The refusal lists the doc's headings with their line numbers, so the next call
 reads one section with offset and limit. A ranged read always passes, so no skill
 can get stuck behind the guard; images and PDFs are never checked. It blocks
@@ -2195,8 +2195,8 @@ read is the cost.
 **Set by:** `/settings`  
 **Read by:** `validate-read.sh`, through `.claude/scripts/read-guard.sh check`
 
-> **Priority chain:** `features.read_guard_kb` in `project.local.yaml` →
-> `project.yaml` → default **`40`**. A value that is not a whole number is
+> **Priority chain:** `features.read_guard_kb` in `.claude/ccgs/project.local.yaml` →
+> `.claude/ccgs/project.yaml` → default **`40`**. A value that is not a whole number is
 > ignored, and `read-guard.sh check` names it on its `threshold` row.
 
 By file size, not lines: token cost follows bytes, and one table row can be 2 KB.
@@ -2221,7 +2221,7 @@ for you only)
 > updates.check=false"*. Nothing is downloaded or changed; upgrading stays your
 > call (`UPGRADING.md`).
 
-> **Priority chain:** `updates.check` in `project.local.yaml` → `project.yaml` →
+> **Priority chain:** `updates.check` in `.claude/ccgs/project.local.yaml` → `.claude/ccgs/project.yaml` →
 > default **`true`**. A value other than `true` or `false` is skipped and named
 > in the session-start schema errors. The check is also off whenever the `CI`
 > environment variable is set: nobody reads session start there.
@@ -2242,7 +2242,7 @@ for you only)
   the last answer, plus an `error=` line saying why the last check failed.
 - Pre-releases are never offered.
 - The version compared is the one the framework's own hook files carry, not
-  `framework.version`: an upgrade that keeps your `project.yaml` leaves that
+  `framework.version`: an upgrade that keeps your `.claude/ccgs/project.yaml` leaves that
   number behind, and the line would announce the release you already have.
 - With `false`, nothing is read and nothing is requested.
 
@@ -2250,13 +2250,13 @@ for you only)
 
 ## schema_version
 
-**Controls:** Which version of the project.yaml schema this file conforms to
+**Controls:** Which version of the .claude/ccgs/project.yaml schema this file conforms to
 **Values:** integer
 **Default:** `1` (for v1.1 of CCGS)
 **Set by:** `/start`, `/adopt`
-**Read by:** All skills and hooks that parse project.yaml (for migration safety)
+**Read by:** All skills and hooks that parse .claude/ccgs/project.yaml (for migration safety)
 
-> Lets future CCGS versions detect and migrate old project.yaml files. The
+> Lets future CCGS versions detect and migrate old .claude/ccgs/project.yaml files. The
 > migration logic compares `schema_version` in the file against the current
 > CCGS's expected version. If newer, warn. If older, run migrations.
 
@@ -2264,11 +2264,11 @@ for you only)
 
 ### Migration behavior
 
-| project.yaml schema_version | Current CCGS expects | Behavior |
+| .claude/ccgs/project.yaml schema_version | Current CCGS expects | Behavior |
 |----------------------------|---------------------|----------|
 | Matches expected | — | Normal operation |
 | Lower than expected | — | `/adopt` warns and offers migration; skills run with deprecation warnings |
-| Higher than expected | — | All skills warn: "This project.yaml was created by a newer CCGS version. Some settings may be ignored." |
+| Higher than expected | — | All skills warn: "This .claude/ccgs/project.yaml was created by a newer CCGS version. Some settings may be ignored." |
 | Missing | — | Treated as legacy (pre-v1.1); migration prompted on next `/start` or `/adopt` |
 
 ---
@@ -2277,9 +2277,9 @@ for you only)
 
 **Controls:** Tracks which CCGS version created or last touched this project
 **Values:** `framework.version` (semver string) + `framework.last_upgraded` (ISO date)
-**Default:** stamped in the template's `project.yaml` at each release
-**Set by:** the template; `/start` (through `set-stage.sh`), `/setup-engine` and `/gate-check` write the block into a `project.yaml` they create, and `migrate-v1-config.sh` (which `/adopt` runs) writes `framework.version` into the one it builds
-**Read by:** no skill branches on it — it is file metadata, not a behavioural setting. It appears in `/start`, `/gate-check`, `/settings` and `/setup-engine` as part of the `project.yaml` block they **write or display**, and in `yaml-helper.sh`.
+**Default:** stamped in the template's `.claude/ccgs/project.yaml` at each release
+**Set by:** the template; `/start` (through `set-stage.sh`), `/setup-engine` and `/gate-check` write the block into a `.claude/ccgs/project.yaml` they create, and `migrate-v1-config.sh` (which `/adopt` runs) writes `framework.version` into the one it builds
+**Read by:** no skill branches on it — it is file metadata, not a behavioural setting. It appears in `/start`, `/gate-check`, `/settings` and `/setup-engine` as part of the `.claude/ccgs/project.yaml` block they **write or display**, and in `yaml-helper.sh`.
   *(The four skills above were verified to name it; whether each reads it or merely emits it was NOT separated, so this says 'appears in', not 'read by'.)*
 
 ---
@@ -2310,24 +2310,24 @@ version the project came from; `UPGRADING.md` is the upgrade path.
 ## Migration from v1.0 → v1.1
 
 When a v1.0 CCGS project upgrades to v1.1, migration tooling (run via `/adopt`)
-converts legacy files to `project.yaml`. This section specifies the intended
+converts legacy files to `.claude/ccgs/project.yaml`. This section specifies the intended
 behavior.
 
 ### Detection
 
 A project is detected as needing migration when:
-- `project.yaml` does **NOT** exist at the repo root, AND
+- `.claude/ccgs/project.yaml` does **NOT** exist at the repo root, AND
 - One or more legacy files exists:
-  - `production/stage.txt`
-  - `production/review-mode.txt`
+  - `.claude/ccgs/stage.txt`
+  - `.claude/ccgs/review-mode.txt`
   - `.claude/docs/technical-preferences.md`
 
 ### Preservation
 
 | Legacy source | Migrates to |
 |---------------|-------------|
-| `production/stage.txt` (single line) | `project.stage` |
-| `production/review-mode.txt` (single line) | `modes.review_mode` |
+| `.claude/ccgs/stage.txt` (single line) | `project.stage` |
+| `.claude/ccgs/review-mode.txt` (single line) | `modes.review_mode` |
 | `.claude/docs/technical-preferences.md` → "Engine & Language" section | `engine.name`, `engine.version`, `engine.language`, `engine.rendering`, `engine.physics` |
 | `technical-preferences.md` → "Input & Platform" section | `platform.targets`, `platform.primary_input`, `platform.gamepad_support`, `platform.touch_support` |
 | `technical-preferences.md` → "Naming Conventions" section | `naming.classes`, `naming.variables`, `naming.constants`, `naming.signals`, `naming.files`, `naming.scenes` |
@@ -2340,7 +2340,7 @@ director reviews" tier; v1.1 renamed that tier to `solo` (the enum is
 `full | lean | solo`). Migration **coerces** a legacy `none` to `solo` and reports
 the rename in the migration report's Warnings. This is the one documented value
 rename, so it is mapped-and-flagged rather than preserved raw: writing `none`
-verbatim would produce an enum-invalid `project.yaml` that `resolve_config` rejects
+verbatim would produce an enum-invalid `.claude/ccgs/project.yaml` that `resolve_config` rejects
 and falls back to the `modes.rigor` value — at `standard` that is `lean`, reviews *on* —
 inverting the user's intent. The
 `--finalize` preservation check applies the same mapping so it does not falsely
@@ -2353,28 +2353,28 @@ Settings absent from the legacy files (new v1.1 settings like `qa.level`,
 ### Cleanup (optional, non-destructive)
 
 Migration is **non-destructive in v1.1**: legacy files are NOT auto-deleted.
-Migration produces `project.yaml` and leaves the legacy files in place. Hooks
-and skills read `project.yaml` first; they fall back to the legacy file if a
+Migration produces `.claude/ccgs/project.yaml` and leaves the legacy files in place. Hooks
+and skills read `.claude/ccgs/project.yaml` first; they fall back to the legacy file if a
 specific key is missing.
 
 Legacy files are deleted only when the user runs
 `.claude/scripts/migrate-v1-config.sh --finalize` (driven by `/adopt`, which
 detects a v1.0 project automatically at Phase 2g). The cleanup step verifies
-that every legacy file's content has been preserved in `project.yaml` before
+that every legacy file's content has been preserved in `.claude/ccgs/project.yaml` before
 deleting.
 
 ### Failure modes
 
 | Problem | Behavior |
 |---------|----------|
-| Legacy file is malformed (can't parse) | Migration emits warning per file, leaves it untouched, continues with the others. `project.yaml` gets the parseable values + defaults for the rest. |
-| Parsed value doesn't match v1.1 enum (e.g. `stage: Alpha` from a fork) | Migration writes the raw value with a `_migration_warning` comment in `project.yaml`. User resolves manually. |
-| Both `project.yaml` AND a legacy file exist (split-brain) | Migration tooling refuses to run. Error: "Both project.yaml and legacy files exist — resolve which is authoritative before migrating." |
-| Custom sections in forked `technical-preferences.md` | Custom content logged to `production/migration-report.md` as "not migrated — please integrate manually." |
+| Legacy file is malformed (can't parse) | Migration emits warning per file, leaves it untouched, continues with the others. `.claude/ccgs/project.yaml` gets the parseable values + defaults for the rest. |
+| Parsed value doesn't match v1.1 enum (e.g. `stage: Alpha` from a fork) | Migration writes the raw value with a `_migration_warning` comment in `.claude/ccgs/project.yaml`. User resolves manually. |
+| Both `.claude/ccgs/project.yaml` AND a legacy file exist (split-brain) | Migration tooling refuses to run. Error: "Both .claude/ccgs/project.yaml and legacy files exist — resolve which is authoritative before migrating." |
+| Custom sections in forked `technical-preferences.md` | Custom content logged to `.claude/ccgs/migration-report.md` as "not migrated — please integrate manually." |
 
 ### Migration report
 
-Every migration run writes `production/migration-report.md`:
+Every migration run writes `.claude/ccgs/migration-report.md`:
 
 - Source files detected
 - Values preserved (per file → per setting)
@@ -2388,7 +2388,7 @@ User reads the report before running `--finalize`.
 
 ## Complete example `project.yaml`
 
-A full project.yaml with every setting, showing sensible defaults for a solo
+A full .claude/ccgs/project.yaml with every setting, showing sensible defaults for a solo
 Godot project. Use this as the reference shape when authoring or migrating.
 
 ```yaml
@@ -2506,7 +2506,7 @@ updates:
   check: true                # false: no new-release line at session start
 ```
 
-And a minimal sparse `project.local.yaml` example — a single developer who wants autonomous mode locally:
+And a minimal sparse `.claude/ccgs/project.local.yaml` example — a single developer who wants autonomous mode locally:
 
 ```yaml
 modes:
@@ -2515,5 +2515,5 @@ features:
   session_state: on
 ```
 
-Only the overridden keys are present; everything else cascades from `project.yaml`.
+Only the overridden keys are present; everything else cascades from `.claude/ccgs/project.yaml`.
 See "Local Override Pattern" section for full whitelist of what can/cannot be overridden locally.

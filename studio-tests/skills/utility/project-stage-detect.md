@@ -5,11 +5,11 @@
 `/project-stage-detect [role]` determines the project's development stage and
 its gaps. It starts with a deterministic pass (`bash
 .claude/scripts/artifact-check.sh`, which reports PRESENT / ABSENT / SHORT /
-PATTERN_MISS / NO_CHECK per artifact), then scans `design/`, the code root,
-`production/`, `prototypes/`, `docs/architecture/` and `tests/`.
+PATTERN_MISS / NO_CHECK per artifact), then scans `docs/design/`, the code root,
+`docs/production/`, `docs/prototypes/`, `docs/architecture/` and `tests/`.
 
-A configured stage (`project.stage` in `project.yaml`, else legacy
-`production/stage.txt`) is authoritative for what the stage is, but the skill
+A configured stage (`project.stage` in `.claude/ccgs/project.yaml`, else legacy
+`.claude/ccgs/stage.txt`) is authoritative for what the stage is, but the skill
 always runs its heuristics too and states explicitly when the artifacts
 disagree. Heuristics, checked from most advanced backward: Production = code
 root has 10+ source files; Pre-Production = engine configured, <10 source files;
@@ -27,7 +27,7 @@ run, named) → PASS (clearly detected). At `workflow: minimal` the configured
 stage is never advanced (no `/gate-check` on that path), so its lag behind the
 observed stage is reported but is not a disagreement. The skill shows the
 summary, gaps and next steps, then asks "May I write the full stage analysis to
-production/project-stage-report.md?". It never writes the stage itself. No
+docs/production/project-stage-report.md?". It never writes the stage itself. No
 director gates apply.
 
 ---
@@ -40,7 +40,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has ≥2 phase headings
 - [ ] Contains all seven stage names: Concept, Systems Design, Technical Setup, Pre-Production, Production, Polish, Release
 - [ ] Contains the Stage Confidence values PASS, CONCERNS, NOT ASSESSED and FAIL, with a first-match order
-- [ ] Contains "May I write" language before writing `production/project-stage-report.md`
+- [ ] Contains "May I write" language before writing `docs/production/project-stage-report.md`
 - [ ] Has a next-step handoff (Follow-Up Actions naming `/map-systems`, `/reverse-document`, `/architecture-decision`, `/sprint-plan`, `/milestone-review`)
 
 ---
@@ -54,9 +54,9 @@ None. `/project-stage-detect` is a diagnostic utility. It spawns no agents
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -66,40 +66,40 @@ Fixture defaults.
 ### Case 1: Configured Stage Matches the Artifacts
 
 **Fixture:**
-- `project.yaml` has `project.stage: Production` and `engine.name: Godot`
-- `src/` has 24 source files; `design/gdd/` has 4 GDDs and `systems-index.md`,
+- `.claude/ccgs/project.yaml` has `project.stage: Production` and `engine.name: Godot`
+- `src/` has 24 source files; `docs/design/gdd/` has 4 GDDs and `systems-index.md`,
   one GDD per indexed system
-- `docs/architecture/` has `architecture.md` and 5 ADRs; `design/art/art-bible.md`
+- `docs/architecture/` has `architecture.md` and 5 ADRs; `docs/design/art/art-bible.md`
   and the UX specs exist; `tests/unit/` holds tests for each system — no doc type
   the `full` tier flags is missing, so there is no gap to weigh
-- `production/sprints/sprint-002.md` exists
+- `docs/production/sprints/sprint-002.md` exists
 - Resolved workflow tier: `full`
 
 **Input:** `/project-stage-detect`
 
 **Expected behavior:**
 1. Skill runs `bash .claude/scripts/artifact-check.sh` before hand-scanning
-2. Skill reads the configured stage `Production` from `project.yaml`
+2. Skill reads the configured stage `Production` from `.claude/ccgs/project.yaml`
 3. Skill still runs the heuristics; 24 source files (10+) indicate Production
 4. Report states the configured and observed stages agree; Stage Confidence is PASS
 5. Skill shows the summary, gaps and next steps, then asks "May I write the full
-   stage analysis to production/project-stage-report.md?"
+   stage analysis to docs/production/project-stage-report.md?"
 
 **Assertions:**
 - [ ] `artifact-check.sh` is run as the first scan step
 - [ ] Detected stage is Production, and the heuristic result is reported alongside the configured one
 - [ ] Stage Confidence is PASS
-- [ ] "May I write" names `production/project-stage-report.md` and nothing is written before approval
-- [ ] Neither `project.yaml` nor `production/stage.txt` is modified
+- [ ] "May I write" names `docs/production/project-stage-report.md` and nothing is written before approval
+- [ ] Neither `.claude/ccgs/project.yaml` nor `.claude/ccgs/stage.txt` is modified
 
 ---
 
 ### Case 2: No Configured Stage — Inferred From Artifacts, Role Filter Applied
 
 **Fixture:**
-- No `project.stage` in `project.yaml` and no `production/stage.txt`
+- No `project.stage` in `.claude/ccgs/project.yaml` and no `.claude/ccgs/stage.txt`
 - `engine.name: Godot`; `src/` has 14 source files
-- `design/gdd/` has 3 GDDs; `docs/architecture/` has no ADRs
+- `docs/design/gdd/` has 3 GDDs; `docs/architecture/` has no ADRs
 - Resolved workflow tier: `full`
 
 **Input:** `/project-stage-detect programmer`
@@ -117,14 +117,14 @@ Fixture defaults.
 - [ ] Inferred stage is Production, based on the 10+ source-file rule
 - [ ] Recommendations focus on architecture docs, tests and ADRs for the programmer role
 - [ ] The ADR gap is phrased with a clarifying question, not only listed
-- [ ] No stage value is written to `project.yaml` or `production/stage.txt`
+- [ ] No stage value is written to `.claude/ccgs/project.yaml` or `.claude/ccgs/stage.txt`
 
 ---
 
 ### Case 3: Configured Stage Contradicted by the Artifacts
 
 **Fixture:**
-- `project.yaml` has `project.stage: Release`
+- `.claude/ccgs/project.yaml` has `project.stage: Release`
 - `engine.name: Godot`; `src/` has 2 source files; no ADRs, no architecture
   doc, no epics
 - Resolved workflow tier: `full`
@@ -152,9 +152,9 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved workflow tier: `minimal`
-- `project.yaml` has `project.stage: Concept`, as `/start` wrote it — nothing on
+- `.claude/ccgs/project.yaml` has `project.stage: Concept`, as `/start` wrote it — nothing on
   the minimal path runs `/gate-check`, so it has never advanced
-- `design/game-brief.md` exists; `engine.name: Godot`; `src/` has 5 source files
+- `docs/GDD.md` exists; `engine.name: Godot`; `src/` has 5 source files
 - No GDDs, no art bible, no ADRs, no epics, no sprint plans
 
 **Input:** `/project-stage-detect`
@@ -194,25 +194,25 @@ Fixture defaults.
 1. Skill completes detection and shows the summary
 2. No director or other agent is spawned; no gate IDs appear
 3. Skill asks "May I write the full stage analysis to
-   production/project-stage-report.md?"
+   docs/production/project-stage-report.md?"
 4. User declines; no file is created
 
 **Assertions:**
 - [ ] No director gate is invoked and no gate skip message appears
 - [ ] No subagent is spawned
 - [ ] The summary is shown before the write ask
-- [ ] After a decline, `production/project-stage-report.md` is not created
+- [ ] After a decline, `docs/production/project-stage-report.md` is not created
 
 ---
 
 ### Case 6: Unresolved Code Root — NOT ASSESSED, not a greenfield project
 
 **Fixture:**
-- No `project.stage`, no `production/stage.txt`
-- `project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md`
+- No `project.stage`, no `.claude/ccgs/stage.txt`
+- `.claude/ccgs/project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md`
   reads `[TO BE CONFIGURED]`
 - Both `src/` and `Assets/` exist, each holding source files (ambiguous tree)
-- `design/gdd/game-concept.md` and `design/gdd/systems-index.md` exist, with a
+- `docs/GDD.md` and `docs/GDD.md` exist, with a
   GDD for every indexed system; `docs/architecture/` holds the Foundation-layer
   ADRs — nothing the `standard` tier flags is missing
 - Resolved workflow tier: `standard`
@@ -245,8 +245,8 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved workflow tier: `minimal`
-- No `project.stage` and no `production/stage.txt`; `engine.name: Godot` (code root `src/`)
-- No `design/game-brief.md`, no `design/gdd/` files, no sprint plans
+- No `project.stage` and no `.claude/ccgs/stage.txt`; `engine.name: Godot` (code root `src/`)
+- No `docs/GDD.md`, no `docs/design/gdd/` files, no sprint plans
 - Scenario (a): `src/` has 14 source files
 - Scenario (b): `src/` has 3 source files
 
@@ -254,7 +254,7 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Skill uses the resolved tier `minimal`; the absent GDDs, ADRs, epics and sprint plans are still not gaps
-2. The absent `design/game-brief.md` is reported, and the Follow-Up Actions address it
+2. The absent `docs/GDD.md` is reported, and the Follow-Up Actions address it
 3. (a) The code root already holds the game (10 or more source files), so the follow-up is `/reverse-document design src/` — the brief is written from what is built — and not `/brainstorm`
 4. (b) With little code the follow-up is `/brainstorm`, not `/reverse-document`
 5. In both, `/sprint-plan` is not suggested; the report is offered behind the "May I write" ask
@@ -271,12 +271,12 @@ Fixture defaults.
 ## Protocol Compliance
 
 - [ ] Runs `artifact-check.sh` before hand-scanning artifacts
-- [ ] Reads `project.stage` (then `production/stage.txt`) when present, and always runs the heuristics as well
+- [ ] Reads `project.stage` (then `.claude/ccgs/stage.txt`) when present, and always runs the heuristics as well
 - [ ] States explicitly when configured and observed stages disagree
 - [ ] Surfaces gaps only as the resolved workflow tier allows, each with a clarifying question
 - [ ] Reports Stage Confidence as PASS / CONCERNS / NOT ASSESSED / FAIL, first match FAIL → CONCERNS → NOT ASSESSED → PASS; a configured/observed disagreement is CONCERNS
 - [ ] Reports an unresolved code root as `NOT ASSESSED — code root unresolved`, never as zero source files
-- [ ] Asks "May I write" before writing `production/project-stage-report.md`; never writes a stage value
+- [ ] Asks "May I write" before writing `docs/production/project-stage-report.md`; never writes a stage value
 
 ---
 

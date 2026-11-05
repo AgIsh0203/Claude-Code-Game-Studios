@@ -3,14 +3,16 @@ name: soak-test
 description: "Soak test protocol for extended play — what to observe and log for slow leaks, fatigue, late-appearing edge cases."
 argument-hint: "[duration: 30m | 1h | 2h | 4h] [focus: memory | stability | balance | all]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/soak-test/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/soak-test/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -33,7 +35,7 @@ minutes to several hours** to surface:
 **This skill generates the observation protocol and analysis harness — the
 human does the actual playing.**
 
-**Output:** `production/qa/soak-test-[date]-[duration].md`
+**Output:** `docs/production/qa/soak-test-[date]-[duration].md`
 
 **When to run:**
 - Polish phase — before `/gate-check release`
@@ -61,22 +63,22 @@ human does the actual playing.**
 ## 2. Load Context
 
 Read:
-- `project.yaml` — `engine.name` (for engine-specific memory monitoring
+- `.claude/ccgs/project.yaml` — `engine.name` (for engine-specific memory monitoring
   guidance) and `performance.*` budgets (memory ceiling, target FPS); for any
-  key absent or empty (including when `project.yaml` has no `performance` or
+  key absent or empty (including when `.claude/ccgs/project.yaml` has no `performance` or
   `engine` block), fall back to `.claude/docs/technical-preferences.md`
-- `design/gdd/game-concept.md` — intended session length (for comparison against
-  soak duration), core loop description (or `design/game-brief.md`, the one-page
+- `docs/GDD.md` — intended session length (for comparison against
+  soak duration), core loop description (or `docs/GDD.md`, the one-page
   brief that replaces it at `rigor: minimal` — core loop, and session length only
   if its "Who it's for" line states one). Read it by section: find the headings you
   need with the Grep tool (pattern `^#`, content mode) and Read those ranges
   with offset and limit.
-- Most recent file in `production/qa/playtests/` — prior playtest findings
+- Most recent file in `docs/production/qa/playtests/` — prior playtest findings
   (to avoid re-documenting known issues)
-- Most recent file in `production/qa/qa-plan-*.md` — current sprint test coverage
+- Most recent file in `docs/production/qa/qa-plan-*.md` — current sprint test coverage
   (to understand what has been formally tested vs. what the soak covers)
 
-Note any performance budget targets (`performance.*` from `project.yaml`, else `.claude/docs/technical-preferences.md`):
+Note any performance budget targets (`performance.*` from `.claude/ccgs/project.yaml`, else `.claude/docs/technical-preferences.md`):
 - Memory ceiling: [N MB, or "not set"]
 - Target FPS: [N, or "not set"]
 - Frame budget: [N ms, or "not set"]
@@ -305,7 +307,7 @@ for — say how far it got and which checkpoints were never reached
 Present the protocol summary in conversation, then ask:
 
 "May I write this soak test protocol to
-`production/qa/soak-test-[date]-[duration].md`?"
+`docs/production/qa/soak-test-[date]-[duration].md`?"
 
 Write only after approval.
 
@@ -315,7 +317,7 @@ After writing:
 1. Open the file and follow the Pre-Session Setup checklist
 2. Record each checkpoint as you play
 3. Complete the Post-Session Analysis section when done
-4. File bugs from 'Issues Found' to `production/qa/bugs/`
+4. File bugs from 'Issues Found' to `docs/production/qa/bugs/`
 5. Run `/bug-triage sprint` after the session to integrate any S1/S2 issues (at `workflow: minimal`, which has no sprints: `/bug-triage full`)
 
 If the verdict is FAIL, run `/smoke-check` again after fixing the issues."

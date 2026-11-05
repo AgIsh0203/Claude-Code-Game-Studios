@@ -7,9 +7,9 @@ six categories: save/serialization, network/multiplayer, input validation, data
 exposure, cheat/anti-tamper vectors, and dependencies. It takes a scope
 (`full`, `network`, `save`, `input`, `quick`; no argument runs `full`), reads
 `engine.name`, `engine.language`, `platform.targets`, `platform.multiplayer` and
-`platform.online` from `project.yaml`, and spawns the `security-engineer` agent
+`platform.online` from `.claude/ccgs/project.yaml`, and spawns the `security-engineer` agent
 with a fixed brief template — only its slots filled: the scope, the engine, the
-`platform.*` values, the resolved code root, `assets/data/` and config files,
+`platform.*` values, the resolved code root, `Content/data/` and config files,
 the categories and the report path — whose own text tells the agent to rate
 every finding from its severity table and that game type never lowers a
 rating. Grep patterns are chosen per engine from the
@@ -22,7 +22,7 @@ report's release recommendation, first match wins, is DO NOT SHIP, FIX BEFORE
 SHIPPING, NOT ASSESSED (e.g. INSUFFICIENT IMPLEMENTATION) or CLEAR TO SHIP.
 The skill presents the executive summary and CRITICAL/HIGH
 findings in conversation, then asks "May I write the full security audit report
-to `production/security/security-audit-[date]-[scope].md`?" At
+to `docs/production/security/security-audit-[date]-[scope].md`?" At
 `workflow: minimal` the Phase 7 message says the release gate does not read the
 report. No director gates are invoked.
 
@@ -35,7 +35,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: CLEAR TO SHIP, FIX BEFORE SHIPPING, DO NOT SHIP, NOT ASSESSED, and the severities CRITICAL / HIGH / MEDIUM / LOW
-- [ ] Contains "May I write" language naming `production/security/security-audit-[date]-[scope].md`
+- [ ] Contains "May I write" language naming `docs/production/security/security-audit-[date]-[scope].md`
 - [ ] Has a next-step handoff (Phase 7: `/security-audit quick`, `/gate-check release`, `/launch-checklist`)
 
 ---
@@ -50,9 +50,9 @@ any review mode.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -62,23 +62,23 @@ Fixture defaults.
 ### Case 1: Happy Path — Single-player Godot project, no findings
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `engine.language: gdscript`, `platform.multiplayer: false`, `platform.online: false`, `modes.rigor: standard` (so `workflow` resolves to `standard`); `modes.automation` unset (collaborative)
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `engine.language: gdscript`, `platform.multiplayer: false`, `platform.online: false`, `modes.rigor: standard` (so `workflow` resolves to `standard`); `modes.automation` unset (collaborative)
 - `src/` holds the implemented game: 42 `.gd` files across core, gameplay, UI and save systems
 - `src/core/save_system.gd` opens saves with `FileAccess`, verifies a checksum, and bounds-checks every loaded value before use
-- No API keys, secrets, passwords or tokens anywhere in `src/` or `assets/`
+- No API keys, secrets, passwords or tokens anywhere in `src/` or `Content/`
 - `addons/gdUnit4/` is the only third-party dependency
 
 **Input:** `/security-audit`
 
 **Expected behavior:**
 1. No argument → `full` scope
-2. Skill reads engine, language and platform keys from `project.yaml`
-3. Skill spawns `security-engineer` via `Agent` with the fixed brief template: the scope, Godot/GDScript, `platform.multiplayer: false`, `platform.online: false`, code root `src/`, `assets/data/` and config files, the categories to run, and the report path — nothing added outside the slots
+2. Skill reads engine, language and platform keys from `.claude/ccgs/project.yaml`
+3. Skill spawns `security-engineer` via `Agent` with the fixed brief template: the scope, Godot/GDScript, `platform.multiplayer: false`, `platform.online: false`, code root `src/`, `Content/data/` and config files, the categories to run, and the report path — nothing added outside the slots
 4. Category 1 uses the Godot pattern list, including the Godot 4 name `FileAccess`; Category 2 is skipped because both platform keys are explicitly `false`, and the Executive Summary names the skip and its reason
 5. Category 6 lists `addons/gdUnit4/` in the Dependency Inventory
 6. Executive Summary shows zero findings at every severity over 42 source files; Release recommendation: **CLEAR TO SHIP**
-7. Skill presents the summary, then asks "May I write the full security audit report to `production/security/security-audit-[date]-full.md`?"
-8. After writing: "✅ No blocking security findings. Report written to `production/security/`. Include this path when running `/gate-check release`."
+7. Skill presents the summary, then asks "May I write the full security audit report to `docs/production/security/security-audit-[date]-full.md`?"
+8. After writing: "✅ No blocking security findings. Report written to `docs/production/security/`. Include this path when running `/gate-check release`."
 
 **Assertions:**
 - [ ] `security-engineer` is spawned with the fixed brief template — scope, engine/language, the `platform.*` values and a source manifest rooted at `src/` — and the brief adds no severity and no remark on the game's type
@@ -119,7 +119,7 @@ Fixture defaults.
 ### Case 2: Multiplayer Critical — Client-authoritative RPC and a hardcoded key
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `platform.multiplayer: true`, `platform.online: true`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `platform.multiplayer: true`, `platform.online: true`
 - `src/net/combat_sync.gd` line 42: `@rpc("any_peer") func apply_damage(target_id, amount)` applies `amount` with no sender or range validation
 - `src/online/leaderboard_client.gd` line 8: `const API_KEY = "sk_live_..."`
 
@@ -146,7 +146,7 @@ Fixture defaults.
 ### Case 3: Multiplayer Scope Unset — Absent is not `false`
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`; no `platform` block at all
+- `.claude/ccgs/project.yaml`: `engine.name: godot`; no `platform` block at all
 - `src/networking/lobby.gd` defines `@rpc` functions `join_lobby()` and `send_chat()`
 - `modes.automation` unset (collaborative)
 
@@ -170,8 +170,8 @@ Fixture defaults.
 ### Case 4: No Implemented Surface — NOT ASSESSED — INSUFFICIENT IMPLEMENTATION
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `platform.multiplayer: false`, `platform.online: false`
-- `src/` exists but contains no source files; `assets/data/` is empty
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `platform.multiplayer: false`, `platform.online: false`
+- `src/` exists but contains no source files; `Content/data/` is empty
 
 **Input:** `/security-audit`
 
@@ -194,7 +194,7 @@ Fixture defaults.
 ### Case 5: Unity Project in Full Review Mode — NOT SOURCEABLE category, no gates
 
 **Fixture:**
-- `project.yaml`: `engine.name: unity`, `engine.language: csharp`, `platform.multiplayer: true`, `platform.online: true`, `modes.review_mode: full`
+- `.claude/ccgs/project.yaml`: `engine.name: unity`, `engine.language: csharp`, `platform.multiplayer: true`, `platform.online: true`, `modes.review_mode: full`
 - `Assets/Scripts/Save/SaveManager.cs` reads and writes save data
 - `Assets/Scripts/Net/PlayerNet.cs` has `[ServerRpc]` methods that validate their inputs
 - No findings in the categories that can run
@@ -223,7 +223,7 @@ Fixture defaults.
 ### Case 5b: Ranking — An open HIGH outranks an unsourced category
 
 **Fixture:**
-- `project.yaml`: `engine.name: unity`, `engine.language: csharp`, `platform.multiplayer: false`, `platform.online: false`
+- `.claude/ccgs/project.yaml`: `engine.name: unity`, `engine.language: csharp`, `platform.multiplayer: false`, `platform.online: false`
 - `Assets/Scripts/` holds the implemented game (35 `.cs` files), including `Assets/Scripts/Save/SaveManager.cs`
 - `Assets/Scripts/Analytics/Telemetry.cs` line 12: `const string ApiKey = "sk_live_...";`
 - No other findings
@@ -245,14 +245,14 @@ Fixture defaults.
 
 ## Protocol Compliance
 
-- [ ] Reads `engine.name`, `engine.language` and the `platform.*` keys from `project.yaml` before auditing
-- [ ] Spawns `security-engineer` via `Agent` with the fixed brief template — only its named slots filled (scope, engine/language, `platform.*` values, the resolved code root, `assets/data/` and config files, the categories, the report path) — and no sentence of the orchestrator's own: no pre-rated finding, no "single-player lowers the stakes"; an unresolved code root makes the code categories NOT ASSESSED, never clean
+- [ ] Reads `engine.name`, `engine.language` and the `platform.*` keys from `.claude/ccgs/project.yaml` before auditing
+- [ ] Spawns `security-engineer` via `Agent` with the fixed brief template — only its named slots filled (scope, engine/language, `platform.*` values, the resolved code root, `Content/data/` and config files, the categories, the report path) — and no sentence of the orchestrator's own: no pre-rated finding, no "single-player lowers the stakes"; an unresolved code root makes the code categories NOT ASSESSED, never clean
 - [ ] Uses the Phase 3 pattern set for the resolved engine; a NOT SOURCEABLE category is NOT ASSESSED and makes CLEAR TO SHIP unreachable
 - [ ] Never treats an absent `platform.multiplayer` / `platform.online` as `false`
 - [ ] Names every skipped category and why in the Executive Summary
 - [ ] Each finding carries severity, category, file and line, attack scenario and remediation
 - [ ] Release recommendation, first match: DO NOT SHIP, FIX BEFORE SHIPPING, NOT ASSESSED, CLEAR TO SHIP
-- [ ] Presents the executive summary and CRITICAL/HIGH findings before asking "May I write" for `production/security/security-audit-[date]-[scope].md`; writes only after approval
+- [ ] Presents the executive summary and CRITICAL/HIGH findings before asking "May I write" for `docs/production/security/security-audit-[date]-[scope].md`; writes only after approval
 - [ ] No director gates are invoked
 - [ ] Ends with the Phase 7 gate-integration guidance
 

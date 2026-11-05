@@ -1,6 +1,6 @@
-# /prototype — Phase 8: Creative Director Review
+# /gamedev-prototype — Phase 8: Creative Director Review
 
-> Part of `/prototype`. `SKILL.md` names when to read this file; the settings it
+> Part of `/gamedev-prototype`. `SKILL.md` names when to read this file; the settings it
 > resolved and the rules under its later headings still apply here.
 
 ## Phase 8: Creative Director Review
@@ -9,14 +9,14 @@
 - `solo` → skip. Note: "CD-PLAYTEST skipped — Solo mode."
 - `lean` → skip. Note: "CD-PLAYTEST skipped — Lean mode."
 - `full` → spawn `creative-director` via `Agent` using gate **CD-PLAYTEST** if
-  `design/gdd/game-concept.md` exists with game pillars defined, or
-  `design/game-brief.md` exists (the `rigor: minimal` brief has no pillars — its
+  `docs/GDD.md` exists with game pillars defined, or
+  `docs/GDD.md` exists (the `rigor: minimal` brief has no pillars — its
   pitch and "what they feel" line stand in). If neither is available, note:
   "CD-PLAYTEST skipped — game pillars not yet defined at concept prototype stage."
 
 Pass: the full REPORT.md content, the original hypothesis, and game pillars /
-core fantasy from `design/gdd/game-concept.md` (or the brief's pitch and "what
-they feel" line from `design/game-brief.md`). Read the concept by section: find the
+core fantasy from `docs/GDD.md` (or the brief's pitch and "what
+they feel" line from `docs/GDD.md`). Read the concept by section: find the
 headings you need with the Grep tool (pattern `^#`, content mode) and Read those
 ranges with offset and limit.
 
@@ -37,7 +37,7 @@ ASSESSED when it could not judge. Apply it to the recommendation:
   recommendation stands unreviewed.
 
 When the director returned CONCERNS, REJECT or NOT ASSESSED, ask "May I update
-`prototypes/[concept-name]-concept/REPORT.md` and its `prototypes/index.md`
+`docs/prototypes/[concept-name]-concept/REPORT.md` and its `docs/prototypes/index.md`
 row?", then record the director's verdict and reason in REPORT.md, and the final
 recommendation in both if it changed.
 

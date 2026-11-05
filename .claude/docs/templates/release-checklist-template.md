@@ -16,7 +16,7 @@ Generated: [Date]
 - [ ] Build is reproducible from tagged commit
 
 ### Quality Gates
-- Open bugs (`production/qa/bugs/`): [N] S1, [N] S2, [N] S3 -- or `NOT ASSESSED — no bug records`
+- Open bugs (`docs/production/qa/bugs/`): [N] S1, [N] S2, [N] S3 -- or `NOT ASSESSED — no bug records`
 - [ ] Zero open S1 (Critical) bugs
 - [ ] Zero open S2 (High) bugs, no exceptions -- this row at `workflow: full` only; at `standard`/`minimal` open S2 bugs go in the Rationale as risks
 - [ ] Zero S3 (Medium) bugs open, no exceptions -- this row at `workflow: full` only; at `standard`/`minimal` open S3 bugs go in the Rationale as risks

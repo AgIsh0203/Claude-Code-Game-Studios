@@ -28,11 +28,11 @@ Otherwise locate the latest prior report — Glob
 `docs/architecture/architecture-review-*.md` and take the newest — and check
 **the review inputs**: every file the phases below read that can change a
 finding or the verdict. `[engine]` is the lowercased `engine.name` from
-`project.yaml`, the value Phase 5 uses; with no engine configured, leave the two
+`.claude/ccgs/project.yaml`, the value Phase 5 uses; with no engine configured, leave the two
 engine-reference paths out.
 
 ```
-Bash: bash .claude/scripts/review-receipts.sh check "[latest-report]" docs/architecture/adr-*.md design/gdd/*.md docs/architecture/tr-registry.yaml docs/architecture/architecture.md docs/engine-reference/[engine]/*.md docs/engine-reference/[engine]/modules/*.md project.yaml .claude/docs/technical-preferences.md docs/consistency-failures.md .claude/skills/architecture-review/SKILL.md .claude/skills/architecture-review/references/*.md
+Bash: bash .claude/scripts/review-receipts.sh check "[latest-report]" docs/architecture/adr-*.md docs/design/gdd/*.md docs/architecture/tr-registry.yaml docs/architecture/architecture.md docs/engine-reference/[engine]/*.md docs/engine-reference/[engine]/modules/*.md .claude/ccgs/project.yaml .claude/docs/technical-preferences.md docs/consistency-failures.md .claude/skills/architecture-review/SKILL.md .claude/skills/architecture-review/references/*.md
 ```
 
 Phase 8 stamps the same list into this run's report; keep the two identical,
@@ -70,7 +70,7 @@ without those lines was written before they existed and covers nothing.
   for just the changed systems. A full re-run stays available on request, and
   a `NEW` ADR warrants one.
 - **Anything else `CHANGED`, `NEW` or `GONE`** — a deleted GDD or ADR, the TR
-  registry, `architecture.md`, the engine reference, `project.yaml`,
+  registry, `architecture.md`, the engine reference, `.claude/ccgs/project.yaml`,
   `technical-preferences.md`, `consistency-failures.md`, or this skill's own
   files. These reach every phase, so recommend re-running the review as
   asked, never a `single-gdd` scope, and name each input with what it
@@ -85,12 +85,12 @@ Before reading any full document, use Grep to extract `## Summary` sections
 from all GDDs and ADRs:
 
 ```
-Grep pattern="## Summary" glob="design/gdd/*.md" output_mode="content" -A 4
+Grep pattern="## Summary" glob="docs/design/gdd/*.md" output_mode="content" -A 4
 Grep pattern="## Summary" glob="docs/architecture/adr-*.md" output_mode="content" -A 3
 ```
 
 **Fail open on a missing Summary.** Establish the denominator: glob
-`design/gdd/*.md` and count **N**. A scan matching fewer than N means those GDDs
+`docs/design/gdd/*.md` and count **N**. A scan matching fewer than N means those GDDs
 predate `## Summary` (`/design-system` emits it, but older GDDs lack it) — never
 treat an absent Summary as a system out of scope. A zero-match scan means "no GDD
 carries a Summary yet", not "nothing to review": full-read the unmatched set.
@@ -113,7 +113,7 @@ skill reads the two largest document sets in the project (every GDD *and* every
 ADR); at realistic sizes a full load of both exhausts the context window before
 Phase 2 starts, and most of what it loads is narrative this skill never uses.
 
-**Establish the denominator first.** Glob `design/gdd/*.md` and count **N_gdd**;
+**Establish the denominator first.** Glob `docs/design/gdd/*.md` and count **N_gdd**;
 glob `docs/architecture/adr-*.md` and count **N_adr**. Report both. A section
 scan matching fewer than the denominator means those documents lack the section —
 **never treat an absent section as an absent document.** The scan narrows the
@@ -127,7 +127,7 @@ threading, platform needs. Those live in a known set of sections; Overview and
 Player Fantasy are narrative and yield none.
 
 ```
-Grep pattern="^## (Detailed Rules|Detailed Design|Formulas|Dependencies|Tuning Knobs|Acceptance Criteria)" glob="design/gdd/*.md" output_mode="content" -A 40
+Grep pattern="^## (Detailed Rules|Detailed Design|Formulas|Dependencies|Tuning Knobs|Acceptance Criteria)" glob="docs/design/gdd/*.md" output_mode="content" -A 40
 ```
 
 Accept **either** `## Detailed Rules` or `## Detailed Design` — the design
@@ -136,7 +136,7 @@ required section. Full-read a single GDD only when a scanned section
 cross-references material outside itself, or when a GDD matched zero sections
 (it predates the template — read it whole and say so).
 
-- `design/gdd/systems-index.md` — the authoritative list of systems; read whole (small, and it is an index)
+- `docs/GDD.md` — the authoritative list of systems; read whole (small, and it is an index)
 
 ### Architecture Documents
 
@@ -174,7 +174,7 @@ reasoning (Phase 4) — that is a per-ADR decision, not a blanket load.
   cannot cross-check engine claims that were never made.
 
 ### Project Standards
-- `project.yaml` — `naming.*` and `performance.*`; plus `.claude/docs/technical-preferences.md` for those keys when absent and for forbidden patterns / allowed libraries
+- `.claude/ccgs/project.yaml` — `naming.*` and `performance.*`; plus `.claude/docs/technical-preferences.md` for those keys when absent and for forbidden patterns / allowed libraries
 
 Report a count: "Loaded [N] GDDs, [M] ADRs, engine: [name + version]."
 

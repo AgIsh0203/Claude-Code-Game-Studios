@@ -2,12 +2,12 @@
 
 ## Skill Summary
 
-`/art-bible` authors the art bible at `design/art/art-bible.md` in nine
+`/art-bible` authors the art bible at `docs/design/art/art-bible.md` in nine
 sections: 1 Visual Identity Statement, 2 Mood & Atmosphere, 3 Shape Language,
 4 Color System, 5 Character Design Direction, 6 Environment Design Language,
 7 UI/HUD Visual Direction, 8 Asset Standards, 9 Reference Direction.
 
-It first reads `design/gdd/game-concept.md` (or `design/game-brief.md` at
+It first reads `docs/GDD.md` (or `docs/GDD.md` at
 `rigor: minimal`) and stops if neither exists. A two-tab `AskUserQuestion`
 frames the session: **Scope** (with the option the resolved `workflow` tier
 requires marked Recommended) and **References** (free text). Authoring is
@@ -16,9 +16,9 @@ progressive: every section's draft comes from a spawned specialist
 section 8), is presented to the user, approved, and written to the file
 immediately before the next section starts. Sections 2–4 share one
 `art-director` call, as do 5–6, but their approvals and writes stay one section
-at a time. The first write asks "May I create `design/art/art-bible.md` from the
+at a time. The first write asks "May I create `docs/design/art/art-bible.md` from the
 art bible template?"; each section is written only after an approval whose
-option names the write (`[A] Lock this in and write it to design/art/art-bible.md`).
+option names the write (`[A] Lock this in and write it to docs/design/art/art-bible.md`).
 Only the sections in the chosen scope are authored, and the close names the
 sections left out and why.
 
@@ -40,7 +40,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains gate verdict keywords recorded in the status header: `APPROVED`, `CONCERNS`
-- [ ] Contains ask-before-write language: "May I create `design/art/art-bible.md` from the art bible template?" before the file exists, and a per-section approval option that names the write (`Lock this in and write it to design/art/art-bible.md`)
+- [ ] Contains ask-before-write language: "May I create `docs/design/art/art-bible.md` from the art bible template?" before the file exists, and a per-section approval option that names the write (`Lock this in and write it to docs/design/art/art-bible.md`)
 - [ ] Documents the AD-ART-BIBLE director gate and its mode behavior
 - [ ] Has a next-step handoff (e.g., `/map-systems`, `/create-architecture`)
 
@@ -67,9 +67,9 @@ The section-drafting delegation to `art-director` (and to `ux-designer` /
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -79,9 +79,9 @@ Fixture defaults.
 ### Case 1: Happy Path — Full mode, full workflow, all nine sections, AD-ART-BIBLE approves
 
 **Fixture:**
-- No `design/art/art-bible.md`
-- `design/gdd/game-concept.md` exists with pillars and a Visual Identity Anchor section
-- `project.yaml` has `modes.review_mode: full` and `modes.workflow: full`
+- No `docs/design/art/art-bible.md`
+- `docs/GDD.md` exists with pillars and a Visual Identity Anchor section
+- `.claude/ccgs/project.yaml` has `modes.review_mode: full` and `modes.workflow: full`
 - AD-ART-BIBLE returns APPROVE
 
 **Input:** `/art-bible`
@@ -89,7 +89,7 @@ Fixture defaults.
 **Expected behavior:**
 1. Phase 0 reads the game concept and extracts title, pitch, pillars, the Visual Identity Anchor and platform
 2. Phase 1 asks one `AskUserQuestion` with a Scope tab (Full bible marked Recommended, because `full` requires all 9 sections) and a free-text References tab, and notes the anchor it found
-3. Section 1: `art-director` drafts it; the user picks from `[A] Lock this in and write it to design/art/art-bible.md` / `[B] Revise the one-liner` / `[C] Revise a supporting principle` / `[D] Describe my own direction`; after "May I create `design/art/art-bible.md` from the art bible template?", the file is created from `.claude/docs/templates/art-bible.md` and the approved section replaces Section 1's `[To be designed]` line
+3. Section 1: `art-director` drafts it; the user picks from `[A] Lock this in and write it to docs/design/art/art-bible.md` / `[B] Revise the one-liner` / `[C] Revise a supporting principle` / `[D] Describe my own direction`; after "May I create `docs/design/art/art-bible.md` from the art bible template?", the file is created from `.claude/docs/templates/art-bible.md` and the approved section replaces Section 1's `[To be designed]` line
 4. Sections 2–4: one `art-director` call returns three labelled blocks; Section 2 is presented, approved with the option that names the write, and written before Section 3 is presented, and so on
 5. Sections 5–6: one `art-director` call; presented, approved and written one at a time
 6. Section 7: `art-director` and `ux-designer` spawn in parallel; Section 8: `art-director` and `technical-artist` spawn in parallel; Section 9: `art-director`
@@ -101,8 +101,8 @@ Fixture defaults.
 - [ ] The Scope tab marks "Full bible — all 9 sections" as Recommended and says why
 - [ ] Every section's content comes from a spawned specialist, never from the orchestrator's own drafting
 - [ ] Sections 2–4 come from a single `art-director` call but are presented, approved and written one section at a time
-- [ ] No section is written before an approval whose option names the write (`Lock this in and write it to design/art/art-bible.md`), and each is written immediately after it
-- [ ] The file is created from `.claude/docs/templates/art-bible.md` only after "May I create `design/art/art-bible.md` from the art bible template?" — an ask that names the file — so its nine `## N. Name` headings are the ones retrofit mode (Case 4) reads
+- [ ] No section is written before an approval whose option names the write (`Lock this in and write it to docs/design/art/art-bible.md`), and each is written immediately after it
+- [ ] The file is created from `.claude/docs/templates/art-bible.md` only after "May I create `docs/design/art/art-bible.md` from the art bible template?" — an ask that names the file — so its nine `## N. Name` headings are the ones retrofit mode (Case 4) reads
 - [ ] AD-ART-BIBLE spawns only after all nine sections are written, as `art-director` (the agent its gate definition names)
 - [ ] AD-ART-BIBLE is passed all four context items: the art bible path, the pillars and core fantasy, the platform and performance constraints, and the visual identity anchor
 - [ ] The APPROVE verdict is recorded in the art bible's status header line
@@ -113,8 +113,8 @@ Fixture defaults.
 ### Case 2: AD-ART-BIBLE Returns CONCERNS or NOT ASSESSED
 
 **Fixture:**
-- All nine sections have been written to `design/art/art-bible.md`
-- `project.yaml` has `modes.review_mode: full` and `modes.workflow: full`
+- All nine sections have been written to `docs/design/art/art-bible.md`
+- `.claude/ccgs/project.yaml` has `modes.review_mode: full` and `modes.workflow: full`
 - Scenario (a): AD-ART-BIBLE returns CONCERNS: "Color System does not match the Mood & Atmosphere targets for combat"
 - Scenario (b): AD-ART-BIBLE returns NOT ASSESSED — no platform or performance constraints were available to check the asset standards against
 
@@ -140,8 +140,8 @@ Fixture defaults.
 
 **Fixture:**
 - No existing art bible
-- `design/gdd/game-concept.md` exists
-- `project.yaml` has `modes.review_mode: lean` and `modes.workflow: standard`
+- `docs/GDD.md` exists
+- `.claude/ccgs/project.yaml` has `modes.review_mode: lean` and `modes.workflow: standard`
 - User picks the Recommended scope
 
 **Input:** `/art-bible`
@@ -165,19 +165,19 @@ Fixture defaults.
 ### Case 4: Existing Art Bible — Retrofit of incomplete sections only
 
 **Fixture:**
-- `design/art/art-bible.md` exists with sections 1–4 fully written
+- `docs/design/art/art-bible.md` exists with sections 1–4 fully written
 - Section 5's heading is followed by `[To be designed]`
 - Sections 6–9 have headings with nothing between them
-- `design/gdd/game-concept.md` exists; `project.yaml` has `modes.workflow: full` and `modes.review_mode: full`
+- `docs/GDD.md` exists; `.claude/ccgs/project.yaml` has `modes.workflow: full` and `modes.review_mode: full`
 - At the Scope tab the user picks `Resume — fill in missing sections`
 - AD-ART-BIBLE returns APPROVE
 
 **Input:** `/art-bible`
 
 **Expected behavior:**
-1. Phase 0 Globs `design/art/art-bible.md` and finds it
+1. Phase 0 Globs `docs/design/art/art-bible.md` and finds it
 2. The skill runs two Greps — `^## ` headings and placeholder markers (`[To be designed]`, `[TBD]`, `[To be written]`, `TODO`) — and does not read the whole document; an ambiguous section is read by line range only
-3. It builds a status table (sections 1–4 Complete, 5 Placeholder, 6–9 Empty) and says: "Found existing art bible at `design/art/art-bible.md`. 4 sections are complete, 5 need content. I'll work on the incomplete sections only — existing content will not be touched."
+3. It builds a status table (sections 1–4 Complete, 5 Placeholder, 6–9 Empty) and says: "Found existing art bible at `docs/design/art/art-bible.md`. 4 sections are complete, 5 need content. I'll work on the incomplete sections only — existing content will not be touched."
 4. Only sections 5–9 are authored, approved and written; sections 1–4 are not re-authored or rewritten
 5. After the ninth section is written, Phase 5 spawns AD-ART-BIBLE — a retrofit still ends in the sign-off in `full` review mode — and the status header records `APPROVED [date]`
 6. Phase 6 names sections 1–4 as not authored this run (already complete)
@@ -194,8 +194,8 @@ Fixture defaults.
 ### Case 5: Solo Mode and Missing Concept
 
 **Fixture:**
-- Scenario (a): no `design/gdd/game-concept.md`; `design/game-brief.md` exists; `project.yaml` has `modes.review_mode: solo` and `modes.workflow: minimal`
-- Scenario (b): neither `design/gdd/game-concept.md` nor `design/game-brief.md` exists
+- Scenario (a): no `docs/GDD.md`; `docs/GDD.md` exists; `.claude/ccgs/project.yaml` has `modes.review_mode: solo` and `modes.workflow: minimal`
+- Scenario (b): neither `docs/GDD.md` nor `docs/GDD.md` exists
 
 **Input:** `/art-bible`
 
@@ -203,7 +203,7 @@ Fixture defaults.
 1. (a) Phase 0 reads the one-page brief (working title, pitch, "what they feel" line, "Art & audio direction" line) in place of the concept
 2. (a) Before the Scope question, the skill says no art bible is required at `minimal` and offers sections 1–4 rather than defaulting to all 9
 3. (a) `art-director` is still spawned to draft each authored section — the solo review mode skips the sign-off, not the authoring delegation
-4. (a) Phase 5 prints "AD-ART-BIBLE skipped — Solo mode." and no gate agent is spawned; on "May I record the skipped sign-off in `design/art/art-bible.md`'s header?" answered yes, the status header records `> **Art Director Sign-Off (AD-ART-BIBLE)**: SKIPPED [date] — solo mode`
+4. (a) Phase 5 prints "AD-ART-BIBLE skipped — Solo mode." and no gate agent is spawned; on "May I record the skipped sign-off in `docs/design/art/art-bible.md`'s header?" answered yes, the status header records `> **Art Director Sign-Off (AD-ART-BIBLE)**: SKIPPED [date] — solo mode`
 5. (a) Phase 6, at `workflow: minimal`, offers `/create-stories`, `/dev-story [next story]` and Stop here — not `/create-architecture` or the GDD/`/map-systems` pool
 6. (b) The skill stops with: "No game concept found. Run `/brainstorm` first — the art bible is authored after the game concept is approved." No file is created and no agent is spawned
 
@@ -222,7 +222,7 @@ Fixture defaults.
 - [ ] Reads the game concept (or game brief) before authoring; stops with the `/brainstorm` message if neither exists
 - [ ] Every section is drafted by a specialist agent; the orchestrator never drafts content itself
 - [ ] Each section is presented, approved and written one at a time — approvals and writes are never batched
-- [ ] The file is created only after the "May I create `design/art/art-bible.md`…" ask, and each section is written only after an approval option that names the write
+- [ ] The file is created only after the "May I create `docs/design/art/art-bible.md`…" ask, and each section is written only after an approval option that names the write
 - [ ] Only the sections in the chosen scope are authored, and the close names every section left out and why
 - [ ] Conflicts between `art-director` and `ux-designer` or `technical-artist` are surfaced to the user, never silently resolved
 - [ ] AD-ART-BIBLE runs only in full mode, after the scoped sections are written; lean and solo print a skip note naming the gate and mode
@@ -247,4 +247,4 @@ Fixture defaults.
 - `docs.density` depth variations and `guided` / `autonomous` automation modes
   are not tested.
 - The Phase 6 option filtering (skip `/map-systems` when
-  `design/gdd/systems-index.md` exists, etc.) is not individually tested.
+  `docs/GDD.md` exists, etc.) is not individually tested.

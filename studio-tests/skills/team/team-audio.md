@@ -13,7 +13,7 @@ every other agent is consulted through it. Reads relevant GDDs, the sound bible 
 present), and existing audio asset lists before spawning agents. Sub-agents write
 their working artifacts to paths the orchestrator names, under the bounded write
 exception; the orchestrator compiles the audio design document itself and writes it
-to `design/audio/audio-[feature].md` only after asking via `AskUserQuestion`. Uses
+to `docs/design/audio/audio-[feature].md` only after asking via `AskUserQuestion`. Uses
 `AskUserQuestion` at each step transition. Verdict is COMPLETE when the audio design
 document is produced, BLOCKED when an unresolved dependency stops the pipeline.
 Skips the engine specialist when no engine is configured and records
@@ -27,10 +27,10 @@ Skips the engine specialist when no engine is configured and records
 - [ ] Has ≥2 step/phase headings
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED
 - [ ] Contains "File Write Protocol" section
-- [ ] Sub-agent writes are limited to the bounded exception — a path the orchestrator named, a new artifact under `production/`, `docs/` or `tests/`, in a step gated by `AskUserQuestion`; no per-write prompt inside those bounds, a "May I write" ask outside them; implementation files (code, shaders, audio, assets) are outside it — each agent lists the files it will create or change, and the skill asks once for the set before any is written
-- [ ] Names a destination per agent under `production/audio/[feature]/`: `direction.md` (audio-director), `sfx-spec.md` (sound-designer), `accessibility.md` (accessibility-specialist), `integration-plan.md` (technical-artist), `engine-notes.md` (engine specialist)
+- [ ] Sub-agent writes are limited to the bounded exception — a path the orchestrator named, a new artifact under `docs/production/`, `docs/` or `tests/`, in a step gated by `AskUserQuestion`; no per-write prompt inside those bounds, a "May I write" ask outside them; implementation files (code, shaders, audio, assets) are outside it — each agent lists the files it will create or change, and the skill asks once for the set before any is written
+- [ ] Names a destination per agent under `docs/production/audio/[feature]/`: `direction.md` (audio-director), `sfx-spec.md` (sound-designer), `accessibility.md` (accessibility-specialist), `integration-plan.md` (technical-artist), `engine-notes.md` (engine specialist)
 - [ ] Defines a phase gate as a decision point the pipeline itself lists, whatever the `automation` mode, and claims no director spawn at phase gates
-- [ ] The compiled audio design document is written by the orchestrator only after it asks via `AskUserQuestion` "May I write the audio design to `design/audio/audio-[feature].md`?" (`design/` is outside the bounded exception)
+- [ ] The compiled audio design document is written by the orchestrator only after it asks via `AskUserQuestion` "May I write the audio design to `docs/design/audio/audio-[feature].md`?" (`docs/design/` is outside the bounded exception)
 - [ ] Every agent prompt ends with the return contract: path written, ≤5-bullet summary, BLOCKED/CONCERNS items one line each
 - [ ] Has a next-step handoff at the end (references `/dev-story`, `/asset-audit`)
 - [ ] Error Recovery Protocol section is present: verify a named artifact is on disk before treating a step as done, surface BLOCKED immediately, always produce a partial report, full procedure in `.claude/docs/error-recovery-protocol.md`
@@ -39,16 +39,16 @@ Skips the engine specialist when no engine is configured and records
 - [ ] Step 2 explicitly spawns sound-designer and accessibility-specialist in parallel, and How to Delegate lists `accessibility-specialist`
 - [ ] Step 2 labels a gameplay-critical audio event with no visual cue or subtitle BLOCKING, and Step 3 waits for the user to resolve or accept it
 - [ ] Step 3 explicitly spawns technical-artist and engine specialist in parallel (when engine is configured)
-- [ ] Skill reads the sound bible at `design/audio/sound-bible.md` during context gathering if it exists; a sound bible still at `design/gdd/sound-bible.md` (the earlier location) is read, with a recommendation to move it
-- [ ] Output document is saved to `design/audio/audio-[feature].md`
+- [ ] Skill reads the sound bible at `docs/design/audio/sound-bible.md` during context gathering if it exists; a sound bible still at `docs/design/gdd/sound-bible.md` (the earlier location) is read, with a recommendation to move it
+- [ ] Output document is saved to `docs/design/audio/audio-[feature].md`
 
 ---
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -59,17 +59,17 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`
-- `engine.name` in `project.yaml` is Godot
-- GDD for the target feature exists at `design/gdd/combat.md`
-- Sound bible exists at `design/audio/sound-bible.md`
-- Existing audio assets are listed in `assets/audio/`
+- `engine.name` in `.claude/ccgs/project.yaml` is Godot
+- GDD for the target feature exists at `docs/design/gdd/combat.md`
+- Sound bible exists at `docs/design/audio/sound-bible.md`
+- Existing audio assets are listed in `Content/audio/`
 - No accessibility gaps exist in the planned audio event list
 
 **Input:** `/team-audio combat`
 
 **Expected behavior:**
 1. Before any spawn, one line announces the active set for `team.size: studio`
-2. Context gathering: orchestrator reads `design/gdd/combat.md`, `design/audio/sound-bible.md`, and `assets/audio/` asset list before spawning any agent
+2. Context gathering: orchestrator reads `docs/design/gdd/combat.md`, `docs/design/audio/sound-bible.md`, and `Content/audio/` asset list before spawning any agent
 3. Step 1: audio-director is spawned; defines sonic identity, emotional tone, adaptive music direction, mix targets, and adaptive audio rules for combat
 4. `AskUserQuestion` presents audio direction; user approves before Step 2 begins
 5. Step 2: sound-designer and accessibility-specialist are spawned in parallel; sound-designer produces SFX specifications, audio event list with trigger conditions, and mixing groups; accessibility-specialist identifies critical gameplay audio events and specifies visual fallback and subtitle requirements
@@ -79,7 +79,7 @@ Fixture defaults.
 9. Step 4: gameplay-programmer is spawned; first returns the code and test files it will create or change, the orchestrator asks once for that set, and only after the yes it wires up audio events to gameplay triggers, implements adaptive music, sets up occlusion zones and writes unit tests for audio event triggers
 10. For every step, the orchestrator checks that the path named in the agent's return contract exists before treating the step as done
 11. Orchestrator compiles all outputs into a single audio design document itself (no sub-agent is re-spawned to write it)
-12. Orchestrator asks via `AskUserQuestion`: "May I write the audio design to `design/audio/audio-combat.md`?" and writes it only on approval
+12. Orchestrator asks via `AskUserQuestion`: "May I write the audio design to `docs/design/audio/audio-combat.md`?" and writes it only on approval
 13. Summary output lists: audio event count, estimated asset count, implementation tasks, and any open questions
 14. Verdict: COMPLETE
 
@@ -92,7 +92,7 @@ Fixture defaults.
 - [ ] technical-artist and `godot-specialist` Agent calls are issued simultaneously in Step 3
 - [ ] gameplay-programmer is not launched until Step 3 `AskUserQuestion` is approved
 - [ ] gameplay-programmer writes no code or test file before the one ask for its implementation set is answered yes
-- [ ] Audio design document is written to `design/audio/audio-combat.md` (not another path), by the orchestrator, only after its `AskUserQuestion` approval
+- [ ] Audio design document is written to `docs/design/audio/audio-combat.md` (not another path), by the orchestrator, only after its `AskUserQuestion` approval
 - [ ] Summary includes audio event count and estimated asset count
 - [ ] Verdict is COMPLETE after document delivery
 
@@ -155,18 +155,18 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: small`, `automation: collaborative`
-- GDD for the target feature exists at `design/gdd/main-menu.md`
-- No sound bible exists at `design/audio/sound-bible.md` or `design/gdd/sound-bible.md`
+- GDD for the target feature exists at `docs/design/gdd/main-menu.md`
+- No sound bible exists at `docs/design/audio/sound-bible.md` or `docs/design/gdd/sound-bible.md`
 - Engine is configured; other context files are present
 
 **Input:** `/team-audio main menu`
 
 **Expected behavior:**
-1. Context gathering: orchestrator reads `design/gdd/main-menu.md` and checks for `design/audio/sound-bible.md`
-2. Sound bible is not found; orchestrator notes the gap in one line: "No sound bible at `design/audio/sound-bible.md`; audio direction starts from the GDDs alone"
+1. Context gathering: orchestrator reads `docs/design/gdd/main-menu.md` and checks for `docs/design/audio/sound-bible.md`
+2. Sound bible is not found; orchestrator notes the gap in one line: "No sound bible at `docs/design/audio/sound-bible.md`; audio direction starts from the GDDs alone"
 3. Pipeline proceeds normally through all four steps without the sound bible as input
 4. audio-director in Step 1 is informed that no sound bible exists and must establish sonic identity from the feature GDD alone
-5. Next Steps recommends creating the sound bible and says who writes it: the `audio-director` agent drafts `design/audio/sound-bible.md` from `.claude/docs/templates/sound-bible.md`, starting from this run's Step 1 direction, and asks before writing
+5. Next Steps recommends creating the sound bible and says who writes it: the `audio-director` agent drafts `docs/design/audio/sound-bible.md` from `.claude/docs/templates/sound-bible.md`, starting from this run's Step 1 direction, and asks before writing
 
 **Assertions:**
 - [ ] Orchestrator checks for the sound bible during context gathering (before Step 1)
@@ -174,7 +174,7 @@ Fixture defaults.
 - [ ] Pipeline does NOT halt due to the missing sound bible
 - [ ] audio-director is notified that no sound bible exists in its prompt context
 - [ ] Next Steps recommends creating a sound bible and names its author — the `audio-director`, drafting from `.claude/docs/templates/sound-bible.md`
-- [ ] The skill does not write `design/audio/sound-bible.md` itself in this run
+- [ ] The skill does not write `docs/design/audio/sound-bible.md` itself in this run
 - [ ] Verdict is still COMPLETE if all other steps succeed
 
 ---
@@ -183,7 +183,7 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`
-- `engine.name` is unset in `project.yaml`, and `.claude/docs/technical-preferences.md` has no Primary engine specialist (shows `[TO BE CONFIGURED]`)
+- `engine.name` is unset in `.claude/ccgs/project.yaml`, and `.claude/docs/technical-preferences.md` has no Primary engine specialist (shows `[TO BE CONFIGURED]`)
 - GDD for the target feature exists
 - Sound bible may or may not exist
 
@@ -192,7 +192,7 @@ Fixture defaults.
 **Expected behavior:**
 1. Steps 1–2 proceed normally (audio-director, sound-designer, accessibility-specialist)
 2. Step 3: technical-artist is spawned normally; engine specialist spawn is SKIPPED
-3. The run output records: `Engine validation: NOT ASSESSED — no engine configured (engine.name unset in project.yaml)`
+3. The run output records: `Engine validation: NOT ASSESSED — no engine configured (engine.name unset in .claude/ccgs/project.yaml)`
 4. Step 4: gameplay-programmer still runs — the missing engine is not treated as a blocker
 5. Verdict: `COMPLETE — engine validation NOT ASSESSED (no engine configured)` — the skip is graceful, not a blocker, and never a plain COMPLETE
 
@@ -210,9 +210,9 @@ Fixture defaults.
 ### Case 6: `review_mode` gates nothing — the same request at full, lean and solo
 
 **Fixture:**
-- `project.yaml`: `modes.review_mode: lean` (pinned: the runs below override or keep
+- `.claude/ccgs/project.yaml`: `modes.review_mode: lean` (pinned: the runs below override or keep
   it), `team.size: studio` (pinned: so every step and agent in the pipeline is active)
-- `engine.name` is Godot; `design/gdd/combat.md` and `design/audio/sound-bible.md`
+- `engine.name` is Godot; `docs/design/gdd/combat.md` and `docs/design/audio/sound-bible.md`
   exist; no accessibility gaps in the event list
 - Run A: `/team-audio combat --review full`. Run B: `/team-audio combat` (resolves
   `lean`). Run C: `/team-audio combat --review solo`
@@ -231,7 +231,7 @@ Fixture defaults.
 - [ ] No director gate (CD-, TD-, PR- or AD-PHASE-GATE) is spawned in Run A (`full`), Run B (`lean`) or Run C (`solo`)
 - [ ] The active set, the agents spawned per step and the number of step-transition asks are identical across the three runs
 - [ ] `--review full` does not add a review step and `--review solo` does not remove one: only `team.size` changes who is spawned
-- [ ] Each run writes `design/audio/audio-combat.md` only after its own ask and ends COMPLETE
+- [ ] Each run writes `docs/design/audio/audio-combat.md` only after its own ask and ends COMPLETE
 
 ---
 
@@ -241,12 +241,12 @@ Fixture defaults.
 - [ ] Context gathering (GDDs, sound bible, asset list) runs before any agent is spawned
 - [ ] In `collaborative` mode, `AskUserQuestion` is used after every step output before the next step launches
 - [ ] Parallel spawning: Step 2 (sound-designer + accessibility-specialist) and Step 3 (technical-artist + engine specialist) issue all Agent calls before waiting for results
-- [ ] Sub-agents write only to paths the orchestrator named; they skip the per-write prompt only inside the bounded exception (`production/`, `docs/`, `tests/`)
+- [ ] Sub-agents write only to paths the orchestrator named; they skip the per-write prompt only inside the bounded exception (`docs/production/`, `docs/`, `tests/`)
 - [ ] The orchestrator writes the compiled audio design document only after an explicit `AskUserQuestion` approval
 - [ ] A step whose named artifact is missing on disk is treated as failed and the agent is resumed — not reported as done
 - [ ] BLOCKED status from any agent is surfaced immediately as "[AgentName]: BLOCKED — [reason]" — not silently skipped
 - [ ] A partial report is always produced when some agents complete and others block
-- [ ] Audio design document path follows the pattern `design/audio/audio-[feature].md`
+- [ ] Audio design document path follows the pattern `docs/design/audio/audio-[feature].md`
 - [ ] Verdict is exactly COMPLETE (qualified `— engine validation NOT ASSESSED ([reason])` when that step was skipped) or BLOCKED — no other verdict values used
 - [ ] Next Steps handoff references `/dev-story` and `/asset-audit`
 

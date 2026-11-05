@@ -3,7 +3,7 @@
 ## Skill Summary
 
 `/reverse-document <type> <path>` works backwards from existing implementation to
-a document. `type` is `design` (a GDD, written to `design/gdd/[system-name].md`),
+a document. `type` is `design` (a GDD, written to `docs/design/gdd/[system-name].md`),
 `architecture` (an ADR, written to `docs/architecture/[decision-name].md`) or
 `concept` (a concept doc from a prototype). It reads the code, runs a
 sufficiency check (stopping when there is too little implementation to infer
@@ -11,8 +11,8 @@ from), presents its findings with the questions code cannot answer, drafts the
 document, and asks "May I write this to [output path]?".
 
 The `design` output scales with the resolved workflow tier: an 8-section GDD at
-`full`, a 5-section GDD at `standard`, a one-page brief at `minimal` (the whole-game `design/game-brief.md` when the path
-is the code root, `design/[system-name]-brief.md` for one system).
+`full`, a 5-section GDD at `standard`, a one-page brief at `minimal` (the whole-game `docs/GDD.md` when the path
+is the code root, `docs/design/[system-name]-brief.md` for one system).
 `architecture` and `concept` outputs are tier-independent. Intent the user did
 not confirm is carried into the document marked `INTENT UNKNOWN — inferred from
 implementation, not confirmed`, and every document carries a
@@ -42,9 +42,9 @@ None. `/reverse-document` is a documentation utility. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -54,7 +54,7 @@ Fixture defaults.
 ### Case 1: Well-Structured Source at `full` — 8-section GDD produced
 
 **Fixture:**
-- `project.yaml` resolves `workflow: full`; no `system_overrides` row for health
+- `.claude/ccgs/project.yaml` resolves `workflow: full`; no `system_overrides` row for health
 - `src/gameplay/health_system.gd` exists (~80 lines) with:
   - `@export var max_health: int = 100`
   - `func take_damage(amount: int)` containing
@@ -75,7 +75,7 @@ Fixture defaults.
    `max_health = 100`
 5. The provenance banner ("Reverse-documented from implementation … from
    `src/gameplay/health_system.gd`") sits directly under the title
-6. Skill asks "May I write this to `design/gdd/health-system.md`?"
+6. Skill asks "May I write this to `docs/design/gdd/health-system.md`?"
 7. File written on approval; verdict is COMPLETE
 
 **Assertions:**
@@ -83,7 +83,7 @@ Fixture defaults.
 - [ ] All 8 GDD sections are present (tier resolved as `full`)
 - [ ] The clamp expression appears in Formulas; `max_health = 100` appears as a Tuning Knob
 - [ ] The provenance banner appears directly under the title
-- [ ] "May I write" names the path under `design/gdd/`
+- [ ] "May I write" names the path under `docs/design/gdd/`
 - [ ] Verdict is COMPLETE
 
 ---
@@ -91,7 +91,7 @@ Fixture defaults.
 ### Case 2: Unanswered Intent — INTENT UNKNOWN carried into the draft
 
 **Fixture:**
-- `project.yaml` resolves `workflow: full`
+- `.claude/ccgs/project.yaml` resolves `workflow: full`
 - `src/gameplay/enemy_ai.gd` exists (~120 lines) with:
   - A patrol/chase/attack state machine
   - Inline constants with use sites: `if distance < 150:`, `speed = 3.5`
@@ -112,7 +112,7 @@ Fixture defaults.
    an open question marked `INTENT UNKNOWN — inferred from implementation, not
    confirmed` — it does not present an inferred intent as settled
 5. No formula is invented to fill the Formulas section
-6. Skill asks "May I write this to `design/gdd/enemy-ai.md`?"; verdict COMPLETE
+6. Skill asks "May I write this to `docs/design/gdd/enemy-ai.md`?"; verdict COMPLETE
    on approval
 
 **Assertions:**
@@ -127,7 +127,7 @@ Fixture defaults.
 ### Case 3: Architecture Type on Interdependent Files — tier-independent ADR
 
 **Fixture:**
-- `project.yaml` resolves `workflow: minimal`
+- `.claude/ccgs/project.yaml` resolves `workflow: minimal`
 - `src/core/combat/` holds `combat_system.gd` and `damage_resolver.gd`;
   `combat_system.gd` calls `damage_resolver.gd` through an injected reference
 - The user answers the architecture questions and approves the write
@@ -147,7 +147,7 @@ Fixture defaults.
 
 **Assertions:**
 - [ ] Both files are analyzed, and the combat_system → damage_resolver dependency is documented
-- [ ] Output is an ADR at `docs/architecture/`, not `design/gdd/` or a `-brief.md`
+- [ ] Output is an ADR at `docs/architecture/`, not `docs/design/gdd/` or a `-brief.md`
 - [ ] The `minimal` tier does not change the architecture output
 - [ ] Verdict is COMPLETE
 
@@ -201,7 +201,7 @@ Fixture defaults.
 ### Case 6: Default Tier — a single system becomes a one-page brief
 
 **Fixture:**
-- `project.yaml` sets no `modes.rigor` and no `modes.workflow`, so the resolved
+- `.claude/ccgs/project.yaml` sets no `modes.rigor` and no `modes.workflow`, so the resolved
   tier is `minimal` — the default; no `system_overrides`
 - Same source as Case 1 (`src/gameplay/health_system.gd`)
 - The user answers every `UNCLEAR INTENT AREAS` question and approves the write
@@ -214,13 +214,13 @@ Fixture defaults.
 3. The draft is a one-page game brief in the `.claude/docs/templates/game-brief.md`
    format — not a GDD — for this one system
 4. The provenance banner sits directly under the title
-5. Skill asks "May I write this to `design/health-system-brief.md`?" — not
-   `design/gdd/` and not `design/game-brief.md`, which is the whole-game brief
+5. Skill asks "May I write this to `docs/design/health-system-brief.md`?" — not
+   `docs/design/gdd/` and not `docs/GDD.md`, which is the whole-game brief
 6. File written on approval; verdict COMPLETE
 
 **Assertions:**
 - [ ] The output is a brief in the game-brief format, not an 8- or 5-section GDD
-- [ ] The path is `design/[system-name]-brief.md`
+- [ ] The path is `docs/design/[system-name]-brief.md`
 - [ ] The provenance banner appears under the title
 - [ ] Verdict is COMPLETE
 
@@ -229,9 +229,9 @@ Fixture defaults.
 ### Case 7: Minimal Tier, Path Is the Code Root — the whole-game brief
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot` (code root `src/`); `modes.rigor: minimal` (workflow `minimal`); no `system_overrides`
+- `.claude/ccgs/project.yaml`: `engine.name: Godot` (code root `src/`); `modes.rigor: minimal` (workflow `minimal`); no `system_overrides`
 - `src/` holds a small finished game: `src/gameplay/health_system.gd` (as in Case 1), `src/gameplay/enemy_ai.gd` (as in Case 2) and `src/main.gd` that starts the game loop — 14 source files in all
-- No `design/game-brief.md` exists
+- No `docs/GDD.md` exists
 - The user answers every `UNCLEAR INTENT AREAS` question and approves the write
 
 **Input:** `/reverse-document design src/`
@@ -241,20 +241,20 @@ Fixture defaults.
 2. Findings are presented and answered before any draft
 3. The draft is a one-page game brief in the `.claude/docs/templates/game-brief.md` format covering the whole game (pitch, core loop, what is built), not a GDD and not a brief for one system
 4. The provenance banner sits directly under the title
-5. Skill asks "May I write this to `design/game-brief.md`?" — not `design/gdd/`, and not a `design/[system-name]-brief.md` path
+5. Skill asks "May I write this to `docs/GDD.md`?" — not `docs/design/gdd/`, and not a `docs/design/[system-name]-brief.md` path
 6. File written on approval; verdict COMPLETE
 
 **Assertions:**
 - [ ] The output is a one-page brief in the game-brief format covering the whole game
-- [ ] The path is `design/game-brief.md`, not `design/[system-name]-brief.md` and not under `design/gdd/`
+- [ ] The path is `docs/GDD.md`, not `docs/design/[system-name]-brief.md` and not under `docs/design/gdd/`
 - [ ] The provenance banner appears under the title, and any intent the user did not confirm is marked `INTENT UNKNOWN — inferred from implementation, not confirmed`
-- [ ] "May I write" names `design/game-brief.md` and is asked before the file is written
+- [ ] "May I write" names `docs/GDD.md` and is asked before the file is written
 - [ ] Verdict is COMPLETE
 
 **Case 7b — a path inside the code root:** the same fixture with `/reverse-document design src/gameplay/health_system.gd`.
 
 **Assertions (7b):**
-- [ ] The brief is written to `design/health-system-brief.md` (Case 6), never to `design/game-brief.md`
+- [ ] The brief is written to `docs/design/health-system-brief.md` (Case 6), never to `docs/GDD.md`
 
 ---
 
@@ -263,7 +263,7 @@ Fixture defaults.
 - [ ] Reads the source before generating any content
 - [ ] Stops at the Phase 3b sufficiency check when mechanics, formulas and values all count zero
 - [ ] Waits for answers to the intent questions; unanswered ones are carried as `INTENT UNKNOWN`
-- [ ] `design` output matches the resolved tier (8 sections at `full`, 5 at `standard`, brief at `minimal` — `design/game-brief.md` when the path is the code root, `design/[system-name]-brief.md` for one system)
+- [ ] `design` output matches the resolved tier (8 sections at `full`, 5 at `standard`, brief at `minimal` — `docs/GDD.md` when the path is the code root, `docs/design/[system-name]-brief.md` for one system)
 - [ ] Emits the provenance banner under the title of every document it writes
 - [ ] Asks "May I write" before creating any output file
 - [ ] Verdict is COMPLETE (written) or BLOCKED (write declined)
@@ -276,7 +276,7 @@ Fixture defaults.
   follows Case 1's flow with a different section set; not separately
   fixture-tested. The `minimal` brief is Case 6 for one system and Case 7 for
   the whole game.
-- The `concept` type (prototype → `prototypes/[name]/CONCEPT.md` or
-  `design/concepts/[name].md`) is not separately tested.
+- The `concept` type (prototype → `docs/prototypes/[name]/CONCEPT.md` or
+  `docs/design/concepts/[name].md`) is not separately tested.
 - `guided` and `autonomous` automation modes change the write prompt per
   `automation-modes.md`; only `collaborative` is tested here.

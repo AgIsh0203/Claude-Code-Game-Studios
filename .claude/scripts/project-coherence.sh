@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# project-coherence.sh — compare what `project.yaml` DECLARES against what the
+# project-coherence.sh — compare what `.claude/ccgs/project.yaml` DECLARES against what the
 # project actually IS.
 #
 # WHY THIS EXISTS
 #
-# Three defects share one shape: `project.yaml` is treated as the source of truth
+# Three defects share one shape: `.claude/ccgs/project.yaml` is treated as the source of truth
 # and is never reconciled against the artifact it describes.
 #
 #   1  engine.version says 4.7.2; project.godot says 4.6; the binary is 4.6.1
@@ -34,7 +34,7 @@ set -u
 export LC_ALL=C
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-if [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -f "$CLAUDE_PROJECT_DIR/project.yaml" ]; then
+if [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -f "$CLAUDE_PROJECT_DIR/.claude/ccgs/project.yaml" ]; then
   ROOT="$CLAUDE_PROJECT_DIR"
 fi
 cd "$ROOT" || exit 0
@@ -48,7 +48,7 @@ match()    { CHECKED=$((CHECKED+1)); say "[MATCH]       $*"; }
 differs()  { CHECKED=$((CHECKED+1)); DIFFERS=$((DIFFERS+1)); say "[DIFFERS]     $*"; }
 skipped()  { SKIPPED=$((SKIPPED+1)); say "[NOT CHECKED] $*"; }
 
-# Read one `key: value` from a named top-level block of project.yaml.
+# Read one `key: value` from a named top-level block of .claude/ccgs/project.yaml.
 # Deliberately simple: this file is machine-written and two levels deep.
 yaml_block_value() {
   block="$1"; key="$2"
@@ -60,7 +60,7 @@ yaml_block_value() {
       gsub(/^"|"$/, "")
       print; exit
     }
-  ' project.yaml 2>/dev/null
+  ' .claude/ccgs/project.yaml 2>/dev/null
 }
 
 summarise() {
@@ -77,8 +77,8 @@ vmm() { printf '%s' "$1" | grep -oE '[0-9]+\.[0-9]+' | head -1 | sed -E 's/^6000
 
 say "=== project coherence ==="
 
-if [ ! -f project.yaml ]; then
-  skipped "everything — no project.yaml at the repo root. Run /start."
+if [ ! -f .claude/ccgs/project.yaml ]; then
+  skipped "everything — no .claude/ccgs/project.yaml at the repo root. Run /start."
   summarise
 fi
 
@@ -88,7 +88,7 @@ RENDERING="$(yaml_block_value engine rendering)"
 PHYSICS="$(yaml_block_value engine physics)"
 
 if [ -z "$ENGINE" ]; then
-  skipped "every engine check — project.yaml has no engine.name. Run /setup-engine."
+  skipped "every engine check — .claude/ccgs/project.yaml has no engine.name. Run /setup-engine."
   summarise
 fi
 
@@ -112,15 +112,15 @@ else
     match "VERSION.md records the installed version at pin time: $INSTALLED_ROW"
   fi
 
-  # --- 2. project.yaml version vs the pinned reference ------------------------
+  # --- 2. .claude/ccgs/project.yaml version vs the pinned reference ------------------------
   # Compared on major.minor, as check 3 does: engine.version is usually the full
   # release (4.6.1, 6000.3.23f1) and the pin the series (Godot 4.6, Unity 6.3
   # LTS). Unity numbers the same editor two ways -- 6000.3 is marketed as 6.3.
   WANT2="$(vmm "$VERSION")"; GOT2="$(vmm "$PINNED")"
   if [ -z "$PINNED" ]; then
-    skipped "project.yaml version vs pinned reference — no Engine Version row in $VERFILE"
+    skipped ".claude/ccgs/project.yaml version vs pinned reference — no Engine Version row in $VERFILE"
   elif [ -z "$VERSION" ]; then
-    skipped "project.yaml version vs pinned reference — project.yaml has no engine.version"
+    skipped ".claude/ccgs/project.yaml version vs pinned reference — .claude/ccgs/project.yaml has no engine.version"
   elif printf '%s' "$PINNED" | grep -qF "$VERSION" || { [ -n "$WANT2" ] && [ "$WANT2" = "$GOT2" ]; }; then
     match "engine.version ($VERSION) agrees with $VERFILE ($PINNED)"
   else
@@ -224,7 +224,7 @@ if [ -z "$PROBE" ]; then
     skipped "declared version vs installed binary — no $ENGINE binary found on PATH. A probe that could not run has not established absence."
   fi
 elif [ -z "$VERSION" ]; then
-  skipped "declared version vs installed binary — project.yaml has no engine.version"
+  skipped "declared version vs installed binary — .claude/ccgs/project.yaml has no engine.version"
 else
   # Compare on major.minor: a patch difference is normal and not worth a flag.
   WANT="$(vmm "$VERSION")"
@@ -247,7 +247,7 @@ else
   if [ -z "$METHOD" ]; then
     skipped "rendering — project.godot sets no renderer/rendering_method (Godot then uses its own default, which this script will not guess)"
   elif [ -z "$RENDERING" ]; then
-    skipped "rendering — project.yaml has no engine.rendering"
+    skipped "rendering — .claude/ccgs/project.yaml has no engine.rendering"
   else
     case "$RENDERING" in
       Compatibility|compatibility|"GL Compatibility") WANT_M="gl_compatibility" ;;
@@ -260,7 +260,7 @@ else
     elif [ "$WANT_M" = "$METHOD" ]; then
       match "engine.rendering ($RENDERING) agrees with project.godot ($METHOD)"
     else
-      differs "engine.rendering is '$RENDERING' (expects $WANT_M) but project.godot runs '$METHOD'. Whichever is wrong, an agent reading project.yaml will advise for the wrong renderer."
+      differs "engine.rendering is '$RENDERING' (expects $WANT_M) but project.godot runs '$METHOD'. Whichever is wrong, an agent reading .claude/ccgs/project.yaml will advise for the wrong renderer."
     fi
   fi
 
@@ -268,7 +268,7 @@ else
   # 2D). See docs/engine-reference/godot/modules/physics.md. Declaring Jolt on a
   # 2D project sends the implementer to tune a backend the game does not use.
   if [ -z "$PHYSICS" ]; then
-    skipped "physics — project.yaml has no engine.physics"
+    skipped "physics — .claude/ccgs/project.yaml has no engine.physics"
   elif printf '%s' "$PHYSICS" | grep -qiE 'jolt'; then
     if grep -qE '(Node2D|CharacterBody2D|RigidBody2D|Area2D|StaticBody2D)' \
          $(find src -name '*.gd' -o -name '*.tscn' 2>/dev/null) /dev/null 2>/dev/null; then
@@ -286,7 +286,7 @@ BUILD_CMD="$(yaml_block_value commands build)"
 TEST_CMD="$(yaml_block_value commands test)"
 
 if [ -z "$BUILD_CMD" ] && [ -z "$TEST_CMD" ]; then
-  skipped "command checks — project.yaml declares no commands.build or commands.test"
+  skipped "command checks — .claude/ccgs/project.yaml declares no commands.build or commands.test"
 else
   if printf '%s' "$BUILD_CMD" | grep -qE 'export-(debug|release|pack)'; then
     if [ -f export_presets.cfg ]; then

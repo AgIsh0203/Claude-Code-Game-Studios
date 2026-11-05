@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # registry.sh — the three registries read one way, and the next ID of every
-# kind the skills number: the entity registry (design/registry/entities.yaml),
+# kind the skills number: the entity registry (docs/design/registry/entities.yaml),
 # the TR-ID registry (docs/architecture/tr-registry.yaml) and the architecture
 # registry (docs/registry/architecture.yaml). A skill asks this script instead
 # of writing its own grep per entity or per TR-ID, so every skill reads the
@@ -19,11 +19,11 @@
 #                   state, contract, system, purpose or pattern): its row, then
 #                   its lines as the file has them
 #   refs NAME|PATH  for a NAME, each path its entry names, and for a TR-ID each
-#                   story or epic line under production/epics/ that cites it;
+#                   story or epic line under docs/production/epics/ that cites it;
 #                   for a PATH (it holds a /), every entry that names it
 #   slice PATH      every entry that names PATH as its source, gdd or adr or in
 #                   referenced_by: its row, then its lines
-#   validate        duplicate names, TR-IDs cited under production/epics/ that
+#   validate        duplicate names, TR-IDs cited under docs/production/epics/ that
 #                   the registry lacks, paths that do not exist, status values
 #                   outside the allowed list, and unsupported layout
 #   compare REGISTRY OLD [NEW]
@@ -37,13 +37,13 @@
 #                   deprecated ID is never handed out again. KIND and SCOPE:
 #                   tr SLUG   TR-SLUG-NNN, from the TR registry
 #                   adr       ADR-NNNN, from docs/architecture/adr-NNNN-*.md
-#                   bug       BUG-NNNN, from production/qa/bugs/BUG-*.md
-#                   asset     ASSET-NNN, from design/assets/asset-manifest.md
-#                             and the spec files in design/assets/specs/
+#                   bug       BUG-NNNN, from docs/production/qa/bugs/BUG-*.md
+#                   asset     ASSET-NNN, from docs/design/assets/asset-manifest.md
+#                             and the spec files in docs/design/assets/specs/
 #                   td        TD-NNN, from docs/tech-debt-register.md
-#                   story EPIC  story-NNN, from production/epics/EPIC/story-*.md
-#                   sprint    sprint-NNN, from production/sprints/sprint-N.md
-#                   season    SN, from design/live-ops/seasons/SN_*.md
+#                   story EPIC  story-NNN, from docs/production/epics/EPIC/story-*.md
+#                   sprint    sprint-NNN, from docs/production/sprints/sprint-N.md
+#                   season    SN, from docs/design/live-ops/seasons/SN_*.md
 #   --root DIR      the project; defaults to the repo this script is in
 #   -h, --help      this text
 #
@@ -76,7 +76,7 @@
 #       the unquoted superseded status above, read as <value>; after the
 #       other rows of every command but next-id, and it changes no exit code
 #   NOT_FOUND <name>
-#   validate: checked production/epics <files>, then the counts duplicate,
+#   validate: checked docs/production/epics <files>, then the counts duplicate,
 #   tr_unknown, path_missing, status and layout, then the rows
 #       DUPLICATE <registry> <section> <name> <lines>
 #       TR_UNKNOWN <tr-id> <path> <line>
@@ -141,7 +141,7 @@ NARG=$((${#POS[@]} - 1))
 REGS="entities tr architecture"
 reg_path() {
   case "$1" in
-    entities) echo "design/registry/entities.yaml" ;;
+    entities) echo "docs/design/registry/entities.yaml" ;;
     tr) echo "docs/architecture/tr-registry.yaml" ;;
     architecture) echo "docs/registry/architecture.yaml" ;;
   esac
@@ -271,13 +271,13 @@ if [ "$CMD" = next-id ] && [ "$KIND" != tr ]; then
   # (pat) with its opening paren: bash 3.2 misparses a bare pat) inside $( ).
   NLIST=$(case "$KIND" in
     (adr) files docs/architecture 'adr-*.md' ;;
-    (bug) files production/qa/bugs 'bug-*.md' -i ;;
-    (asset) [ -f design/assets/asset-manifest.md ] && echo design/assets/asset-manifest.md
-            files design/assets/specs '*.md' ;;
+    (bug) files docs/production/qa/bugs 'bug-*.md' -i ;;
+    (asset) [ -f docs/design/assets/asset-manifest.md ] && echo docs/design/assets/asset-manifest.md
+            files docs/design/assets/specs '*.md' ;;
     (td) [ -f docs/tech-debt-register.md ] && echo docs/tech-debt-register.md ;;
-    (story) files "production/epics/$RG_ARG" 'story-*.md' ;;
-    (sprint) files production/sprints 'sprint-*.md' ;;
-    (season) files design/live-ops/seasons 'S*_*' ;;
+    (story) files "docs/production/epics/$RG_ARG" 'story-*.md' ;;
+    (sprint) files docs/production/sprints 'sprint-*.md' ;;
+    (season) files docs/design/live-ops/seasons 'S*_*' ;;
   esac)
   # One path per line; split on newlines only, so a name with a space holds.
   OLDIFS=$IFS; IFS=$NL; set -f
@@ -312,11 +312,11 @@ if [ "$CMD" = compare ]; then
     if [ -f "${p%%	*}" ]; then LIST="${LIST}R	$RG_REG	$p$NL"; else LIST="${LIST}M	$RG_REG	$p$NL"; fi
   done
 fi
-if [ "$SCAN" = 1 ] && [ -d production/epics ]; then
+if [ "$SCAN" = 1 ] && [ -d docs/production/epics ]; then
   while IFS= read -r f; do
     [ -n "$f" ] && LIST="${LIST}S	-	${f#./}$NL"
   done <<EOF
-$(find production/epics -type f -name '*.md' | sort)
+$(find docs/production/epics -type f -name '*.md' | sort)
 EOF
 fi
 

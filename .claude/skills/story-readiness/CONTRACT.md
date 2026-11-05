@@ -10,11 +10,11 @@ implementation and produces a READY / NEEDS WORK / BLOCKED / NOT ASSESSED verdic
 ### Files That Must Exist
 | File | Required Fields / Sections | Read-Only? |
 |------|---------------------------|-----------|
-| `production/epics/[epic-slug]/story-NNN-[slug].md` | All header fields (`Status:`, `Layer:`, `Type:`, `Manifest Version:`), `## Context` (GDD path, TR-ID, ADR reference, Engine Notes, Control Manifest Rules), `## Acceptance Criteria`, `## Test Evidence`, `## Dependencies`, `## Out of Scope` | Yes |
+| `docs/production/epics/[epic-slug]/story-NNN-[slug].md` | All header fields (`Status:`, `Layer:`, `Type:`, `Manifest Version:`), `## Context` (GDD path, TR-ID, ADR reference, Engine Notes, Control Manifest Rules), `## Acceptance Criteria`, `## Test Evidence`, `## Dependencies`, `## Out of Scope` | Yes |
 | `docs/architecture/control-manifest.md` | `Manifest Version:` date in header, layer rules | Yes (if exists) |
 | `docs/architecture/tr-registry.yaml` | `id`, `status` fields per TR entry | Yes (if exists) |
 | `docs/architecture/adr-NNNN-[slug].md` (all ADRs referenced in stories) | `## Status`, the `**Layer**` row (read through `adr-status.sh`) | Yes |
-| `production/sprint-status.yaml` | `file:` entries (for `sprint` scope, read through `story-facts.sh --sprint`) | Yes (if exists) |
+| `docs/production/sprint-status.yaml` | `file:` entries (for `sprint` scope, read through `story-facts.sh --sprint`) | Yes (if exists) |
 
 > **Tier.** The manifest, TR registry and ADR rows are
 > `standard`/`full` inputs. At `workflow: minimal` the skill is not on the path
@@ -26,8 +26,8 @@ implementation and produces a READY / NEEDS WORK / BLOCKED / NOT ASSESSED verdic
 
 ### Preconditions
 - The story file being validated was produced by `/create-stories` (or follows the same format)
-- For `sprint` scope: `production/sprint-status.yaml` exists and lists story paths in its `file:` entries
-- For `all` scope: `production/epics/` directory exists and contains story files
+- For `sprint` scope: `docs/production/sprint-status.yaml` exists and lists story paths in its `file:` entries
+- For `all` scope: `docs/production/epics/` directory exists and contains story files
 
 ## Outputs Produced
 

@@ -8,7 +8,7 @@ Pattern library authoring is additive and catalog-driven, not linear.
 
 #### Phase 1: Catalog Existing Patterns
 
-Glob `design/ux/*.md` (excluding `interaction-patterns.md`) and read the Component
+Glob `docs/design/ux/*.md` (excluding `interaction-patterns.md`) and read the Component
 Inventory and Interaction Map sections of each spec. Extract every interaction
 pattern used.
 

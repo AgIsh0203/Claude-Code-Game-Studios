@@ -36,7 +36,7 @@ No gate IDs assigned.
 - Maps the concepts to Godot: `_ready()` instead of `Start()`, and a typed Godot `signal` connected in `_ready()` instead of a UnityEvent
 - Grounds the answer in the project's engine pin (`docs/engine-reference/godot/VERSION.md`, Godot 4.7) rather than asking which engine the project uses
 - Routes the actual node script to godot-gdscript-specialist or godot-csharp-specialist rather than writing it itself
-- Variant: with `engine.name: Unity` in `project.yaml`, it says it is the wrong specialist for this project instead of mapping the concepts
+- Variant: with `engine.name: Unity` in `.claude/ccgs/project.yaml`, it says it is the wrong specialist for this project instead of mapping the concepts
 
 ### Case 3: Post-cutoff API risk
 **Input:** "Use the new Godot 4.5 @abstract annotation to define an abstract base class."

@@ -5,12 +5,12 @@
 `/localize` runs the localization pipeline through one required subcommand:
 `scan`, `extract`, `validate`, `status`, `brief`, `cultural-review`,
 `vo-pipeline`, `rtl-check`, `freeze` or `qa`. It works on a single source string
-table under `assets/data/strings/` (`strings-en.json` is the English source; the
-other locales sit beside it) and writes reports under `production/localization/`.
+table under `Content/data/strings/` (`strings-en.json` is the English source; the
+other locales sit beside it) and writes reports under `docs/production/localization/`.
 
 `scan`, `validate` and `status` are read-only. `extract` shows a diff of new
 keyed entries and asks "May I write these new entries to
-`assets/data/strings/strings-en.json`?" before appending only the diff; its
+`Content/data/strings/strings-en.json`?" before appending only the diff; its
 verdict is **COMPLETE**. With no subcommand the skill prints usage and stops with
 verdict **FAIL** — missing required subcommand. A scan whose code root cannot be
 resolved reports `NOT ASSESSED — code root unresolved`; a status run with no
@@ -33,7 +33,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Contains "May I write" collaborative protocol language before writing the string table or a report
 - [ ] Has a next-step handoff (the Recommended Workflow chain ending in `/gate-check release`)
 - [ ] The QA gate note is tiered: at `workflow: full` the Polish → Release gate requires PASS or PASS WITH CONDITIONS for every translated locale being shipped (recommended at `standard`, dropped at `minimal`)
-- [ ] The `freeze` question names the file it writes — "This writes `production/localization/freeze-status.md`" — before the user answers
+- [ ] The `freeze` question names the file it writes — "This writes `docs/production/localization/freeze-status.md`" — before the user answers
 
 ---
 
@@ -47,9 +47,9 @@ it spawns is `localization-lead` (an operations-tier agent), and only in the
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -59,29 +59,29 @@ Fixture defaults.
 ### Case 1: Extract — New Strings Keyed and Appended After Approval
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot`, so the code root is `src/`
+- `.claude/ccgs/project.yaml` has `engine.name: Godot`, so the code root is `src/`
 - `src/ui/hud.gd` wraps three strings in `tr()` that have no entry in
-  `assets/data/strings/strings-en.json`
-- No `production/localization/freeze-status.md` exists
+  `Content/data/strings/strings-en.json`
+- No `docs/production/localization/freeze-status.md` exists
 
 **Input:** `/localize extract`
 
 **Expected behavior:**
 1. Skill scans source files for localized string references and compares them
-   against the table in `assets/data/strings/`
+   against the table in `Content/data/strings/`
 2. Skill proposes one new entry per unkeyed string, with a key in the form
    `[category].[subcategory].[description]` (e.g. `ui.hud.health_label`)
 3. Each new entry carries a `context` field: where it appears, maximum length,
    placeholder meaning
 4. Skill presents the diff and asks "May I write these new entries to
-   `assets/data/strings/strings-en.json`?"
+   `Content/data/strings/strings-en.json`?"
 5. On approval it writes only the new entries (not a full replacement);
    verdict is COMPLETE
 
 **Assertions:**
 - [ ] Proposed keys follow `[category].[subcategory].[description]`
 - [ ] Every new entry includes a `context` field
-- [ ] The diff is shown and "May I write" names `assets/data/strings/strings-en.json` before any write
+- [ ] The diff is shown and "May I write" names `Content/data/strings/strings-en.json` before any write
 - [ ] Only the three new entries are written — existing entries are not rewritten
 - [ ] Verdict is COMPLETE
 
@@ -110,7 +110,7 @@ Fixture defaults.
 ### Case 3: Validate — Gaps Reported by Locale, Nothing Written
 
 **Fixture:**
-- `assets/data/strings/` holds `strings-en.json`, `strings-fr.json` and
+- `Content/data/strings/` holds `strings-en.json`, `strings-fr.json` and
   `strings-de.json`
 - `strings-de.json` lacks 4 keys present in the English source
 - One French entry omits the `{playerName}` placeholder its English source has
@@ -118,7 +118,7 @@ Fixture defaults.
 **Input:** `/localize validate`
 
 **Expected behavior:**
-1. Skill reads every string table file in `assets/data/strings/`
+1. Skill reads every string table file in `Content/data/strings/`
 2. For `de` it reports the 4 keys as Completeness gaps
 3. For `fr` it reports a Placeholder mismatch on the affected key
 4. Results are grouped by locale and severity
@@ -135,7 +135,7 @@ Fixture defaults.
 ### Case 4: Status With No String Table — NOT ASSESSED
 
 **Fixture:**
-- `assets/data/strings/` does not exist
+- `Content/data/strings/` does not exist
 
 **Input:** `/localize status`
 
@@ -156,7 +156,7 @@ Fixture defaults.
 ### Case 5: Director Gate Check — None; Cultural Review Uses localization-lead
 
 **Fixture:**
-- `assets/data/strings/strings-en.json` exists with player-facing strings
+- `Content/data/strings/strings-en.json` exists with player-facing strings
 - Any review mode
 
 **Input:** `/localize cultural-review`
@@ -167,21 +167,21 @@ Fixture defaults.
 2. Findings are presented as a table with a severity of BLOCKING, ADVISORY or
    NOTE per finding
 3. Skill asks "May I write this cultural review report to
-   `production/localization/cultural-review-[date].md`?"
+   `docs/production/localization/cultural-review-[date].md`?"
 4. No director agent is spawned and no gate ID appears in output
 
 **Assertions:**
 - [ ] `localization-lead` is the only agent spawned
 - [ ] No director gate (creative, technical, producer, art) is invoked and no gate skip message appears
 - [ ] Each finding carries BLOCKING, ADVISORY or NOTE severity
-- [ ] "May I write" names `production/localization/cultural-review-[date].md` before the report is written
+- [ ] "May I write" names `docs/production/localization/cultural-review-[date].md` before the report is written
 
 ---
 
 ### Case 6: Scan With an Unresolved Code Root — NOT ASSESSED, never "no hardcoded strings"
 
 **Fixture:**
-- `project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md`
+- `.claude/ccgs/project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md`
   reads `[TO BE CONFIGURED]`
 - Both `src/` and `Assets/` exist and hold UI code with hardcoded strings
   (ambiguous tree)
@@ -207,7 +207,7 @@ Fixture defaults.
 ### Case 7: QA on a Locale Nobody Has Played — NOT ASSESSED
 
 **Fixture:**
-- `assets/data/strings/strings-en.json` and `strings-fr.json` exist and validate
+- `Content/data/strings/strings-en.json` and `strings-fr.json` exist and validate
   cleanly
 - No one has played the French build: there are no in-game observations for the
   functional, overflow, contextual-accuracy or VO checks
@@ -221,7 +221,7 @@ Fixture defaults.
 3. The verdict is not PASS or PASS WITH CONDITIONS on the strength of the string
    tables alone
 4. Skill asks "May I write this localization QA report to
-   `production/localization/loc-qa-fr-[date].md`?"; the report says the locale
+   `docs/production/localization/loc-qa-fr-[date].md`?"; the report says the locale
    has not passed QA for the release gate
 
 **Assertions:**

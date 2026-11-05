@@ -10,15 +10,15 @@ and `/story-readiness` + `/dev-story`.
 ### Files That Must Exist
 | File | Required Fields / Sections | Read-Only? |
 |------|---------------------------|-----------|
-| `production/epics/[epic-slug]/EPIC.md` | `Layer:`, `GDD:` path, `Architecture Module:`, `## Governing ADRs` table, `## GDD Requirements` table with TR-IDs | Yes |
-| `design/gdd/[filename].md` | The sections required at the system's tier (all 8 at `full`; the 5 required + conditional Formulas at `standard`), especially `## Acceptance Criteria`, `## Formulas`, `## Edge Cases` | Yes |
+| `docs/production/epics/[epic-slug]/EPIC.md` | `Layer:`, `GDD:` path, `Architecture Module:`, `## Governing ADRs` table, `## GDD Requirements` table with TR-IDs | Yes |
+| `docs/design/gdd/[filename].md` | The sections required at the system's tier (all 8 at `full`; the 5 required + conditional Formulas at `standard`), especially `## Acceptance Criteria`, `## Formulas`, `## Edge Cases` | Yes |
 | `docs/architecture/adr-NNNN-[slug].md` (all governing ADRs) | `## Status`, `## Summary`, `## Decision` (incl. `### Implementation Guidelines`), `## Engine Compatibility`, `## Last Verified` / `## Date`, the `**Depends On**` row (read through `adr-status.sh`) | Yes |
 | `docs/architecture/control-manifest.md` | Layer rules (required patterns, forbidden patterns, guardrails), `Manifest Version:` date in header | Yes |
 | `docs/architecture/tr-registry.yaml` | All TR-IDs for the epic's system, with stable `id` values | Yes |
 
 > **Tier.** The rows above are the `standard`/`full` inputs. At `workflow: minimal`
-> the only input is `design/game-brief.md`: the skill writes
-> `production/epics/<slug>/EPIC.md` itself from the brief (or uses one that already
+> the only input is `docs/GDD.md`: the skill writes
+> `docs/production/epics/<slug>/EPIC.md` itself from the brief (or uses one that already
 > exists there, never rewriting it), needs no `/create-epics`
 > run, and reads no GDD, ADR, control manifest or TR registry. Each story traces to
 > `Brief MVP feature N` instead of a TR-ID, and its ADR lines read
@@ -36,9 +36,9 @@ and `/story-readiness` + `/dev-story`.
 ### Files Written
 | File | Guaranteed Fields / Sections | Notes |
 |------|------------------------------|-------|
-| `production/epics/[epic-slug]/story-NNN-[slug].md` | `Epic:`, `Status:`, `Layer:`, `Type:`, `Manifest Version:`, `## Context` (GDD path + `TR-[system]-NNN` + ADR reference + ADR Decision Summary + Engine/Risk + Engine Notes + Control Manifest Rules), `## Acceptance Criteria`, `## Implementation Notes`, `## Out of Scope`, `## Files`, `## Test Evidence`, `## Dependencies` | Created per story |
-| `production/epics/[epic-slug]/EPIC.md` | `## Stories` table replacing the "Not yet created" placeholder | Updated in-place; a return visit appends rows for new stories only. At `minimal`, when none exists yet, the skill creates it from the brief, after the write ask names it |
-| `production/epics/index.md` | The epic's `Stories` column set to `[N] stories` | Only when the index exists; otherwise the run prints `Epics index not updated: production/epics/index.md absent` |
+| `docs/production/epics/[epic-slug]/story-NNN-[slug].md` | `Epic:`, `Status:`, `Layer:`, `Type:`, `Manifest Version:`, `## Context` (GDD path + `TR-[system]-NNN` + ADR reference + ADR Decision Summary + Engine/Risk + Engine Notes + Control Manifest Rules), `## Acceptance Criteria`, `## Implementation Notes`, `## Out of Scope`, `## Files`, `## Test Evidence`, `## Dependencies` | Created per story |
+| `docs/production/epics/[epic-slug]/EPIC.md` | `## Stories` table replacing the "Not yet created" placeholder | Updated in-place; a return visit appends rows for new stories only. At `minimal`, when none exists yet, the skill creates it from the brief, after the write ask names it |
+| `docs/production/epics/index.md` | The epic's `Stories` column set to `[N] stories` | Only when the index exists; otherwise the run prints `Epics index not updated: docs/production/epics/index.md absent` |
 
 ### Output Guarantees
 - Every story file contains a `TR-[system]-NNN` reference in its `## Context` section (or `TR-[system]-???` with a warning if the registry has no match) — at `minimal`, `Brief MVP feature N` instead
@@ -47,7 +47,7 @@ and `/story-readiness` + `/dev-story`.
 - Every story file has a `Type:` field — one of: Logic, Integration, Visual/Feel, UI, Config/Data
 - Every story file has a `Manifest Version:` field matching the date from `docs/architecture/control-manifest.md`'s header at time of writing — at `minimal`, `N/A (minimal — no control manifest)`
 - Every story file has a `## Test Evidence` section stating the expected evidence location for its type
-- Every story file has a `## Acceptance Criteria` section with at least one checkbox item copied from the GDD — at `minimal`, derived from `design/game-brief.md` (its Player goal & fail state and the MVP feature the story implements)
+- Every story file has a `## Acceptance Criteria` section with at least one checkbox item copied from the GDD — at `minimal`, derived from `docs/GDD.md` (its Player goal & fail state and the MVP feature the story implements)
 - Every story file has a `## Dependencies` section naming each story it needs by path (may say "None" but is never omitted)
 - Every story file has a `## Files` section listing the code and test files it is planned to create or change; `/dev-story` replaces the list with the files it changed, and `/story-done` checks scope against it
 - The EPIC.md `## Stories` table is updated with a row per story including `#`, `Story` title, `Type`, `Status`, and `ADR`
@@ -57,11 +57,11 @@ and `/story-readiness` + `/dev-story`.
 
 ## Immutability Rules
 - READS but does NOT modify: the epic's GDD, all ADR files, `docs/architecture/tr-registry.yaml`, `docs/architecture/control-manifest.md`
-- MODIFIES: `production/epics/[epic-slug]/story-NNN-[slug].md` (creates), `production/epics/[epic-slug]/EPIC.md` (updates Stories section only; created at `minimal` when none exists yet), `production/epics/index.md` (the epic's row, when the index exists) — all after one write ask that names them
+- MODIFIES: `docs/production/epics/[epic-slug]/story-NNN-[slug].md` (creates), `docs/production/epics/[epic-slug]/EPIC.md` (updates Stories section only; created at `minimal` when none exists yet), `docs/production/epics/index.md` (the epic's row, when the index exists) — all after one write ask that names them
 
 ## Hard Constraints (Never Violate)
 - Never start implementation — this skill stops at the story file level
-- Never invent acceptance criteria — all criteria must come from the GDD (from `design/game-brief.md` at `minimal`)
+- Never invent acceptance criteria — all criteria must come from the GDD (from `docs/GDD.md` at `minimal`)
 - Never invent implementation notes — all guidance must come from the referenced ADR
 - Never write story files without presenting the full story list for approval first
 - Never mark a story `Status: Ready` if its governing ADR has `Status: Proposed`, `Deprecated` or `Superseded`

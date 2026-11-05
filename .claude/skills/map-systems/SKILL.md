@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, TaskCreate, TaskG
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,docs.density,project.stage`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
@@ -79,16 +81,16 @@ the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and
 limit.
 
 **Required:**
-- Read `design/gdd/game-concept.md` (at `minimal`, read `design/game-brief.md`
+- Read `docs/GDD.md` (at `minimal`, read `docs/GDD.md`
   instead) — **fail with a clear message if neither is found**:
   > "No game concept found. Run `/brainstorm` first to create one, then come back
   > to decompose it into systems."
 
 **Optional (read if they exist):**
-- Read `design/gdd/game-pillars.md` — pillars constrain priority and scope
-- Read `design/gdd/systems-index.md` — if exists, **resume** from where it left off
+- Read `docs/GDD.md` — pillars constrain priority and scope
+- Read `docs/GDD.md` — if exists, **resume** from where it left off
   (update, don't recreate from scratch)
-- Glob `design/gdd/*.md` — check which system GDDs already exist
+- Glob `docs/design/gdd/*.md` — check which system GDDs already exist
 
 **If the systems index already exists:**
 - Read it and present current status to the user
@@ -306,13 +308,13 @@ Present a summary of the document:
 - Any high-risk items
 
 **At `automation: collaborative`** — ask: "May I write the systems index to
-`design/gdd/systems-index.md`?" Wait for approval. Write the file only after
+`docs/GDD.md`?" Wait for approval. Write the file only after
 "yes."
 
 **At `automation: guided`** — a **new** index gets the same "May I write …?"
 question, because `.claude/docs/automation-modes.md` has `guided` ask "May I
 write?" for new files. When the index already exists, present the summary above,
-name the destination (`design/gdd/systems-index.md`), and write the update without
+name the destination (`docs/GDD.md`), and write the update without
 waiting for an explicit "yes". Say what you wrote afterwards.
 
 **Review mode check** — apply before spawning CD-SYSTEMS:
@@ -322,7 +324,7 @@ waiting for an explicit "yes". Say what you wrote afterwards.
 
 **After the systems index is written, spawn `creative-director` via `Agent` using gate CD-SYSTEMS (`.claude/docs/director-gates/cd-systems.md`).**
 
-Pass: systems index path; game pillars and core fantasy — from `design/gdd/game-concept.md`, or at `minimal` the pitch and "what they feel" line of `design/game-brief.md`, which has no pillars; the priority tier assignments for every tier (MVP / Vertical Slice / Alpha / Full Vision); and the high-risk and bottleneck systems from the dependency map.
+Pass: systems index path; game pillars and core fantasy — from `docs/GDD.md`, or at `minimal` the pitch and "what they feel" line of `docs/GDD.md`, which has no pillars; the priority tier assignments for every tier (MVP / Vertical Slice / Alpha / Full Vision); and the high-risk and bottleneck systems from the dependency map.
 
 Present the assessment. If REJECT, revise the system set with the user before GDD authoring begins. If CONCERNS, show them and use `AskUserQuestion`: `Revise the system set` / `Accept — record them in the index` / `Discuss further`. On *Revise*, rework the affected systems with the user and ask again before re-writing the index. On *Accept* — the option names the edit, so choosing it is the ask — record them in the systems index as a `> **Creative Director Note**`
 placed **directly beneath the `## Priority Tiers` table**, naming the tier each
@@ -336,13 +338,13 @@ CD-SYSTEMS NOT ASSESSED — [input]` in the same place.
 
 ### Step 5c: Update Session State
 
-After writing, create `production/session-state/active.md` if it does not exist, then update it with:
+After writing, create `.claude/ccgs/session-state/active.md` if it does not exist, then update it with:
 - Task: Systems decomposition
 - Status: Systems index created
-- File: design/gdd/systems-index.md
+- File: docs/GDD.md
 - Next: Design individual system GDDs
 
-**Verdict: COMPLETE** — systems index written to `design/gdd/systems-index.md`.
+**Verdict: COMPLETE** — systems index written to `docs/GDD.md`.
 If the user declined: **Verdict: BLOCKED** — user did not approve the write.
 
 ---
@@ -406,7 +408,7 @@ After the systems index is created (or after designing some systems), present ne
 **The gate-check option ([C]) is worth knowing about**: `/gate-check technical-setup` checks that the Systems Design phase's required artifacts exist and runs the phase-gate directors before you commit to architecture. CD-SYSTEMS and TD-SYSTEM-BOUNDARY are this skill's own gates — they run here, in `full` review mode, not in `/gate-check`.
 
 After any individual GDD is completed:
-- "Run `/design-review design/gdd/[system].md` in a fresh session to validate quality"
+- "Run `/design-review docs/design/gdd/[system].md` in a fresh session to validate quality"
 - "Run `/gate-check technical-setup` when all MVP GDDs are complete"
 
 ---
@@ -430,7 +432,7 @@ This skill follows the collaborative design principle at every phase:
 4. **Incremental writing**: Update the systems index after each system is designed
 5. **Handoff**: Individual GDD authoring is owned by `/design-system`, which handles
    incremental section writing, cross-referencing, design review, and index updates
-6. **Session state updates**: Write to `production/session-state/active.md` after
+6. **Session state updates**: Write to `.claude/ccgs/session-state/active.md` after
    each milestone (index created, system designed, priorities changed)
 
 **Never** auto-generate the full systems list and write it without review.
@@ -442,7 +444,7 @@ This skill follows the collaborative design principle at every phase:
 If context reaches or exceeds 70% at any point, append this notice:
 
 > **Context is approaching the limit (≥70%).** The systems index is saved to
-> `design/gdd/systems-index.md`. Open a fresh Claude Code session to continue
+> `docs/GDD.md`. Open a fresh Claude Code session to continue
 > designing individual GDDs — run `/map-systems next` to pick up where you left off.
 
 ---
@@ -451,5 +453,5 @@ If context reaches or exceeds 70% at any point, append this notice:
 
 - Run `/design-system [first-system-in-order]` to author the first GDD (use design order from the index)
 - Run `/map-systems next` to always pick the highest-priority undesigned system automatically
-- Run `/design-review design/gdd/[system].md` in a fresh session after each GDD is authored
+- Run `/design-review docs/design/gdd/[system].md` in a fresh session after each GDD is authored
 - Run `/gate-check technical-setup` when all MVP GDDs are authored and reviewed

@@ -114,6 +114,6 @@ These skills each carry a **one-line pointer** to this doc.
 - **Recommend, don't dictate.** State the suggestion and the reason in one line;
   the user decides. (`collaborative`/`guided` require this; even `autonomous`
   treats a rigor change as a `schema_changes` decision and asks.)
-- **Always route to `/settings`** — never edit `project.yaml` as a side effect of a
+- **Always route to `/settings`** — never edit `.claude/ccgs/project.yaml` as a side effect of a
   recommendation.
 - **One line, then stop.** A nudge is a nudge, not a lecture.

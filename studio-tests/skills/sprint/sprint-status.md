@@ -4,7 +4,7 @@
 
 `/sprint-status` is a Haiku-tier read-only skill that produces a concise sprint
 snapshot. It uses the sprint named by its argument, or the most recently
-modified file in `production/sprints/`, and reads `production/sprint-status.yaml`
+modified file in `docs/production/sprints/`, and reads `docs/production/sprint-status.yaml`
 as the source of truth for story status (falling back to markdown scanning with
 a warning when the yaml is absent). It greps the story files'
 `Last Updated` fields and flags an In Progress story as STALE when its date is
@@ -41,9 +41,9 @@ None. `/sprint-status` is a read-only reporting skill; no gates are invoked.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -53,8 +53,8 @@ Fixture defaults.
 ### Case 1: Happy Path — Mixed sprint, At Risk with a blocked Must Have
 
 **Fixture:**
-- `production/sprints/sprint-004.md` is the most recently modified sprint file
-- `production/sprint-status.yaml` covers sprint 4: it started 13 days ago and
+- `docs/production/sprints/sprint-004.md` is the most recently modified sprint file
+- `docs/production/sprint-status.yaml` covers sprint 4: it started 13 days ago and
   ends 7 days from today (65% of time consumed)
 - The yaml lists 6 stories:
   - 3 with `status: done`
@@ -65,7 +65,7 @@ Fixture defaults.
 **Input:** `/sprint-status`
 
 **Expected behavior:**
-1. Skill selects `sprint-004.md` and reads `production/sprint-status.yaml`
+1. Skill selects `sprint-004.md` and reads `docs/production/sprint-status.yaml`
 2. Skill computes 65% time consumed and 3/6 = 50% complete — 15 points behind
 3. A blocked Must Have with 35% of sprint time remaining (under 40%) triggers
    the critical flag at the top: "SPRINT AT RISK: … Recommend replanning with
@@ -85,8 +85,8 @@ Fixture defaults.
 ### Case 2: All Stories Complete — On Track with completion flag
 
 **Fixture:**
-- `production/sprints/sprint-004.md` is the most recently modified sprint file
-- `production/sprint-status.yaml` covers sprint 4: it started 5 days ago and ends
+- `docs/production/sprints/sprint-004.md` is the most recently modified sprint file
+- `docs/production/sprint-status.yaml` covers sprint 4: it started 5 days ago and ends
   5 days from today (50% of time consumed)
 - All 5 stories have `status: done` (3 `must-have`, 2 `should-have`)
 
@@ -112,8 +112,8 @@ Fixture defaults.
 ### Case 3: No Sprint Files — Guidance to run /sprint-plan
 
 **Fixture:**
-- `production/sprints/` directory is absent
-- `project.yaml` sets `modes.workflow: standard`
+- `docs/production/sprints/` directory is absent
+- `.claude/ccgs/project.yaml` sets `modes.workflow: standard`
 
 **Input:** `/sprint-status`
 
@@ -134,12 +134,12 @@ Fixture defaults.
 ### Case 4: Edge Case — Stale In Progress Story (flagged)
 
 **Fixture:**
-- `production/sprints/sprint-004.md` is the most recently modified sprint file
-- `production/sprint-status.yaml` covers sprint 4: 10-day sprint, 5 days elapsed
+- `docs/production/sprints/sprint-004.md` is the most recently modified sprint file
+- `docs/production/sprint-status.yaml` covers sprint 4: 10-day sprint, 5 days elapsed
   (50% of time consumed); 4 stories — 2 `done`, 2 `in-progress` (50% complete)
-- `production/epics/combat/story-003-dash.md` (in progress) has
+- `docs/production/epics/combat/story-003-dash.md` (in progress) has
   `> **Last Updated**: [6 days before today]`
-- `production/epics/combat/story-004-parry.md` (in progress) has
+- `docs/production/epics/combat/story-004-parry.md` (in progress) has
   `> **Last Updated**: [3 days before today]`
 - No stories are Blocked
 
@@ -147,7 +147,7 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Skill resolves the dates with one grep for the `Last Updated` field across
-   `production/epics/**/story-*.md`
+   `docs/production/epics/**/story-*.md`
 2. story-003 is 6 days old — more than the 4-day threshold — and is flagged
    STALE; story-004 (3 days) is not
 3. The Attention Needed table lists story-003 with its Last Updated date, Days
@@ -167,9 +167,9 @@ Fixture defaults.
 ### Case 5: Gate Compliance — Read-only; no gate invocation
 
 **Fixture:**
-- `production/sprints/sprint-004.md` exists and `production/sprint-status.yaml`
+- `docs/production/sprints/sprint-004.md` exists and `docs/production/sprint-status.yaml`
   lists 4 stories (2 `done`, 2 `in-progress`) with sprint dates
-- `project.yaml` sets `modes.review_mode: full`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full`
 
 **Input:** `/sprint-status`
 
@@ -190,14 +190,14 @@ Fixture defaults.
 ### Case 6: Default Minimal Workflow — Build-order progress, no sprint files
 
 **Fixture:**
-- `production/sprints/` does not exist
-- `project.yaml` sets neither `modes.rigor` nor `modes.workflow`, so the injected
+- `docs/production/sprints/` does not exist
+- `.claude/ccgs/project.yaml` sets neither `modes.rigor` nor `modes.workflow`, so the injected
   block reads `workflow: minimal (rigor:minimal)`
 - The injected `story-status.sh` list reads:
   ```
-  IN_REVIEW    production/epics/core/story-003-dash.md
-  IN_PROGRESS  production/epics/core/story-002-jump.md
-  TODO         production/epics/core/story-004-parry.md  (Ready)
+  IN_REVIEW    docs/production/epics/core/story-003-dash.md
+  IN_PROGRESS  docs/production/epics/core/story-002-jump.md
+  TODO         docs/production/epics/core/story-004-parry.md  (Ready)
   COMPLETE     1 of 4
   ```
 
@@ -209,7 +209,7 @@ Fixture defaults.
 2. Skill prints "Build order: 1 of 4 stories complete"
 3. Next is story-003 (In Review), the first line — ahead of story-002, which
    comes first in file order; skill recommends
-   `/story-done production/epics/core/story-003-dash.md`
+   `/story-done docs/production/epics/core/story-003-dash.md`
 4. Skill stops — no burndown verdict, no status table, no write
 
 **Assertions:**
@@ -223,12 +223,12 @@ Fixture defaults.
 ### Case 7: Minimal Workflow — Every unfinished story Blocked or Draft
 
 **Fixture:**
-- `production/sprints/` does not exist; the injected block reads
+- `docs/production/sprints/` does not exist; the injected block reads
   `workflow: minimal (rigor:minimal)`
 - The injected `story-status.sh` list reads:
   ```
-  BLOCKED      production/epics/core/story-003-dash.md  (Blocked)
-  OTHER        production/epics/core/story-004-parry.md  (Draft)
+  BLOCKED      docs/production/epics/core/story-003-dash.md  (Blocked)
+  OTHER        docs/production/epics/core/story-004-parry.md  (Draft)
   COMPLETE     2 of 4
   ```
 - story-003's file carries the note `BLOCKED: waiting on the dash animation`
@@ -265,7 +265,7 @@ Fixture defaults.
 
 - At `workflow: minimal`, the all-Complete ("Build order done") and
   `STORIES none` branches are not tested.
-- The markdown fallback when `production/sprint-status.yaml` is absent (with its
+- The markdown fallback when `docs/production/sprint-status.yaml` is absent (with its
   "No `sprint-status.yaml` found" warning) is not tested.
 - A sprint without dates ("burndown assessment skipped") is not tested.
 - Selecting a specific sprint by argument (`/sprint-status 3`) is not tested;

@@ -1,22 +1,24 @@
 ---
 name: settings
-description: "View or change project config — effective merged values, or set locally in project.local.yaml."
+description: "View or change project config — effective merged values, or set locally in .claude/ccgs/project.local.yaml."
 argument-hint: "[key | key=value | --local key=value]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" resolve_setting *), Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" get_yaml_key *), Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" validate_yaml_enum *), Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" validate_enum_value *), Bash(bash "*/.claude/skills/settings/../../hooks/yaml-helper.sh" is_locally_overridable *), Bash(bash .claude/scripts/config-set.sh *), Bash(grep -B14 '^> ### RESERVED' .claude/docs/effects-map.md), Bash(grep -E '^## ')
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # /settings — view or change project config
 
-Manages `project.yaml` (team-wide config, committed) and `project.local.yaml`
+Manages `.claude/ccgs/project.yaml` (team-wide config, committed) and `.claude/ccgs/project.local.yaml`
 (per-developer overrides, gitignored). Use this skill to inspect current
 settings or change them without manually editing YAML.
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). The approval gates in Phase 4 and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). The approval gates in Phase 4 and
 Phase 5 follow the pattern in `.claude/docs/automation-modes.md`. **Note**:
-writing to `project.yaml` is a `schema_changes` decision (a default
+writing to `.claude/ccgs/project.yaml` is a `schema_changes` decision (a default
 `automation_always_ask` category), so `/settings` confirms config writes even
 in `autonomous` mode unless the user has removed `schema_changes` from their
 always-ask list.
@@ -54,9 +56,9 @@ bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" <helper call>
 ```
 
 `<helper call>` is the function each phase below names, for example
-`resolve_setting modes.review_mode` or `validate_yaml_enum project.yaml`. The
-helper moves to the project root itself, so those `project.yaml` and
-`project.local.yaml` arguments resolve when the session was started in a
+`resolve_setting modes.review_mode` or `validate_yaml_enum .claude/ccgs/project.yaml`. The
+helper moves to the project root itself, so those `.claude/ccgs/project.yaml` and
+`.claude/ccgs/project.local.yaml` arguments resolve when the session was started in a
 subfolder, and it keeps the function's exit status. `is_locally_overridable`
 also prints its `0` or `1`. Run the call exactly as shown: do not `source` the
 file, wrap it in `cd ... &&` or append `; echo $?`. This skill pre-approves the
@@ -109,14 +111,14 @@ legitimate; storing it *silently* is the defect.
 
 (when no arguments)
 
-1. Confirm `project.yaml` exists. If missing, report:
-   > "No `project.yaml` found — run `/start` to create one."
+1. Confirm `.claude/ccgs/project.yaml` exists. If missing, report:
+   > "No `.claude/ccgs/project.yaml` found — run `/start` to create one."
    And exit.
 
-2. Check if `project.local.yaml` exists.
+2. Check if `.claude/ccgs/project.local.yaml` exists.
 
-3. Run `validate_yaml_enum project.yaml` and capture any errors.
-   If `project.local.yaml` exists, also run `validate_yaml_enum project.local.yaml`.
+3. Run `validate_yaml_enum .claude/ccgs/project.yaml` and capture any errors.
+   If `.claude/ccgs/project.local.yaml` exists, also run `validate_yaml_enum .claude/ccgs/project.local.yaml`.
    Tag each error with its source file so the user can tell them apart.
 
 4. **Enumerate leaves.** Use the `Read` tool to read both YAML files as
@@ -124,8 +126,8 @@ legitimate; storing it *silently* is the defect.
    into a deduplicated list of dotted paths. A leaf is a `key: value`
    line whose value is non-empty (a scalar or inline-array) — NOT a
    parent block that introduces a nested map. Maintain insertion order
-   per file; merge by appending leaves from `project.local.yaml` that
-   aren't already present from `project.yaml`. The resulting list is
+   per file; merge by appending leaves from `.claude/ccgs/project.local.yaml` that
+   aren't already present from `.claude/ccgs/project.yaml`. The resulting list is
    the set of leaves to display.
 
    **Then append the rigor family** — `modes.rigor`, `modes.workflow`,
@@ -140,10 +142,10 @@ legitimate; storing it *silently* is the defect.
 
 5. **For each leaf**, perform three reads and one check:
    - `resolve_setting <path>` → `<value>`, TAB, `<source>`. This walks the
-     whole chain (`project.local.yaml` → `project.yaml` → legacy file →
+     whole chain (`.claude/ccgs/project.local.yaml` → `.claude/ccgs/project.yaml` → legacy file →
      `rigor` expansion → default), so it is the only read that can report
      a derived value or name what supplied it.
-   - `get_yaml_key project.yaml <path>` → yaml-only value (needed only to
+   - `get_yaml_key .claude/ccgs/project.yaml <path>` → yaml-only value (needed only to
      show what a local override is shadowing)
    - `is_locally_overridable <path>` → 0 (overridable) or 1 (locked)
 
@@ -151,10 +153,10 @@ legitimate; storing it *silently* is the defect.
 
    | `<source>` | Annotation |
    |---|---|
-   | `project.local.yaml`, yaml-only value non-empty | `(LOCAL OVERRIDE — yaml has: <yamlvalue>)` |
-   | `project.local.yaml`, yaml-only value empty | `(project.local.yaml)` |
-   | `project.yaml` | `(project.yaml)` |
-   | a legacy file path (e.g. `production/review-mode.txt`) | `(<path>, legacy)` |
+   | `.claude/ccgs/project.local.yaml`, yaml-only value non-empty | `(LOCAL OVERRIDE — yaml has: <yamlvalue>)` |
+   | `.claude/ccgs/project.local.yaml`, yaml-only value empty | `(.claude/ccgs/project.local.yaml)` |
+   | `.claude/ccgs/project.yaml` | `(.claude/ccgs/project.yaml)` |
+   | a legacy file path (e.g. `.claude/ccgs/review-mode.txt`) | `(<path>, legacy)` |
    | `rigor:<level>` | `(derived from rigor: <level>)` |
    | `default` | `(default)` |
    | `unset` | skip the leaf (don't print unset keys) |
@@ -174,7 +176,7 @@ legitimate; storing it *silently* is the defect.
    > and both write paths.** Marking view-one and the writes while leaving
    > view-all — **the most-used form of this skill** — unmarked means a user who
    > set a reserved key sees it listed beside working settings with an ordinary
-   > `(project.yaml)` annotation, in the view most people actually run. Guard
+   > `(.claude/ccgs/project.yaml)` annotation, in the view most people actually run. Guard
    > all four: view-one and view-all are twins in exactly the way the two write
    > paths are.
 
@@ -182,44 +184,44 @@ legitimate; storing it *silently* is the defect.
    `engine`, etc.) in the order leaves first appeared. The grouping is
    determined by the dotted path, not by which file the leaf came from
    — e.g. `modes.automation` groups under `modes:` even if only
-   `project.local.yaml` defines it. Within each section, indent leaves
+   `.claude/ccgs/project.local.yaml` defines it. Within each section, indent leaves
    by 2 spaces; nest further for sub-blocks (e.g. `testing.strict.*`).
    Example output:
 
 ```
-project.yaml: present
-project.local.yaml: present
+.claude/ccgs/project.yaml: present
+.claude/ccgs/project.local.yaml: present
 
 Schema validation: ok
 
 Effective config:
 
 framework:
-  version: 1.2.0            (project.yaml, locked)
+  version: 1.2.0            (.claude/ccgs/project.yaml, locked)
 
 modes:
-  review_mode: lean         (project.yaml)
+  review_mode: lean         (.claude/ccgs/project.yaml)
   automation: autonomous    (LOCAL OVERRIDE — yaml has: collaborative)
-  rigor: full               (project.yaml, locked)
+  rigor: full               (.claude/ccgs/project.yaml, locked)
   workflow: full            (derived from rigor: full, locked)
   story_granularity: fine   (derived from rigor: full, locked)
 
 docs:
-  density: terse            (project.yaml, locked)
+  density: terse            (.claude/ccgs/project.yaml, locked)
 
 qa:
   level: full               (derived from rigor: full, locked)
 
 engine:
-  name: Godot               (project.yaml, locked)
-  version: 4.7              (project.yaml, locked)
+  name: Godot               (.claude/ccgs/project.yaml, locked)
+  version: 4.7              (.claude/ccgs/project.yaml, locked)
 
 testing:
   strict:
     logic: false            (LOCAL OVERRIDE — yaml has: true)
-    integration: true       (project.yaml)
+    integration: true       (.claude/ccgs/project.yaml)
 
-locked = cannot be overridden in project.local.yaml (project-wide setting).
+locked = cannot be overridden in .claude/ccgs/project.local.yaml (project-wide setting).
 It does NOT mean fixed: a derived value can still be set explicitly with
 /settings <key>=<value>, and an explicit value wins over rigor.
 ```
@@ -232,7 +234,7 @@ over rigor"). The two views must not leave contradictory impressions of
 the same knob's mutability.
 
 The `docs.density` line above is the precedence rule made visible: an
-explicit `project.yaml` value keeps winning over the level `rigor` would
+explicit `.claude/ccgs/project.yaml` value keeps winning over the level `rigor` would
 otherwise derive, so "comprehensive but compact" stays expressible.
 
 If schema errors exist, print them in this form before the effective
@@ -240,8 +242,8 @@ config block:
 
 ```
 Schema validation: ERRORS
-  [project.yaml] modes.review_mode: 'chaotic' is not a valid value (expected: full|lean|solo)
-  [project.local.yaml] engine.name: 'Pygame' is not a valid value (expected: Godot|Unity|Unreal)
+  [.claude/ccgs/project.yaml] modes.review_mode: 'chaotic' is not a valid value (expected: full|lean|solo)
+  [.claude/ccgs/project.local.yaml] engine.name: 'Pygame' is not a valid value (expected: Godot|Unity|Unreal)
 ```
 
 ## Phase 3: View-one Mode
@@ -257,8 +259,8 @@ not below. A caveat under a value reads as a footnote on a working setting:
 Let `<key>` be the argument. Perform four reads:
 
 1. `resolve_setting <key>` → `<value>`, TAB, `<source>` (effective value + provenance)
-2. `get_yaml_key project.yaml <key>` → yaml-only value
-3. `get_yaml_key project.local.yaml <key>` → local-only value (skip if file absent)
+2. `get_yaml_key .claude/ccgs/project.yaml <key>` → yaml-only value
+3. `get_yaml_key .claude/ccgs/project.local.yaml <key>` → local-only value (skip if file absent)
 4. `is_locally_overridable <key>` → 0 (overridable) or 1 (locked)
 
 Determine the **source** from `<source>` (same table as Phase 2 step 5)
@@ -272,7 +274,7 @@ Print:
 <key>
 
   Effective value: <effective-value or "(not set)" if <source> is unset>
-  Source: <project.yaml | project.local.yaml | project.local.yaml (overrides project.yaml) | derived from rigor: <level> | default>
+  Source: <.claude/ccgs/project.yaml | .claude/ccgs/project.local.yaml | .claude/ccgs/project.local.yaml (overrides .claude/ccgs/project.yaml) | derived from rigor: <level> | default>
   Locally overridden: <yes | no>
   Whitelist: <"can be locally overridden" if is_locally_overridable returned 0, else "locked — project-wide">
 ```
@@ -281,8 +283,8 @@ When both files set the key (the LOCAL OVERRIDE case), add two more
 lines under Source:
 
 ```
-  project.yaml value: <yamlvalue>
-  project.local.yaml value: <localvalue>
+  .claude/ccgs/project.yaml value: <yamlvalue>
+  .claude/ccgs/project.local.yaml value: <localvalue>
 ```
 
 When `<source>` is `rigor:<level>`, add one line under Source so the user
@@ -331,18 +333,18 @@ When the effective value is empty (key not set anywhere), print just:
    warning. Warning on one write path and not the other leaves a silent route
    to the same outcome, which is the whole failure this guards against.
 
-3. **Shadow warning**: read `get_yaml_key project.local.yaml <key>`. If
+3. **Shadow warning**: read `get_yaml_key .claude/ccgs/project.local.yaml <key>`. If
    it returns a non-empty value, print BEFORE the approval prompt:
-   > "Note: this setting is currently locally overridden in `project.local.yaml` (value: `<localvalue>`). Writing to `project.yaml` will not change your effective value."
+   > "Note: this setting is currently locally overridden in `.claude/ccgs/project.local.yaml` (value: `<localvalue>`). Writing to `.claude/ccgs/project.yaml` will not change your effective value."
 
 4. **Approval gate**: use `AskUserQuestion`:
-   - Prompt: ``Set `<key>=<value>` in `project.yaml`?``
+   - Prompt: ``Set `<key>=<value>` in `.claude/ccgs/project.yaml`?``
    - Options: `[A] Yes, write` / `[B] No, cancel`
 
 5. **Write** using the `Edit` tool. The edit strategy depends on what
-   already exists in `project.yaml`:
+   already exists in `.claude/ccgs/project.yaml`:
 
-   **Case A — key exists**: Read `project.yaml`. Locate the line
+   **Case A — key exists**: Read `.claude/ccgs/project.yaml`. Locate the line
    `<lastsegment>: <oldvalue>` and the line immediately above it that
    introduces its parent block (e.g. `modes:` for `modes.review_mode`).
    Construct the `Edit` with `old_string` that includes the parent
@@ -371,9 +373,9 @@ When the effective value is empty (key not set anywhere), print just:
    **Case D — file structure is unusual** (commented-out keys with the
    same name, ambiguous nesting, malformed YAML): STOP and ask via
    `AskUserQuestion`:
-   > "Couldn't find a clean insertion point for `<key>` in `project.yaml`. Show me what to do."
+   > "Couldn't find a clean insertion point for `<key>` in `.claude/ccgs/project.yaml`. Show me what to do."
 
-6. Confirm: ``Set `<key>=<value>` in `project.yaml`.``
+6. Confirm: ``Set `<key>=<value>` in `.claude/ccgs/project.yaml`.``
 
    **When `<key>` is `modes.rigor`**, the write also moves six other
    knobs, so print what they resolve to now — re-read each with
@@ -381,9 +383,9 @@ When the effective value is empty (key not set anywhere), print just:
    of them may carry an explicit value that still wins:
 
    ```
-   Set modes.rigor=full in project.yaml. It now supplies:
+   Set modes.rigor=full in .claude/ccgs/project.yaml. It now supplies:
      modes.workflow: full            (derived from rigor: full)
-     docs.density: terse             (project.yaml — explicit, unchanged)
+     docs.density: terse             (.claude/ccgs/project.yaml — explicit, unchanged)
      qa.level: full                  (derived from rigor: full)
      modes.story_granularity: fine   (derived from rigor: full)
      modes.review_mode: full         (derived from rigor: full)
@@ -416,27 +418,27 @@ When the effective value is empty (key not set anywhere), print just:
    same file-of-record for a user's intent; warning on one only would leave
    `--local` as the silent route.
 
-3. **Base check**: if `project.yaml` doesn't exist:
-   > "Cannot create `project.local.yaml` — `project.yaml` is missing. Run `/start` to create one first."
+3. **Base check**: if `.claude/ccgs/project.yaml` doesn't exist:
+   > "Cannot create `.claude/ccgs/project.local.yaml` — `.claude/ccgs/project.yaml` is missing. Run `/start` to create one first."
    Exit. (Local overrides require a base, per spec.)
 
 4. **Approval gate**: use `AskUserQuestion`:
-   - Prompt: ``Set `<key>=<value>` in `project.local.yaml` (your personal override, gitignored)?``
+   - Prompt: ``Set `<key>=<value>` in `.claude/ccgs/project.local.yaml` (your personal override, gitignored)?``
    - Options: `[A] Yes, write` / `[B] No, cancel`
 
 5. **Write**:
-   - If `project.local.yaml` doesn't exist, use `Write` to create it
+   - If `.claude/ccgs/project.local.yaml` doesn't exist, use `Write` to create it
      with the new setting wrapped in its parent block(s). Minimal
      example for `--local modes.automation=autonomous`:
      ```yaml
-     # project.local.yaml — per-developer overrides (gitignored)
+     # .claude/ccgs/project.local.yaml — per-developer overrides (gitignored)
      modes:
        automation: autonomous
      ```
    - If it exists, use `Edit` with the same Case A/B/C strategy from
      Phase 4 step 4.
 
-6. Confirm: ``Set `<key>=<value>` in `project.local.yaml` (your override).``
+6. Confirm: ``Set `<key>=<value>` in `.claude/ccgs/project.local.yaml` (your override).``
 
 ## Phase 6: Usage
 
@@ -447,9 +449,9 @@ empty operands), print:
 Usage:
   /settings                          — view all effective config
   /settings <key>                    — view a single setting
-  /settings <key>=<value>            — change a setting (project.yaml)
+  /settings <key>=<value>            — change a setting (.claude/ccgs/project.yaml)
   /settings --local <key>=<value>    — change a setting locally
-                                       (project.local.yaml, gitignored)
+                                       (.claude/ccgs/project.local.yaml, gitignored)
 
 Examples:
   /settings modes.review_mode
@@ -475,7 +477,7 @@ Examples:
   (`_yaml_helper_enums`). `validate_enum_value` is the single-key
   validator for pending writes; `validate_yaml_enum` validates whole
   files (used by `session-start.sh`).
-- `project.local.yaml` is gitignored. These
+- `.claude/ccgs/project.local.yaml` is gitignored. These
   overrides never propagate to teammates.
 - For **which value to choose** for a given game type or situation — and when to
   suggest changing one — see `.claude/docs/settings-guidance.md` (advisory presets

@@ -14,7 +14,7 @@
 #
 # Usage: bash .claude/scripts/bug-stats.sh [--root DIR] [--today YYYY-MM-DD] [DIR ...]
 #   DIR         folders to search for bug files at any depth, relative to the
-#               root or absolute; default production/qa/bugs/, one level
+#               root or absolute; default docs/production/qa/bugs/, one level
 #               (where /bug-report writes)
 #   --today D   the date ages count to (default: today); fixes reruns and tests
 #   --root DIR  the project; defaults to the repo this script is in
@@ -92,8 +92,8 @@ fi
 # BUG-<number>.md: -iname keeps a lowercase bug-0003.md, the digit keeps out
 # bug-triage-<date>.md.
 if [ -z "$DIRS" ]; then
-  SCOPE="production/qa/bugs/BUG-*.md"
-  LIST=$(find production/qa/bugs -maxdepth 1 -type f -iname 'bug-[0-9]*.md' 2>/dev/null | sort)
+  SCOPE="docs/production/qa/bugs/BUG-*.md"
+  LIST=$(find docs/production/qa/bugs -maxdepth 1 -type f -iname 'bug-[0-9]*.md' 2>/dev/null | sort)
 else
   SCOPE=$(printf '%s' "$DIRS" | awk 'NF' | tr '\n' ',' | sed 's/,$//')
   LIST=""

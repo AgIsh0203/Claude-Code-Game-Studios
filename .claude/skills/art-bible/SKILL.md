@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,docs.density`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
@@ -39,7 +41,7 @@ rationale per choice. Apply it to every section you author.
   true` forces all 9 sections regardless of tier.
 - `minimal` — not required. Can still be run voluntarily.
 
-Read `design/gdd/game-concept.md` — or `design/game-brief.md`, the one-page brief
+Read `docs/GDD.md` — or `docs/GDD.md`, the one-page brief
 that replaces it at `rigor: minimal`. Read it by section: find the headings you need
 with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset
 and limit. If neither exists, fail with:
@@ -54,14 +56,14 @@ Identity Anchor or platform):
 - **Visual Identity Anchor** section if present (from brainstorm Phase 4 art-director output)
 - Target platform (if noted)
 
-**Retrofit mode detection**: Glob `design/art/art-bible.md`. If the file exists,
+**Retrofit mode detection**: Glob `docs/design/art/art-bible.md`. If the file exists,
 build the status table **without reading the document** — you are about to author
 only the *incomplete* sections, so loading the complete ones is loading exactly
 what you will not touch:
 
 ```
-Grep pattern="^## " path="design/art/art-bible.md" output_mode="content" -n
-Grep pattern="\[To be designed\]|\[TBD\]|\[To be written\]|^_?TODO" path="design/art/art-bible.md" output_mode="content" -n
+Grep pattern="^## " path="docs/design/art/art-bible.md" output_mode="content" -n
+Grep pattern="\[To be designed\]|\[TBD\]|\[To be written\]|^_?TODO" path="docs/design/art/art-bible.md" output_mode="content" -n
 ```
 
 - The first grep gives the section headings and their line numbers — the gap
@@ -89,23 +91,23 @@ Section | Status
 ```
 
 - Present this table to the user:
-  > "Found existing art bible at `design/art/art-bible.md`. [N] sections are complete, [M] need content. I'll work on the incomplete sections only — existing content will not be touched."
+  > "Found existing art bible at `docs/design/art/art-bible.md`. [N] sections are complete, [M] need content. I'll work on the incomplete sections only — existing content will not be touched."
 - Only work on sections with Status: Empty or Placeholder. Do not re-author sections that are already complete.
 
 If the file does not exist, this is a fresh authoring session. The first
 approved section creates the file from `.claude/docs/templates/art-bible.md`,
 whose nine `## N. Name` headings are the ones retrofit mode reads — ask first:
-"May I create `design/art/art-bible.md` from the art bible template?" Each
+"May I create `docs/design/art/art-bible.md` from the art bible template?" Each
 approved section then replaces its own `[To be designed]` line with `Edit`;
 keep the headings as the template has them.
 
 **A section's approval names its write.** Every section is approved through an
 `AskUserQuestion` whose approving option is `[A] Lock this in and write it to
-design/art/art-bible.md` (Section 1's full option list is below). Choosing it is
+docs/design/art/art-bible.md` (Section 1's full option list is below). Choosing it is
 the approval to write that section; no section is written without it, fresh or
 retrofit.
 
-Extract performance budgets and the engine for asset standard constraints: read `performance.*` and `engine.name` from `project.yaml`; for any key absent or empty (including when `project.yaml` has no `performance` or `engine` block), fall back to `.claude/docs/technical-preferences.md`.
+Extract performance budgets and the engine for asset standard constraints: read `performance.*` and `engine.name` from `.claude/ccgs/project.yaml`; for any key absent or empty (including when `.claude/ccgs/project.yaml` has no `performance` or `engine` block), fall back to `.claude/docs/technical-preferences.md`.
 
 ---
 
@@ -177,7 +179,7 @@ If a visual anchor exists from game-concept.md: present it and ask:
 - Ask: "Draft a Visual Identity Statement for this game. Provide: (1) a one-line visual rule that could resolve any visual decision ambiguity, (2) 2–3 supporting visual principles, each with a one-sentence design test ('when X is ambiguous, this principle says choose Y'). Anchor all principles directly in the stated pillars — each principle must serve a specific pillar. (From a one-page brief, which has no pillars, anchor them in its pitch and "what they feel" line.)"
 
 Present the art-director's draft to the user. Use `AskUserQuestion`:
-- Options: `[A] Lock this in and write it to design/art/art-bible.md` / `[B] Revise the one-liner` / `[C] Revise a supporting principle` / `[D] Describe my own direction`
+- Options: `[A] Lock this in and write it to docs/design/art/art-bible.md` / `[B] Revise the one-liner` / `[C] Revise a supporting principle` / `[D] Describe my own direction`
 
 Write the approved section to file immediately.
 
@@ -281,7 +283,7 @@ Write the approved section to file.
 
 **Agent delegation**: Spawn in parallel:
 - **`art-director`**: File format preferences, naming convention direction, texture resolution tiers, LOD level expectations, export settings philosophy
-- **`technical-artist`**: Engine-specific hard constraints — poly count budgets per asset category, texture memory limits, material slot counts, importer constraints, anything from the performance budgets (`performance.*` in `project.yaml`, falling back to `.claude/docs/technical-preferences.md`)
+- **`technical-artist`**: Engine-specific hard constraints — poly count budgets per asset category, texture memory limits, material slot counts, importer constraints, anything from the performance budgets (`performance.*` in `.claude/ccgs/project.yaml`, falling back to `.claude/docs/technical-preferences.md`)
 
 If any art preference conflicts with a technical constraint (e.g., art-director wants 4K textures but performance budget requires 2K for mobile), surface the conflict explicitly with both positions — the ideal and the constrained standard, and the tradeoff. Do NOT silently resolve it — use `AskUserQuestion` to let the user pick (options: the ideal standard, the constrained standard, or document both and let per-asset judgment apply). Ambiguity in asset standards is where production costs are born.
 
@@ -309,16 +311,16 @@ Write the approved section to file.
 - `full` → spawn as normal.
 
 On either skip, ask "May I record the skipped sign-off in
-`design/art/art-bible.md`'s header?" and, on yes, replace the header's
+`docs/design/art/art-bible.md`'s header?" and, on yes, replace the header's
 `> **Art Director Sign-Off (AD-ART-BIBLE)**: [Not yet reviewed]` with
 `> **Art Director Sign-Off (AD-ART-BIBLE)**: SKIPPED [date] — [solo|lean] mode`
 — the gate accepts either form as a recorded sign-off.
 
 After all sections are complete (or the scoped set from Phase 1 is complete), spawn `art-director` via `Agent` using gate **AD-ART-BIBLE** (`.claude/docs/director-gates/ad-art-bible.md`).
 
-Pass: the art bible path (`design/art/art-bible.md`); the game pillars and core
+Pass: the art bible path (`docs/design/art/art-bible.md`); the game pillars and core
 fantasy; the platform and performance constraints (`platform.*` and
-`performance.*` from `project.yaml`, falling back to
+`performance.*` from `.claude/ccgs/project.yaml`, falling back to
 `.claude/docs/technical-preferences.md`); and the visual identity anchor. When
 Phase 0 read the one-page brief, pass its pitch and "what they feel" line as the
 pillars and fantasy, and its "Art & audio direction" line as the anchor.
@@ -343,10 +345,10 @@ the chosen scope, or already complete — e.g. *"Not authored this run: sections
 after Section 4 must not read like a finished bible.
 
 Before presenting next steps, check project state:
-- Does `design/gdd/systems-index.md` exist? → map-systems is done, skip that option
-- Is an engine configured — `engine.name` present in `project.yaml`, or a configured Engine field (not `[TO BE CONFIGURED]`) in `.claude/docs/technical-preferences.md`? → setup-engine is done, skip that option
-- Does `design/gdd/` contain any `*.md` files? → design-system has been run, skip that option
-- Does `design/gdd/gdd-cross-review-*.md` exist? → review-all-gdds is done
+- Does `docs/GDD.md` exist? → map-systems is done, skip that option
+- Is an engine configured — `engine.name` present in `.claude/ccgs/project.yaml`, or a configured Engine field (not `[TO BE CONFIGURED]`) in `.claude/docs/technical-preferences.md`? → setup-engine is done, skip that option
+- Does `docs/design/gdd/` contain any `*.md` files? → design-system has been run, skip that option
+- Does `docs/design/gdd/gdd-cross-review-*.md` exist? → review-all-gdds is done
 - Do GDDs exist (check above)? → include /consistency-check option
 
 Use `AskUserQuestion` for next steps. Only include options that are genuinely next based on the state check above:

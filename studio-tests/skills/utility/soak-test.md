@@ -6,7 +6,7 @@
 extended play session — the human plays, the skill writes the plan. Duration is
 `30m`, `1h`, `2h` or `4h` (default `1h`); focus is `memory`, `stability`,
 `balance` or `all` (default `all`). It reads `engine.name` and `performance.*`
-from `project.yaml` (falling back to `technical-preferences.md`), the game
+from `.claude/ccgs/project.yaml` (falling back to `technical-preferences.md`), the game
 concept or brief, the latest playtest and QA plan, then builds timed
 checkpoints for the duration and engine-specific memory guidance whose alert
 thresholds are relative to the session's own T+0 baseline, in units recorded as
@@ -17,7 +17,7 @@ tester confirms at T+0, recording the tool actually used.
 The protocol document carries a Verdict section with PASS / PASS WITH CONCERNS /
 NOT ASSESSED / FAIL for the tester to fill in after the session; a short soak
 cannot return PASS. The skill asks "May I write this soak test protocol to
-`production/qa/soak-test-[date]-[duration].md`?" before writing, and never runs
+`docs/production/qa/soak-test-[date]-[duration].md`?" before writing, and never runs
 the soak itself. Its run steps end with `/bug-triage sprint`, or `/bug-triage full`
 at `workflow: minimal`, which has no sprints. No director gates apply.
 
@@ -43,9 +43,9 @@ None. `/soak-test` is a QA planning utility. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -55,10 +55,10 @@ Fixture defaults.
 ### Case 1: Happy Path — 2-hour, all-focus soak on Godot
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot`, `performance.target_framerate: 60` and
+- `.claude/ccgs/project.yaml` has `engine.name: Godot`, `performance.target_framerate: 60` and
   `modes.workflow: standard` (pinned: unset resolves to minimal, which ends the run
   steps with `/bug-triage full`, Case 6)
-- `design/gdd/game-concept.md` states the intended session length
+- `docs/GDD.md` states the intended session length
 - The user approves the write
 
 **Input:** `/soak-test 2h all`
@@ -75,7 +75,7 @@ Fixture defaults.
 5. Protocol document has Pre-Session Setup, Baseline (T+0), a Checkpoint Log per
    checkpoint, Post-Session Analysis, and a Verdict section left for the tester
 6. Skill asks "May I write this soak test protocol to
-   `production/qa/soak-test-[date]-2h.md`?"
+   `docs/production/qa/soak-test-[date]-2h.md`?"
 7. After writing, prints the run steps ending with `/bug-triage sprint`
 
 **Assertions:**
@@ -83,7 +83,7 @@ Fixture defaults.
 - [ ] Memory thresholds are relative to T+0, and the unit is recorded as displayed (no unit assumed)
 - [ ] The Godot tool and counter names are marked NOT SOURCEABLE, not presented as verified, and Pre-Session Setup asks for the tool actually used
 - [ ] Memory, stability and balance observation items are all present (focus `all`)
-- [ ] "May I write" is asked with `production/qa/soak-test-[date]-2h.md`
+- [ ] "May I write" is asked with `docs/production/qa/soak-test-[date]-2h.md`
 - [ ] The skill issues no verdict itself — the protocol's Verdict section is left for the tester
 
 ---
@@ -99,7 +99,7 @@ Fixture defaults.
 1. Duration defaults to `1h`, focus to `all` — no questions are needed to start
 2. Checkpoints: T+0, T+15, T+30, T+45, T+60
 3. Protocol header records `Duration: 1h` and `Focus: all`
-4. Skill asks "May I write this soak test protocol to `production/qa/soak-test-[date]-1h.md`?"
+4. Skill asks "May I write this soak test protocol to `docs/production/qa/soak-test-[date]-1h.md`?"
 
 **Assertions:**
 - [ ] Duration `1h` and focus `all` are used when no argument is given
@@ -112,7 +112,7 @@ Fixture defaults.
 ### Case 3: Narrow Focus on Unreal — 4-hour memory soak
 
 **Fixture:**
-- `project.yaml` has `engine.name: Unreal`
+- `.claude/ccgs/project.yaml` has `engine.name: Unreal`
 
 **Input:** `/soak-test 4h memory`
 
@@ -124,7 +124,7 @@ Fixture defaults.
 3. Alert threshold: Physical Memory Used growth > 20% over the full soak,
    against this run's T+0 — no absolute MB threshold
 4. Balance/fatigue observation items are not generated (focus is `memory`)
-5. Output path `production/qa/soak-test-[date]-4h.md`
+5. Output path `docs/production/qa/soak-test-[date]-4h.md`
 
 **Assertions:**
 - [ ] Checkpoints are exactly T+0, T+30, T+60, T+90, T+120, T+180, T+240
@@ -138,13 +138,13 @@ Fixture defaults.
 ### Case 4: No Performance Budgets — "not set", never invented
 
 **Fixture:**
-- `project.yaml` has `engine.name: Unity` and no `performance` block
+- `.claude/ccgs/project.yaml` has `engine.name: Unity` and no `performance` block
 - `technical-preferences.md` Performance Budgets are `[TO BE CONFIGURED]`
 
 **Input:** `/soak-test 30m memory`
 
 **Expected behavior:**
-1. Skill falls back from `project.yaml` to `technical-preferences.md` for budgets
+1. Skill falls back from `.claude/ccgs/project.yaml` to `technical-preferences.md` for budgets
 2. Budget notes read `Memory ceiling: not set`, `Target FPS: not set`,
    `Frame budget: not set` — no number is supplied in their place
 3. Checkpoints: T+0, T+10, T+20, T+30
@@ -152,7 +152,7 @@ Fixture defaults.
    `docs/engine-reference/unity/`); record Total Reserved Memory, GC Allocated,
    Object Count (units as displayed); alert when GC Allocated grows
    monotonically across 3+ checkpoints
-5. Skill asks "May I write" before writing `production/qa/soak-test-[date]-30m.md`
+5. Skill asks "May I write" before writing `docs/production/qa/soak-test-[date]-30m.md`
 
 **Assertions:**
 - [ ] Missing budgets are recorded as "not set", not filled with defaults
@@ -184,9 +184,9 @@ Fixture defaults.
 ### Case 6: Minimal workflow — the run steps end with `/bug-triage full`
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal` (pinned: Case 1 pins
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `modes.workflow: minimal` (pinned: Case 1 pins
   `standard`; this case tests the opposite)
-- No `production/sprints/` directory; the user approves the write
+- No `docs/production/sprints/` directory; the user approves the write
 
 **Input:** `/soak-test 1h all`
 
@@ -199,7 +199,7 @@ Fixture defaults.
 **Assertions:**
 - [ ] The post-session step is `/bug-triage full`, not `/bug-triage sprint`
 - [ ] Steps 1–4 and the `/smoke-check` line are unchanged from the `standard` run
-- [ ] The workflow is resolved from `project.yaml` and changes only that step
+- [ ] The workflow is resolved from `.claude/ccgs/project.yaml` and changes only that step
 
 ---
 
@@ -210,7 +210,7 @@ Fixture defaults.
 - [ ] Memory alert thresholds are ratios or deltas against T+0; units are recorded as displayed
 - [ ] Engine tool names not covered by `docs/engine-reference/` are marked NOT SOURCEABLE; a memory tool the tester cannot find leaves the verdict NOT ASSESSED
 - [ ] The protocol's Verdict section offers PASS / PASS WITH CONCERNS / NOT ASSESSED / FAIL and states a short soak cannot return PASS
-- [ ] Asks "May I write" before creating `production/qa/soak-test-[date]-[duration].md`
+- [ ] Asks "May I write" before creating `docs/production/qa/soak-test-[date]-[duration].md`
 - [ ] Never attempts to run the soak itself
 
 ---
@@ -219,7 +219,7 @@ Fixture defaults.
 
 - The `stability` and `balance` focus values follow Case 3's pattern with the
   other observation groups; not separately tested.
-- At `rigor: minimal` the skill reads `design/game-brief.md` instead of the
+- At `rigor: minimal` the skill reads `docs/GDD.md` instead of the
   game concept; not separately tested.
 - Executing the protocol is outside this skill's scope — it generates the plan,
   a human runs it.

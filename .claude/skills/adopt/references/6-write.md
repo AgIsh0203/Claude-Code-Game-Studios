@@ -57,13 +57,13 @@ Run `/create-control-manifest`
 ### 3c. Create sprint tracking file
 Run `/sprint-plan update`
 **Time**: 5 min (if sprint plan already exists as markdown)
-- [ ] production/sprint-status.yaml created
+- [ ] docs/production/sprint-status.yaml created
 
 ### 3d. Set authoritative project stage
 Run `/gate-check [current-phase]` (the gate into the phase the project is in;
 at Concept there is none — Concept is the default stage, nothing to run)
 **Time**: 5 min
-- [ ] `project.stage` in `project.yaml` written (legacy `production/stage.txt` also updated)
+- [ ] `project.stage` in `.claude/ccgs/project.yaml` written (legacy `.claude/ccgs/stage.txt` also updated)
 
 ---
 
@@ -99,15 +99,15 @@ are resolved. The new run will reflect the current state of the project.
 ## Phase 6b: Report Review Mode
 
 **Do not write a review mode.** `modes.review_mode` is one of the six knobs
-`modes.rigor` fronts: pinning it in `project.yaml` shadows the rigor expansion, and
-the legacy `production/review-mode.txt` sits *above* that expansion in resolution,
+`modes.rigor` fronts: pinning it in `.claude/ccgs/project.yaml` shadows the rigor expansion, and
+the legacy `.claude/ccgs/review-mode.txt` sits *above* that expansion in resolution,
 so either write would freeze director-review depth for good — the rule `/start`
-and `project.yaml`'s header comment both state.
+and `.claude/ccgs/project.yaml`'s header comment both state.
 
 Report the value the bootstrap above resolved instead: "Review mode resolves to
 `[value]` — from `modes.rigor`, unless something pins it." If the user wants a
 different depth, point them to changing `modes.rigor`, or to pinning it on purpose
 with `/settings --local modes.review_mode=<full|lean|solo>` (a personal override in
-`project.local.yaml`).
+`.claude/ccgs/project.local.yaml`).
 
 ---

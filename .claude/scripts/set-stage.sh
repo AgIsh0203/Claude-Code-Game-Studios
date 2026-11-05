@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# set-stage.sh — write the project stage to project.yaml and the legacy
-# production/stage.txt, read both back, and say whether they agree.
+# set-stage.sh — write the project stage to .claude/ccgs/project.yaml and the legacy
+# .claude/ccgs/stage.txt, read both back, and say whether they agree.
 #
-# Replaces the hand-run stage write: the primary write to project.yaml, the
-# legacy fallback write to production/stage.txt, and the check that both
+# Replaces the hand-run stage write: the primary write to .claude/ccgs/project.yaml, the
+# legacy fallback write to .claude/ccgs/stage.txt, and the check that both
 # landed. /start and /gate-check call it.
 #
 # THE ASK STAYS IN THE SKILL. A stage moves only on a /gate-check PASS (or a
@@ -18,28 +18,28 @@
 #   --root DIR  the project to write; defaults to the repo this script is in
 #   -h, --help  this text
 #
-# What it writes in project.yaml (comments, other keys and line endings kept):
+# What it writes in .claude/ccgs/project.yaml (comments, other keys and line endings kept):
 #   - a `stage:` line under `project:` gets the new value, keeping its quotes
 #     and any inline comment; when project.stage is set more than once, the
 #     last one is edited, because that is the one every reader uses
 #   - a `project:` block with no `stage:` gets one as its first line
 #   - no `project:` block: one is added after the `framework:` block, or at the
 #     end of the file when there is no `framework:` block
-#   - no project.yaml: it is created from /gate-check's minimal template
-# production/stage.txt gets the stage name with no trailing newline.
+#   - no .claude/ccgs/project.yaml: it is created from /gate-check's minimal template
+# .claude/ccgs/stage.txt gets the stage name with no trailing newline.
 # A file already holding the stage is left byte-for-byte alone. Each file's new
 # text is made in full first, then copied over it in place, so it keeps its
 # mode and a symlink stays one.
 #
 # Output: TSV.
-#   project.yaml <replaced|inserted|added-block|created|unchanged> <line or ->
+#   .claude/ccgs/project.yaml <replaced|inserted|added-block|created|unchanged> <line or ->
 #   stage.txt    <written|unchanged> -
-#   stage_yaml   <value read back> project.yaml
-#   stage_txt    <value read back> production/stage.txt
+#   stage_yaml   <value read back> .claude/ccgs/project.yaml
+#   stage_txt    <value read back> .claude/ccgs/stage.txt
 #
 # Exit codes: 0 both files hold the stage; 1 cannot read the root, write a file,
 # or find project-state.sh or the framework version; 2 usage error; 3 <Stage>
-# is not a stage name; 4 the two files disagree after writing; 5 project.yaml
+# is not a stage name; 4 the two files disagree after writing; 5 .claude/ccgs/project.yaml
 # has a layout this script will not edit (`project:` as a one-line value).
 # A 3 or a 5 writes nothing.
 #
@@ -98,14 +98,14 @@ replace_file() {
   rm -f "$2"
 }
 
-# --- project.yaml ----------------------------------------------------------
+# --- .claude/ccgs/project.yaml ----------------------------------------------------------
 Y_ACTION=""; Y_LINE="-"; Y_NEW=""
-if [ ! -f project.yaml ]; then
+if [ ! -f .claude/ccgs/project.yaml ]; then
   Y_ACTION="created"
   # The framework version these scripts ship with; update-check.sh holds the
   # one copy a release bumps.
   VERSION=$(sed -n 's/^UPDATE_CHECK_VERSION="\([^"]*\)".*/\1/p' "$HERE/../hooks/update-check.sh" 2>/dev/null | head -1)
-  [ -n "$VERSION" ] || { echo "set-stage: no framework version in $HERE/../hooks/update-check.sh; project.yaml not created" >&2; exit 1; }
+  [ -n "$VERSION" ] || { echo "set-stage: no framework version in $HERE/../hooks/update-check.sh; .claude/ccgs/project.yaml not created" >&2; exit 1; }
   Y_NEW=$(mktemp "./.ccgs-stage-XXXXXX" 2>/dev/null) || { echo "set-stage: cannot create a temporary file in $(pwd)" >&2; exit 1; }
   # /gate-check's minimal template (references/6-update-stage.md, 6.1).
   {
@@ -261,50 +261,50 @@ else
       if (NR == 0 && (0 in ins)) print ins[0]
       printf "%s\t%s\t%s\n", action, at, (nst > 1 ? stlines : "") > ENVIRON["STATUS"]
     }
-  ' project.yaml > "$Y_NEW"
+  ' .claude/ccgs/project.yaml > "$Y_NEW"
   IFS="$(printf '\t')" read -r Y_ACTION Y_LINE Y_DUPS < "$Y_STATUS" 2>/dev/null
   rm -f "$Y_STATUS"
   if [ "${Y_ACTION:-}" = "unsupported" ]; then
     rm -f "$Y_NEW"
-    echo "set-stage: project.yaml line $Y_LINE sets \`project:\` to a one-line value, so it has no \`stage:\` to edit." >&2
+    echo "set-stage: .claude/ccgs/project.yaml line $Y_LINE sets \`project:\` to a one-line value, so it has no \`stage:\` to edit." >&2
     echo "  Expected layout: a block, \`project:\` on its own line and \`  stage: <Stage>\` under it. Nothing was written." >&2
     exit 5
   fi
-  [ -n "${Y_ACTION:-}" ] || { rm -f "$Y_NEW"; echo "set-stage: could not parse project.yaml; nothing was written" >&2; exit 1; }
+  [ -n "${Y_ACTION:-}" ] || { rm -f "$Y_NEW"; echo "set-stage: could not parse .claude/ccgs/project.yaml; nothing was written" >&2; exit 1; }
   if [ -n "${Y_DUPS:-}" ]; then
-    echo "set-stage: project.stage is set more than once in project.yaml (lines $Y_DUPS); line $Y_LINE is the one readers use, so that is the one edited" >&2
+    echo "set-stage: project.stage is set more than once in .claude/ccgs/project.yaml (lines $Y_DUPS); line $Y_LINE is the one readers use, so that is the one edited" >&2
   fi
   [ "$Y_ACTION" = "unchanged" ] && { rm -f "$Y_NEW"; Y_NEW=""; }
 fi
 
-# --- production/stage.txt --------------------------------------------------
+# --- .claude/ccgs/stage.txt --------------------------------------------------
 T_ACTION="written"
-if [ -f production/stage.txt ] && printf '%s' "$STAGE" | cmp -s - production/stage.txt; then
+if [ -f .claude/ccgs/stage.txt ] && printf '%s' "$STAGE" | cmp -s - .claude/ccgs/stage.txt; then
   T_ACTION="unchanged"
 fi
 
 if [ "$DRY" = 1 ]; then
   [ -n "$Y_NEW" ] && rm -f "$Y_NEW"
-  printf 'project.yaml\t%s\t%s\nstage.txt\t%s\t-\n' "$Y_ACTION" "$Y_LINE" "$T_ACTION"
+  printf '.claude/ccgs/project.yaml\t%s\t%s\nstage.txt\t%s\t-\n' "$Y_ACTION" "$Y_LINE" "$T_ACTION"
   exit 0
 fi
 
-[ -n "$Y_NEW" ] && replace_file project.yaml "$Y_NEW"
+[ -n "$Y_NEW" ] && replace_file .claude/ccgs/project.yaml "$Y_NEW"
 if [ "$T_ACTION" = "written" ]; then
   mkdir -p production 2>/dev/null
-  T_NEW=$(mktemp "production/.ccgs-stage-XXXXXX" 2>/dev/null) || { echo "set-stage: cannot create a temporary file in production/" >&2; exit 1; }
-  printf '%s' "$STAGE" > "$T_NEW" || { rm -f "$T_NEW"; echo "set-stage: could not write production/stage.txt" >&2; exit 1; }
-  replace_file production/stage.txt "$T_NEW"
+  T_NEW=$(mktemp ".claude/ccgs/.ccgs-stage-XXXXXX" 2>/dev/null) || { echo "set-stage: cannot create a temporary file in .claude/ccgs/" >&2; exit 1; }
+  printf '%s' "$STAGE" > "$T_NEW" || { rm -f "$T_NEW"; echo "set-stage: could not write .claude/ccgs/stage.txt" >&2; exit 1; }
+  replace_file .claude/ccgs/stage.txt "$T_NEW"
 fi
 
 # --- read back through the one reader -------------------------------------
 BACK=$(bash "$HERE/project-state.sh" --stage --root .)
 SY=$(printf '%s\n' "$BACK" | awk -F'\t' '$1 == "stage_yaml" { print $2 }')
 ST=$(printf '%s\n' "$BACK" | awk -F'\t' '$1 == "stage_txt" { print $2 }')
-printf 'project.yaml\t%s\t%s\nstage.txt\t%s\t-\n' "$Y_ACTION" "$Y_LINE" "$T_ACTION"
+printf '.claude/ccgs/project.yaml\t%s\t%s\nstage.txt\t%s\t-\n' "$Y_ACTION" "$Y_LINE" "$T_ACTION"
 printf 'stage_yaml\t%s\tproject.yaml\nstage_txt\t%s\tproduction/stage.txt\n' "$SY" "$ST"
 if [ "$SY" != "$STAGE" ] || [ "$ST" != "$STAGE" ]; then
-  echo "set-stage: after writing, project.yaml reads '$SY' and production/stage.txt reads '$ST', not '$STAGE'." >&2
+  echo "set-stage: after writing, .claude/ccgs/project.yaml reads '$SY' and .claude/ccgs/stage.txt reads '$ST', not '$STAGE'." >&2
   echo "  A split stage misleads every reader; fix the file that differs before going on." >&2
   exit 4
 fi

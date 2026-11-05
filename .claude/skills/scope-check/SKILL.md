@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Bash(git log *)
 model: haiku
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Scope Check
 
 This skill is read-only — it reports findings but writes no files.
@@ -22,9 +24,9 @@ scope creep.
 
 Locate the baseline scope document for the given argument:
 
-- **Feature name** → read `design/gdd/[feature].md` or matching file in `design/`
-- **Sprint number** (e.g., `sprint-3`) → read `production/sprints/sprint-003.md` (the name `/sprint-plan` writes) or similar
-- **Milestone** → read `production/milestones/[name].md`
+- **Feature name** → read `docs/design/gdd/[feature].md` or matching file in `docs/design/`
+- **Sprint number** (e.g., `sprint-3`) → read `docs/production/sprints/sprint-003.md` (the name `/sprint-plan` writes) or similar
+- **Milestone** → read `docs/production/milestones/[name].md`
 
 If the document is not found, report the missing file and stop. Do not proceed without
 a baseline to compare against. Read a GDD by section: find the headings you need with

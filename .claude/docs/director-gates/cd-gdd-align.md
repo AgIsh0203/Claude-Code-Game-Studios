@@ -9,7 +9,7 @@ produces a GDD)
 
 **Context to pass**:
 - GDD file path
-- Game pillars (from `design/gdd/game-concept.md` or `design/gdd/game-pillars.md`; if there is neither, `design/game-brief.md` has no pillars — pass its pitch and "what they feel" line)
+- Game pillars (from `docs/GDD.md` or `docs/GDD.md`; if there is neither, `docs/GDD.md` has no pillars — pass its pitch and "what they feel" line)
 - MDA aesthetics target for this game
 - System's stated Player Fantasy section
 

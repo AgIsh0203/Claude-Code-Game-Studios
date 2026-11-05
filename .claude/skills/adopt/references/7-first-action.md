@@ -11,7 +11,7 @@ branch that applies:
 
 **If Phase 2g found a v1.0 project needing migration:** offer the converter run
 described there — report what the dry run listed and ask "May I run the
-converter? It writes `project.yaml` and `production/migration-report.md`."
+converter? It writes `.claude/ccgs/project.yaml` and `.claude/ccgs/migration-report.md`."
 Every other fix reads config through it, so it comes first.
 
 **If there are parenthetical status values in systems-index.md:**

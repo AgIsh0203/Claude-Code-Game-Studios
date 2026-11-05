@@ -11,12 +11,12 @@ config block (`project.stage`, `workflow`) and the output of
 `.claude/scripts/story-status.sh`; it reads the session checkpoint itself (Step 3). It then reads
 `.claude/docs/workflow-catalog.yaml`, resolves step completion for the current
 phase with one call to `bash .claude/scripts/artifact-check.sh --phase [phase]`,
-and in Production reads `production/sprint-status.yaml`.
+and in Production reads `docs/production/sprint-status.yaml`.
 
 When `workflow` resolves to `minimal` (the default, because `modes.rigor`
 defaults to `minimal`) it skips the phase ladder, reads the session checkpoint
 (Step 3), and walks the minimal path (Step 4m): engine →
-`design/game-brief.md` → stories → `/dev-story` ↔ `/story-done`. The optional
+`docs/GDD.md` → stories → `/dev-story` ↔ `/story-done`. The optional
 argument is **what the user just finished or is stuck
 on** — the skill uses it to advance past the named step, and confusion language
 in it adds an escalation footer. It is not a topic filter.
@@ -49,9 +49,9 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -61,13 +61,13 @@ Fixture defaults.
 ### Case 1: Happy Path — Production stage with active sprint
 
 **Fixture:**
-- `project.yaml` sets `project.stage: Production` and `modes.rigor: standard`
+- `.claude/ccgs/project.yaml` sets `project.stage: Production` and `modes.rigor: standard`
   (so `workflow` resolves to `standard`)
-- `production/sprints/sprint-004.md` exists
-- `production/sprint-status.yaml` lists one story `status: in-progress`, two
+- `docs/production/sprints/sprint-004.md` exists
+- `docs/production/sprint-status.yaml` lists one story `status: in-progress`, two
   `status: ready-for-dev`, three `status: done`, and one `status: blocked` with a
   `blocker` field
-- `production/session-state/active.md` has a STATUS block naming the in-progress story
+- `.claude/ccgs/session-state/active.md` has a STATUS block naming the in-progress story
 
 **Input:** `/help`
 
@@ -75,7 +75,7 @@ Fixture defaults.
 1. Skill takes `project.stage: Production` and `workflow: standard` from the config block
 2. Skill reads `.claude/docs/workflow-catalog.yaml` and runs
    `bash .claude/scripts/artifact-check.sh --phase production`
-3. Skill reads `production/sprint-status.yaml`: the in-progress story is
+3. Skill reads `docs/production/sprint-status.yaml`: the in-progress story is
    "currently active", ready-for-dev stories are "next up", done stories count as
    complete, the blocked story is named with its `blocker` text
 4. Because `active.md` shows an active task, it is surfaced prominently at the top:
@@ -86,7 +86,7 @@ Fixture defaults.
 
 **Assertions:**
 - [ ] Heading reads `## Where You Are: Production`
-- [ ] `production/sprint-status.yaml` is read; the in-progress story is surfaced as currently active
+- [ ] `docs/production/sprint-status.yaml` is read; the in-progress story is surfaced as currently active
 - [ ] The blocked story appears with its `blocker` field
 - [ ] Exactly one `→ Next up (REQUIRED)` step is shown (not a list of all skills)
 - [ ] The in-progress story from `active.md` is surfaced at the top ("It looks like you were working on …")
@@ -98,19 +98,19 @@ Fixture defaults.
 ### Case 2: Concept Stage — engine configured, no concept document
 
 **Fixture:**
-- `project.yaml` sets `project.stage: Concept`, `modes.rigor: full`, and
+- `.claude/ccgs/project.yaml` sets `project.stage: Concept`, `modes.rigor: full`, and
   `engine.name: "Godot"` (`full`, because at `standard` the art bible is
   required only when visual-asset stories exist — `.claude/docs/workflow-modes.md`
   — and a Concept-stage project has no stories to decide it by)
-- No `design/gdd/game-concept.md`, no `design/art/art-bible.md`, no
-  `design/gdd/systems-index.md`, no sprint files
+- No `docs/GDD.md`, no `docs/design/art/art-bible.md`, no
+  `docs/GDD.md`, no sprint files
 
 **Input:** `/help`
 
 **Expected behavior:**
 1. Skill maps `Concept` to the catalog phase `concept`
 2. `artifact-check.sh --phase concept` reports `engine-setup` PRESENT (matched by
-   `engine.name` in `project.yaml`) and `game-concept`, `art-bible`, `map-systems` ABSENT
+   `engine.name` in `.claude/ccgs/project.yaml`) and `game-concept`, `art-bible`, `map-systems` ABSENT
 3. `✓ Done` lists Engine Setup
 4. `→ Next up (REQUIRED)` is **Game Concept Document** with command `/brainstorm`
 5. `Coming up after that` lists Art Bible (`/art-bible`) and Systems Map (`/map-systems`)
@@ -129,17 +129,17 @@ Fixture defaults.
 ### Case 3: No stage recorded — phase inferred from artifacts
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard` and has no `project.stage`
-- No `production/stage.txt`
-- `design/gdd/game-concept.md` and `design/gdd/systems-index.md` exist
-- No `docs/architecture/adr-*.md`, no `production/epics/**/story-*.md`, code root empty
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard` and has no `project.stage`
+- No `.claude/ccgs/stage.txt`
+- `docs/GDD.md` and `docs/GDD.md` exist
+- No `docs/architecture/adr-*.md`, no `docs/production/epics/**/story-*.md`, code root empty
 
 **Input:** `/help`
 
 **Expected behavior:**
 1. Config block reports `project.stage` as not set
 2. Skill applies the Step 2 artifact inference (most-advanced match wins):
-   `design/gdd/systems-index.md` exists and nothing further → `systems-design`
+   `docs/GDD.md` exists and nothing further → `systems-design`
 3. Skill reports the inferred phase normally with the Step 7 shape
 4. `→ Next up (REQUIRED)` is System GDDs via `/design-system`. The catalog's
    `design-system` step has only a `note:` check, so `artifact-check.sh` reports
@@ -161,10 +161,10 @@ Fixture defaults.
 ### Case 4: Argument — user names the step they finished and says they are unsure
 
 **Fixture:**
-- `project.yaml` sets `project.stage: Systems Design` and `modes.rigor: standard`
-- `design/gdd/systems-index.md` lists two MVP systems, both `Status: Approved`,
+- `.claude/ccgs/project.yaml` sets `project.stage: Systems Design` and `modes.rigor: standard`
+- `docs/GDD.md` lists two MVP systems, both `Status: Approved`,
   and both system GDDs exist
-- No `design/gdd/gdd-cross-review-*.md`
+- No `docs/design/gdd/gdd-cross-review-*.md`
 - The catalog's `design-review` step has no artifact check (`NO_CHECK`)
 
 **Input:** `/help just finished design-review, not sure what's next`
@@ -191,10 +191,10 @@ Fixture defaults.
 ### Case 5: Director Gate Check — minimal path, no gate and no gate-check route
 
 **Fixture:**
-- `project.yaml` has `engine.name: "Godot"` and no `modes` block (`modes.rigor`
+- `.claude/ccgs/project.yaml` has `engine.name: "Godot"` and no `modes` block (`modes.rigor`
   defaults to `minimal`, so `workflow` resolves to `minimal`)
-- `design/game-brief.md` exists
-- `production/epics/core/story-001.md` is `Status: Complete`,
+- `docs/GDD.md` exists
+- `docs/production/epics/core/story-001.md` is `Status: Complete`,
   `story-002.md` is `Status: In Progress`, `story-003.md` is `Status: Ready`
 - Neither `active.md` (its CHECKPOINT names story-002 as the current task, with
   **Next step:** `/dev-story` on it) nor the git log (no commit mentions
@@ -233,7 +233,7 @@ Fixture defaults.
 
 **Fixture:**
 - As Case 5, except `active.md`'s CHECKPOINT reads
-  **Next step:** `/story-done production/epics/core/story-002.md` (what
+  **Next step:** `/story-done docs/production/epics/core/story-002.md` (what
   `/dev-story` writes when it finishes a story)
 
 **Input:** `/help`
@@ -286,10 +286,10 @@ Fixture defaults.
 ### Case 8: Minimal path, no game brief — a built game is documented, not re-brainstormed
 
 **Fixture:**
-- `project.yaml` has `engine.name: "Godot"` and no `modes` block (`workflow` resolves
+- `.claude/ccgs/project.yaml` has `engine.name: "Godot"` and no `modes` block (`workflow` resolves
   to `minimal`)
-- No `design/game-brief.md`, no `design/gdd/game-concept.md`, no stories under
-  `production/epics/`
+- No `docs/GDD.md`, no `docs/GDD.md`, no stories under
+  `docs/production/epics/`
 - Run A: `src/` holds 12 `.gd` files. Run B: `src/` holds 3 `.gd` files
 
 **Input:** `/help`
@@ -299,7 +299,7 @@ Fixture defaults.
    `engine-setup` PRESENT and `game-brief` not PRESENT
 2. Run A: the code root already holds the game (10 or more source files, the same
    test Step 2 uses for `production`), so `→ Next up` is the game brief via
-   `/reverse-document design src/`, which writes `design/game-brief.md` from what
+   `/reverse-document design src/`, which writes `docs/GDD.md` from what
    is built
 3. Run B: the code root is not yet a game, so `→ Next up` is the game brief via
    `/brainstorm`

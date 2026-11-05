@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,automation_always_ask,workflow,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
@@ -21,7 +23,7 @@ When a GDD changes, the architecture decisions written against it may no longer
 hold. This skill finds every ADR the change touches, compares what the ADR assumed
 with what the GDD says now, and walks the user through each one.
 
-**Example:** `/propagate-design-change design/gdd/combat-system.md`
+**Example:** `/propagate-design-change docs/design/gdd/combat-system.md`
 
 Asks follow `.claude/docs/automation-modes.md` (collaborative always asks, guided
 asks on major choices, autonomous logs and goes on; `automation_always_ask`
@@ -38,7 +40,7 @@ nothing to check (Phase 4).
 
 The text typed after the skill name, with any `--review <mode>` pair removed, is the
 changed GDD. It is required. Missing: "Usage: `/propagate-design-change
-design/gdd/[system].md` — give the path to the GDD that changed." Not a file:
+docs/design/gdd/[system].md` — give the path to the GDD that changed." Not a file:
 "[path] not found. Check the path and try again."
 
 ## Phase 2: What changed
@@ -46,13 +48,13 @@ design/gdd/[system].md` — give the path to the GDD that changed." Not a file:
 Ask git, never compare two whole documents by eye:
 
 ```bash
-git diff HEAD -- design/gdd/[filename].md
+git diff HEAD -- docs/design/gdd/[filename].md
 ```
 
 Empty: the change may be committed already, so widen to the last commit that
-touched it: `git diff HEAD~1 HEAD -- design/gdd/[filename].md`.
+touched it: `git diff HEAD~1 HEAD -- docs/design/gdd/[filename].md`.
 
-- No history at all (`git log --oneline -1 -- design/gdd/[filename].md` prints
+- No history at all (`git log --oneline -1 -- docs/design/gdd/[filename].md` prints
   nothing): "No previous version in git — this is a new GDD, not a revision.
   Nothing to propagate." Stop.
 - History, but both diffs empty: report "no uncommitted or last-commit changes to
@@ -63,7 +65,7 @@ From the hunks: the `@@` headers name the section each change sits in, so the
 changed-section list comes from the diff itself. A section with no hunk is unchanged
 by construction. Read the surrounding section only when a hunk cannot be understood
 alone (a changed number whose meaning depends on the rule above it), and then only
-that section: `bash .claude/scripts/md-section.sh extract design/gdd/[file].md "[Section]"`.
+that section: `bash .claude/scripts/md-section.sh extract docs/design/gdd/[file].md "[Section]"`.
 
 ## Phase 3: The change summary
 
@@ -81,10 +83,10 @@ Key changes affecting architecture:
 - [change likely to affect ADRs]
 ```
 
-**Other GDDs that use these facts.** When `design/registry/entities.yaml` does not
+**Other GDDs that use these facts.** When `docs/design/registry/entities.yaml` does not
 exist or has no entries (it ships as an empty stub until `/design-system` fills it),
 skip this; the ADR check below still runs. Otherwise it records which GDDs depend on
-this system's facts: search it for `source: design/gdd/[filename]`. For each entity, constant or formula this GDD owns
+this system's facts: search it for `source: docs/design/gdd/[filename]`. For each entity, constant or formula this GDD owns
 whose value the diff changed, its `referenced_by:` list names the GDDs that may now
 disagree. List them under "Downstream GDDs to re-check".
 

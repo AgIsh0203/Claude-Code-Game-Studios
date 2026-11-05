@@ -3,7 +3,7 @@
 > **Date**: [YYYY-MM-DD]
 > **Slice Duration**: [N days]
 > **Target Scope**: 3–5 minutes of polished, continuous gameplay
-> **Source GDD**: design/gdd/game-concept.md (or design/game-brief.md)
+> **Source GDD**: docs/GDD.md (or docs/GDD.md)
 
 ---
 
@@ -136,7 +136,7 @@ for PROCEED, PIVOT or KILL yet.]
 
 **Next step:** play the slice unguided (at least one documented session), then
 re-run `/vertical-slice` — it resumes from the checkpoint in
-`production/session-state/active.md`.
+`.claude/ccgs/session-state/active.md`.
 
 ---
 
@@ -160,7 +160,7 @@ re-run `/vertical-slice` — it resumes from the checkpoint in
 [Why the full game loop does not work at this quality level. What specifically
 prevented the player from experiencing the core fantasy. What to do instead.]
 
-**Next step:** `/brainstorm` to explore a new direction, or `/prototype [new-concept]`
+**Next step:** `/brainstorm` to explore a new direction, or `/gamedev-prototype [new-concept]`
 to test a different concept cheaply before investing in another vertical slice.
 
 ---
@@ -178,6 +178,6 @@ to test a different concept cheaply before investing in another vertical slice.
 
 ---
 
-> *Vertical slice code location: `prototypes/[concept-name]-vertical-slice/`*
+> *Vertical slice code location: `docs/prototypes/[concept-name]-vertical-slice/`*
 > *This code is reference material only. Production implementation is written from scratch.*
 > *Never import or refactor this code into production.*

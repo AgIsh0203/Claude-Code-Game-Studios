@@ -2,7 +2,7 @@
 
 **Type**: Tuning
 **System**: [System name]
-**GDD Reference**: `design/gdd/[filename].md` — Tuning Knobs section
+**GDD Reference**: `docs/design/gdd/[filename].md` — Tuning Knobs section
 **Date**: [today]
 
 ## Change
@@ -19,6 +19,6 @@ New value is [within / at the edge of / outside] the documented range.
 
 ## Acceptance Criteria
 
-- [ ] [Parameter] reads [new value] from `assets/data/[file]`
+- [ ] [Parameter] reads [new value] from `Content/data/[file]`
 - [ ] Behavior difference is observable in [specific context]
 - [ ] No regression in [related behavior]

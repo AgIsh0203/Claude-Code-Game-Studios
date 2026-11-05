@@ -33,7 +33,7 @@ No gate IDs assigned.
 **Expected behavior:**
 - Does NOT produce Godot Node/signal code
 - Identifies node trees and signals as Godot concepts
-- Confirms the project's engine from `engine.name` in `project.yaml` rather than guessing; if it is not Unity, says it is the wrong specialist for this project instead of translating
+- Confirms the project's engine from `engine.name` in `.claude/ccgs/project.yaml` rather than guessing; if it is not Unity, says it is the wrong specialist for this project instead of translating
 - If `engine.name` is unset, says no engine is configured and asks which engine the project uses — it does not assume Unity
 - In a Unity project, maps the concepts: node tree → GameObject hierarchy with composed MonoBehaviours; signal → C# event or UnityEvent (consistent with its own rule to use events instead of `SendMessage()` / `Find()`)
 - Does not hand the request to a Godot specialist — its Agent grant covers only the four Unity sub-specialists

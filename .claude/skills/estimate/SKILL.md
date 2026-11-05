@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Estimate
 
 ## Phase 1: Understand the Task
@@ -15,7 +17,7 @@ Read the task description from the argument. If the description is too vague to 
 
 Read CLAUDE.md for project context: tech stack, coding standards, architectural patterns, and any estimation guidelines.
 
-Read relevant design documents from `design/gdd/` if the task relates to a documented feature or system. Read them by section: find the headings you need with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
+Read relevant design documents from `docs/design/gdd/` if the task relates to a documented feature or system. Read them by section: find the headings you need with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
 
 ---
 
@@ -37,7 +39,7 @@ Identify files and modules that would need to change:
     and Assumptions rather than leaving it out of the totals.
 - Identify integration points with other systems
 - Check for existing test coverage in the affected areas
-- Read past sprint data from `production/sprints/` for similar completed tasks and historical velocity.
+- Read past sprint data from `docs/production/sprints/` for similar completed tasks and historical velocity.
   **If there is none**, say so under Notes and Assumptions — "No sprint history found;
   this estimate is not calibrated to the team's velocity" — and treat that as a risk
   in the confidence level, not as a silent padding of the figures.
@@ -137,7 +139,7 @@ This skill is read-only — no files are written. Verdict: **COMPLETE** — esti
 
 ## Phase 5: Next Steps
 
-- If confidence is Low: recommend a time-boxed spike (`/prototype`) before committing.
+- If confidence is Low: recommend a time-boxed spike (`/gamedev-prototype`) before committing.
 - If the task is > 10 days: recommend breaking it into smaller stories via `/create-stories`.
 - To schedule the task: run `/sprint-plan update` to add it to the next sprint (if the project has no sprint plan, as on the default minimal workflow, add it to the brief's build order instead).
 

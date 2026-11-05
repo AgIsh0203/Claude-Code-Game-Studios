@@ -9,7 +9,7 @@
 > The **Testing Evidence Required** and **Drift Monitoring** sections are
 > **aspirational** — the runners they name (`tests/smoke-tests/`,
 > `tests/golden-datasets/`, `tests/behavioral-tests/`, `tests/integration/`) and
-> `production/session-state/drift-monitor.md` do **not exist**, no skill has a
+> `.claude/ccgs/session-state/drift-monitor.md` do **not exist**, no skill has a
 > `TESTS.md`, and none of the seven shipped `CONTRACT.md` files use the ASI or
 > drift machinery. Treat them as a design sketch for a future skill-quality
 > system, not as steps to follow.
@@ -51,17 +51,17 @@ Story Author — Decomposes game design epics into atomic, testable user stories
 
 ### Domain Boundaries
 **Can Read:**
-- `design/gdd/` (game design documents)
+- `docs/design/gdd/` (game design documents)
 - `.claude/docs/` (architectural guidance)
-- `production/session-state/` (context from previous skills)
+- `.claude/ccgs/session-state/` (context from previous skills)
 
 **Can Write:**
-- `production/epics/[epic-slug]/` (creates new story markdown files)
-- `production/qa/evidence/` (creates test evidence stubs)
+- `docs/production/epics/[epic-slug]/` (creates new story markdown files)
+- `docs/production/qa/evidence/` (creates test evidence stubs)
 
 **Cannot Touch:**
 - The code root — `src/`, `Assets/` or `Source/` by engine (no game code)
-- `assets/` (no asset modifications)
+- `Content/` (no asset modifications)
 - Source data files (read-only)
 
 ---
@@ -178,7 +178,7 @@ estimated_story_count: 12
 
 **Destination Skill:** [NEXT_SKILL_NAME] (e.g., `/dev-story`)
 **Format:** Markdown with structured headers
-**Location:** Typically written to `production/epics/[epic-slug]/story-NNN-[slug].md`
+**Location:** Typically written to `docs/production/epics/[epic-slug]/story-NNN-[slug].md`
 
 ### Output Structure
 
@@ -372,7 +372,7 @@ Violations warn and attempt recovery; don't block.
 **Downstream Skill:** `/dev-story` (or equivalent story-to-task skill)
 
 **How Data Handed Off:**
-- Option 1: Story markdown written to `production/epics/[epic-slug]/story-NNN-[slug].md`
+- Option 1: Story markdown written to `docs/production/epics/[epic-slug]/story-NNN-[slug].md`
 - Option 2: Story content passed as context string to next skill
 - Option 3: Story metadata indexed in central registry
 
@@ -488,7 +488,7 @@ ASI = (0.30 * consistency) + (0.25 * tool) + (0.25 * criteria) + (0.20 * boundar
 
 **Monitoring:**
 - Measure after every 5 story skill invocations
-- Log to `production/session-state/drift-monitor.md`
+- Log to `.claude/ccgs/session-state/drift-monitor.md`
 - Alert if ASI < 0.75 for 3 consecutive windows
 
 ---

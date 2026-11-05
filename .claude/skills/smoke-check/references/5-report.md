@@ -49,7 +49,7 @@ will determine whether the automated test row contributes to a FAIL verdict."
 | Story | Type | Test File | Coverage Status |
 |-------|------|-----------|----------------|
 | [title] | Logic | `tests/unit/[system]/[slug]_test.[ext]` | COVERED |
-| [title] | Visual/Feel | `production/qa/evidence/[slug]-screenshots.md` | MANUAL |
+| [title] | Visual/Feel | `docs/production/qa/evidence/[slug]-screenshots.md` | MANUAL |
 | [title] | Logic | — | MISSING ⚠ |
 | [title] | Config/Data | — | EXPECTED |
 

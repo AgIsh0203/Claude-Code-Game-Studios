@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Bash(bash "*/.claude/skills/help/../../hooks/ya
 model: haiku
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Studio Help — What Do I Do Next?
 
 This skill is read-only — it reports findings but writes no files.
@@ -22,7 +24,7 @@ gap analysis, use `/project-stage-detect`.
 These are resolved before this skill runs. Use them as-is:
 
 - **`project.stage`** from the config block is the authoritative phase for Step 2
-  — it already applies the `project.yaml` → `production/stage.txt` fallback, and
+  — it already applies the `.claude/ccgs/project.yaml` → `.claude/ccgs/stage.txt` fallback, and
   preserves values containing spaces (`Systems Design`).
 - **`workflow`** from the config block is the tier for Steps 2 and 5 — do not re-read it.
 - If no config block rendered, shell preprocessing is disabled; fall back to the
@@ -57,7 +59,7 @@ Collect these for the output in Step 7 — show them as a footer block:
 
 Only show this block if at least one uncataloged skill exists. Limit to the 10
 most relevant based on the user's current phase (QA skills in production, team
-skills in production/polish, etc.).
+skills in docs/production/polish, etc.).
 
 ---
 
@@ -84,10 +86,10 @@ Otherwise, check in this order:
 
 2. **If neither is set**, infer phase from artifacts (most-advanced match wins):
    - code root has 10+ source files → `production`
-   - `production/epics/**/story-*.md` exists → `pre-production`
+   - `docs/production/epics/**/story-*.md` exists → `pre-production`
    - `docs/architecture/adr-*.md` exists → `technical-setup`
-   - `design/gdd/systems-index.md` exists → `systems-design`
-   - `design/gdd/game-concept.md` (or `design/game-brief.md`) exists → `concept`
+   - `docs/GDD.md` exists → `systems-design`
+   - `docs/GDD.md` (or `docs/GDD.md`) exists → `concept`
    - Nothing → `concept` (fresh project)
 
 3. **`workflow`** was taken at the top of this step (per
@@ -98,10 +100,10 @@ Otherwise, check in this order:
 
 ## Step 3: Read Session Context
 
-Read `production/session-state/active.md` if it exists — but only its STATUS
+Read `.claude/ccgs/session-state/active.md` if it exists — but only its STATUS
 and CHECKPOINT blocks (schema: `.claude/docs/templates/session-state.md`); the
 narrative below them can be long. Find the markers
-(`Grep pattern="<!-- /?(STATUS|CHECKPOINT) -->" path="production/session-state/active.md" output_mode="content" -n`)
+(`Grep pattern="<!-- /?(STATUS|CHECKPOINT) -->" path=".claude/ccgs/session-state/active.md" output_mode="content" -n`)
 and `Read` from the first to the last. A file with no markers predates the schema: read its
 last `## Session Extract` block instead. Extract:
 - What was most recently worked on
@@ -145,7 +147,7 @@ against the working tree and reports one line per step. Map its statuses:
 Do not re-derive any of this with Glob/Grep. `any_of` in particular is a list of
 **alternatives** — one match is enough — and hand-evaluating it risks a false
 "incomplete": `engine-setup` is satisfied by `engine.name`
-in `project.yaml` **or** by the legacy `Engine:` line in
+in `.claude/ccgs/project.yaml` **or** by the legacy `Engine:` line in
 `.claude/docs/technical-preferences.md`, and the script reports which alternative
 matched (`alt=`/`match=`).
 
@@ -155,7 +157,7 @@ phase is nearly complete.
 
 ### Special case: production phase — read `sprint-status.yaml`
 
-When the current phase is `production`, check for `production/sprint-status.yaml`
+When the current phase is `production`, check for `docs/production/sprint-status.yaml`
 before doing any glob-based story checks. If it exists, read it directly:
 
 - Stories with `status: in-progress` → surface as "currently active"
@@ -177,7 +179,7 @@ Label these differently — show what's been detected, then note it may be ongoi
 ## Step 4m: The Minimal Path (`workflow: minimal` only)
 
 At `minimal` the route is the catalog's `paths.minimal`, not a phase: engine →
-`design/game-brief.md` → stories → `/dev-story` ↔ `/story-done`. Resolve it in
+`docs/GDD.md` → stories → `/dev-story` ↔ `/story-done`. Resolve it in
 one call:
 
 ```
@@ -191,7 +193,7 @@ step is the first of these that applies:
 1. `engine-setup` not PRESENT → `/setup-engine`
 2. `game-brief` not PRESENT → `/reverse-document design [code root]` when the
    code root already holds the game (10 or more source files, the test Step 2
-   uses for `production`): at `minimal` it writes `design/game-brief.md` from
+   uses for `production`): at `minimal` it writes `docs/GDD.md` from
    what is built. Otherwise `/brainstorm` (at `minimal` it writes the one-page
    brief), which on a built game would start a new idea.
 3. `create-stories` not PRESENT → `/create-stories` with no argument (at

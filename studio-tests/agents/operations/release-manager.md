@@ -22,13 +22,13 @@
 ## Test Cases
 
 ### Case 1: In-domain request — certification checklist for a console submission
-**Input context**: `project.yaml` sets `platform.cert_tier: console`; the game ships on Nintendo Switch.
+**Input context**: `.claude/ccgs/project.yaml` sets `platform.cert_tier: console`; the game ships on Nintendo Switch.
 **Input**: "Generate the certification checklist for our Nintendo Switch submission."
 **Expected behavior**:
 - Emits the console certification block its preloaded `/release-checklist` defines for `cert_tier: console` — TRC/TCR/Lotcheck requirements checklist, first-party submission, achievement/trophy integration, parental controls, save-data rules (corruption, full storage, user switching), age ratings — plus the console device requirements (controller prompts, suspend/resume, user switching, connectivity loss, storage full)
 - Tracks every requirement individually with pass / fail / not-applicable status (Platform Certification Requirements)
 - Emits no itch.io or Steamworks certification rows — the certification block follows `cert_tier`, not the platform named in the request
-- Ends with the Go / No-Go line in `/release-checklist`'s three words (READY / NOT ASSESSED / NOT READY, first match wins) — here NOT ASSESSED or NOT READY, never READY, because the fixture supplies no build or test evidence — and asks "May I write this to `production/releases/release-checklist-[version].md`?" before writing
+- Ends with the Go / No-Go line in `/release-checklist`'s three words (READY / NOT ASSESSED / NOT READY, first match wins) — here NOT ASSESSED or NOT READY, never READY, because the fixture supplies no build or test evidence — and asks "May I write this to `docs/production/releases/release-checklist-[version].md`?" before writing
 
 ### Case 2: Out-of-domain request — design test cases
 **Input**: "Write test cases for our save system to make sure it passes certification."

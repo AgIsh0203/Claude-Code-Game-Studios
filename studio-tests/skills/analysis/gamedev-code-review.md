@@ -1,10 +1,10 @@
-# Skill Test Spec: /code-review
+# Skill Test Spec: /gamedev-code-review
 
 ## Skill Summary
 
-`/code-review [file(s)] [story-path]` performs an architectural review of source
+`/gamedev-code-review [file(s)] [story-path]` performs an architectural review of source
 files. It reads the target files and the project coding standards (Phase 1),
-resolves the engine specialists from `project.yaml` (Phase 2), checks compliance
+resolves the engine specialists from `.claude/ccgs/project.yaml` (Phase 2), checks compliance
 with any referenced ADR by reading only its `## Decision` and `## Consequences`
 sections (Phase 3), then evaluates six standards checks, architecture and SOLID,
 and game-specific concerns (Phases 4–6). Applicable engine specialists — and
@@ -41,9 +41,9 @@ engine specialists and `qa-tester` as reviewers (Phase 7); those are not gates.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -53,18 +53,18 @@ Fixture defaults.
 ### Case 1: Happy Path — Standards-compliant file that follows its ADR
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `specialists.code: godot-gdscript-specialist`, `specialists.shader: null`, `specialists.ui: null`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `specialists.code: godot-gdscript-specialist`, `specialists.shader: null`, `specialists.ui: null`
 - `src/gameplay/health_component.gd` meets all six Phase 4 checks:
   - Doc comments (`##`) on every public method and the class
   - Every method under cyclomatic complexity 10 and under 40 lines
   - Dependencies injected; no singletons
-  - All tuning values loaded from `assets/data/`
+  - All tuning values loaded from `Content/data/`
   - Depends on interfaces, not concrete classes
 - Header comment: `# Implements ADR-0004 (docs/architecture/adr-0004-health.md)`
 - `docs/architecture/adr-0004-health.md` has `## Decision` and `## Consequences` sections, and the code follows the chosen approach
 - The specialist reports no issues; there is nothing to suggest
 
-**Input:** `/code-review src/gameplay/health_component.gd`
+**Input:** `/gamedev-code-review src/gameplay/health_component.gd`
 
 **Expected behavior:**
 1. Skill reads the source file and the coding standards
@@ -89,7 +89,7 @@ Fixture defaults.
 ### Case 2: Changes Required — Missing doc comments and singleton usage, no ADR
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `specialists.code: godot-gdscript-specialist`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `specialists.code: godot-gdscript-specialist`
 - `src/ui/inventory_ui.gd` has:
   - 2 public methods (`refresh_slots`, `sort_items`) without doc comments
   - `GameManager.instance` used at lines 42 and 87
@@ -97,15 +97,15 @@ Fixture defaults.
 - No ADR reference in the file header, and no commit touching it names an ADR
 - No story path is passed
 
-**Input:** `/code-review src/ui/inventory_ui.gd`
+**Input:** `/gamedev-code-review src/ui/inventory_ui.gd`
 
 **Expected behavior:**
 1. Skill searches the file header and `git log --oneline -- src/ui/inventory_ui.gd` for `ADR-NNNN` references and finds none
-2. Output notes: "No ADR references found — ADR compliance check skipped. For full ADR compliance review, provide the story path: `/code-review [files] [story-path]`."
+2. Output notes: "No ADR references found — ADR compliance check skipped. For full ADR compliance review, provide the story path: `/gamedev-code-review [files] [story-path]`."
 3. Standards Compliance shows 4/6 passing and lists the failures with line references: the two undocumented methods and the singleton at lines 42 and 87
 4. Required Changes lists the missing doc comments and the singleton, with dependency injection as the fix
 5. Verdict is CHANGES REQUIRED
-6. Phase 9 offers [A] Fix the issues and re-run `/code-review`, [B] Run `/story-done` anyway with noted exceptions, [C] Stop here
+6. Phase 9 offers [A] Fix the issues and re-run `/gamedev-code-review`, [B] Run `/story-done` anyway with noted exceptions, [C] Stop here
 
 **Assertions:**
 - [ ] The "No ADR references found" note names the story-path form of the command
@@ -120,13 +120,13 @@ Fixture defaults.
 ### Case 3: Architectural Violation — Code uses a pattern its ADR rejects
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `specialists.code: godot-gdscript-specialist`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `specialists.code: godot-gdscript-specialist`
 - `src/core/save_system.gd` header: `# Implements ADR-0010 (docs/architecture/adr-0010-save-format.md)`
 - `adr-0010-save-format.md` `## Decision`: save data goes through `SaveService` as JSON; direct `FileAccess` writes from gameplay code are explicitly rejected
 - `save_system.gd` writes save data with `FileAccess.open(..., FileAccess.WRITE)` directly at line 58
 - Code otherwise meets all six standards checks
 
-**Input:** `/code-review src/core/save_system.gd`
+**Input:** `/gamedev-code-review src/core/save_system.gd`
 
 **Expected behavior:**
 1. Skill reads only the Decision and Consequences sections of ADR-0010
@@ -148,10 +148,10 @@ Fixture defaults.
 ### Case 4: Edge Case — No source files at the specified path
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`
 - `src/networking/` does not exist
 
-**Input:** `/code-review src/networking/`
+**Input:** `/gamedev-code-review src/networking/`
 
 **Expected behavior:**
 1. Skill records its inputs as FOUND / ABSENT; the target source files are ABSENT
@@ -171,14 +171,14 @@ Fixture defaults.
 ### Case 5: No Engine Configured — Skipped specialists announce themselves; no gate
 
 **Fixture:**
-- `project.yaml` has `modes.review_mode: full` and no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`
+- `.claude/ccgs/project.yaml` has `modes.review_mode: full` and no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`
 - `src/gameplay/loot_system.gd` hardcodes a drop rate `0.05` at line 31; everything else meets the standards
 
-**Input:** `/code-review src/gameplay/loot_system.gd`
+**Input:** `/gamedev-code-review src/gameplay/loot_system.gd`
 
 **Expected behavior:**
 1. Phase 2 finds no engine configured and skips the engine specialist steps
-2. Output records `Engine validation: NOT ASSESSED — no engine configured (engine.name unset in project.yaml)`
+2. Output records `Engine validation: NOT ASSESSED — no engine configured (engine.name unset in .claude/ccgs/project.yaml)`
 3. Engine Specialist Findings reads `N/A — no engine configured`; no engine specialist is spawned
 4. Standards Compliance lists the "Configuration values loaded from data files" failure with line 31, and the fix is listed under Required Changes
 5. Verdict is CHANGES REQUIRED — the known defect outranks the skipped engine review, which the report still names
@@ -198,10 +198,10 @@ Fixture defaults.
 ### Case 5b: No Engine Configured, Clean File — NOT ASSESSED, never APPROVED
 
 **Fixture:**
-- `project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`
+- `.claude/ccgs/project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`
 - `src/gameplay/loot_table.gd` meets all six Phase 4 checks and raises no architecture, SOLID or game-specific concern
 
-**Input:** `/code-review src/gameplay/loot_table.gd`
+**Input:** `/gamedev-code-review src/gameplay/loot_table.gd`
 
 **Expected behavior:**
 1. Phase 2 records `Engine validation: NOT ASSESSED — no engine configured`; no engine specialist is spawned
@@ -217,13 +217,13 @@ Fixture defaults.
 ### Case 6: Referenced ADR missing — the section's NOT ASSESSED reaches the verdict
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `specialists.code: godot-gdscript-specialist`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `specialists.code: godot-gdscript-specialist`
 - `src/gameplay/stamina.gd` meets all six Phase 4 checks and raises no
   architecture, SOLID or game-specific concern; the specialist reports it clean
 - Its header reads `# Implements ADR-0008 (docs/architecture/adr-0008-stamina.md)`,
   and no such file exists
 
-**Input:** `/code-review src/gameplay/stamina.gd`
+**Input:** `/gamedev-code-review src/gameplay/stamina.gd`
 
 **Expected behavior:**
 1. Phase 3 finds the `ADR-0008` reference but cannot read the ADR
@@ -241,7 +241,7 @@ Fixture defaults.
 ## Protocol Compliance
 
 - [ ] Reads the target file(s) and the coding standards before reviewing (Phase 1)
-- [ ] Reads the `specialists` block from `project.yaml`, falling back to `technical-preferences.md`; a `null` specialist is skipped, never spawned
+- [ ] Reads the `specialists` block from `.claude/ccgs/project.yaml`, falling back to `technical-preferences.md`; a `null` specialist is skipped, never spawned
 - [ ] Every specialist finding in the report carries file/line, evidence, and VERIFIED or `UNVERIFIED — specialist claim`
 - [ ] Does not edit any source files (read-only skill)
 - [ ] No director gates are invoked

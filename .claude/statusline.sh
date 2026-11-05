@@ -10,7 +10,7 @@
 # information and must win: a caller sitting inside another project means that
 # project, not this one. Resolving to the script's own location first would
 # override them. So, in order:
-#   1. cwd holds project.yaml   -> cwd   (a project root)
+#   1. cwd holds .claude/ccgs/project.yaml   -> cwd   (a project root)
 #   2. cwd holds .claude/       -> cwd   (a project root not yet configured),
 #      unless cwd is itself named .claude: a stray .claude/.claude/ would
 #      make .claude/ a root, and the hooks would write .claude/production/
@@ -21,7 +21,7 @@
 # overriding a caller that legitimately means somewhere else.
 #
 # NOT an upward search: that resolves a nested project to its parent's config.
-if [ -f "project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
+if [ -f ".claude/ccgs/project.yaml" ] || { [ -d ".claude" ] && [ "${PWD##*/}" != ".claude" ]; }; then
   CCGS_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ] && case "${CLAUDE_PROJECT_DIR%/}" in */.claude|*\\.claude) false ;; *) true ;; esac; then
   CCGS_ROOT="$CLAUDE_PROJECT_DIR"
@@ -39,7 +39,7 @@ input=$(cat)
 
 # --- Parse JSON (jq with grep fallback) ---
 # project_dir first: current_dir follows every `cd`, so after `cd src` the
-# status line looked for project.yaml in src/ and fell back to guessing.
+# status line looked for .claude/ccgs/project.yaml in src/ and fell back to guessing.
 if command -v jq &>/dev/null; then
   model=$(echo "$input" | jq -r '.model.display_name // "Unknown"')
   used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
@@ -80,7 +80,7 @@ if [ -f "$yaml_helper" ]; then
 fi
 
 # --- Production stage ---
-# Priority 1: project.stage from project.yaml
+# Priority 1: project.stage from .claude/ccgs/project.yaml
 stage=""
 if [ -f "$project_yaml" ] && [ "$helper" = true ]; then
   stage=$(get_yaml_key "$project_yaml" project.stage 2>/dev/null)
@@ -107,7 +107,7 @@ if [ -z "$stage" ]; then
   [ -f "$concept_file" ] && has_concept=true
   [ -f "$systems_file" ] && has_systems=true
 
-  # Check if engine is configured (project.yaml first, fall back to technical-preferences.md)
+  # Check if engine is configured (.claude/ccgs/project.yaml first, fall back to technical-preferences.md)
   if [ -f "$project_yaml" ] && [ "$helper" = true ]; then
     engine_name=$(get_yaml_key "$project_yaml" engine.name 2>/dev/null)
     [ -n "$engine_name" ] && engine_configured=true
@@ -161,7 +161,7 @@ if [ -z "$stage" ]; then
 fi
 
 # --- Process posture (modes.rigor) ---
-# Locked to project.yaml (not locally overridable) with a plain terminal default
+# Locked to .claude/ccgs/project.yaml (not locally overridable) with a plain terminal default
 # in _yaml_helper_defaults, so a direct get_yaml_key read + default is exact.
 # Deliberately NOT resolve_setting: that assumes PWD is the project root, unsafe
 # here since the status line works from an absolute $cwd and never cd's.
@@ -182,7 +182,7 @@ if [ -f "$project_yaml" ] && [ "$helper" = true ]; then
   if [ -z "$rigor" ]; then
     # The default comes from its single source. This line hard-coded 'standard'
     # and kept printing it after 1.1.0 flipped the default to 'minimal' --
-    # 'Concept · standard' on the shipped project.yaml while every skill resolved
+    # 'Concept · standard' on the shipped .claude/ccgs/project.yaml while every skill resolved
     # minimal. Read in-process: a $(get_yaml_default ...) is a spawn every turn.
     while IFS= read -r _d; do
       case "$_d" in "modes.rigor::"*) rigor="${_d#modes.rigor::}"; break ;; esac
@@ -232,7 +232,7 @@ if [ -f "$project_yaml" ] && [ "$helper" = true ]; then
 fi
 if [ "$_wf" = "minimal" ]; then
   _total=0; _done=0
-  for _s in "$cwd"/production/epics/*/story-*.md; do
+  for _s in "$cwd"/docs/production/epics/*/story-*.md; do
     [ -f "$_s" ] || continue
     _total=$((_total+1))
     while IFS= read -r _line || [ -n "$_line" ]; do

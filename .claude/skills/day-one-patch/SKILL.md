@@ -8,6 +8,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Day-One Patch
 
 Every shipped game has a day-one patch. Planning it before launch day prevents
@@ -27,20 +29,20 @@ ships. It is a mini-sprint — not a hotfix, not a full sprint.
 - No refactoring — minimum viable change
 - Any fix that requires more than 4 hours of dev time belongs in patch 1.1, not day-one
 
-**Output:** `production/releases/day-one-patch-[version].md`
+**Output:** `docs/production/releases/day-one-patch-[version].md`
 
 ---
 
 ## Phase 1: Load Release Context
 
 Read:
-- `project.stage` in `project.yaml` (fallback `production/stage.txt`) — confirm project is in Release stage
-- The most recent file in `production/gate-checks/` — read the release gate verdict
-- `production/qa/bugs/*.md` — load all bugs with Status: Open or Fixed — Pending Verification
-- `production/sprints/` most recent — understand what shipped
-- `production/security/security-audit-*.md` most recent — check for any open security items
+- `project.stage` in `.claude/ccgs/project.yaml` (fallback `.claude/ccgs/stage.txt`) — confirm project is in Release stage
+- The most recent file in `docs/production/gate-checks/` — read the release gate verdict
+- `docs/production/qa/bugs/*.md` — load all bugs with Status: Open or Fixed — Pending Verification
+- `docs/production/sprints/` most recent — understand what shipped
+- `docs/production/security/security-audit-*.md` most recent — check for any open security items
 
-If the resolved stage (project.yaml → stage.txt) is not `Release` or `Polish`:
+If the resolved stage (.claude/ccgs/project.yaml → stage.txt) is not `Release` or `Polish`:
 > "Day-one patch prep is for Release-stage projects. Current stage: [stage]. This skill is not appropriate until you are approaching launch."
 
 **Check the premise, do not assume it.** This whole skill rests on there being a
@@ -48,7 +50,7 @@ gold master that already passed a release gate — that premise is what justifie
 its lightweight QA pass instead of a full one. So verify it rather than inferring
 it from the stage value:
 
-- **No file in `production/gate-checks/`**, or none recording a release-gate
+- **No file in `docs/production/gate-checks/`**, or none recording a release-gate
   verdict: report `Release gate: NOT ASSESSED — no gate-check record found`. Do
   not proceed silently. Say plainly that the reduced QA scope below is justified
   by a gate nobody can find, and ask whether to run `/gate-check` first or
@@ -108,7 +110,7 @@ Spawn `release-manager` via `Agent`. Ask them to produce a rollback plan coverin
 - Who is responsible for triggering the rollback
 - What player communication is required if a rollback occurs
 
-Present the rollback plan. Ask: "May I write this rollback plan to `production/releases/rollback-plan-[version].md`?"
+Present the rollback plan. Ask: "May I write this rollback plan to `docs/production/releases/rollback-plan-[version].md`?"
 
 Do not proceed to Phase 4 until the rollback plan is written.
 
@@ -131,7 +133,7 @@ For each code fix in the approved scope, spawn a focused implementation loop:
 
 3. On yes, hand each approved fix back to `lead-programmer` (a new `Agent` call
    carrying its plan) to implement it and run targeted tests with `commands.test`
-   from `project.yaml`, narrowed to the affected suite where the runner allows —
+   from `.claude/ccgs/project.yaml`, narrowed to the affected suite where the runner allows —
    never a runner line written from memory. If `commands.test` is unset, say so
    and record `Tests: NOT RUN — commands.test unset` for that bug.
 
@@ -154,7 +156,7 @@ Ask qa-lead to determine: **Is a targeted smoke check sufficient, or do any fixe
 
 Run the required QA scope:
 - **Targeted smoke check** — run `/smoke-check` (it takes no system argument)
-- **Broader regression** — run the affected systems' tests in the engine's test root (`tests/unit/` and `tests/integration/` Godot, `Assets/Tests/` Unity, `Source/<Module>/Private/Tests/` Unreal — `.claude/docs/directory-structure.md`) with `commands.test` from `project.yaml`, narrowed to the affected suites where the runner allows — never a runner line written from memory. If `commands.test` is unset, the broader regression is NOT ASSESSED; say so.
+- **Broader regression** — run the affected systems' tests in the engine's test root (`tests/unit/` and `tests/integration/` Godot, `Assets/Tests/` Unity, `Source/<Module>/Private/Tests/` Unreal — `.claude/docs/directory-structure.md`) with `commands.test` from `.claude/ccgs/project.yaml`, narrowed to the affected suites where the runner allows — never a runner line written from memory. If `commands.test` is unset, the broader regression is NOT ASSESSED; say so.
 
 QA verdict must be PASS or PASS WITH WARNINGS before proceeding. If FAIL: scope the failing fix out of the day-one patch and defer to 1.1.
 
@@ -207,7 +209,7 @@ one, which is the worst possible audience for an unverified change.
 
 ## Rollback Plan
 
-See: `production/releases/rollback-plan-[version].md`
+See: `docs/production/releases/rollback-plan-[version].md`
 
 **Trigger condition**: If [N] or more S1 bugs are reported within [X] hours of launch, execute rollback.
 **Rollback owner**: [user / producer]
@@ -230,7 +232,7 @@ See: `production/releases/rollback-plan-[version].md`
 [list player-facing changes in plain language]
 ```
 
-Ask: "May I write this patch record to `production/releases/day-one-patch-[version].md`?"
+Ask: "May I write this patch record to `docs/production/releases/day-one-patch-[version].md`?"
 
 ---
 
@@ -241,7 +243,7 @@ After the patch record is written:
 1. Run `/patch-notes` to generate the player-facing version of the patch notes
 2. Run `/bug-report verify [BUG-ID]` for each fixed bug after the patch is live
 3. Run `/bug-report close [BUG-ID]` for each verified fix
-4. Schedule a post-launch review 48–72 hours after launch using `/retrospective [milestone-name]` for the launch milestone in `production/milestones/`
+4. Schedule a post-launch review 48–72 hours after launch using `/retrospective [milestone-name]` for the launch milestone in `docs/production/milestones/`
 
 **If any S1 bugs remain open after the patch:**
 > "⚠️ S1 bugs remain open and were not patched. These are accepted risks. Document them in the rollback plan trigger conditions — if they occur at scale, rollback may be preferable to a follow-up patch."

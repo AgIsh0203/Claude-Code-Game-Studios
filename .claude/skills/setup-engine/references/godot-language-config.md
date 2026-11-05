@@ -57,7 +57,7 @@ and A3.
 
 > **This list and the `naming` enum table in Section 5.5.1 of the skill must
 > agree, value for value.** They are written into two different files —
-> `technical-preferences.md` from here, `project.yaml` from there — and Section
+> `technical-preferences.md` from here, `.claude/ccgs/project.yaml` from there — and Section
 > 5.5.3 compares them and **stops the skill** on any mismatch.
 
 **C#:**

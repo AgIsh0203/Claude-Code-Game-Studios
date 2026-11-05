@@ -17,7 +17,7 @@
 # design doc quietly escapes review:
 #
 #   1. git pathspecs are fnmatch WITHOUT FNM_PATHNAME, so `*` crosses `/`:
-#      'design/gdd/*.md' also matched design/gdd/reviews/*.md, pulling the
+#      'docs/design/gdd/*.md' also matched docs/design/gdd/reviews/*.md, pulling the
 #      review logs this script writes into the review scope. Fixed with
 #      :(glob) magic, which restricts * to one path segment.
 #   2. `git status --porcelain | awk '{print $NF}'` mangles any path containing
@@ -31,7 +31,7 @@ set -u
 
 cd "$(dirname "$0")/../.." || { echo "review-scope: cannot reach repo root" >&2; exit 1; }
 
-GDD_GLOB=':(glob)design/gdd/*.md'
+GDD_GLOB=':(glob)docs/design/gdd/*.md'
 
 # Single definition — this list is needed at three call sites and is exactly the
 # kind of thing that drifts when copied.
@@ -45,7 +45,7 @@ not_a_system_gdd() {
 }
 
 all_gdds() {
-    find design/gdd -maxdepth 1 -name '*.md' -type f 2>/dev/null | sed 's|\\|/|g' | sort \
+    find docs/design/gdd -maxdepth 1 -name '*.md' -type f 2>/dev/null | sed 's|\\|/|g' | sort \
     | while IFS= read -r f; do
         not_a_system_gdd "$f" || echo "$f"
       done
@@ -61,7 +61,7 @@ all_gdds() {
 # Not mtime: on a fresh clone every file carries the checkout time, so `ls -t`
 # here would order the reports arbitrarily. The date in the name is the only
 # ordering that survives being cloned.
-last_review=$(find design/gdd -maxdepth 1 -name 'gdd-cross-review-*.md' -type f 2>/dev/null \
+last_review=$(find docs/design/gdd -maxdepth 1 -name 'gdd-cross-review-*.md' -type f 2>/dev/null \
               | sed 's|\\|/|g' | sort | tail -1)
 
 if [ -z "$last_review" ]; then
@@ -89,7 +89,7 @@ if [ -n "$base" ]; then
         git status --porcelain -z -- "$GDD_GLOB" 2>/dev/null | tr '\0' '\n' | cut -c4-
     } | sed 's|\\|/|g' | sort -u )
 else
-    changed=$(find design/gdd -maxdepth 1 -name '*.md' -type f -newer "$last_review" 2>/dev/null \
+    changed=$(find docs/design/gdd -maxdepth 1 -name '*.md' -type f -newer "$last_review" 2>/dev/null \
               | sed 's|\\|/|g' | sort)
 fi
 

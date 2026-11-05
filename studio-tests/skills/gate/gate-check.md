@@ -10,11 +10,11 @@ on, runs the target gate's quality checks (loaded from one file under
 items, runs a director panel whose existence is set by `review_mode` and whose
 width is set by `workflow`, and produces a PASS / CONCERNS / NOT ASSESSED / FAIL
 verdict. On PASS with user confirmation it writes the new stage to
-`project.stage` in `project.yaml` and to the legacy `production/stage.txt`. It
+`project.stage` in `.claude/ccgs/project.yaml` and to the legacy `.claude/ccgs/stage.txt`. It
 governs all 6 phase transitions.
 
 The resolved config block at the top of the skill decides the tier. With no
-`project.yaml`, `modes.rigor` defaults to `minimal`, which resolves
+`.claude/ccgs/project.yaml`, `modes.rigor` defaults to `minimal`, which resolves
 `workflow: minimal` and `review_mode: solo` — so every fixture below pins the
 keys it depends on.
 
@@ -34,9 +34,9 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -46,8 +46,8 @@ Fixture defaults.
 ### Case 1: Happy Path — All Concept artifacts present, advancing to Systems Design
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full` and `modes.review_mode: solo`
-- `design/gdd/game-concept.md` exists with real content: core loop, target
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full` and `modes.review_mode: solo`
+- `docs/GDD.md` exists with real content: core loop, target
   audience, a pillars section, and a Visual Identity Anchor section holding a
   one-line visual rule and 2 supporting visual principles
 - No systems index and no art bible yet. `artifact-check.sh --phase concept`
@@ -61,7 +61,7 @@ Fixture defaults.
 **Expected behavior:**
 1. Skill loads only `.claude/skills/gate-check/references/gate-systems-design.md`
 2. Skill runs `bash .claude/scripts/artifact-check.sh --phase concept` to resolve
-   existence, then spot-reads `design/gdd/game-concept.md` to confirm it has real
+   existence, then spot-reads `docs/GDD.md` to confirm it has real
    content (not a template skeleton)
 3. Skill checks pillars, the Visual Identity Anchor, core loop and target audience
 4. Skill cannot find a review record, marks "Game concept has been reviewed"
@@ -69,32 +69,32 @@ Fixture defaults.
 5. Skill prints "Director Panel skipped — Solo mode. Gate verdict based on
    artifact and quality checks only."
 6. Skill outputs the Section 5 report, then the Chain-of-Verification line
-7. On PASS, skill asks "May I update `project.stage` in `project.yaml` to
-   'Systems Design' (and the legacy `production/stage.txt`)?"
+7. On PASS, skill asks "May I update `project.stage` in `.claude/ccgs/project.yaml` to
+   'Systems Design' (and the legacy `.claude/ccgs/stage.txt`)?"
 8. After the user confirms, skill writes both, re-reads both and confirms they agree
 
 **Assertions:**
 - [ ] Existence is resolved via `artifact-check.sh --phase concept`, not by opening files to see what exists
 - [ ] The ABSENT systems-index and art-bible catalog steps are not reported as blockers — the catalog's `required=` flag is an observation; the gate file's checklist is what this gate requires
-- [ ] `design/gdd/game-concept.md` is spot-read for real content before it is marked `[x]`
+- [ ] `docs/GDD.md` is spot-read for real content before it is marked `[x]`
 - [ ] Output includes a "Required Artifacts: [X/Y present]" section and a "Quality Checks: [X/Y passing]" section
 - [ ] The unconfirmed review item is asked about, not assumed PASS
 - [ ] Output includes a `### Verdict:` line with one of PASS / NOT ASSESSED / CONCERNS / FAIL
 - [ ] Output includes `Chain-of-Verification: [N] questions checked — verdict [unchanged | revised from X to Y]`
-- [ ] Skill asks before writing, and writes BOTH `project.yaml` (`project.stage`) and `production/stage.txt` only after confirmation
+- [ ] Skill asks before writing, and writes BOTH `.claude/ccgs/project.yaml` (`project.stage`) and `.claude/ccgs/stage.txt` only after confirmation
 - [ ] After writing, skill re-reads both files and reports any divergence instead of continuing
 - [ ] The next-step recommendation is `/map-systems` (no systems index exists yet), not `/create-architecture`
-- [ ] Variant: with `design/gdd/systems-index.md` already written (the catalog orders `/map-systems` in Concept), option [A] is `/design-system` for the first system in its design order instead
+- [ ] Variant: with `docs/GDD.md` already written (the catalog orders `/map-systems` in Concept), option [A] is `/design-system` for the first system in its design order instead
 
 ---
 
 ### Case 2: Failure Path — Missing required artifacts for Concept → Systems Design
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`
-- `design/gdd/game-concept.md` does NOT exist
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`
+- `docs/GDD.md` does NOT exist
 - No game pillars document exists
-- `design/gdd/` directory is empty or absent
+- `docs/design/gdd/` directory is empty or absent
 
 **Input:** `/gate-check systems-design`
 
@@ -108,30 +108,30 @@ Fixture defaults.
 
 **Assertions:**
 - [ ] Verdict is FAIL (not PASS, CONCERNS or NOT ASSESSED) — FAIL is evaluated first in the precedence order
-- [ ] Output explicitly names `design/gdd/game-concept.md` as missing
+- [ ] Output explicitly names `docs/GDD.md` as missing
 - [ ] Output includes a "Blockers" section with at least 1 item
 - [ ] Output recommends `/brainstorm` as the remediation action
-- [ ] Skill does NOT write `project.yaml` or `production/stage.txt` when the verdict is FAIL
-- [ ] Skill does NOT create `design/gdd/game-concept.md` or any other missing artifact to manufacture a PASS
+- [ ] Skill does NOT write `.claude/ccgs/project.yaml` or `.claude/ccgs/stage.txt` when the verdict is FAIL
+- [ ] Skill does NOT create `docs/GDD.md` or any other missing artifact to manufacture a PASS
 
 ---
 
 ### Case 3: No Argument — Auto-detect current stage
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full` and has no `project:` block;
-  `production/stage.txt` contains `Concept`, so the config block reports
-  `project.stage: Concept (production/stage.txt)` from the legacy mirror (with no
-  `project.yaml` at all the tier would resolve to `minimal`, whose gate target is
-  `design/game-brief.md`, not the concept doc below)
-- `design/gdd/game-concept.md` exists with content
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full` and has no `project:` block;
+  `.claude/ccgs/stage.txt` contains `Concept`, so the config block reports
+  `project.stage: Concept (.claude/ccgs/stage.txt)` from the legacy mirror (with no
+  `.claude/ccgs/project.yaml` at all the tier would resolve to `minimal`, whose gate target is
+  `docs/GDD.md`, not the concept doc below)
+- `docs/GDD.md` exists with content
 - No systems index yet
 
 **Input:** `/gate-check` (no argument)
 
 **Expected behavior:**
 1. Skill takes the current stage from the resolved config block (legacy
-   `production/stage.txt` mirror) / project-stage-detect heuristics
+   `.claude/ccgs/stage.txt` mirror) / project-stage-detect heuristics
 2. Skill confirms with `AskUserQuestion`: "Detected stage: **Concept**. Running
    gate for Concept → Systems Design transition. Is this correct?" with options
    `[A] Yes — run this gate` / `[B] No — pick a different gate`
@@ -139,7 +139,7 @@ Fixture defaults.
 4. Output header names the transition being validated
 
 **Assertions:**
-- [ ] Current stage comes from `production/stage.txt` (via the resolved config block) or project-stage-detect heuristics
+- [ ] Current stage comes from `.claude/ccgs/stage.txt` (via the resolved config block) or project-stage-detect heuristics
 - [ ] Skill confirms the detected transition with `AskUserQuestion` before running checks — this step is never skipped when no argument is given
 - [ ] The full list of six gates is shown only if the user picks `[B] No — pick a different gate`
 - [ ] Output header names both phases: "Gate Check: Concept → Systems Design"
@@ -149,9 +149,9 @@ Fixture defaults.
 ### Case 4: Edge Case — Manual check items: "I don't know" is not "not yet"
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full` and `modes.review_mode: solo`
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full` and `modes.review_mode: solo`
 - All required artifacts for Concept → Systems Design are present, and every
-  other check passes: `design/gdd/game-concept.md` holds real content with a
+  other check passes: `docs/GDD.md` holds real content with a
   pillars section, a core loop, a target audience, and a Visual Identity Anchor
   with a one-line visual rule and 2 supporting principles
 - No review record exists (the "Game concept has been reviewed" check cannot be auto-verified)
@@ -186,9 +186,9 @@ CONCERNS or FAIL (FAIL and CONCERNS are evaluated before NOT ASSESSED), with
 
 **Fixture (all sub-cases):**
 - All required artifacts for Concept → Systems Design are present
-- `design/gdd/game-concept.md` exists
-- Review mode comes from `modes.review_mode` in `project.yaml` (legacy mirror:
-  `production/review-mode.txt`) or an inline `--review` flag
+- `docs/GDD.md` exists
+- Review mode comes from `modes.review_mode` in `.claude/ccgs/project.yaml` (legacy mirror:
+  `.claude/ccgs/review-mode.txt`) or an inline `--review` flag
 
 **Case 5a — full panel:** `modes.review_mode: full`, `modes.workflow: full`
 
@@ -248,11 +248,11 @@ CONCERNS or FAIL (FAIL and CONCERNS are evaluated before NOT ASSESSED), with
 **Case 5d — lean mode, width from rigor:** the panel runs in `lean` (phase gates
 are what lean mode keeps); its width still follows `workflow`.
 
-- (i) `project.yaml` sets only `modes.rigor: standard` → the block resolves
+- (i) `.claude/ccgs/project.yaml` sets only `modes.rigor: standard` → the block resolves
   `review_mode: lean` and `workflow: standard`, both from `rigor:standard`
-- (ii) `project.yaml` sets `modes.rigor: minimal` and `modes.review_mode: lean`
+- (ii) `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and `modes.review_mode: lean`
   (explicit — `rigor: minimal` alone would resolve `solo` and skip the panel), plus
-  a filled `design/game-brief.md` → `workflow: minimal`
+  a filled `docs/GDD.md` → `workflow: minimal`
 
 **Assertions (5d):**
 - [ ] (i): exactly TD-PHASE-GATE and PR-PHASE-GATE are spawned, and the output reads "Panel: 2 of 4" and points to raising `modes.rigor` to `full` (that is where `workflow` came from)
@@ -264,14 +264,14 @@ are what lean mode keeps); its width still follows `workflow`.
 ### Case 6: Director context — a later phase's artifact is "not expected", never "none"
 
 **Fixture:**
-- `project.yaml` sets only `modes.rigor: standard` → `workflow: standard`,
+- `.claude/ccgs/project.yaml` sets only `modes.rigor: standard` → `workflow: standard`,
   `review_mode: lean`, so the panel is `technical-director` + `producer`
-- The engine is configured; `design/gdd/systems-index.md` enumerates 3 MVP
+- The engine is configured; `docs/GDD.md` enumerates 3 MVP
   systems, each with a GDD holding the 5 standard sections, each reviewed, and a
   `/review-all-gdds` report with verdict PASS; the systems index maps
   dependencies both ways and defines the MVP tier
 - No `docs/architecture/` at all (no architecture document, no ADRs), no
-  `production/sprints/`, no stories
+  `docs/production/sprints/`, no stories
 
 **Input:** `/gate-check technical-setup`
 
@@ -302,8 +302,8 @@ finding for the director (CONCERNS or NOT READY), and the verdict is not PASS.
 ### Case 7: CONCERNS override — the user accepts the risks; a FAIL is never overridden
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: standard` and `modes.review_mode: solo`
-- `design/gdd/game-concept.md` holds a core loop and a target audience, and the
+- `.claude/ccgs/project.yaml` sets `modes.workflow: standard` and `modes.review_mode: solo`
+- `docs/GDD.md` holds a core loop and a target audience, and the
   user confirms it was reviewed; it has no pillars section and no Visual Identity
   Anchor — both recommended at `standard`, so absent → CONCERNS
 
@@ -315,13 +315,13 @@ user says "advance anyway"
    the stage write is not offered by default
 2. On the user's request, skill lists both concerns and asks one question that
    both accepts them and asks to write: "…Accept these risks — [list] — and may
-   I update `project.stage` in `project.yaml` to 'Systems Design' (and the
-   legacy `production/stage.txt`)?"
+   I update `project.stage` in `.claude/ccgs/project.yaml` to 'Systems Design' (and the
+   legacy `.claude/ccgs/stage.txt`)?"
 3. On an explicit yes, the gate report gains an `### Accepted Risks` section
    (each concern, accepted by the user, dated) and both stage files are written
    and re-read
 
-**Variant (FAIL):** `design/gdd/game-concept.md` does not exist, the verdict is
+**Variant (FAIL):** `docs/GDD.md` does not exist, the verdict is
 FAIL, and the user says "advance anyway": the skill does not write the stage —
 no override turns a FAIL into a stage change — and names the blockers and
 `/brainstorm` instead.
@@ -336,11 +336,11 @@ no override turns a FAIL into a stage change — and names the blockers and
 ### Case 8: `/gate-check production` at `workflow: minimal` — the slice items drop
 
 **Fixture:**
-- `project.yaml` sets only `modes.rigor: minimal` → `workflow: minimal`,
+- `.claude/ccgs/project.yaml` sets only `modes.rigor: minimal` → `workflow: minimal`,
   `qa.level: minimal`, `review_mode: solo`
-- `design/game-brief.md` is filled, with a Build order of three MVP features
-- Three story files under `production/epics/core/`, one per feature
-- No `prototypes/`, no Vertical Slice, no sprint plan, no playtest report
+- `docs/GDD.md` is filled, with a Build order of three MVP features
+- Three story files under `docs/production/epics/core/`, one per feature
+- No `docs/prototypes/`, no Vertical Slice, no sprint plan, no playtest report
 
 **Input:** `/gate-check production`; the user answers yes to both current-build
 questions (the core loop is fun; one start → challenge → resolution cycle runs
@@ -369,8 +369,8 @@ loop is fun" → NOT ASSESSED (nobody has played the build).
 
 ### Case 9: A gate its tier file marks "not applicable"
 
-**Fixture:** `project.yaml` sets `modes.rigor: minimal` and `modes.review_mode:
-lean` (so a panel would otherwise run); a filled `design/game-brief.md`; no GDDs
+**Fixture:** `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and `modes.review_mode:
+lean` (so a panel would otherwise run); a filled `docs/GDD.md`; no GDDs
 
 **Input:** `/gate-check technical-setup`
 
@@ -390,16 +390,16 @@ before it is made.
 ### Case 10: Minimal-tier closing route — a built game with no brief is sent to `/reverse-document`
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: minimal` (so `workflow: minimal`) and
+- `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` (so `workflow: minimal`) and
   `engine.name: Godot`
 - `src/` holds 15 GDScript files (the code root already holds the game)
-- No `design/game-brief.md`, no `design/gdd/game-concept.md`, no GDDs
+- No `docs/GDD.md`, no `docs/GDD.md`, no GDDs
 - Variant: `src/` is empty (a new project)
 
 **Input:** `/gate-check systems-design`
 
 **Expected behavior:**
-1. The target artifact at `minimal` is `design/game-brief.md`; it is missing, so
+1. The target artifact at `minimal` is `docs/GDD.md`; it is missing, so
    the verdict is FAIL, naming the brief as the blocker
 2. The stage is not written
 3. The closing next-step widget skips the phase-ladder menus (`/map-systems`,
@@ -420,11 +420,11 @@ before it is made.
 
 ## Protocol Compliance
 
-- [ ] Asks before updating the stage ("May I update `project.stage` in `project.yaml` … (and the legacy `production/stage.txt`)?")
+- [ ] Asks before updating the stage ("May I update `project.stage` in `.claude/ccgs/project.yaml` … (and the legacy `.claude/ccgs/stage.txt`)?")
 - [ ] Presents the full checklist report before asking for write approval
 - [ ] Ends with a "Follow-Up Actions" section listing next steps per verdict
 - [ ] Never advances the stage without explicit user confirmation — never on NOT ASSESSED or FAIL, and on CONCERNS only after the user explicitly accepts the listed risks, which the report records under `### Accepted Risks`
-- [ ] Never auto-creates `production/stage.txt` or `project.yaml` without asking
+- [ ] Never auto-creates `.claude/ccgs/stage.txt` or `.claude/ccgs/project.yaml` without asking
 - [ ] Never creates missing artifacts to turn a FAIL into a PASS
 
 ---
@@ -434,7 +434,7 @@ before it is made.
 - The Production → Polish and Polish → Release gates are not covered here
   because they require complex multi-artifact setups (sprint plans, playtest
   data, QA sign-off); these are deferred to dedicated follow-up specs.
-- The `minimal`-tier Concept gate target (`design/game-brief.md` instead of
+- The `minimal`-tier Concept gate target (`docs/GDD.md` instead of
   `game-concept.md`) and `system_overrides` key validation are not covered.
 - The Vertical Slice validation block (Pre-Production → Production gate at
   `standard`/`full`) is not covered because it requires a playable build context

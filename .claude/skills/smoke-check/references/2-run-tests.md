@@ -15,7 +15,7 @@
 - Test runner not available here
 - Build check (the WAIVED path only)
 
-**Run `commands.test` from `project.yaml` when it is set** — it is the
+**Run `commands.test` from `.claude/ccgs/project.yaml` when it is set** — it is the
 project's own test command, the one `/setup-engine` wrote and CI runs. Use the
 per-engine default below only when `commands.test` is absent, and say in the
 report which of the two you ran. Wrap it in a timeout (`timeout 900 …`): **a
@@ -131,7 +131,7 @@ does not find a relative `<Project>.uproject` and exits 1 (`Project file not
 found`). `$(pwd -W 2>/dev/null || pwd)` gives the `C:/…` form in Git Bash and
 the plain path elsewhere; `$PWD` alone fails when `MSYS_NO_PATHCONV` is set.
 Either way, say in the report what you changed and tell the user to fix
-`commands.test` in `project.yaml` — never edit `project.yaml` without asking.
+`commands.test` in `.claude/ccgs/project.yaml` — never edit `.claude/ccgs/project.yaml` without asking.
 `<Project>.` in the filter is the root the tests are named under: the project
 name, or the distinct root `/setup-engine` chose when the project's name is
 also an engine area — read one test's name string under
@@ -157,7 +157,7 @@ Read the output, not the exit code: a failing test and a run that matched nothin
   available, below, and `NOT ASSESSED`.
 
 **Unknown engine / not configured:**
-"Engine not configured in `project.yaml` or
+"Engine not configured in `.claude/ccgs/project.yaml` or
 `.claude/docs/technical-preferences.md`. Run `/setup-engine` to specify the
 engine, then re-run `/smoke-check`."
 

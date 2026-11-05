@@ -7,7 +7,7 @@ a curated manifest of existing tests that guard critical paths and fixed bugs.
 `audit` maps each GDD acceptance criterion (scoped by workflow tier) to tests in
 `tests/unit/[system]/` and `tests/integration/[system]/` as COVERED / PARTIAL /
 MISSING / EXEMPT, raising MISSING formula or state-machine criteria to HIGH
-PRIORITY. `update` checks bugs in `production/qa/bugs/` with `Status: Closed` or
+PRIORITY. `update` checks bugs in `docs/production/qa/bugs/` with `Status: Closed` or
 `Status: Fixed` for a regression test (HAS / MISSING REGRESSION TEST) and appends
 new manifest entries without removing any. `report` is read-only. All modes
 check for coverage drift.
@@ -48,9 +48,9 @@ in its allowed tools) and no director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -61,7 +61,7 @@ Fixture defaults.
 
 **Fixture:**
 - `qa.level: standard`; workflow tier `full`; `project.stage: Polish`
-- `design/gdd/systems-index.md` lists `combat`; `design/gdd/combat.md` has 4
+- `docs/GDD.md` lists `combat`; `docs/design/gdd/combat.md` has 4
   acceptance criteria: a damage formula, a hit-stun state transition, a
   knockback rule and a HUD damage-number display
 - `tests/unit/combat/` has tests for hit-stun (all cases) and knockback (happy
@@ -95,9 +95,9 @@ Fixture defaults.
 
 **Fixture:**
 - `qa.level: standard`; `modes.workflow: standard` (pinned: unset resolves to minimal, where the next-sprint wording does not apply); `project.stage: Polish`
-- `production/sprints/sprint-007.md` is the current sprint plan; its one
-  `Status: Complete` story is `production/epics/inventory/story-003.md`
-- `production/qa/bugs/BUG-0012.md` has `Status: Closed`, system `inventory`
+- `docs/production/sprints/sprint-007.md` is the current sprint plan; its one
+  `Status: Complete` story is `docs/production/epics/inventory/story-003.md`
+- `docs/production/qa/bugs/BUG-0012.md` has `Status: Closed`, system `inventory`
 - No test under `tests/unit/inventory/` or `tests/integration/inventory/`
   references BUG-0012 or its failure scenario
 - `tests/regression-suite.md` has 6 registered tests
@@ -151,7 +151,7 @@ Fixture defaults.
 
 **Fixture:**
 - `qa.level: standard`; workflow tier `full`; `project.stage: Polish`
-- `design/gdd/` holds GDDs with acceptance criteria
+- `docs/design/gdd/` holds GDDs with acceptance criteria
 - `tests/unit/`, `tests/integration/` and `tests/regression/` contain no files
 - The user approves the manifest write
 
@@ -199,9 +199,9 @@ Fixture defaults.
 ### Case 6: Workflow Minimal With a Writing QA Level — "Next story" wording, gate requirement only at full
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: minimal` (no sprints), `qa.level: standard` (pinned so the suite is generated), `project.stage: Polish`
-- No sprint plan; `design/game-brief.md` exists. `production/epics/inventory/story-003.md` has `Status: Complete`, and `tests/` holds no test for the inventory system
-- `production/qa/bugs/BUG-0012.md` has `Status: Closed`, system `inventory`; no test references it
+- `.claude/ccgs/project.yaml`: `modes.workflow: minimal` (no sprints), `qa.level: standard` (pinned so the suite is generated), `project.stage: Polish`
+- No sprint plan; `docs/GDD.md` exists. `docs/production/epics/inventory/story-003.md` has `Status: Complete`, and `tests/` holds no test for the inventory system
+- `docs/production/qa/bugs/BUG-0012.md` has `Status: Closed`, system `inventory`; no test references it
 - `tests/regression-suite.md` exists with 6 registered tests and an old Last Updated date
 
 **Input:** `/regression-suite update`
@@ -246,7 +246,7 @@ Fixture defaults.
   asks A/B/C) is not tested.
 - Case 6 covers the workflow-`minimal` wording in `update` mode; at that tier
   `audit` maps coverage against the latest
-  `production/qa/smoke-*.md` report instead of GDD criteria, and stops if none
+  `docs/production/qa/smoke-*.md` report instead of GDD criteria, and stops if none
   exists; not separately tested.
 - Coverage-drift detection is exercised only through Case 6's completed story
   without tests and stale manifest date; the new-system and revised-GDD

@@ -11,23 +11,23 @@ skill is running during the silent read phase.
 Then read silently before presenting anything else.
 
 ### Existence check
-- `project.stage` in `project.yaml` (fallback `production/stage.txt`) — if either is present, use that value (authoritative phase)
-- `design/gdd/game-concept.md` (or, at the minimal tier, `design/game-brief.md`) — concept exists?
-- `design/gdd/systems-index.md` — systems index exists?
-- Count GDD files: `design/gdd/*.md` (excluding game-concept.md and systems-index.md)
+- `project.stage` in `.claude/ccgs/project.yaml` (fallback `.claude/ccgs/stage.txt`) — if either is present, use that value (authoritative phase)
+- `docs/GDD.md` (or, at the minimal tier, `docs/GDD.md`) — concept exists?
+- `docs/GDD.md` — systems index exists?
+- Count GDD files: `docs/design/gdd/*.md` (excluding game-concept.md and systems-index.md)
 - Count ADR files: `docs/architecture/adr-*.md`
-- Count story files: `production/epics/**/*.md` (excluding EPIC.md)
-- `project.yaml` (`engine.name`) / `.claude/docs/technical-preferences.md` — engine configured?
+- Count story files: `docs/production/epics/**/*.md` (excluding EPIC.md)
+- `.claude/ccgs/project.yaml` (`engine.name`) / `.claude/docs/technical-preferences.md` — engine configured?
 - `docs/engine-reference/` — engine reference docs present?
 - Glob `docs/adoption-plan-*.md` — note the filename of the most recent prior plan if any exist
 
 ### Infer phase (if no project.stage / stage.txt)
 Use the same heuristic as `/project-stage-detect`:
 - 10+ source files in the code root → Production
-- Stories in `production/epics/` → Pre-Production
+- Stories in `docs/production/epics/` → Pre-Production
 - ADRs exist → Technical Setup
 - systems-index.md exists → Systems Design
-- game-concept.md (or `design/game-brief.md`) exists → Concept
+- game-concept.md (or `docs/GDD.md`) exists → Concept
 - Nothing → Fresh (not a brownfield project — suggest `/start`)
 
 If the project appears fresh (no artifacts at all), use `AskUserQuestion`:
@@ -43,7 +43,7 @@ If the project appears fresh (no artifacts at all), use `AskUserQuestion`:
 
 1. Search the folder they named, if they named one; otherwise the whole
    project, skipping `.claude/`, `.git/`, `docs/engine-reference/`,
-   `studio-tests/`, `node_modules/` and the engine's build and
+   `.claude/ccgs/studio-tests/`, `node_modules/` and the engine's build and
    cache folders.
 2. Glob `**/*.md` there, then Grep the matches for the headings each artifact
    carries: a GDD has `## Overview` with `## Detailed Rules` or
@@ -52,10 +52,10 @@ If the project appears fresh (no artifacts at all), use `AskUserQuestion`:
    `## Elevator Pitch` or `## Game Pillars`; a brief `## Core loop` with
    `## MVP`.
 3. Show what was found, grouped by type, each with the place every skill reads
-   it from: GDD → `design/gdd/[name].md`; ADR →
+   it from: GDD → `docs/design/gdd/[name].md`; ADR →
    `docs/architecture/adr-NNNN-[name].md`; story →
-   `production/epics/[epic]/story-NNN-[name].md`; concept →
-   `design/gdd/game-concept.md`; brief → `design/game-brief.md`. If nothing
+   `docs/production/epics/[epic]/story-NNN-[name].md`; concept →
+   `docs/GDD.md`; brief → `docs/GDD.md`. If nothing
    matched, say so, name the folders and headings searched, and offer `/start`.
 4. Ask before moving anything — a move takes the file away from its old path,
    so it is a `file_deletions` decision: "May I move these [N] files to the

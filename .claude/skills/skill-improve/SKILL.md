@@ -3,14 +3,16 @@ name: skill-improve
 description: "Improve a skill via a test-fix-retest loop — static checks, targeted fixes, keep or revert on score change."
 argument-hint: "[skill-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/skill-improve/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/skill-improve/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -40,9 +42,9 @@ Verify `.claude/skills/[name]/SKILL.md` exists. If not, stop with:
 "Skill '[name]' not found."
 
 Glob `CCGS Skill Testing Framework/catalog.yaml`. When it exists, say so first:
-"`CCGS Skill Testing Framework/` was renamed `studio-tests/` in 1.2.0, and this
-skill reads only `studio-tests/`. Move any specs you wrote there; UPGRADING.md
-(v1.1.3 → v1.2.0, `studio-tests/`) says how." Then go on.
+"`CCGS Skill Testing Framework/` was renamed `.claude/ccgs/studio-tests/` in 1.2.0, and this
+skill reads only `.claude/ccgs/studio-tests/`. Move any specs you wrote there; UPGRADING.md
+(v1.1.3 → v1.2.0, `.claude/ccgs/studio-tests/`) says how." Then go on.
 
 ---
 
@@ -67,7 +69,7 @@ If baseline is 0 FAILs and 0 WARNs, note it and proceed to Phase 2b.
 
 ### Phase 2b: Category Baseline
 
-Look up the skill's `category:` field in `studio-tests/catalog.yaml`.
+Look up the skill's `category:` field in `.claude/ccgs/studio-tests/catalog.yaml`.
 
 If no `category:` field is found, display:
 "Category: not yet assigned — skipping category checks."

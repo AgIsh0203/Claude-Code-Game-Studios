@@ -52,7 +52,7 @@ never leaves.
    a step to be inferred.
 5. **Find the stories this will unblock, BEFORE the prompt in step 4.** Grep
    every story for a Blocked Status line —
-   `Grep pattern="Status\**:\**\s*Blocked" path="production/epics" glob="**/story-*.md" output_mode="files_with_matches"`,
+   `Grep pattern="Status\**:\**\s*Blocked" path="docs/production/epics" glob="**/story-*.md" output_mode="files_with_matches"`,
    which matches `> **Status**: Blocked` (the form `/create-stories` writes),
    `**Status:** Blocked` and `Status: Blocked` — and keep the files that name
    this ADR's id as the reason they are blocked. That pairing is what "blocked
@@ -61,9 +61,9 @@ never leaves.
    at (`point the story at ADR-NNNN`, the note for a `Deprecated` or
    `Superseded` ADR): it is still governed by the old ADR, and accepting the
    successor does not re-point it.
-   > **Stories live only under `production/epics/`.** A flat top-level stories
+   > **Stories live only under `docs/production/epics/`.** A flat top-level stories
    > directory does not exist and no skill creates one — never write or match a
-   > path outside `production/epics/`. `/dev-story` matches entries *by file
+   > path outside `docs/production/epics/`. `/dev-story` matches entries *by file
    > path*, so a story recorded under any other path silently fails to match and
    > never gets picked up.
 

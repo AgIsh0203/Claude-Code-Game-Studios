@@ -12,9 +12,9 @@ while the default `individual` runs gameplay-programmer alone (ai-programmer onl
 AI work is flagged) and announces that collapse before Phase 1. Uses
 `AskUserQuestion` at each phase transition, with an explicit [A]/[B]/[C] architecture
 gate before implementation. Every agent writes to a destination named in the skill's
-path table; the orchestrator's only write is the GDD, `design/gdd/[feature].md`,
+path table; the orchestrator's only write is the GDD, `docs/design/gdd/[feature].md`,
 from the game-designer's draft after a "May I write" approval. Produces a summary report with
-verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/code-review`,
+verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/gamedev-code-review`,
 `/balance-check`, and `/team-polish`.
 
 ---
@@ -24,25 +24,25 @@ verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/code-review`,
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings (Phase 1 through Phase 6 are all present)
 - [ ] Contains verdict keywords: COMPLETE, NEEDS WORK, BLOCKED
-- [ ] Contains "File Write Protocol" — sub-agent drafts and QA artifacts stay inside the bounded exception, and implementation files (code root, `assets/`) are outside it, asked for once as a set; the one orchestrator write is `design/gdd/[feature].md`, after its own "May I write" ask, because `design/` is outside the exception
-- [ ] Names a concrete destination per phase: `production/combat/[feature]-gdd-draft.md` (the game-designer's draft of `design/gdd/[feature].md`), `docs/architecture/[feature]-sketch.md`, `docs/architecture/[feature]-engine-notes.md`, `production/qa/test-cases/[feature]-cases.md`, `production/qa/bugs/BUG-[NNNN].md`
+- [ ] Contains "File Write Protocol" — sub-agent drafts and QA artifacts stay inside the bounded exception, and implementation files (code root, `Content/`) are outside it, asked for once as a set; the one orchestrator write is `docs/design/gdd/[feature].md`, after its own "May I write" ask, because `docs/design/` is outside the exception
+- [ ] Names a concrete destination per phase: `docs/production/combat/[feature]-gdd-draft.md` (the game-designer's draft of `docs/design/gdd/[feature].md`), `docs/architecture/[feature]-sketch.md`, `docs/architecture/[feature]-engine-notes.md`, `docs/production/qa/test-cases/[feature]-cases.md`, `docs/production/qa/bugs/BUG-[NNNN].md`
 - [ ] Defines a phase gate as a decision point the pipeline itself lists, whatever the `automation` mode, and claims no director spawn at phase gates
-- [ ] Has a next-step handoff at the end (references `/code-review`, `/balance-check`, `/team-polish`)
+- [ ] Has a next-step handoff at the end (references `/gamedev-code-review`, `/balance-check`, `/team-polish`)
 - [ ] Error Recovery Protocol section is present: verify a named artifact is on disk before treating a phase as done, surface BLOCKED immediately, always produce a partial report, full procedure (surface → assess → options → partial report) in `.claude/docs/error-recovery-protocol.md`
 - [ ] Uses `AskUserQuestion` at phase transitions for user approval before proceeding (`collaborative` mode)
 - [ ] Phase 0 resolves `team.size`, and the skill requires a one-line active-set announcement before Phase 1
 - [ ] Phase 0 resolves `workflow`, and Phase 1 sizes the GDD by it: `## Summary` plus all 8 sections at `full`, the 5 standard sections plus Formulas for numeric rules at `standard`, optional at `minimal` (the game brief is the record)
 - [ ] Phase 3 is explicitly marked as parallel (gameplay-programmer, ai-programmer, technical-artist, sound-designer)
-- [ ] Phase 2 includes spawning the primary engine specialist, derived from `engine.name` in `project.yaml` (Godot → `godot-specialist`), falling back to the Primary line in `.claude/docs/technical-preferences.md`
+- [ ] Phase 2 includes spawning the primary engine specialist, derived from `engine.name` in `.claude/ccgs/project.yaml` (Godot → `godot-specialist`), falling back to the Primary line in `.claude/docs/technical-preferences.md`
 - [ ] Team Composition lists all seven roles (game-designer, gameplay-programmer, ai-programmer, technical-artist, sound-designer, engine specialist, qa-tester)
 
 ---
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -53,8 +53,8 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: small`, `automation: collaborative`, `workflow: full`
-- `design/gdd/game-concept.md` exists and is populated
-- `engine.name` in `project.yaml` is Godot
+- `docs/GDD.md` exists and is populated
+- `engine.name` in `.claude/ccgs/project.yaml` is Godot
 - No existing GDD for the requested combat feature
 - The feature involves NPC reactions (enemies parry and riposte), so AI work is flagged
 
@@ -62,14 +62,14 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Before any spawn, one line announces the active set for `team.size: small` (the full Team Composition pipeline)
-2. Phase 1 — game-designer spawned; drafts the design to `production/combat/parry-riposte-gdd-draft.md` covering all 8 required sections (overview, player fantasy, rules, formulas, edge cases, dependencies, tuning knobs, acceptance criteria); `AskUserQuestion` presents the draft and asks "May I write the design document to `design/gdd/parry-riposte.md`?"; the orchestrator writes it on approval
+2. Phase 1 — game-designer spawned; drafts the design to `docs/production/combat/parry-riposte-gdd-draft.md` covering all 8 required sections (overview, player fantasy, rules, formulas, edge cases, dependencies, tuning knobs, acceptance criteria); `AskUserQuestion` presents the draft and asks "May I write the design document to `docs/design/gdd/parry-riposte.md`?"; the orchestrator writes it on approval
 3. Phase 2 — gameplay-programmer + ai-programmer spawned; produce architecture sketch with class structure, interfaces, and file list (`docs/architecture/parry-riposte-sketch.md`); then `godot-specialist` is spawned to validate idioms (`docs/architecture/parry-riposte-engine-notes.md`); engine specialist output incorporated
 4. `AskUserQuestion` "Architecture sketch complete. Approve to proceed with parallel implementation." with options [A] Proceed / [B] Revise the architecture first / [C] Stop here — implementation agents spawn only on [A]
-5. Phase 3 — gameplay-programmer, ai-programmer, technical-artist, sound-designer spawned in parallel; the three implementing agents return the files they will create or change, one `AskUserQuestion` asks for the whole set, and they write only after a yes; sound-designer drafts its event list to `production/combat/parry-riposte-audio-events.md`; all four return before Phase 4 begins
+5. Phase 3 — gameplay-programmer, ai-programmer, technical-artist, sound-designer spawned in parallel; the three implementing agents return the files they will create or change, one `AskUserQuestion` asks for the whole set, and they write only after a yes; sound-designer drafts its event list to `docs/production/combat/parry-riposte-audio-events.md`; all four return before Phase 4 begins
 6. Phase 4 — integration wires together all Phase 3 outputs; tuning knobs verified as data-driven; `AskUserQuestion` confirms integration before Phase 5
-7. Phase 5 — qa-tester spawned; writes test cases from acceptance criteria to `production/qa/test-cases/parry-riposte-cases.md`; verifies edge cases; performance impact checked against budget
+7. Phase 5 — qa-tester spawned; writes test cases from acceptance criteria to `docs/production/qa/test-cases/parry-riposte-cases.md`; verifies edge cases; performance impact checked against budget
 8. Phase 6 — summary report produced: design status, implementation status per team member, test results, open issues; verdict: COMPLETE
-9. Next steps listed: `/code-review`, `/balance-check`, `/team-polish`
+9. Next steps listed: `/gamedev-code-review`, `/balance-check`, `/team-polish`
 
 **Assertions:**
 - [ ] Active-set line naming `team.size: small` appears before the first agent is spawned
@@ -77,11 +77,11 @@ Fixture defaults.
 - [ ] The pre-Phase 3 gate offers [A] Proceed / [B] Revise / [C] Stop, and no implementation agent is spawned unless [A] is chosen
 - [ ] Phase 3 agents launched simultaneously — no sequential dependency between gameplay-programmer, ai-programmer, technical-artist, sound-designer
 - [ ] Engine specialist runs in Phase 2 before Phase 3 begins (output incorporated into architecture)
-- [ ] Each agent prompt names its destination from the path table; no sub-agent writes under `design/`
-- [ ] No implementation file (code root, `assets/`) is written before one ask covering the whole Phase 3 set
-- [ ] Nothing is written under `design/` before the Phase 1 "May I write" approval, and the orchestrator's only Write is `design/gdd/parry-riposte.md`
+- [ ] Each agent prompt names its destination from the path table; no sub-agent writes under `docs/design/`
+- [ ] No implementation file (code root, `Content/`) is written before one ask covering the whole Phase 3 set
+- [ ] Nothing is written under `docs/design/` before the Phase 1 "May I write" approval, and the orchestrator's only Write is `docs/design/gdd/parry-riposte.md`
 - [ ] Verdict COMPLETE present in final report
-- [ ] Next steps include `/code-review`, `/balance-check`, `/team-polish`
+- [ ] Next steps include `/gamedev-code-review`, `/balance-check`, `/team-polish`
 - [ ] Design doc covers all 8 required GDD sections
 
 ---
@@ -90,7 +90,7 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: small`, `automation: collaborative`
-- `design/gdd/parry-riposte.md` exists (Phase 1 already complete)
+- `docs/design/gdd/parry-riposte.md` exists (Phase 1 already complete)
 - ai-programmer agent returns BLOCKED because no AI system architecture ADR exists (ADR status is Proposed)
 
 **Input:** `/team-combat parry and riposte system`
@@ -139,7 +139,7 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: small`, `automation: collaborative`
-- `design/gdd/parry-riposte.md` exists, is complete, and flags enemy AI reactions
+- `docs/design/gdd/parry-riposte.md` exists, is complete, and flags enemy AI reactions
 - Architecture sketch has been approved with option [A]
 - Engine specialist has validated architecture
 
@@ -163,11 +163,11 @@ Fixture defaults.
 
 **Fixture (variant A — engine configured):**
 - Resolved config block: `team.size: small`, `automation: collaborative`
-- `engine.name` in `project.yaml` is Godot; engine version pinned in `docs/engine-reference/godot/VERSION.md`
+- `engine.name` in `.claude/ccgs/project.yaml` is Godot; engine version pinned in `docs/engine-reference/godot/VERSION.md`
 - Architecture sketch produced by gameplay-programmer is available, and the orchestrator has read it
 
 **Fixture (variant B — no engine configured):**
-- As variant A, except `engine.name` is unset in `project.yaml` and `.claude/docs/technical-preferences.md` has no Primary engine specialist (shows `[TO BE CONFIGURED]`)
+- As variant A, except `engine.name` is unset in `.claude/ccgs/project.yaml` and `.claude/docs/technical-preferences.md` has no Primary engine specialist (shows `[TO BE CONFIGURED]`)
 
 **Input:** `/team-combat parry and riposte system`
 
@@ -182,7 +182,7 @@ Fixture defaults.
 **Expected behavior (variant B):**
 1. Phase 2 — gameplay-programmer produces architecture sketch
 2. No engine specialist is spawned and no engine-notes file is expected
-3. The run output records `Engine validation: NOT ASSESSED — no engine configured (engine.name unset in project.yaml)`
+3. The run output records `Engine validation: NOT ASSESSED — no engine configured (engine.name unset in .claude/ccgs/project.yaml)`
 4. The architecture gate still runs; it presents the sketch without describing it as engine-validated
 5. When the run completes, the verdict is `COMPLETE — engine validation NOT ASSESSED (no engine configured)`
 
@@ -201,13 +201,13 @@ Fixture defaults.
 
 - [ ] At the default `team.size: individual`, the run opens with an `Active set (team.size: individual): gameplay-programmer` line and a `Not spawned this run:` line naming game-designer, technical-artist, sound-designer, the engine specialist and qa-tester (ai-programmer too unless AI work is flagged) — before any agent is spawned
 - [ ] In `collaborative` mode, `AskUserQuestion` used at each phase transition — user approves before pipeline advances
-- [ ] Sub-agent writes are delegated via Agent — drafts and QA artifacts inside the bounded exception, implementation files only after one ask for the whole set; the orchestrator writes only `design/gdd/[feature].md`, after a "May I write" approval
+- [ ] Sub-agent writes are delegated via Agent — drafts and QA artifacts inside the bounded exception, implementation files only after one ask for the whole set; the orchestrator writes only `docs/design/gdd/[feature].md`, after a "May I write" approval
 - [ ] Error Recovery Protocol followed: surface → assess → offer options → partial report
 - [ ] A phase whose named artifact is missing on disk is treated as failed, not done
 - [ ] Phase 3 agents launched in parallel per skill spec
 - [ ] Partial report always produced even when agents are BLOCKED
 - [ ] Verdict is one of COMPLETE / NEEDS WORK / BLOCKED
-- [ ] Next steps present at end of output: `/code-review`, `/balance-check`, `/team-polish`
+- [ ] Next steps present at end of output: `/gamedev-code-review`, `/balance-check`, `/team-polish`
 - [ ] At `team.size: studio`, the primary engine specialist's prompt allows its sub-specialists, Phase 5's qa-tester is told to find how the feature breaks rather than confirm it works, and the report says the adversarial pass ran; below `studio` neither addition appears
 
 ---

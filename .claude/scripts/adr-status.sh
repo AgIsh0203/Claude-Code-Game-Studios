@@ -5,7 +5,7 @@
 #
 # Replaces the hand-run ADR reads in /architecture-decision, /architecture-review,
 # /create-control-manifest, /create-epics, /create-stories, /dev-story,
-# /gate-check, /code-review, /story-readiness, /adopt, /create-architecture,
+# /gate-check, /gamedev-code-review, /story-readiness, /adopt, /create-architecture,
 # /propagate-design-change and /project-stage-detect. adr-dep-graph.sh still
 # owns the dependency graph and its cycles; this script reads the same
 # Depends On row the same way, so the two agree on every edge.

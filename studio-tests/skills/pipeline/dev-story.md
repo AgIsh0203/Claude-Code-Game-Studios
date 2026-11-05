@@ -3,7 +3,7 @@
 ## Skill Summary
 
 `/dev-story` implements one story. It finds the story (argument, else the active
-story in `production/session-state/active.md`), resolves the workflow tier for the
+story in `.claude/ccgs/session-state/active.md`), resolves the workflow tier for the
 story's system, verifies required inputs per tier (TR registry, governing ADR,
 control manifest), reads the ADR's `## Status`, `## Last Verified` and `## Date` in
 one grep — a `Proposed`, `Deprecated` or `Superseded` status blocks the story at
@@ -23,7 +23,7 @@ line), prints an "Implementation Complete" summary and overwrites the CHECKPOINT
 block in `active.md`, whose **Next step** follows the result: `/story-done` after
 Implementation Complete, `/dev-story` to resume after INCOMPLETE, the unblocking
 action after BLOCKED. It never closes the story it implements — `/story-done`
-does that; `/code-review` is recommended first at `standard`/`full`. At
+does that; `/gamedev-code-review` is recommended first at `standard`/`full`. At
 `qa.level: minimal` a Logic or Integration story's test requirement is waived and
 the waiver is printed; a UI or Visual/Feel story's screenshot is never waived, and
 the run-and-observe step runs at every level.
@@ -38,7 +38,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has ≥2 phase headings
 - [ ] Contains status keywords: BLOCKED, INCOMPLETE, In Progress, NOT VERIFIED
 - [ ] Contains "May I write" collaborative protocol language (its own asks for the files it writes; source and tests delegated to sub-agents)
-- [ ] Has a next-step handoff at the end (`/story-done`, with `/code-review` first at standard/full)
+- [ ] Has a next-step handoff at the end (`/story-done`, with `/gamedev-code-review` first at standard/full)
 - [ ] Documents per-tier input requirements (`full` / `standard` / `minimal`)
 - [ ] Notes that implementation is delegated to specialist agents (not done directly)
 
@@ -48,16 +48,16 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 
 No director gates. `/dev-story` spawns implementation agents (a primary programmer
 and the engine specialist), not director review gates, and does not resolve
-`review_mode`. Code review is the separate `/code-review` skill, named as the next
+`review_mode`. Code review is the separate `/gamedev-code-review` skill, named as the next
 step at `standard`/`full`.
 
 ---
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -67,18 +67,18 @@ Fixture defaults.
 ### Case 1: Happy Path — Logic story implemented at full workflow
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `specialists.code: godot-gdscript-specialist`,
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `specialists.code: godot-gdscript-specialist`,
   `modes.workflow: full`, `qa.level: standard`
-- `production/epics/combat/story-001-damage-calc.md`: `Status: Ready`, Layer Core,
+- `docs/production/epics/combat/story-001-damage-calc.md`: `Status: Ready`, Layer Core,
   Type Logic, `Requirement: TR-combat-001`, `ADR Governing Implementation: ADR-0003`,
   an `ADR Version` equal to ADR-0003's `## Last Verified` date, a `Manifest Version`
   equal to the manifest header date, Dependencies None, Test Evidence
   `tests/unit/combat/combat_damage_calc_test.gd`
 - `docs/architecture/tr-registry.yaml` has `TR-combat-001`; ADR-0003 exists and is
   Accepted; `docs/architecture/control-manifest.md` exists
-- `production/sprint-status.yaml` does not exist
+- `docs/production/sprint-status.yaml` does not exist
 
-**Input:** `/dev-story production/epics/combat/story-001-damage-calc.md`
+**Input:** `/dev-story docs/production/epics/combat/story-001-damage-calc.md`
 
 **Expected behavior:**
 1. Reads the story and greps `id: TR-combat-001` from the registry
@@ -88,14 +88,14 @@ Fixture defaults.
 4. Asks "May I mark this story In Progress?", naming the story file (and not the
    absent `sprint-status.yaml`); on yes sets the story's `Status:` to `In Progress`
    and its `Last Updated:`; prints "Sprint status not updated:
-   production/sprint-status.yaml absent"
+   docs/production/sprint-status.yaml absent"
 5. Spawns `gameplay-programmer` with `godot-gdscript-specialist` as secondary,
    briefing the story path, TR-ID lookup, the story's ADR Decision Summary and
    Implementation Notes inline, the Core layer rules, and the test file path
    with the test requirement
 6. Confirms the agent finished, runs the Godot parse check and reports its exit code
 7. Prints "Implementation Complete: [title]" with files, test function count,
-   Verification and a `Run result:` line; next step `/code-review` then `/story-done`
+   Verification and a `Run result:` line; next step `/gamedev-code-review` then `/story-done`
 8. Overwrites the `<!-- CHECKPOINT -->` block in `active.md`
 
 **Assertions:**
@@ -105,7 +105,7 @@ Fixture defaults.
 - [ ] The ADR guidance is passed inline, not as the ADR path
 - [ ] The brief names `tests/unit/combat/combat_damage_calc_test.gd` (`[system]_[feature]_test.gd`) and requires one test per acceptance criterion
 - [ ] The parse check's command and exit code are reported, and exactly one `Run result:` line appears
-- [ ] Story is NOT marked Complete; the handoff is `/code-review` then `/story-done`
+- [ ] Story is NOT marked Complete; the handoff is `/gamedev-code-review` then `/story-done`
 - [ ] The CHECKPOINT block in `active.md` is overwritten, not appended to
 
 ---
@@ -113,11 +113,11 @@ Fixture defaults.
 ### Case 2: Failure Path — Referenced ADR is Proposed
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: standard`
+- `.claude/ccgs/project.yaml`: `modes.workflow: standard`
 - Story file with `Status: Ready` and `ADR Governing Implementation: ADR-0005`
 - `docs/architecture/adr-0005-*.md` exists with `## Status` Proposed
 
-**Input:** `/dev-story production/epics/[epic-slug]/story-[NNN]-[slug].md`
+**Input:** `/dev-story docs/production/epics/[epic-slug]/story-[NNN]-[slug].md`
 
 **Expected behavior:**
 1. Skill reads the story and resolves the `standard` tier
@@ -141,13 +141,13 @@ The `full` column of the file-check table has its own STOP rule, so the
 `standard` case above does not exercise it.
 
 **Fixture:**
-- `project.yaml`: `modes.workflow: full`
+- `.claude/ccgs/project.yaml`: `modes.workflow: full`
 - Story file with `Status: Ready`, `ADR Governing Implementation: ADR-0005` and an
   `ADR Version` older than ADR-0005's `## Last Verified` date
 - `docs/architecture/adr-0005-*.md` exists with `## Status` Proposed;
   `docs/architecture/tr-registry.yaml` and the control manifest exist
 
-**Input:** `/dev-story production/epics/[epic-slug]/story-[NNN]-[slug].md`
+**Input:** `/dev-story docs/production/epics/[epic-slug]/story-[NNN]-[slug].md`
 
 **Expected behavior:**
 1. Skill greps ADR-0005's `^## (Status|Last Verified|Date)` and reads `Proposed`
@@ -165,7 +165,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 3: ADR changed since the story was written
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: full`
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `modes.workflow: full`
 - Story file with `Status: Ready`, Type Logic, `Requirement: TR-combat-002`,
   `ADR Governing Implementation: ADR-0004`, an `ADR Version` older than ADR-0004's
   `## Last Verified` date, a `Manifest Version` equal to the manifest header date,
@@ -175,7 +175,7 @@ The `full` column of the file-check table has its own STOP rule, so the
   exists
 - User picks `[A]` at the prompt
 
-**Input:** `/dev-story production/epics/[epic-slug]/story-[NNN]-[slug].md`
+**Input:** `/dev-story docs/production/epics/[epic-slug]/story-[NNN]-[slug].md`
 
 **Expected behavior:**
 1. `Grep "^## (Status|Last Verified|Date)"` on ADR-0004 reads Accepted and a
@@ -216,14 +216,14 @@ The `full` column of the file-check table has its own STOP rule, so the
 
 **Fixture:**
 - No argument is provided
-- `production/session-state/active.md` references an active story file
+- `.claude/ccgs/session-state/active.md` references an active story file
 - That story file exists with `Status: In Progress`
 
 **Input:** `/dev-story` (no argument)
 
 **Expected behavior:**
 1. Skill detects no argument is provided
-2. Skill reads `production/session-state/active.md`
+2. Skill reads `.claude/ccgs/session-state/active.md`
 3. Skill finds the active story reference
 4. Skill confirms with user: "Continuing work on [story title] — is that correct?"
 5. After confirmation, skill proceeds with that story
@@ -235,12 +235,12 @@ The `full` column of the file-check table has its own STOP rule, so the
 
 **Fixture (no active story):**
 - No argument is provided
-- `production/session-state/active.md` names no active story
-- `production/epics/` holds two stories with `Status: Ready` and one `In Progress`
+- `.claude/ccgs/session-state/active.md` names no active story
+- `docs/production/epics/` holds two stories with `Status: Ready` and one `In Progress`
 
 **Expected behavior (no active story):**
 1. Skill asks "Which story are we implementing?"
-2. It globs `production/epics/**/*.md` and lists the two `Status: Ready` stories
+2. It globs `docs/production/epics/**/*.md` and lists the two `Status: Ready` stories
 
 **Assertions (no active story):**
 - [ ] The question is asked instead of guessing a story
@@ -251,13 +251,13 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 5: Minimal tier, Logic story — tests waived
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
 - Story Type Logic with `Requirement: Brief MVP feature 1` and ADR fields
   `N/A (minimal — no ADRs)`
 - No TR registry, no ADRs, no control manifest
 - `docs/engine-reference/godot/VERSION.md` rates the pinned version HIGH risk
 
-**Input:** `/dev-story production/epics/[slug]/story-001-[slug].md`
+**Input:** `/dev-story docs/production/epics/[slug]/story-001-[slug].md`
 
 **Expected behavior:**
 1. Phase 2 does not stop or set BLOCKED for the absent registry, ADR or manifest
@@ -269,7 +269,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 5. Phase 5 is skipped; the summary prints "Test evidence: waived at
    `qa.level: minimal` — no test was required or written for this story."
 6. Run-and-observe still runs and prints one `Run result:` line
-7. Next step is `/story-done [story-path]` directly — no `/code-review`
+7. Next step is `/story-done [story-path]` directly — no `/gamedev-code-review`
 
 **Assertions:**
 - [ ] No STOP or BLOCKED for the absent TR registry, ADR or manifest at `minimal`
@@ -277,26 +277,26 @@ The `full` column of the file-check table has its own STOP rule, so the
 - [ ] The engine specialist is spawned because VERSION.md rates the risk HIGH
 - [ ] The test waiver is stated to the agent and printed in the summary; no tests row or "run your test suite" paragraph appears
 - [ ] A `Run result:` line is printed — run-and-observe is not waived
-- [ ] The handoff is `/story-done` with no `/code-review` step
+- [ ] The handoff is `/story-done` with no `/gamedev-code-review` step
 
 ---
 
 ### Case 5b: Minimal tier, UI story — the screenshot is still required
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
 - Story Type UI with `Requirement: Brief MVP feature 2` and ADR fields
   `N/A (minimal — no ADRs)`
 - No TR registry, no ADRs, no control manifest
 
-**Input:** `/dev-story production/epics/[slug]/story-002-[slug].md`
+**Input:** `/dev-story docs/production/epics/[slug]/story-002-[slug].md`
 
 **Expected behavior:**
 1. Spawns `ui-programmer`; the brief has no test item and no "Do not write a test
    file" sentence — the test requirement only ever covered Logic and Integration
 2. The summary prints "Retained screenshot required under
-   `production/qa/evidence/[story-slug]/` before this story can be closed…"
-3. Run-and-observe retains a screenshot under `production/qa/evidence/[story-slug]/`
+   `docs/production/qa/evidence/[story-slug]/` before this story can be closed…"
+3. Run-and-observe retains a screenshot under `docs/production/qa/evidence/[story-slug]/`
    and prints `Run result: OBSERVED — …` with the path
 4. Next step is `/story-done [story-path]`
 
@@ -304,14 +304,14 @@ The `full` column of the file-check table has its own STOP rule, so the
 - [ ] The UI story is not told its evidence is waived — neither in the brief nor as a "Test evidence: waived" line in the summary
 - [ ] The screenshot-required line is printed at `qa.level: minimal`
 - [ ] `Run result: OBSERVED` names a retained screenshot; a `NOT VERIFIED` result would be reported as a blocker, not a note
-- [ ] The handoff is `/story-done` with no `/code-review` step
+- [ ] The handoff is `/story-done` with no `/gamedev-code-review` step
 
 ---
 
 ### Case 6: Unity — code under `Assets/`, capture script asked for
 
 **Fixture:**
-- `project.yaml`: `engine.name: Unity`, `specialists.code: unity-specialist`,
+- `.claude/ccgs/project.yaml`: `engine.name: Unity`, `specialists.code: unity-specialist`,
   `specialists.ui: unity-ui-specialist`, `commands.smoke` and `commands.run` set,
   `modes.workflow: minimal`, `qa.level: minimal`
 - Story Type UI (an inventory screen) with `Requirement: Brief MVP feature 3` and
@@ -319,7 +319,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 - The project has `Assets/` and no `src/`; no `ScreenshotOnArg.cs` exists under `Assets/`
 - `docs/engine-reference/unity/VERSION.md` rates the pinned version HIGH risk
 
-**Input:** `/dev-story production/epics/[slug]/story-003-[slug].md`
+**Input:** `/dev-story docs/production/epics/[slug]/story-003-[slug].md`
 
 **Expected behavior:**
 1. Spawns `ui-programmer` with `unity-specialist` (`specialists.code`) and
@@ -344,12 +344,12 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 7: Engine unset — the code root is unresolved, nothing is written
 
 **Fixture:**
-- `project.yaml` has no `engine` block; `.claude/docs/technical-preferences.md`
+- `.claude/ccgs/project.yaml` has no `engine` block; `.claude/docs/technical-preferences.md`
   reads `Engine: [TO BE CONFIGURED]`
 - The project has none of `src/`, `Assets/` or `Source/`
 - `modes.workflow: minimal`; the story is Type Logic
 
-**Input:** `/dev-story production/epics/[slug]/story-001-[slug].md`
+**Input:** `/dev-story docs/production/epics/[slug]/story-001-[slug].md`
 
 **Expected behavior:**
 1. The code root cannot be resolved (`.claude/docs/code-root-resolution.md`: no
@@ -366,19 +366,19 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 8: Dependency marked Complete through option [C]
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
 - `story-003` lists `story-002` under Dependencies; `story-002` has
   `Status: In Progress`
 - At the dependency prompt the user picks `[C]`, then approves the update
 
-**Input:** `/dev-story production/epics/[slug]/story-003-[slug].md`
+**Input:** `/dev-story docs/production/epics/[slug]/story-003-[slug].md`
 
 **Expected behavior:**
 1. Reads story-002's `Status:` and asks: "Story '[story-003 title]' depends on
    '[story-002 title]' which is currently In Progress, not Complete. How do you
    want to proceed?" with `[A] Proceed anyway` / `[B] Stop` / `[C] The dependency
    is done but status wasn't updated — mark it Complete and continue`
-2. On [C] asks "May I update `production/epics/[slug]/story-002-[slug].md` Status
+2. On [C] asks "May I update `docs/production/epics/[slug]/story-002-[slug].md` Status
    to Complete?"
 3. On yes sets story-002's `Status:` to `Complete`, then continues with story-003
 
@@ -391,12 +391,12 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 9: The agent stops early — INCOMPLETE, and the checkpoint says resume
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
 - Story Type Logic, `Status: Ready`, ADR fields `N/A (minimal — no ADRs)`
 - The programmer agent reports that it hit its turn limit after adding
   `src/combat/damage.gd`, which calls a helper it never defined
 
-**Input:** `/dev-story production/epics/[slug]/story-001-[slug].md`
+**Input:** `/dev-story docs/production/epics/[slug]/story-001-[slug].md`
 
 **Expected behavior:**
 1. Phase 6 treats the story as INCOMPLETE: the headline says so, lists what exists,
@@ -414,13 +414,13 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 10: `full` tier, a story with no governing ADR (`ADR: N/A`)
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: full`
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `modes.workflow: full`
 - Story `Status: Ready`, Type Logic, `ADR Governing Implementation: N/A — no
   architectural pattern required` (what `/create-stories` writes for a
   requirement `/create-epics` flagged as untraced)
 - `docs/architecture/tr-registry.yaml` has the story's TR-ID; the control manifest exists
 
-**Input:** `/dev-story production/epics/[slug]/story-004-[slug].md`
+**Input:** `/dev-story docs/production/epics/[slug]/story-004-[slug].md`
 
 **Expected behavior:**
 1. Phase 2 reads the ADR field as `N/A`: the story references no ADR, so the `full`
@@ -438,7 +438,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 11: Two TR-IDs share a prefix — the registry lookup matches the exact id
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: full` (pinned: the TR registry
+- `.claude/ccgs/project.yaml`: `engine.name: Godot`, `modes.workflow: full` (pinned: the TR registry
   is required at `full`, so the lookup always runs)
 - `docs/architecture/tr-registry.yaml` lists `TR-combat-0010` first, then
   `TR-combat-001`, each as `- id: TR-combat-NNN` followed by its own `requirement:`
@@ -447,7 +447,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 - Story A: `Requirement: TR-combat-001`. Story B: `Requirement: TR-combat-0010`.
   Both `Status: Ready`, Type Logic, ADR governing field `N/A`, Dependencies None
 
-**Input:** `/dev-story production/epics/combat/story-A-[slug].md`, then the same for story B
+**Input:** `/dev-story docs/production/epics/combat/story-A-[slug].md`, then the same for story B
 
 **Expected behavior:**
 1. For story A the registry grep is anchored at the end of the line
@@ -475,8 +475,8 @@ The `full` column of the file-check table has its own STOP rule, so the
 - [ ] Code is written only under the resolved code root; an unresolved root writes nothing
 - [ ] Skipped phases and dropped briefing items are announced in the output
 - [ ] Never emits "Implementation Complete" for an agent that stopped early (INCOMPLETE)
-- [ ] Overwrites the CHECKPOINT block in `production/session-state/active.md`
-- [ ] Ends with next-step handoff: `/story-done` (`/code-review` first at standard/full)
+- [ ] Overwrites the CHECKPOINT block in `.claude/ccgs/session-state/active.md`
+- [ ] Ends with next-step handoff: `/story-done` (`/gamedev-code-review` first at standard/full)
 
 ---
 

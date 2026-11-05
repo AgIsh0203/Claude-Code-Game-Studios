@@ -45,9 +45,9 @@ this skill.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -57,8 +57,8 @@ Fixture defaults.
 ### Case 1: Happy Path — every requirement covered by an Accepted ADR
 
 **Fixture:**
-- `project.yaml` sets `modes.workflow: full`, `engine.name: Godot`, `engine.version: 4.6`
-- `design/gdd/systems-index.md` plus two system GDDs (`combat.md`, `inventory.md`),
+- `.claude/ccgs/project.yaml` sets `modes.workflow: full`, `engine.name: Godot`, `engine.version: 4.6`
+- `docs/GDD.md` plus two system GDDs (`combat.md`, `inventory.md`),
   each with a `## Summary` and technical requirements in its Detailed Rules
 - `docs/architecture/adr-0001-*.md` … `adr-0003-*.md`, each with `## Status: Accepted`,
   `## GDD Requirements Addressed`, `## Engine Compatibility` and `## ADR Dependencies`,
@@ -68,8 +68,8 @@ Fixture defaults.
 - `docs/architecture/architecture.md` exists and names every system in the index
 - No prior `docs/architecture/architecture-review-*.md` report
 - Pre-gate items all exist: `tests/unit/`, `tests/integration/` (the Godot test root),
-  `.github/workflows/tests.yml`, `design/accessibility-requirements.md`,
-  `design/ux/interaction-patterns.md`
+  `.github/workflows/tests.yml`, `docs/design/accessibility-requirements.md`,
+  `docs/design/ux/interaction-patterns.md`
 
 **Input:** `/architecture-review`
 
@@ -90,7 +90,7 @@ Fixture defaults.
 - [ ] The ADR dependency order is `adr-dep-graph.sh`'s `ORDER:` row, not hand-tracing, and puts `adr-0001` first; `NO_DEPS_SECTION` and `UNFILLED_DEPS` are empty, so the acyclic result is a clean graph rather than a structural gap
 - [ ] Verdict is PASS only because all requirements are covered by **Accepted** ADRs, no conflicts exist, and engine references agree
 - [ ] The report header has `Mode: full` and `Workflow: full` lines
-- [ ] The report includes the `review-receipts.sh hash` lines for every review input (ADRs, GDDs, TR registry, engine reference, `project.yaml`, the skill's own files), taken after the TR registry is written
+- [ ] The report includes the `review-receipts.sh hash` lines for every review input (ADRs, GDDs, TR registry, engine reference, `.claude/ccgs/project.yaml`, the skill's own files), taken after the TR registry is written
 - [ ] No file is written before the Phase 8 `AskUserQuestion` (`[A]` all three files / `[B]` report only at `docs/architecture/architecture-review-[date].md` / `[C]` nothing yet)
 - [ ] The closing widget offers `/gate-check pre-production`, because every pre-gate checklist item is ✅
 
@@ -155,7 +155,7 @@ Fixture defaults.
 - [ ] The overall verdict is NOT ASSESSED, not PASS: Phase 6 is part of the `full` scope and did not run, even though every requirement is covered (a CONCERNS or FAIL finding elsewhere would still outrank it)
 
 **Case 4b — ADRs present but none has a scannable section:**
-- As Case 1 (`modes.workflow: full` — at the default `minimal` tier, a `project.yaml` with no `modes` block,
+- As Case 1 (`modes.workflow: full` — at the default `minimal` tier, a `.claude/ccgs/project.yaml` with no `modes` block,
   the skill does not apply), except the three `docs/architecture/adr-*.md` files
   carry none of the six headings the Phase 1b scan looks for: `## Status`,
   `## Decision`, `## GDD Requirements Addressed`, `## Engine Compatibility`,
@@ -183,7 +183,7 @@ Fixture defaults.
 - [ ] Output includes an `### Engine Specialist Findings` section
 - [ ] No director gate (TD-ARCHITECTURE, LP-FEASIBILITY or any other gate ID) is spawned or mentioned
 
-**Case 5b — no engine configured:** as Case 1, except `engine.name` is unset in `project.yaml` and `technical-preferences.md` is still `[TO BE CONFIGURED]`
+**Case 5b — no engine configured:** as Case 1, except `engine.name` is unset in `.claude/ccgs/project.yaml` and `technical-preferences.md` is still `[TO BE CONFIGURED]`
 
 **Assertions (5b):**
 - [ ] No engine specialist is spawned
@@ -214,7 +214,7 @@ Fixture defaults.
   fixture-tested.
 - The `standard` tier's reduced scope (architecture doc + critical ADRs only) is
   not tested.
-- The default `minimal` tier (a `project.yaml` with no `modes` block), where the skill's scope table
+- The default `minimal` tier (a `.claude/ccgs/project.yaml` with no `modes` block), where the skill's scope table
   says the review does not apply, is not fixture-tested — every case pins
   `modes.workflow: full`. Nor is `workflow_overrides.system_overrides`: this skill
   does not request that key, so a per-system tier has no effect on it.

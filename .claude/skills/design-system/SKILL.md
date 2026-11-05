@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,docs.density,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
@@ -91,9 +93,9 @@ If two rows fit, spawn the union of their Primary agents and say why.
 
 If the session is interrupted (compaction, crash, new session):
 
-1. Read `production/session-state/active.md` — it records the current system and
+1. Read `.claude/ccgs/session-state/active.md` — it records the current system and
    which sections are complete
-2. Read `design/gdd/[system-name].md` — sections with real content are done;
+2. Read `docs/design/gdd/[system-name].md` — sections with real content are done;
    sections with `[To be designed]` still need work. Read it by section: find the
    headings with the Grep tool (pattern `^#`, content mode) and Read those
    ranges with offset and limit.
@@ -140,7 +142,7 @@ This is a long-running skill. After writing each section, check if the status li
 shows context at or above 70%. If so, append this notice to the response:
 
 > **Context is approaching the limit (≥70%).** Your progress is saved — all approved
-> sections are written to `design/gdd/[system-name].md`. When you're ready to continue,
+> sections are written to `docs/design/gdd/[system-name].md`. When you're ready to continue,
 > open a fresh Claude Code session and run `/design-system [system-name]` — it will
 > detect which sections are complete and resume from the next one.
 
@@ -148,7 +150,7 @@ shows context at or above 70%. If so, append this notice to the response:
 
 ## Recommended Next Steps
 
-- Run `/design-review design/gdd/[system-name].md` in a **fresh session** to validate the completed GDD independently
+- Run `/design-review docs/design/gdd/[system-name].md` in a **fresh session** to validate the completed GDD independently
 - Run `/consistency-check` to verify this GDD's values don't conflict with other GDDs
 - Run `/map-systems next` to move to the next highest-priority undesigned system
 - Run `/gate-check technical-setup` when all MVP GDDs are authored and reviewed

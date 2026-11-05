@@ -3,9 +3,11 @@ name: balance-check
 description: "Find balance outliers, broken progressions, degenerate strategies, economy imbalances in formulas and data. 'Check game balance'."
 argument-hint: "[system-name|path-to-data-file]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(bash "*/.claude/skills/balance-check/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/balance-check/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
 
@@ -62,27 +64,27 @@ If no argument, ask the user which system to check.
 
 ## Phase 2: Read Data Files
 
-Read relevant files from `assets/data/` and `design/balance/` for the identified domain.
+Read relevant files from `Content/data/` and `docs/design/balance/` for the identified domain.
 Note every file read — they will appear in the Data Sources section of the report.
 
 ---
 
 ## Phase 3: Read Design Document
 
-**Registry first.** If `design/registry/entities.yaml` exists, read it before the
+**Registry first.** If `docs/design/registry/entities.yaml` exists, read it before the
 GDD. Its `constants` and `formulas` sections hold the cross-GDD named values and
 output ranges — the balance targets — already distilled, each with a `source:`
 GDD and any `revised:` date:
 ```
-Grep pattern="^  - name:" path="design/registry/entities.yaml" output_mode="content" -A 6
+Grep pattern="^  - name:" path="docs/design/registry/entities.yaml" output_mode="content" -A 6
 ```
 Take the intended values from the registry for any constant or formula it lists
 (the `constants:` and `formulas:` blocks); these are the authoritative cross-doc
-figures a GDD must not contradict. **If `design/registry/entities.yaml` does not
+figures a GDD must not contradict. **If `docs/design/registry/entities.yaml` does not
 exist or has no entries** (it ships as an empty stub until `/design-system`
 populates it), skip this and use the GDD alone.
 
-Then read the GDD for the system from `design/gdd/` to understand intended design
+Then read the GDD for the system from `docs/design/gdd/` to understand intended design
 targets, tuning knobs, and expected value ranges — for anything the registry did
 not already supply. This is the baseline for "correct" behaviour. Read it by section:
 find the headings you need with the Grep tool (pattern `^#`, content mode) and
@@ -91,7 +93,7 @@ Read those ranges with offset and limit.
 If the data files are FOUND but neither source gives targets for this domain,
 the sections that judge against targets (Outliers Detected, and Progression
 Analysis where the domain has a curve) are `NOT ASSESSED — NO DATA`. Each one names what was missing — the
-GDD it looked for in `design/gdd/`, and whether the registry was absent or empty
+GDD it looked for in `docs/design/gdd/`, and whether the registry was absent or empty
 — and names `/design-system`, which writes both.
 
 ---
@@ -185,7 +187,7 @@ After presenting the report, use `AskUserQuestion`:
 - Prompt: "Balance check complete. What would you like to do next?"
 - Options:
   - `[A] Fix highest-priority issue now — walk me through it`
-  - `[B] Save report to design/balance/balance-check-[system]-[date].md`
+  - `[B] Save report to docs/design/balance/balance-check-[system]-[date].md`
   - `[C] Stop here — I'll review the findings manually`
 
 **Run as a subagent?** `game-designer` preloads this skill, and a subagent has
@@ -195,13 +197,13 @@ answer back.
 
 If [A]:
 - Ask which issue to address first (refer to the Recommendations table by priority row)
-- Guide the user to update the relevant data file in `assets/data/` or formula in `design/balance/`
+- Guide the user to update the relevant data file in `Content/data/` or formula in `docs/design/balance/`
 - After each fix, offer to re-run the relevant balance checks to verify no new outliers were introduced
 - If the fix changes a tuning knob defined in a GDD or referenced by an ADR, remind the user:
   > "This value is defined in a design document. Run `/propagate-design-change [path]` on the affected GDD to find downstream impacts before committing."
 
 If [B]:
-- Write the report to `design/balance/balance-check-[system]-[date].md` (create the directory if needed). Use the current date for [date] in YYYY-MM-DD format.
+- Write the report to `docs/design/balance/balance-check-[system]-[date].md` (create the directory if needed). Use the current date for [date] in YYYY-MM-DD format.
 - Confirm the file was written, then end with: "Re-run `/balance-check` after fixes to verify."
 
 If [C]:

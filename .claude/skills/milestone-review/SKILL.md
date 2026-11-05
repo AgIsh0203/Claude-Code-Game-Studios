@@ -3,9 +3,11 @@ name: milestone-review
 description: "Milestone progress review — completeness, quality metrics, risk, go/no-go recommendation. At checkpoints or before a deadline."
 argument-hint: "[milestone-name|current] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/milestone-review/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/milestone-review/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow`
 
@@ -60,10 +62,10 @@ Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
 
 ## Phase 1: Load Milestone Data
 
-Read the milestone definition from `production/milestones/` if it exists. If the
+Read the milestone definition from `docs/production/milestones/` if it exists. If the
 argument is `current`, use the most recently modified milestone file.
 
-> **No skill writes `production/milestones/`** — definitions are authored by hand
+> **No skill writes `docs/production/milestones/`** — definitions are authored by hand
 > from `.claude/docs/templates/milestone-definition.md`, so most projects have
 > none. When the directory is absent or empty, say so and review against the
 > sprint reports alone; do not fabricate a definition. Take care with `current`:
@@ -72,12 +74,12 @@ argument is `current`, use the most recently modified milestone file.
 > definition. Skip files ending `-review.md` when selecting.
 
 Gather the sprint reports for sprints within this milestone from
-`production/sprints/`. Establish the denominator (glob them, count **N**), then
+`docs/production/sprints/`. Establish the denominator (glob them, count **N**), then
 scan the sections a milestone review actually aggregates rather than reading each
 report whole:
 
 ```
-Grep pattern="^## (Sprint Goal|Capacity|Tasks|Carryover|Risks|Progress|Burndown Assessment|Emerging Risks|Definition of Done)" glob="production/sprints/sprint-*.md" output_mode="content" -A 12
+Grep pattern="^## (Sprint Goal|Capacity|Tasks|Carryover|Risks|Progress|Burndown Assessment|Emerging Risks|Definition of Done)" glob="docs/production/sprints/sprint-*.md" output_mode="content" -A 12
 ```
 
 > **These alternates are the headings `/sprint-plan` emits** (`## Sprint Goal`,
@@ -94,11 +96,11 @@ omits a sprint understates the work and the slippage both.
 
 **Blocked stories** — the Blocked table and the blocked story count passed to
 PR-MILESTONE — are not in the sprint reports' scanned sections. Read them where
-they are recorded: the `status: blocked` stories in `production/sprint-status.yaml`
+they are recorded: the `status: blocked` stories in `docs/production/sprint-status.yaml`
 (with their `blocker` field) and, for stories outside that sprint, one grep:
 
 ```
-Grep pattern="^> \*\*Status\*\*: Blocked|BLOCKED:" glob="production/epics/**/story-*.md" output_mode="content"
+Grep pattern="^> \*\*Status\*\*: Blocked|BLOCKED:" glob="docs/production/epics/**/story-*.md" output_mode="content"
 ```
 
 Each blocked story goes in the Blocked table under the feature its epic folder
@@ -111,8 +113,8 @@ blocked story count are `NOT ASSESSED — NO DATA`, not zero.
 ## Phase 2: Scan Codebase Health
 
 - Scan for `TODO`, `FIXME`, `HACK` markers that indicate incomplete work
-- Count open bugs by severity for Quality Metrics from `production/qa/bugs/` (one grep of the `**Severity**` and `**Status**` lines, as `/bug-triage` does); with no bug files, the bug lines are `NOT ASSESSED — NO DATA`, not zero
-- Check the risk register at `production/risk-register/` if it exists (hand-authored from `.claude/docs/templates/risk-register-entry.md`; no skill writes it, so absence is normal — note it rather than skipping risk assessment silently)
+- Count open bugs by severity for Quality Metrics from `docs/production/qa/bugs/` (one grep of the `**Severity**` and `**Status**` lines, as `/bug-triage` does); with no bug files, the bug lines are `NOT ASSESSED — NO DATA`, not zero
+- Check the risk register at `docs/production/risk-register/` if it exists (hand-authored from `.claude/docs/templates/risk-register-entry.md`; no skill writes it, so absence is normal — note it rather than skipping risk assessment silently)
 
 ---
 
@@ -237,7 +239,7 @@ Do not issue a GO against an OFF TRACK verdict; issue CONDITIONAL GO only if the
 
 Present the review to the user.
 
-Ask: "May I write this to `production/milestones/[milestone-name]-review.md`?"
+Ask: "May I write this to `docs/production/milestones/[milestone-name]-review.md`?"
 
 If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — milestone review saved.
 

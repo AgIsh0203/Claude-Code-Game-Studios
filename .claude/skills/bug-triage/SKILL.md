@@ -7,10 +7,12 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/bug-tr
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -22,7 +24,7 @@ action list. It distinguishes between **severity** (how bad is the impact?) and
 **priority** (how urgently must we fix it?), detects systemic trends, and
 ensures no critical bug is lost between sprints.
 
-**Output:** `production/qa/bug-triage-[date].md`
+**Output:** `docs/production/qa/bug-triage-[date].md`
 
 **When to run:**
 - Sprint start — assign open bugs to the new sprint or backlog
@@ -47,21 +49,21 @@ ensures no critical bug is lost between sprints.
 ### Step 2a — Discover bug files
 
 Glob for bug reports in priority order:
-1. `production/qa/bugs/*.md` — individual bug report files (preferred format)
-2. `production/qa/bugs.md` — single consolidated bug log (fallback)
-3. Any `production/qa/qa-plan-*.md` "Bugs Found" table (last resort)
+1. `docs/production/qa/bugs/*.md` — individual bug report files (preferred format)
+2. `docs/production/qa/bugs.md` — single consolidated bug log (fallback)
+3. Any `docs/production/qa/qa-plan-*.md` "Bugs Found" table (last resort)
 
 If no bug files found:
-> "No bug files found in `production/qa/bugs/`. If bugs are tracked in a
+> "No bug files found in `docs/production/qa/bugs/`. If bugs are tracked in a
 > different location, adjust the glob pattern. If no bugs exist yet, there is
 > nothing to triage."
 
-Stop and report. Do not proceed if no bugs exist. Verdict: **COMPLETE** — no bug files in `production/qa/bugs/`; nothing to triage.
+Stop and report. Do not proceed if no bugs exist. Verdict: **COMPLETE** — no bug files in `docs/production/qa/bugs/`; nothing to triage.
 
 **In `trend` mode, do not read full bug bodies.** Trend metrics (volume, severity
 mix, by-system, by-date) are computable from the header fields alone:
 ```
-Grep pattern="\*\*(Severity|Priority|Status|System|Category|Reported)\*\*" glob="production/qa/bugs/*.md" output_mode="content"
+Grep pattern="\*\*(Severity|Priority|Status|System|Category|Reported)\*\*" glob="docs/production/qa/bugs/*.md" output_mode="content"
 ```
 (Bug-report fields are bolded — `**Severity**:`, `- **System**:` — so match the
 `**field**` form, not a bare line-start `Field:`.)
@@ -72,7 +74,7 @@ story" — is a targeted story-status grep either way, not a bug-body read.)
 
 ### Step 2b — Load sprint context
 
-Read the most recently modified file in `production/sprints/` to understand:
+Read the most recently modified file in `docs/production/sprints/` to understand:
 - Current sprint number / name
 - Stories in scope (for assignment target)
 - Sprint capacity constraints (if noted)
@@ -239,7 +241,7 @@ Present the report in conversation. If any bug is a P4 candidate, first ask
 "Are these acceptable as Won't Fix?" and keep its disposition `P4 candidate`
 until the user answers. Then ask:
 
-"May I write this triage report to `production/qa/bug-triage-[date].md`?"
+"May I write this triage report to `docs/production/qa/bug-triage-[date].md`?"
 
 Write only after approval.
 

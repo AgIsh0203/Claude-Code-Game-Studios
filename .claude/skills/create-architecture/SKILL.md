@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash 
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,docs.density`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
@@ -105,7 +107,7 @@ This skill follows the collaborative design principle at every phase:
 6. **One write, after every section is approved** — the document is written once,
    at Phase 7; Phase 7b's Step 4 only updates its Document Status, after its own
    ask. Record each approved section's decisions in
-   `production/session-state/active.md` as you go, so a crash loses no decision.
+   `.claude/ccgs/session-state/active.md` as you go, so a crash loses no decision.
    A revision that Phase 7b forces is written the same way — once, after its
    re-drafted sections are approved — and an update (Phase 0e) writes only the
    sections it chose.
@@ -120,6 +122,6 @@ unsure, present 2-4 options with pros/cons before asking them to decide.
 - Run `/architecture-decision [title]` for each required ADR listed in Phase 6 — Foundation layer ADRs first
 - Run `/architecture-review` — bootstraps the Requirements Traceability Matrix and TR registry from the ADRs just written, and gives each provisional TR-ID its permanent one. Required before the Pre-Production gate.
 - Run `/test-setup` to scaffold `tests/unit/`, `tests/integration/`, CI workflow, and an example test (required for gate-check)
-- Run `/ux-design` to initialize `design/ux/interaction-patterns.md` and `design/accessibility-requirements.md` (required for gate-check)
+- Run `/ux-design` to initialize `docs/design/ux/interaction-patterns.md` and `docs/design/accessibility-requirements.md` (required for gate-check)
 - Run `/create-control-manifest` once the required ADRs are written to produce the layer rules manifest
 - Run `/gate-check pre-production` when all required ADRs, `/test-setup`, and `/ux-design` are complete

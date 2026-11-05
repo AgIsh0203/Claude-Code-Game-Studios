@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/.claude/skills/team-polish/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 # Team Polish
 
 If no argument is provided, output usage guidance and exit without spawning any agents:
@@ -92,19 +94,19 @@ Use the `Agent` tool to spawn each team member as a subagent:
 **End every agent prompt with a return contract:** "Write your full output to `[path]` — that named path is your write authorisation under the bounded exception below, so write it without a separate approval prompt. Return **only** (1) the path written, (2) a ≤5-bullet summary of decisions, (3) any BLOCKED/CONCERNS items, one line each. Do not restate the documents you read." Without it, an agent returns everything it read back into this session. **Implementation files are the exception:** an agent writing code or assets first returns the files it will create or change, and its return contract names them only after you have asked once for the set and the user said yes (File Write Protocol) — that answer, not the bounded exception, authorises those writes.
 
 **Substitute a real path for `[path]` — this skill's destination is
-`production/polish/`.** Name it per agent, one file each:
+`docs/production/polish/`.** Name it per agent, one file each:
 
 | Agent | Writes to |
 |---|---|
-| performance-analyst | `production/polish/[area]-report-[date].md` |
-| technical-artist | `production/polish/[area]-render-notes-[date].md` |
-| engine-programmer | `production/polish/[area]-engine-fixes-[date].md` |
-| tools-programmer | `production/polish/[area]-tool-fixes-[date].md` |
-| sound-designer | `production/polish/[area]-audio-notes-[date].md` |
-| qa-tester | `production/polish/[area]-verification-[date].md` |
+| performance-analyst | `docs/production/polish/[area]-report-[date].md` |
+| technical-artist | `docs/production/polish/[area]-render-notes-[date].md` |
+| engine-programmer | `docs/production/polish/[area]-engine-fixes-[date].md` |
+| tools-programmer | `docs/production/polish/[area]-tool-fixes-[date].md` |
+| sound-designer | `docs/production/polish/[area]-audio-notes-[date].md` |
+| qa-tester | `docs/production/polish/[area]-verification-[date].md` |
 
-> **Why `production/` and not `docs/`.** These are date-stamped measurements of
-> one run, the same shape as `production/qa/smoke-[date].md` — not durable
+> **Why `docs/production/` and not `docs/`.** These are date-stamped measurements of
+> one run, the same shape as `docs/production/qa/smoke-[date].md` — not durable
 > specifications like `docs/architecture/`. Keeping them beside the other
 > point-in-time process artifacts is what makes a later comparison possible.
 >
@@ -112,10 +114,10 @@ Use the `Agent` tool to spawn each team member as a subagent:
 > a concrete destination must be stated here or every run invents one. Unlike
 > `/team-qa` and `/team-narrative`, whose destinations are fixed by their
 > consumers, this location has no reader in the repo and was chosen deliberately.
-> **Nothing reads `production/polish/` yet** — say so when reporting, so the user
+> **Nothing reads `docs/production/polish/` yet** — say so when reporting, so the user
 > knows the report is a record rather than an input to a later gate.
 
-> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
+> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `docs/production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
 
 Launch independent agents in parallel where the pipeline allows it (e.g., Phases 3 and 4 can run simultaneously).
 
@@ -145,7 +147,7 @@ At `team.size: individual` that is every programmer item, since no programmer is
 active; at any size it includes an item owned by a programmer this pipeline does
 not name (e.g. gameplay-programmer for a gameplay-script hot spot). The report
 lists those items with their owners under
-"Optimisation list handed to `/dev-story`: `production/polish/[area]-report-[date].md`".
+"Optimisation list handed to `/dev-story`: `docs/production/polish/[area]-report-[date].md`".
 A metric they target that is over budget stays a known problem at Phase 6.
 
 ### Phase 3: Visual Polish (parallel with Phase 2)
@@ -218,7 +220,7 @@ Common blockers:
 All file writes (performance reports, test results, evidence docs) are delegated to
 sub-agents spawned via `Agent`. Those writes follow the **bounded exception**
 documented above under "Why this does not violate the Collaboration Protocol" —
-the path is one you named, the artifact is new under `production/`, `docs/` or
+the path is one you named, the artifact is new under `docs/production/`, `docs/` or
 `tests/`, and the phase is gated by an `AskUserQuestion`. A sub-agent does **not**
 prompt per write inside those bounds; outside them it must ask. The optimization
 and polish changes of Phases 2–4 edit existing code, shaders, audio or assets, so
@@ -235,6 +237,6 @@ A summary report covering: performance before/after metrics, visual polish chang
 
 - If READY FOR RELEASE: run `/release-checklist` for the final pre-release validation.
 - If NEEDS MORE WORK: schedule remaining issues in `/sprint-plan update` (at `workflow: minimal`, which has no sprints, add them to the brief's build order) and re-run `/team-polish` after fixes.
-- If NOT ASSESSED: supply what was missing — commit the unset `performance.*` budgets in `project.yaml` (`/settings`), or run the phases that did not run (raise `team.size`) — then re-run `/team-polish`. Do not treat the area as release-ready.
+- If NOT ASSESSED: supply what was missing — commit the unset `performance.*` budgets in `.claude/ccgs/project.yaml` (`/settings`), or run the phases that did not run (raise `team.size`) — then re-run `/team-polish`. Do not treat the area as release-ready.
 - If the report handed an optimisation list to `/dev-story`: implement those items there, then re-run `/team-polish` to measure the gain.
 - Run `/gate-check` for a formal phase gate verdict before handing off to release.

@@ -48,9 +48,9 @@ invoked.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -60,7 +60,7 @@ Fixture defaults.
 ### Case 1: Happy Path — Scan appends new findings to an existing register
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`; `modes.automation` unset (collaborative)
+- `.claude/ccgs/project.yaml`: `engine.name: godot`; `modes.automation` unset (collaborative)
 - `docs/tech-debt-register.md` is in the skill's Debt Register Format and has 2 `Open` rows:
   - TD-001 — Code Quality, Files `src/core/save_system.gd`: a `# HACK` workaround for a save-path bug. That `HACK` comment is no longer in the file
   - TD-002 — Code Quality, Files `src/gameplay/combat.gd`: the `# TODO` comments in that file
@@ -115,7 +115,7 @@ Fixture defaults.
 ### Case 3: Empty Code Root — NOT ASSESSED, not a clean scan
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`
 - `src/` exists but contains no source files
 - `docs/tech-debt-register.md` exists with 3 entries
 
@@ -137,7 +137,7 @@ Fixture defaults.
 ### Case 3b: Code Root Unresolved — NOT ASSESSED, nothing scanned on a guess
 
 **Fixture:**
-- `project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`
+- `.claude/ccgs/project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`
 - Both `src/` and `Source/` exist and hold source files, so the tree does not decide the root
 - `docs/tech-debt-register.md` exists with 3 entries
 
@@ -229,7 +229,7 @@ Fixture defaults.
 ### Case 5: Prioritize in Full Review Mode — Scored, re-sorted, approved
 
 **Fixture:**
-- `project.yaml`: `modes.review_mode: full`; `modes.workflow: standard` (pinned: unset resolves to minimal, which recommends the next build instead of a sprint)
+- `.claude/ccgs/project.yaml`: `modes.review_mode: full`; `modes.workflow: standard` (pinned: unset resolves to minimal, which recommends the next build instead of a sprint)
 - `docs/tech-debt-register.md` has 4 entries: TD-001 High/S, TD-002 Low/L, TD-003
   Critical/M, TD-004 Med/— (Effort not yet estimated)
 
@@ -258,9 +258,9 @@ Fixture defaults.
 ### Case 5b: Prioritize at Workflow Minimal — Build next, not a sprint
 
 **Fixture:**
-- `project.yaml`: `modes.rigor: minimal` (workflow resolves to `minimal`, which has no sprints); `modes.automation` unset (collaborative)
+- `.claude/ccgs/project.yaml`: `modes.rigor: minimal` (workflow resolves to `minimal`, which has no sprints); `modes.automation` unset (collaborative)
 - `docs/tech-debt-register.md` has 3 `Open` entries: TD-001 High/S, TD-002 Low/L, TD-003 Critical/M
-- `design/game-brief.md` exists with a build order of three numbered items; no `production/sprints/` folder
+- `docs/GDD.md` exists with a build order of three numbered items; no `docs/production/sprints/` folder
 
 **Input:** `/tech-debt prioritize`
 
@@ -274,7 +274,7 @@ Fixture defaults.
 
 **Assertions:**
 - [ ] The recommendation is "which to build next"; the word "sprint" is not used as the place to put the items
-- [ ] The next steps name the brief's build order (`design/game-brief.md`) as where the high-priority items go
+- [ ] The next steps name the brief's build order (`docs/GDD.md`) as where the high-priority items go
 - [ ] `/sprint-plan` is not recommended
 - [ ] Scoring, re-sort and the write-after-approval rule are the same as in Case 5
 - [ ] Verdict is COMPLETE

@@ -3,9 +3,11 @@ name: brainstorm
 description: "Guides the user through finding and choosing a game concept. Use when the user wants game ideas, a new concept, a game jam idea, or to explore other directions, including dropping the current idea and starting over."
 argument-hint: "[genre or theme hint, or 'open'] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, WebSearch, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/brainstorm/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/brainstorm/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,docs.density,workflow`
 
@@ -18,11 +20,11 @@ say that the settings were not read.
 Turns no idea, or a rough one, into a written design the next step builds from. How much it writes
 depends on `workflow`:
 
-- **`minimal`:** the Lean Brief flow below: a one-page `design/game-brief.md`, then stop. No
+- **`minimal`:** the Lean Brief flow below: a one-page `docs/GDD.md`, then stop. No
   discovery questions, pillars, director gates or `game-concept.md`, and do not load
   `references/full-concept.md`.
 - **`standard` or `full`:** read `references/full-concept.md` and follow it. It writes
-  `design/gdd/game-concept.md` from `.claude/docs/templates/game-concept.md`. Its gates follow
+  `docs/GDD.md` from `.claude/docs/templates/game-concept.md`. Its gates follow
   `.claude/docs/director-gates.md`; each director agent is given its own gate file,
   `.claude/docs/director-gates/<gate-id in lower case>.md` (`cd-pillars.md`,
   `ad-concept-visual.md`, `td-feasibility.md`, `pr-scope.md`), and you do not read those files
@@ -42,7 +44,7 @@ question is not an answer: ask again in plain text.
 
 A few exchanges, not fifteen: capture the thinking that carries the game on one page, then get to
 code. Write from the template `.claude/docs/templates/game-brief.md` (six required fields, three
-one-liners). If `design/game-brief.md` exists, read it and refine it instead of starting over.
+one-liners). If `docs/GDD.md` exists, read it and refine it instead of starting over.
 
 1. **Concept.** From the hint typed after the skill name (or one quick open question if there is
    none), propose **2 or 3 one-line concepts** (verb-first or a mashup of genre and theme), not
@@ -63,19 +65,19 @@ one-liners). If `design/game-brief.md` exists, read it and refine it instead of 
    - **Who it's for and what they feel**, **Art & audio direction**, **Reference game** (the
      closest shipped game, and the part of it the MVP keeps): one line each; offer, don't force.
 3. **Show the filled brief in full.** Then ask, as its own question: "Brief is ready. May I write it
-   to `design/game-brief.md`?" `Yes — write it` / `Revise a field first`. Write only on an explicit
+   to `docs/GDD.md`?" `Yes — write it` / `Revise a field first`. Write only on an explicit
    yes to this question; agreeing to a cut or saying "go on" is not a yes to the write. On a
    revision, change the named field, show it before and after, and ask again. Then write
-   `design/game-brief.md`, creating folders as needed. Never write `design/gdd/game-concept.md`
+   `docs/GDD.md`, creating folders as needed. Never write `docs/GDD.md`
    at this tier.
-4. **Next steps.** Read `engine.name` in `project.yaml`:
+4. **Next steps.** Read `engine.name` in `.claude/ccgs/project.yaml`:
    1. `/setup-engine`: configure the engine. List it **only** when `engine.name` is absent or
       empty: on the minimal path it usually ran before this skill.
    2. `/create-stories`: turn the MVP list into stories. At `minimal` there is no separate
       `/create-epics` or `/sprint-plan`; the build order is the plan.
    3. `/dev-story`: the first line of game code.
 
-   Then one summary line: the pitch, the number of MVP items, and `design/game-brief.md`. End with
+   Then one summary line: the pitch, the number of MVP items, and `docs/GDD.md`. End with
    the line `Verdict: COMPLETE — game brief written; next stop is code.`
 
 If the user stops before the write, say the brief was not written, so it lives only in this

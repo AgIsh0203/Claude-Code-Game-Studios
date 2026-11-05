@@ -17,9 +17,9 @@
 **Checked by**: gate-check skill
 
 ### Required Artifacts: [X/Y present]
-- [x] design/gdd/game-concept.md (design/game-brief.md at `minimal`) — exists, 2.4KB
+- [x] docs/GDD.md (docs/GDD.md at `minimal`) — exists, 2.4KB
 - [ ] docs/architecture/ — MISSING (no ADRs found)
-- [x] production/sprints/ — exists, 1 sprint plan
+- [x] docs/production/sprints/ — exists, 1 sprint plan
 
 ### Quality Checks: [X/Y passing]
 - [x] GDD has 8/8 required sections

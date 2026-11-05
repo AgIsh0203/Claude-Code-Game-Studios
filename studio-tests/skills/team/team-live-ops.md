@@ -10,10 +10,10 @@ active set before Phase 1 — `individual` spawns live-ops-designer + economy-de
 `small` adds analytics-engineer + community-manager, `studio` adds writer +
 narrative-director. Phases 3 and 4 (economy design and analytics) run
 simultaneously. Phase 7 checks the economy design against
-`design/live-ops/ethics-policy.md`. Sub-agents write working artifacts under
-`production/`; the orchestrator compiles the final documents and writes them to
-`design/live-ops/seasons/` only after asking "May I write the season plan to
-`design/live-ops/…`?" via `AskUserQuestion`. Ends with a consolidated season plan
+`docs/design/live-ops/ethics-policy.md`. Sub-agents write working artifacts under
+`docs/production/`; the orchestrator compiles the final documents and writes them to
+`docs/design/live-ops/seasons/` only after asking "May I write the season plan to
+`docs/design/live-ops/…`?" via `AskUserQuestion`. Ends with a consolidated season plan
 requiring user approval before handoff to production.
 
 ---
@@ -23,24 +23,24 @@ requiring user approval before handoff to production.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED
-- [ ] Output Documents section: the orchestrator asks via `AskUserQuestion` "May I write the season plan to `design/live-ops/…`?" before writing, because `design/` is outside the bounded write exception
-- [ ] Has a File Write Protocol section limiting sub-agent writes to the bounded exception (named path, new artifact under `production/`, `docs/` or `tests/`, gated phase) — a sub-agent asks outside those bounds
-- [ ] Names a destination per agent under `production/live-ops/[season-slug]/` — `brief.md`, `narrative.md`, `economy.md`, `analytics.md`, `narrative-text.md`, `copy.md`, `comms.md` — one file per agent
+- [ ] Output Documents section: the orchestrator asks via `AskUserQuestion` "May I write the season plan to `docs/design/live-ops/…`?" before writing, because `docs/design/` is outside the bounded write exception
+- [ ] Has a File Write Protocol section limiting sub-agent writes to the bounded exception (named path, new artifact under `docs/production/`, `docs/` or `tests/`, gated phase) — a sub-agent asks outside those bounds
+- [ ] Names a destination per agent under `docs/production/live-ops/[season-slug]/` — `brief.md`, `narrative.md`, `economy.md`, `analytics.md`, `narrative-text.md`, `copy.md`, `comms.md` — one file per agent
 - [ ] Defines a phase gate as a decision point the pipeline itself lists, whatever the `automation` mode, and claims no director spawn at phase gates
 - [ ] Has a next-step handoff at the end referencing `/design-review`, `/sprint-plan`, and `/team-release`
 - [ ] Uses `AskUserQuestion` at phase transitions to capture user approval before proceeding (`collaborative` mode)
 - [ ] Phase 0 resolves `team.size`, and the skill requires a one-line active-set announcement before Phase 1
 - [ ] States explicitly that Phases 3 and 4 can run simultaneously (parallel spawning)
 - [ ] Error recovery section present: verify a named artifact is on disk, surface BLOCKED immediately, always produce a partial report, end with BLOCKED if unresolvable
-- [ ] Output documents section specifies paths under `design/live-ops/seasons/`
+- [ ] Output documents section specifies paths under `docs/design/live-ops/seasons/`
 
 ---
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -51,8 +51,8 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`, `workflow: standard` (pinned: unset resolves to minimal, whose next steps use the brief's build order instead of `/sprint-plan`; Case 6 covers that)
-- `design/live-ops/economy-rules.md` exists with current economy configuration
-- `design/live-ops/ethics-policy.md` exists with the project ethics policy
+- `docs/design/live-ops/economy-rules.md` exists with current economy configuration
+- `docs/design/live-ops/ethics-policy.md` exists with the project ethics policy
 - Game concept document exists at its standard path
 - No existing season documents for the new season name being planned
 
@@ -63,21 +63,21 @@ Fixture defaults.
 2. Phase 1: Spawns `live-ops-designer` via Agent; receives season brief with scope, content list, and retention mechanic; presents to user
 3. AskUserQuestion: user approves Phase 1 output before Phase 2 begins
 4. Phase 2: Spawns `narrative-director` via Agent; reads the Phase 1 season brief; produces narrative framing document (theme, story hook, lore connections); presents to user
-5. Phase 3 and 4 (parallel): Spawns `economy-designer` and `analytics-engineer` simultaneously via two Agent calls before waiting for either result; economy-designer reads `design/live-ops/economy-rules.md`
+5. Phase 3 and 4 (parallel): Spawns `economy-designer` and `analytics-engineer` simultaneously via two Agent calls before waiting for either result; economy-designer reads `docs/design/live-ops/economy-rules.md`
 6. Phase 5: Spawns `narrative-director` and `writer` in parallel to produce in-game narrative text and player-facing copy; both read Phase 2 narrative framing doc
 7. Phase 6: Spawns `community-manager` via Agent; reads season brief, economy design, and narrative framing; produces communication calendar with draft copy
-8. Phase 7: Collects all phase outputs; presents consolidated season plan summary including economy health check, analytics readiness, ethics review against `design/live-ops/ethics-policy.md`, and open questions
+8. Phase 7: Collects all phase outputs; presents consolidated season plan summary including economy health check, analytics readiness, ethics review against `docs/design/live-ops/ethics-policy.md`, and open questions
 9. AskUserQuestion: user approves the full season plan
-10. Orchestrator compiles the three documents and asks via AskUserQuestion "May I write the season plan to `design/live-ops/seasons/…`?" covering `S2_[name].md`, `S2_[name]_analytics.md` and `S2_[name]_comms.md`; writes only on approval
+10. Orchestrator compiles the three documents and asks via AskUserQuestion "May I write the season plan to `docs/design/live-ops/seasons/…`?" covering `S2_[name].md`, `S2_[name]_analytics.md` and `S2_[name]_comms.md`; writes only on approval
 11. Verdict: COMPLETE — season plan produced and handed off for production
 
 **Assertions:**
 - [ ] Active-set line naming `team.size: studio` appears before the first agent is spawned
 - [ ] All 7 phases execute in order; Phase 3 and 4 are issued as parallel Agent calls
 - [ ] Phase 7 consolidated summary includes all six sections (season brief, narrative framing, economy design, analytics plan, content inventory, communication calendar)
-- [ ] Ethics review section in Phase 7 explicitly references `design/live-ops/ethics-policy.md`
-- [ ] Three output documents written to `design/live-ops/seasons/` with the `S[N]_[name].md`, `S[N]_[name]_analytics.md`, `S[N]_[name]_comms.md` naming convention
-- [ ] The `design/live-ops/` documents are written by the orchestrator only after its `AskUserQuestion` approval — no sub-agent writes under `design/`
+- [ ] Ethics review section in Phase 7 explicitly references `docs/design/live-ops/ethics-policy.md`
+- [ ] Three output documents written to `docs/design/live-ops/seasons/` with the `S[N]_[name].md`, `S[N]_[name]_analytics.md`, `S[N]_[name]_comms.md` naming convention
+- [ ] The `docs/design/live-ops/` documents are written by the orchestrator only after its `AskUserQuestion` approval — no sub-agent writes under `docs/design/`
 - [ ] Verdict: COMPLETE appears in final output, only after the user approves the season plan
 - [ ] Next steps reference `/design-review`, `/sprint-plan`, and `/team-release`
 
@@ -87,7 +87,7 @@ Fixture defaults.
 
 **Fixture:**
 - All standard live-ops fixtures present (economy-rules.md, ethics-policy.md)
-- `design/live-ops/ethics-policy.md` contains the rule "No randomized premium rewards without published drop rates and a pity timer"
+- `docs/design/live-ops/ethics-policy.md` contains the rule "No randomized premium rewards without published drop rates and a pity timer"
 - economy-designer (Phase 3) proposes a "Mystery Chest" mechanic with randomized premium rewards, unpublished drop rates and no pity timer
 
 **Input:** `/team-live-ops "Season 3: Shadow Tournament"`
@@ -154,19 +154,19 @@ Fixture defaults.
 
 ---
 
-### Case 5: Missing Ethics Policy — `design/live-ops/ethics-policy.md` does not exist
+### Case 5: Missing Ethics Policy — `docs/design/live-ops/ethics-policy.md` does not exist
 
 **Fixture:**
-- `design/live-ops/economy-rules.md` exists
-- `design/live-ops/ethics-policy.md` does NOT exist
+- `docs/design/live-ops/economy-rules.md` exists
+- `docs/design/live-ops/ethics-policy.md` does NOT exist
 - All other fixtures are present
 
 **Input:** `/team-live-ops "Season 4: Desert Heat"`
 
 **Expected behavior:**
 1. Phases 1–6 proceed normally
-2. Phase 7: Orchestrator attempts to run ethics review; detects that `design/live-ops/ethics-policy.md` is missing
-3. Phase 7 summary includes a gap flag: "ETHICS REVIEW SKIPPED: `design/live-ops/ethics-policy.md` not found. Economy design was not reviewed against an ethics policy. Recommend creating one before production begins."
+2. Phase 7: Orchestrator attempts to run ethics review; detects that `docs/design/live-ops/ethics-policy.md` is missing
+3. Phase 7 summary includes a gap flag: "ETHICS REVIEW SKIPPED: `docs/design/live-ops/ethics-policy.md` not found. Economy design was not reviewed against an ethics policy. Recommend creating one before production begins."
 4. Skill still completes the season plan and reaches COMPLETE verdict, but the gap is prominently flagged in the output and in the season design document
 5. Next steps include a recommendation to create the ethics policy document
 
@@ -176,7 +176,7 @@ Fixture defaults.
 - [ ] Phase 7 summary explicitly notes that ethics review was skipped and why
 - [ ] Verdict: COMPLETE is still reachable despite the missing file
 - [ ] Gap flag appears in the season design output document (not just in conversation)
-- [ ] Next steps recommend creating `design/live-ops/ethics-policy.md`
+- [ ] Next steps recommend creating `docs/design/live-ops/ethics-policy.md`
 
 ---
 
@@ -184,8 +184,8 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `workflow: minimal` (from `modes.rigor: minimal`), `team.size: studio` (pinned so the full pipeline runs), `automation: collaborative`
-- `design/game-brief.md` exists with a build order; no `production/sprints/` folder
-- `design/live-ops/economy-rules.md` and `design/live-ops/ethics-policy.md` exist, and the economy design raises no ethics flag
+- `docs/GDD.md` exists with a build order; no `docs/production/sprints/` folder
+- `docs/design/live-ops/economy-rules.md` and `docs/design/live-ops/ethics-policy.md` exist, and the economy design raises no ethics flag
 
 **Input:** `/team-live-ops "Season 5: Harvest Moon"`
 
@@ -199,7 +199,7 @@ Fixture defaults.
 - [ ] The scheduling step says to add the season's content work to the brief's build order
 - [ ] `/sprint-plan` is not recommended
 - [ ] `/design-review` and `/team-release` are still listed
-- [ ] The rest of the run (active-set line, parallel Phases 3 and 4, ethics review, "May I write" before the `design/live-ops/seasons/` documents) is unchanged by `workflow`
+- [ ] The rest of the run (active-set line, parallel Phases 3 and 4, ethics review, "May I write" before the `docs/design/live-ops/seasons/` documents) is unchanged by `workflow`
 
 ---
 
@@ -208,7 +208,7 @@ Fixture defaults.
 - [ ] At the default `team.size: individual`, the run opens with an `Active set (team.size: individual): live-ops-designer + economy-designer` line and a `Not spawned this run:` line naming analytics-engineer, community-manager, narrative-director and writer — before any agent is spawned
 - [ ] In `collaborative` mode, `AskUserQuestion` used at every phase transition — user approves before the next phase begins
 - [ ] When analytics-engineer is in the active set (`small` or `studio`), Phases 3 and 4 are spawned in parallel, not sequentially
-- [ ] Sub-agents write only to paths the orchestrator named, under the bounded exception; the `design/live-ops/` documents are written by the orchestrator after one `AskUserQuestion` "May I write the season plan…" approval
+- [ ] Sub-agents write only to paths the orchestrator named, under the bounded exception; the `docs/design/live-ops/` documents are written by the orchestrator after one `AskUserQuestion` "May I write the season plan…" approval
 - [ ] A phase whose named artifact is missing on disk is treated as failed, not done
 - [ ] Ethics review in Phase 7 always references the ethics policy file path explicitly
 - [ ] Error recovery: any BLOCKED agent is surfaced immediately with AskUserQuestion options (skip / retry / stop)

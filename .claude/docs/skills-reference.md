@@ -11,7 +11,7 @@
 | `/project-stage-detect` | Full project audit — detect phase, identify existence gaps, recommend next steps |
 | `/setup-engine` | Configure engine + version, detect knowledge gaps, populate version-aware reference docs |
 | `/adopt` | Brownfield format audit — checks internal structure of existing GDDs/ADRs/stories, produces migration plan |
-| `/settings` | View or change project config — the effective merged values, or a local override in `project.local.yaml` |
+| `/settings` | View or change project config — the effective merged values, or a local override in `.claude/ccgs/project.local.yaml` |
 
 ## Game Design
 
@@ -66,7 +66,7 @@
 | Command | Purpose |
 |---------|---------|
 | `/design-review` | Review a game design document for completeness and consistency |
-| `/code-review` | Architectural code review for a file or changeset |
+| `/gamedev-code-review` | Architectural code review for a file or changeset |
 | `/balance-check` | Analyze game balance data, formulas, and config — flag outliers |
 | `/content-audit` | Audit GDD-specified content counts against implemented content |
 | `/scope-check` | Analyze feature or sprint scope against original plan, flag scope creep |
@@ -117,7 +117,7 @@
 
 | Command | Purpose |
 |---------|---------|
-| `/prototype` | Concept prototype — throwaway build right after brainstorm to validate core idea (Phase 1) |
+| `/gamedev-prototype` | Concept prototype — throwaway build right after brainstorm to validate core idea (Phase 1) |
 | `/vertical-slice` | Pre-Production validation — production-quality end-to-end build before committing to Production (Phase 4) |
 | `/onboard` | Generate contextual onboarding document for a new contributor or agent |
 | `/localize` | Localization workflow: string extraction, validation, translation readiness |
@@ -144,8 +144,8 @@ Claude Code ships its own skills, and one name collides with CCGS's.
 
 | You type | You get | Use it for |
 |---------|---------|-----------|
-| `/code-review` | **CCGS's** — project skills take the bare name | Architectural review against this project's coding standards, SOLID, testability and the control manifest. Knows about ADRs, stories and `docs/architecture/`. |
-| `/review` | **Claude Code's bundled** review — the alias of its `/code-review`, which CCGS's skill shadows | Reviewing a pull request or a plain diff for correctness bugs, with no knowledge of CCGS's design documents or gates. |
+| `/gamedev-code-review` | **CCGS's** — project skills take the bare name | Architectural review against this project's coding standards, SOLID, testability and the control manifest. Knows about ADRs, stories and `docs/architecture/`. |
+| `/review` | **Claude Code's bundled** review — the alias of its `/gamedev-code-review`, which CCGS's skill shadows | Reviewing a pull request or a plain diff for correctness bugs, with no knowledge of CCGS's design documents or gates. |
 
 Both are useful; they answer different questions. Reach for the CCGS one during
 `/dev-story` and before `/story-done`, because it checks the things the gates

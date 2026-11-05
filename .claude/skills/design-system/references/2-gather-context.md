@@ -21,7 +21,7 @@ mode) and Read those ranges with offset and limit.
 ### 2a: Required Reads
 
 > **At `minimal`** (design-system is voluntary at this tier): read
-> `design/game-brief.md` in place of the game concept, and **skip the systems-index
+> `docs/GDD.md` in place of the game concept, and **skip the systems-index
 > read** — neither `game-concept.md` nor `systems-index.md` exists at `minimal`.
 > Author from the brief's relevant MVP feature and its core loop.
 >
@@ -61,17 +61,17 @@ mode) and Read those ranges with offset and limit.
 > the fail-fast reads below, and aborts on its first step with *"No game concept
 > found. Run `/brainstorm` first"*.
 
-- **Game concept**: Read `design/gdd/game-concept.md` — fail if missing:
+- **Game concept**: Read `docs/GDD.md` — fail if missing:
   > "No game concept found. Run `/brainstorm` first."
-- **Systems index**: Read `design/gdd/systems-index.md` — fail if missing:
+- **Systems index**: Read `docs/GDD.md` — fail if missing:
   > "No systems index found. Run `/map-systems` first to map your systems."
 - **Target system**: Find the system in the index. If not listed, warn:
   > "[system-name] is not in the systems index. Would you like to add it, or
   > design it as an off-index system?"
-- **Entity registry**: If `design/registry/entities.yaml` exists, list the
+- **Entity registry**: If `docs/design/registry/entities.yaml` exists, list the
   entries this system owns and the entries that reference it, each whole:
   ```
-  bash .claude/scripts/registry.sh slice design/gdd/[system-name].md
+  bash .claude/scripts/registry.sh slice docs/design/gdd/[system-name].md
   ```
   `referenced_by:` is a block list (the key and its paths are on separate
   lines), so a grep for the path finds the line but not the entry that owns
@@ -95,7 +95,7 @@ From the systems index, identify:
 For each dependency GDD that exists, read **only the four sections that carry the
 cross-system contract** — not the whole GDD:
 ```
-Grep pattern="^## ([0-9]+\. )?(Dependencies|Formulas|Edge Cases|Tuning Knobs)" glob="design/gdd/[dep].md" output_mode="content" -A 20
+Grep pattern="^## ([0-9]+\. )?(Dependencies|Formulas|Edge Cases|Tuning Knobs)" glob="docs/design/gdd/[dep].md" output_mode="content" -A 20
 ```
 - Key interfaces and data flow (from Dependencies)
 - Formulas that reference this system's outputs
@@ -108,10 +108,10 @@ registry first; the section grep fills what it does not hold.
 
 ### 2c: Optional Reads
 
-- **Game pillars**: Read `design/gdd/game-pillars.md` if it exists
-- **Existing GDD**: Read `design/gdd/[system-name].md` if it exists (resume, don't
+- **Game pillars**: Read `docs/GDD.md` if it exists
+- **Existing GDD**: Read `docs/design/gdd/[system-name].md` if it exists (resume, don't
   restart from scratch)
-- **Related systems**: do **not** glob-and-read `design/gdd/*.md` hunting for
+- **Related systems**: do **not** glob-and-read `docs/design/gdd/*.md` hunting for
   "thematically related" systems — there is no deterministic proxy for that and it
   is the read the registry exists to replace. `entities.yaml` (2a) already holds
   the cross-system facts a related GDD would supply. If a specific overlap is
@@ -173,7 +173,7 @@ which you picked.
 > you read the reference for, whichever row you came in on.
 
 **Step 2 — Read engine context (if available):**
-- Identify the engine and version: read `engine.name` and `engine.version` from `project.yaml`. Resolve each field independently — if its key is absent or empty (including when `project.yaml` has no `engine:` block), fall back to `.claude/docs/technical-preferences.md` (a `[TO BE CONFIGURED]` value means not set)
+- Identify the engine and version: read `engine.name` and `engine.version` from `.claude/ccgs/project.yaml`. Resolve each field independently — if its key is absent or empty (including when `.claude/ccgs/project.yaml` has no `engine:` block), fall back to `.claude/docs/technical-preferences.md` (a `[TO BE CONFIGURED]` value means not set)
 - If engine is configured, read `docs/engine-reference/[engine]/VERSION.md`
 - Read `docs/engine-reference/[engine]/modules/[domain].md` if it exists.
   **If it does not exist, say so by name** — *"no engine reference for `[domain]`

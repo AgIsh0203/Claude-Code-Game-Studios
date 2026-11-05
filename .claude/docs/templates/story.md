@@ -10,7 +10,7 @@
 
 ## Context
 
-**GDD**: `design/gdd/[filename].md`
+**GDD**: `docs/design/gdd/[filename].md`
 **Requirement**: `TR-[system]-NNN`
 *(Requirement text lives in `docs/architecture/tr-registry.yaml` — read fresh at review time)*
 
@@ -30,7 +30,7 @@
 
 ## Acceptance Criteria
 
-*From GDD `design/gdd/[filename].md`, scoped to this story:*
+*From GDD `docs/design/gdd/[filename].md`, scoped to this story:*
 
 - [ ] [criterion 1 — directly from GDD]
 - [ ] [criterion 2]
@@ -95,9 +95,9 @@ checks scope against it.*
 **Required evidence**:
 - Logic: `tests/unit/[system]/[story-slug]_test.[ext]` — must exist and pass (`/story-done` checks that it EXISTS; pass/fail is established by `/gate-check` and `/smoke-check`, both later)
 - Integration: `tests/integration/[system]/[story-slug]_test.[ext]` OR playtest doc
-- Visual/Feel: a retained screenshot in `production/qa/evidence/` + sign-off in `production/qa/evidence/[story-slug]-evidence.md`
-- UI: a retained screenshot of each screen touched, in `production/qa/evidence/`
-- Config/Data: smoke check pass (`production/qa/smoke-*.md`)
+- Visual/Feel: a retained screenshot in `docs/production/qa/evidence/` + sign-off in `docs/production/qa/evidence/[story-slug]-evidence.md`
+- UI: a retained screenshot of each screen touched, in `docs/production/qa/evidence/`
+- Config/Data: smoke check pass (`docs/production/qa/smoke-*.md`)
 
 **Status**: [ ] Not yet created
 
@@ -105,5 +105,5 @@ checks scope against it.*
 
 ## Dependencies
 
-- Depends on: [the path of each story that must be DONE first, e.g. `production/epics/<epic>/story-001-<slug>.md`, or "None"]
+- Depends on: [the path of each story that must be DONE first, e.g. `docs/production/epics/<epic>/story-001-<slug>.md`, or "None"]
 - Unlocks: [the path of each story this one unblocks, or "None"]

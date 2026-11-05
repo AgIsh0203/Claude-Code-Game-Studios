@@ -4,8 +4,8 @@
 
 `/qa-plan [sprint | feature: system-name | story: path]` generates a QA plan
 before implementation. `sprint` reads the most recent file in
-`production/sprints/` (or `production/sprint-status.yaml` when present) for its
-story list; `feature:` globs `production/epics/*/story-*.md` by system name;
+`docs/production/sprints/` (or `docs/production/sprint-status.yaml` when present) for its
+story list; `feature:` globs `docs/production/epics/*/story-*.md` by system name;
 `story:` loads one file; no argument asks for the scope with `AskUserQuestion`.
 A referenced story file that does not exist is noted as MISSING and the plan
 continues; a scope with zero stories stops with `NOT ASSESSED — no stories in
@@ -17,7 +17,7 @@ gap. A story with no `## Acceptance Criteria` is full-read and reported as a QA
 finding, never skipped. After a classification summary table, the plan
 (Test Summary, Automated Tests Required, Manual QA Checklist, Smoke Test Scope,
 Playtest Requirements, Definition of Done) is shown, then one `AskUserQuestion`
-(multiSelect) asks whether to write `production/qa/qa-plan-[sprint-slug]-[date].md`
+(multiSelect) asks whether to write `docs/production/qa/qa-plan-[sprint-slug]-[date].md`
 and whether to back-fill `## QA Test Cases` in the story files. `qa.level`
 changes the plan's depth, but no level drops the Visual/Feel and UI screenshot
 rows. No director gates apply.
@@ -31,7 +31,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains the verdict keyword `NOT ASSESSED` for an empty scope
-- [ ] Asks for approval before writing: an `AskUserQuestion` option naming `production/qa/qa-plan-[sprint-slug]-[date].md`, and the rule "Never write the plan without asking"
+- [ ] Asks for approval before writing: an `AskUserQuestion` option naming `docs/production/qa/qa-plan-[sprint-slug]-[date].md`, and the rule "Never write the plan without asking"
 - [ ] Has a next-step handoff (`/smoke-check sprint` after implementation, `/story-done` checks for the test files)
 
 ---
@@ -45,9 +45,9 @@ its allowed tools) and no director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -57,10 +57,10 @@ Fixture defaults.
 ### Case 1: Happy Path — Sprint With Four Typed Stories
 
 **Fixture:**
-- `production/sprints/sprint-003.md` is the most recent sprint and references 4
+- `docs/production/sprints/sprint-003.md` is the most recent sprint and references 4
   story files, each with acceptance criteria and a declared Type: Logic,
   Integration, Visual/Feel, UI
-- The stories reference GDDs in `design/gdd/`; `engine.name: Godot`
+- The stories reference GDDs in `docs/design/gdd/`; `engine.name: Godot`
 - `qa.level: standard`; `modes.automation: collaborative`
 
 **Input:** `/qa-plan sprint`
@@ -76,7 +76,7 @@ Fixture defaults.
    Visual/Feel → screenshot + lead sign-off, UI → retained screenshot of each
    screen touched
 5. The plan is shown, then one multiSelect `AskUserQuestion` offers "Write QA
-   plan to production/qa/qa-plan-[sprint-slug]-[date].md" and the story
+   plan to docs/production/qa/qa-plan-[sprint-slug]-[date].md" and the story
    back-fill option
 6. After writing, next steps name `/smoke-check sprint` (after implementation)
    and `/story-done`
@@ -86,7 +86,7 @@ Fixture defaults.
 - [ ] The classification summary table appears before the plan
 - [ ] Logic and Integration rows name test paths under `tests/unit/` and `tests/integration/`
 - [ ] The UI row's manual verification is the retained screenshot of each screen touched, not a step-through
-- [ ] Nothing is written before the multiSelect approval, and the written path is `production/qa/qa-plan-[sprint-slug]-[date].md`
+- [ ] Nothing is written before the multiSelect approval, and the written path is `docs/production/qa/qa-plan-[sprint-slug]-[date].md`
 - [ ] Next steps name `/smoke-check sprint` and `/story-done`
 
 ---
@@ -146,8 +146,8 @@ Fixture defaults.
 ### Case 4: No Sprint Plan — NOT ASSESSED
 
 **Fixture:**
-- `production/sprints/` contains no files
-- No `production/sprint-status.yaml`
+- `docs/production/sprints/` contains no files
+- No `docs/production/sprint-status.yaml`
 - `modes.rigor: standard` (so sprints are expected)
 
 **Input:** `/qa-plan sprint`
@@ -161,7 +161,7 @@ Fixture defaults.
 
 **Assertions:**
 - [ ] Verdict is `NOT ASSESSED — no stories in scope`
-- [ ] The empty path `production/sprints/` is named
+- [ ] The empty path `docs/production/sprints/` is named
 - [ ] `/sprint-plan new` is suggested
 - [ ] No plan document with empty tables is produced, and nothing is written
 

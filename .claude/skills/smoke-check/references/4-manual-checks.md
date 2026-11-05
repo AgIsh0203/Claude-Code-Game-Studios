@@ -15,13 +15,13 @@
 
 Draw the smoke test checklist from, in priority order (and name the one you used in the report):
 1. The QA plan's "Smoke Test Scope" section (if QA plan was found in Phase 1)
-2. `production/qa/smoke-tests.md` (if it exists)
+2. `docs/production/qa/smoke-tests.md` (if it exists)
 3. `tests/smoke/` directory contents (if it exists)
 4. The standard fallback list below (used only when none of the above exist)
 
 **Name the source you used in the report**, on its own line — *"Checklist source:
-`production/qa/smoke-tests.md`"*, or *"Checklist source: standard fallback list —
-no QA plan scope, no `production/qa/smoke-tests.md`, no `tests/smoke/`."* The
+`docs/production/qa/smoke-tests.md`"*, or *"Checklist source: standard fallback list —
+no QA plan scope, no `docs/production/qa/smoke-tests.md`, no `tests/smoke/`."* The
 fallback is a real fallback, so nothing is silently skipped here, but without
 that line a report drawn from the generic list reads the same as one drawn from
 this project's own smoke definitions. `/gate-check` validates a smoke report's

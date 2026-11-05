@@ -164,7 +164,7 @@ compare_stamp() {
 #
 #   a literal path that is absent   -> an optional input the caller named on
 #                                      purpose. /design-review passes
-#                                      design/registry/entities.yaml on every
+#                                      docs/design/registry/entities.yaml on every
 #                                      run and documents that an absent
 #                                      registry "doesn't appear in the output
 #                                      and doesn't block the skip". Reporting

@@ -7,15 +7,17 @@ allowed-tools: Read, Glob, Grep, AskUserQuestion, Bash(bash .claude/scripts/proj
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Guided Onboarding
 
 The entry point for a new user. It assumes no game idea, no engine and no experience: it reads
 the project, asks where the user is starting from, shows what it assumes about the project, and
 names the one next step. It never runs that step itself.
 
-It writes these settings to `project.yaml`, all through helpers, and only after an explicit yes:
-`project.stage` (with its legacy mirror `production/stage.txt`), `modes.rigor` and
-`modes.automation`. It never writes `modes.review_mode` or `production/review-mode.txt`, and none
+It writes these settings to `.claude/ccgs/project.yaml`, all through helpers, and only after an explicit yes:
+`project.stage` (with its legacy mirror `.claude/ccgs/stage.txt`), `modes.rigor` and
+`modes.automation`. It never writes `modes.review_mode` or `.claude/ccgs/review-mode.txt`, and none
 of the other knobs rigor fronts (`modes.workflow`, `docs.density`, `qa.level`,
 `modes.story_granularity`, `team.size`): a written value pins that knob over the rigor expansion,
 and a mirror file outranks it.
@@ -26,7 +28,7 @@ question is not an answer: ask again in plain text.
 
 The questions in Phases 2, 4 and 5 shape the project, so they are asked in every automation mode.
 The engine is not one of them: `/setup-engine` chooses it. Phase 6's last question follows a
-`modes.automation` already in `project.yaml`, per `.claude/docs/automation-modes.md`; with none
+`modes.automation` already in `.claude/ccgs/project.yaml`, per `.claude/docs/automation-modes.md`; with none
 set, ask it.
 
 ## Phase 1: Read the project
@@ -37,7 +39,7 @@ the user's answer in Phase 2.
 | Row | Use |
 |---|---|
 | `engine`, `code_root`, `source_files` | Is an engine set, and how much code is there. `source_files` of `unknown` means the code root could not be found: say that, never "no code" |
-| `concept` | `design/gdd/game-concept.md` or `design/game-brief.md` exists |
+| `concept` | `docs/GDD.md` or `docs/GDD.md` exists |
 | `gdd_files`, `adr` | Design documents and architecture decisions on disk (they set the stage in Phase 4) |
 | `prototype`, `sprint`, `milestone`, `story` | Other existing work |
 | `origin_url` | Contains `donchitos/claude-code-game-studios`, matched case-insensitively: the clone still points at the template repo, so a push or pull request would go there. A fork under another owner is the user's own |
@@ -45,9 +47,9 @@ the user's answer in Phase 2.
 
 Ignore `phase_inferred`: it guesses from file counts, and a project with code but no design
 documents is not in Production. If the helper fails, say so and read the same facts by hand
-(engine in `project.yaml`, the two concept files, the code root's files, `design/gdd/`).
+(engine in `.claude/ccgs/project.yaml`, the two concept files, the code root's files, `docs/design/gdd/`).
 
-The helper does not report rigor or automation. Read `project.yaml`, if it exists, and note
+The helper does not report rigor or automation. Read `.claude/ccgs/project.yaml`, if it exists, and note
 whether `modes.rigor` and `modes.automation` are set: a set value is kept, and its question is
 not asked (Phases 4 and 5).
 
@@ -101,7 +103,7 @@ Work out two values.
 | `gdd_files` 1 or more, `adr` 0 | `Systems Design` |
 | `adr` 1 or more | `Technical Setup` |
 
-**Rigor.** If `modes.rigor` is already set in `project.yaml`, keep it and say so. Otherwise infer
+**Rigor.** If `modes.rigor` is already set in `.claude/ccgs/project.yaml`, keep it and say so. Otherwise infer
 it from what the user said in Phases 2 and 3, using the signals in
 `.claude/docs/settings-guidance.md` §3:
 
@@ -126,8 +128,8 @@ What I'll set up
   /settings changes either of these any time.
 ```
 
-Then ask with the question tool: "Save these to `project.yaml` (and the stage to
-`production/stage.txt`)?" Options: `Save them` / `Don't save`. Ask no question about the rigor
+Then ask with the question tool: "Save these to `.claude/ccgs/project.yaml` (and the stage to
+`.claude/ccgs/stage.txt`)?" Options: `Save them` / `Don't save`. Ask no question about the rigor
 itself: the card shows it, and `/settings` changes it.
 
 - **Save them:** run `bash .claude/scripts/set-stage.sh "[stage]"`, then, only when rigor was not
@@ -165,12 +167,12 @@ other.
 
 **`minimal`: 4 steps to running code**
 1. `/setup-engine`: choose and configure the engine
-2. `/brainstorm`: write the one-page `design/game-brief.md`
+2. `/brainstorm`: write the one-page `docs/GDD.md`
 3. `/create-stories`: turn the brief's MVP list into stories (no epics or sprint plan needed)
 4. `/dev-story`: the first line of game code
 
 **`standard`**
-- Concept: `/setup-engine` → `/brainstorm` → `/prototype` → `/art-bible` → `/gate-check`
+- Concept: `/setup-engine` → `/brainstorm` → `/gamedev-prototype` → `/art-bible` → `/gate-check`
 - Systems Design: `/map-systems` → `/design-system` (once per system) → `/review-all-gdds` →
   `/gate-check`
 - Architecture: `/create-architecture` → `/architecture-decision` (once per decision) →

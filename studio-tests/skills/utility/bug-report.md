@@ -16,7 +16,7 @@ System, Frequency, Regression — for a bug spanning systems, `System` is the on
 whose code must change), Environment (Build, Platform, Scene/Level),
 Reproduction Steps with Expected and Actual Result, and Technical Context
 (likely affected files, related systems). It presents the report and asks
-"May I write this to `production/qa/bugs/BUG-[NNNN].md`?" — `Verdict: **COMPLETE**`
+"May I write this to `docs/production/qa/bugs/BUG-[NNNN].md`?" — `Verdict: **COMPLETE**`
 on write, `Verdict: **BLOCKED**` if declined. The ID is the highest existing
 number plus one; several reports in one run (Analyze Mode) take consecutive IDs,
 and one ask names every file. Next steps: `/bug-triage`, and
@@ -24,7 +24,7 @@ and one ask names every file. Next steps: `/bug-triage`, and
 
 Verify and Close Mode find the bug file by its number, whatever its padding —
 an older three-digit file with a slug included. Verify runs a related test with
-`commands.test` from `project.yaml` (never a runner line from memory). When no
+`commands.test` from `.claude/ccgs/project.yaml` (never a runner line from memory). When no
 test ran — none covers the bug, `commands.test` is unset, or the run did not
 complete — or the bug is Visual or UI, it asks whether the user played the
 reproduction steps: `[No longer occurs]` → VERIFIED FIXED, recorded as a manual
@@ -55,9 +55,9 @@ None. `/bug-report` is an operational documentation skill. No director gates app
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -67,7 +67,7 @@ Fixture defaults.
 ### Case 1: Happy Path — User describes a crash, full report produced
 
 **Fixture:**
-- `production/qa/bugs/` does not exist yet
+- `docs/production/qa/bugs/` does not exist yet
 - The code root contains a boss-arena scene script
 
 **Input:** `/bug-report The game crashes to desktop every time the player enters the boss arena — progress is blocked`
@@ -78,16 +78,16 @@ Fixture defaults.
 3. Drafts the report template: Category `Crash`, Severity `S1-Critical`,
    Status `Open`, reproduction steps, Expected Result (no crash) and Actual
    Result (crash to desktop), likely affected files from the search
-4. Globs `production/qa/bugs/BUG-*.md`, finds none, allocates `BUG-0001`, presents the
-   report and asks "May I write this to `production/qa/bugs/BUG-0001.md`?"
-5. On approval writes the file, creating `production/qa/bugs/`; Verdict is COMPLETE
+4. Globs `docs/production/qa/bugs/BUG-*.md`, finds none, allocates `BUG-0001`, presents the
+   report and asks "May I write this to `docs/production/qa/bugs/BUG-0001.md`?"
+5. On approval writes the file, creating `docs/production/qa/bugs/`; Verdict is COMPLETE
 6. Next steps: `/bug-triage`, and `/hotfix [BUG-ID]` because the bug is S1
 
 **Assertions:**
 - [ ] Report contains Title, ID, Severity, Priority, Status, Category, System, Build, Reproduction Steps, Expected Result and Actual Result
 - [ ] Severity uses the S1–S4 scale (`S1-Critical` here) and Priority uses the P1–P4 labels
 - [ ] "Likely affected files" is filled from the codebase search
-- [ ] "May I write" names `production/qa/bugs/BUG-0001.md` — no bug files exist yet
+- [ ] "May I write" names `docs/production/qa/bugs/BUG-0001.md` — no bug files exist yet
 - [ ] Variant — with `BUG-0001.md` and `BUG-0003.md` already present, the new ID is
       `BUG-0004`: the highest existing number plus one, not the file count plus one
 - [ ] Verdict is COMPLETE after the write
@@ -120,12 +120,12 @@ Fixture defaults.
 ### Case 3: Close Mode — Bug not yet verified is refused
 
 **Fixture:**
-- `production/qa/bugs/BUG-0007.md` exists with `**Status**: Open`
+- `docs/production/qa/bugs/BUG-0007.md` exists with `**Status**: Open`
 
 **Input:** `/bug-report close BUG-0007`
 
 **Expected behavior:**
-1. Close Mode reads `production/qa/bugs/BUG-0007.md`
+1. Close Mode reads `docs/production/qa/bugs/BUG-0007.md`
 2. Status is not `Verified Fixed`, so the skill stops:
    "Bug BUG-0007 must be Verified Fixed before it can be closed. Run `/bug-report verify BUG-0007` first."
 3. No Closure Record is appended and the Status field is not changed
@@ -167,7 +167,7 @@ Fixture defaults.
 
 **Fixture:**
 - `src/save/save_manager.gd` exists and contains an unguarded null dereference and an unclosed file handle
-- `production/qa/bugs/` holds `BUG-0011.md` (the highest existing number)
+- `docs/production/qa/bugs/` holds `BUG-0011.md` (the highest existing number)
 
 **Input:** `/bug-report analyze src/save/save_manager.gd`
 
@@ -177,7 +177,7 @@ Fixture defaults.
    per bug with the trigger scenario and a recommended fix
 3. Allocates consecutive IDs, `BUG-0012` and `BUG-0013`, one per report
 4. Presents the reports and asks once, naming both files: "May I write these to
-   `production/qa/bugs/BUG-0012.md`, `production/qa/bugs/BUG-0013.md`?"
+   `docs/production/qa/bugs/BUG-0012.md`, `docs/production/qa/bugs/BUG-0013.md`?"
 5. No director agents are spawned; no gate IDs appear
 
 **Assertions:**
@@ -192,7 +192,7 @@ Fixture defaults.
 ### Case 6: Verify Mode — older three-digit file found by its number, CANNOT VERIFY
 
 **Fixture:**
-- `production/qa/bugs/` holds a bug file for bug 42 written in the older form:
+- `docs/production/qa/bugs/` holds a bug file for bug 42 written in the older form:
   a three-digit number followed by a slug (`-save-corruption.md`), with
   `**Status**: Fixed — Pending Verification`
 - The bug's root-cause code path is gone from `src/save/`, but no test in
@@ -202,7 +202,7 @@ Fixture defaults.
 **Input:** `/bug-report verify BUG-0042`
 
 **Expected behavior:**
-1. Verify Mode globs `production/qa/bugs/BUG-*.md` and takes the file whose
+1. Verify Mode globs `docs/production/qa/bugs/BUG-*.md` and takes the file whose
    number is 42 — the three-digit, slugged file — instead of stopping on a
    missing `BUG-0042.md`
 2. It checks the root-cause code path (changed) and looks for a related test
@@ -212,7 +212,7 @@ Fixture defaults.
    `[Still occurs]` / `[Not played yet]`; the user answers `[Not played yet]`
 4. The verdict is **CANNOT VERIFY**: it names what is missing (no related test)
    and says that playing the reproduction steps settles it
-5. It asks "May I update `production/qa/bugs/[that file]` to set Status: … Cannot
+5. It asks "May I update `docs/production/qa/bugs/[that file]` to set Status: … Cannot
    Verify?", naming the file it found
 6. It does not suggest `/bug-report close` — only a `Verified Fixed` bug can be
    closed
@@ -230,9 +230,9 @@ Fixture defaults.
 ### Case 7: Verify then Close — no test covers the bug, the user's play settles it
 
 **Fixture:**
-- `project.yaml` has no `modes` block (so `qa.level: minimal` — tests are waived)
+- `.claude/ccgs/project.yaml` has no `modes` block (so `qa.level: minimal` — tests are waived)
   and no `commands` block
-- `production/qa/bugs/BUG-0005.md`: Category `UI`, System `HUD`, "health bar does
+- `docs/production/qa/bugs/BUG-0005.md`: Category `UI`, System `HUD`, "health bar does
   not update after healing", `**Status**: Fixed — Pending Verification`
 - No test in the engine's test root covers the HUD
 
@@ -246,12 +246,12 @@ Fixture defaults.
    `[Still occurs]` / `[Not played yet]`; the user answers `[No longer occurs]`,
    build `0.3.1`
 3. Verdict **VERIFIED FIXED**, a manual verification; it asks "May I update
-   `production/qa/bugs/BUG-0005.md` to set Status: Verified Fixed …?" and, on
+   `docs/production/qa/bugs/BUG-0005.md` to set Status: Verified Fixed …?" and, on
    yes, writes the Status with `**Verified by**: [user], manual, build 0.3.1`
 4. Next step: `/bug-report close BUG-0005`
 5. Close reads `Verified Fixed`, shows the closure record (`Verified by` from the
    verify record, `Regression test: Manual verification`) and the Status change,
-   and asks "May I update `production/qa/bugs/BUG-0005.md` to mark it Closed?"
+   and asks "May I update `docs/production/qa/bugs/BUG-0005.md` to mark it Closed?"
    before appending anything or changing the Status
 6. On yes it appends the Closure Record and sets `**Status**: Closed`
 
@@ -269,11 +269,11 @@ Fixture defaults.
 
 - [ ] Selects the mode from the argument; asks for a description when none is given
 - [ ] Uses the S1–S4 severity scale and the P1–P4 priority labels shared with `/bug-triage`
-- [ ] Verify runs a related test with `commands.test` from `project.yaml`, never a runner line written from memory
+- [ ] Verify runs a related test with `commands.test` from `.claude/ccgs/project.yaml`, never a runner line written from memory
 - [ ] Verify says VERIFIED FIXED only when every check that applies passed — the related tests ran and passed, or, with no test run (or for a Visual or UI bug), the user played the reproduction steps on a named build and it no longer occurs, recorded as a manual verification; "Not played yet" with nothing else to settle it is CANNOT VERIFY
 - [ ] The Reporter field never holds an email address or account ID taken from the session
 - [ ] Searches the codebase for affected files before drafting
-- [ ] Asks "May I write this to `production/qa/bugs/BUG-[NNNN].md`?" before writing
+- [ ] Asks "May I write this to `docs/production/qa/bugs/BUG-[NNNN].md`?" before writing
 - [ ] Asks "May I update" before changing an existing bug file (Verify / Close); Close Mode shows the closure record and asks before appending it
 - [ ] Finds the bug file by its number in Verify and Close Mode, and never closes a bug that is not `Verified Fixed`
 - [ ] Verdict is COMPLETE on write, BLOCKED when the user declines
@@ -287,4 +287,4 @@ Fixture defaults.
   Case 7 a manual VERIFIED FIXED and, as variants, STILL PRESENT.
 - Close Mode's triage-report reference note is not separately tested.
 - Verify or close with a number no file carries ("No bug [BUG-ID] in
-  `production/qa/bugs/`", Verdict BLOCKED) is not separately tested.
+  `docs/production/qa/bugs/`", Verdict BLOCKED) is not separately tested.

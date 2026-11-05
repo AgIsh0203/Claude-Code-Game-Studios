@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: opus
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,workflow,qa.level,testing.strict,performance.enforce,team.size,project.stage,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
@@ -32,7 +34,7 @@ The project progresses through these stages:
 6. **Polish** — Performance, playtesting, bug fixing
 7. **Release** — Launch prep, certification
 
-**When a gate passes** (or the user explicitly accepts a CONCERNS verdict's risks — Section 6), update the stage in both `project.yaml` (set `project.stage: <new-stage>`) AND write the new stage name to `production/stage.txt` (single line, e.g. `Production`). Dual-write keeps backward compatibility with hooks that haven't migrated yet. This updates the status line immediately.
+**When a gate passes** (or the user explicitly accepts a CONCERNS verdict's risks — Section 6), update the stage in both `.claude/ccgs/project.yaml` (set `project.stage: <new-stage>`) AND write the new stage name to `.claude/ccgs/stage.txt` (single line, e.g. `Production`). Dual-write keeps backward compatibility with hooks that haven't migrated yet. This updates the status line immediately.
 
 ---
 
@@ -145,7 +147,7 @@ This skill follows the collaborative design principle:
 3. **Present findings**: Show the full checklist with status
 4. **User decides**: The verdict is a recommendation — the user makes the final call on
    what to do next; only the stage write is bound to it (Section 6)
-5. **Get approval**: "May I write this gate check report to production/gate-checks/?"
+5. **Get approval**: "May I write this gate check report to docs/production/gate-checks/?"
 6. **Never auto-fix**: If required artifacts are missing, report the FAIL verdict and
    name the skill to run (e.g. "run `/test-setup`"). Do NOT create missing files or
    re-run the gate automatically. Creating files to manufacture a PASS defeats the

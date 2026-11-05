@@ -3,10 +3,12 @@ name: project-stage-detect
 description: "Analyze project state, detect stage, identify gaps, recommend next steps. 'Where are we in development?'"
 argument-hint: "[optional: role filter like 'programmer' or 'designer']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/project-stage-detect/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/artifact-check.sh), Bash(bash ".claude/scripts/artifact-check.sh"), Bash(bash ./.claude/scripts/artifact-check.sh), Bash(bash .claude/scripts/artifact-check.sh *), Bash(bash ".claude/scripts/artifact-check.sh" *), Bash(bash ./.claude/scripts/artifact-check.sh *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/project-stage-detect/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/artifact-check.sh), Bash(bash ".claude/scripts/artifact-check.sh"), Bash(bash ./.claude/scripts/artifact-check.sh), Bash(bash .claude/scripts/artifact-check.sh *), Bash(bash ".claude/scripts/artifact-check.sh" *), Bash(bash ./.claude/scripts/artifact-check.sh *)
 model: haiku
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 # Project Stage Detection
 
@@ -23,8 +25,8 @@ of artifacts, and gaps that need attention. It's especially useful when:
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys workflow,automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -69,15 +71,15 @@ observations imply, and the tier still governs which absences are gaps at all
 Then analyze what the script cannot: content quality, counts it does not
 track, and the judgement calls.
 
-**Design Documentation** (`design/`):
-- Count GDD files in `design/gdd/*.md`
-- Check for game-concept.md (or `design/game-brief.md` at `minimal`), game-pillars.md, systems-index.md
+**Design Documentation** (`docs/design/`):
+- Count GDD files in `docs/design/gdd/*.md`
+- Check for game-concept.md (or `docs/GDD.md` at `minimal`), game-pillars.md, systems-index.md
 - If systems-index.md exists, count total systems vs. designed systems
 - Analyze completeness (Overview, Detailed Design, Edge Cases, etc.). Read GDDs
   by section: find the headings you need with the Grep tool (pattern `^#`, content
   mode) and Read those ranges with offset and limit.
-- Count narrative docs in `design/narrative/`
-- Count level designs in `design/levels/`
+- Count narrative docs in `docs/story/`
+- Count level designs in `docs/design/levels/`
 
 **Source Code** (the code root — `src/` Godot, `Assets/` Unity, `Source/` Unreal; resolve per `.claude/docs/code-root-resolution.md`):
 - Count source files (language-agnostic)
@@ -89,14 +91,14 @@ track, and the judgement calls.
   reads as a greenfield project, and the source-file rows of the stage table
   cannot be decided without the count
 
-**Production Artifacts** (`production/`):
+**Production Artifacts** (`docs/production/`):
 - Check for active sprint plans. At `workflow: minimal` there are no sprints:
   read the story files' progress through the brief's build order instead, and
   never report a missing sprint plan, milestone or roadmap as a gap
 - Look for milestone definitions
 - Find roadmap documents
 
-**Prototypes** (`prototypes/`):
+**Prototypes** (`docs/prototypes/`):
 - Count prototype directories
 - Check for READMEs (documented vs undocumented)
 - Assess if prototypes are archived or active
@@ -111,7 +113,7 @@ track, and the judgement calls.
 
 ### 2. Classify Project Stage
 
-Based on scanned artifacts, determine stage. Check `project.stage` in `project.yaml` first (if present); else `production/stage.txt` (legacy fallback) — either is an explicit override from `/gate-check`. Otherwise, auto-detect using these heuristics (check from most-advanced backward):
+Based on scanned artifacts, determine stage. Check `project.stage` in `.claude/ccgs/project.yaml` first (if present); else `.claude/ccgs/stage.txt` (legacy fallback) — either is an explicit override from `/gate-check`. Otherwise, auto-detect using these heuristics (check from most-advanced backward):
 
 > **Always run the heuristics, even when a stage is configured — then COMPARE.**
 > The configured value is authoritative for what the stage *is*; it is not
@@ -152,17 +154,17 @@ Based on scanned artifacts, determine stage. Check `project.stage` in `project.y
 - **`standard`** — flag only required docs: missing GDDs for built systems and
   missing critical (Foundation-layer) ADRs. Do NOT flag an absent art bible unless
   visual-asset stories exist, and do NOT flag non-core UX specs.
-- **`minimal`** — a `design/game-brief.md` + engine present is the normal state. Do NOT flag
+- **`minimal`** — a `docs/GDD.md` + engine present is the normal state. Do NOT flag
   absent GDDs, art bible, UX specs, ADRs, epics or sprint plans as gaps: the brief's build
   order is the plan, and the expected next step is code.
 
 **DO NOT** just list missing files. Instead, **ask clarifying questions** (only
 for gaps the tier above says to surface):
 
-- "I see combat code (`<code root>/gameplay/combat/`) but no `design/gdd/combat-system.md`. Was this prototyped first, or should we reverse-document?"
+- "I see combat code (`<code root>/gameplay/combat/`) but no `docs/design/gdd/combat-system.md`. Was this prototyped first, or should we reverse-document?"
 - "You have 15 ADRs but no architecture overview. Should I create one to help new contributors?"
 - (`standard`/`full` only) "I see [N] systems under `<code root>/` but no ADRs in `docs/architecture/`. Were those decisions recorded somewhere else, or should we write the critical ones with `/architecture-decision`?"
-- (`standard`/`full` only) "No sprint plans in `production/`. Are you tracking work elsewhere (Jira, Trello, etc.)?"
+- (`standard`/`full` only) "No sprint plans in `docs/production/`. Are you tracking work elsewhere (Jira, Trello, etc.)?"
 - "I found a game concept but no systems index. Have you decomposed the concept into individual systems yet, or should we run `/map-systems`?"
 - "Prototypes directory has 3 projects with no READMEs. Were these experiments, or do they need documentation?"
 
@@ -240,7 +242,7 @@ Recommended next steps:
 - [Priority 2]
 - [Priority 3]
 
-May I write the full stage analysis to production/project-stage-report.md?
+May I write the full stage analysis to docs/production/project-stage-report.md?
 ```
 
 Wait for user approval before creating the file.
@@ -269,13 +271,13 @@ resolved workflow tier surfaces** (step 3). At `standard`/`minimal`, do not
 suggest authoring optional docs (e.g. don't suggest `/reverse-document` for an
 absent GDD at `minimal`, where code is the expected next step):
 
-- **No `design/game-brief.md` at `minimal`?** → `/reverse-document design <code root>`
+- **No `docs/GDD.md` at `minimal`?** → `/reverse-document design <code root>`
   when the code root already holds the game (10 or more source files): it writes
   the brief from what is built. With little or no code, `/brainstorm`.
 - **Concept exists but no systems index?** → `/map-systems` to decompose into systems
 - **Missing design docs?** → `/reverse-document design <code root>/[system]`
 - **Missing architecture docs?** → `/architecture-decision` or `/reverse-document architecture`
-- **Prototypes need documentation?** → `/reverse-document concept prototypes/[name]`
+- **Prototypes need documentation?** → `/reverse-document concept docs/prototypes/[name]`
 - **No sprint plan?** → `/sprint-plan` (not at `rigor: minimal`, where the brief's build order is the plan)
 - **Approaching milestone?** → `/milestone-review`
 
@@ -289,6 +291,6 @@ This skill follows the collaborative design principle:
 2. **Present Options**: "Should I create X, or is it tracked elsewhere?"
 3. **User Decides**: Wait for direction
 4. **Show Draft**: Display report summary
-5. **Get Approval**: "May I write to production/project-stage-report.md?"
+5. **Get Approval**: "May I write to docs/production/project-stage-report.md?"
 
 **Never** silently write files. **Always** show findings and ask before creating artifacts.

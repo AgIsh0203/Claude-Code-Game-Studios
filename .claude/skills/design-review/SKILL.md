@@ -3,9 +3,11 @@ name: design-review
 description: "Reviews one design document for completeness, internal consistency, implementability, and design standards. Before handing to programmers."
 argument-hint: "[path-to-design-doc] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/design-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(bash .claude/scripts/gdd-structure-check.sh *), Bash(grep -E '^  - name:' design/registry/entities.yaml), Bash(grep -n -i -E *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/design-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(bash .claude/scripts/gdd-structure-check.sh *), Bash(grep -E '^  - name:' docs/design/registry/entities.yaml), Bash(grep -n -i -E *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,system_overrides`
 
@@ -53,7 +55,7 @@ Resolved mode controls how thorough this review is:
 price and reproduces the same verdict.** Run:
 
 ```
-Bash: bash .claude/scripts/review-receipts.sh check "design/gdd/reviews/[doc-name]-review-log.md" "[target-doc-path]" "design/registry/entities.yaml" ".claude/skills/design-review/SKILL.md"
+Bash: bash .claude/scripts/review-receipts.sh check "docs/design/gdd/reviews/[doc-name]-review-log.md" "[target-doc-path]" "docs/design/registry/entities.yaml" ".claude/skills/design-review/SKILL.md"
 ```
 
 The registry is in the check because this review consults it for
@@ -104,12 +106,12 @@ existed and covers nothing.
 Read the target design document in full. This step needs the whole GDD: read it in ranges by its headings (found with the Grep tool: pattern `^#`, content mode), since a whole-file Read over 40 KB is refused. Read CLAUDE.md to understand project context and standards.
 
 **For cross-document facts, prefer the registry over sibling GDDs.** If
-`design/registry/entities.yaml` exists **and lists entries for this system**,
+`docs/design/registry/entities.yaml` exists **and lists entries for this system**,
 grep it — these are the established facts this GDD must not contradict, and they
 replace reading sibling GDDs to rediscover them:
 ```
-Grep pattern="source: design/gdd/[system].md" path="design/registry/entities.yaml" output_mode="content" -A 6
-Grep pattern="design/gdd/[system].md" path="design/registry/entities.yaml" output_mode="content" -B 8
+Grep pattern="source: docs/design/gdd/[system].md" path="docs/design/registry/entities.yaml" output_mode="content" -A 6
+Grep pattern="docs/design/gdd/[system].md" path="docs/design/registry/entities.yaml" output_mode="content" -B 8
 ```
 The first finds entries this system **owns** — the `-A 6` context includes their
 `referenced_by:` block. The second finds entries that **reference** this system —
@@ -117,17 +119,17 @@ The first finds entries this system **owns** — the `-A 6` context includes the
 lines), so match the path with `-B 8` context to see the owning entry, not a
 `referenced_by.*name` one-liner (which never matches the block form).
 
-**If `design/registry/entities.yaml` does not exist, or lists no entry for this
+**If `docs/design/registry/entities.yaml` does not exist, or lists no entry for this
 system** — the file ships as an empty stub, so this is the default until
 `/design-system` has populated it — fall back to reading the related GDDs the
 target doc names in its Dependencies section. Bound the read to those, not to
-everything "implied". Do not glob-read all of `design/gdd/`.
+everything "implied". Do not glob-read all of `docs/design/gdd/`.
 
-**Dependency graph validation:** For every system listed in the Dependencies section, use Glob to check whether its GDD file exists in `design/gdd/`. Flag any that don't exist yet — these are broken references that downstream authors will hit.
+**Dependency graph validation:** For every system listed in the Dependencies section, use Glob to check whether its GDD file exists in `docs/design/gdd/`. Flag any that don't exist yet — these are broken references that downstream authors will hit.
 
-**Lore/narrative alignment:** If `design/gdd/game-concept.md` (or, at `rigor: minimal`, the one-page brief `design/game-brief.md`) or any file in `design/narrative/` exists, read it. Note any mechanical choices in this GDD that contradict established world rules, tone, or design pillars. Pass this context to `game-designer` in Phase 3b.
+**Lore/narrative alignment:** If `docs/GDD.md` (or, at `rigor: minimal`, the one-page brief `docs/GDD.md`) or any file in `docs/story/` exists, read it. Note any mechanical choices in this GDD that contradict established world rules, tone, or design pillars. Pass this context to `game-designer` in Phase 3b.
 
-**Prior review check:** Check whether `design/gdd/reviews/[doc-name]-review-log.md` exists. If it does, read the most recent entry — note what verdict was given and what blocking items were listed. This session is a re-review; track whether prior items were addressed.
+**Prior review check:** Check whether `docs/design/gdd/reviews/[doc-name]-review-log.md` exists. If it does, read the most recent entry — note what verdict was given and what blocking items were listed. This session is a re-review; track whether prior items were addressed.
 
 ---
 
@@ -191,7 +193,7 @@ spot-read any section the verdict actually turns on.
 **Registry values, wherever the GDD states them.** A value restated in a table,
 a catalogue entry or a variant note contradicts the registry as surely as one in
 Detailed Rules, and reading by section makes those bodies easy to skim. List the
-registry's entry names (`grep -E '^  - name:' design/registry/entities.yaml`),
+registry's entry names (`grep -E '^  - name:' docs/design/registry/entities.yaml`),
 then search the whole target document once for all of them plus the numeric
 keys they carry, case-insensitive, writing each `_` as `[_ ]` so `goblin_scout`
 also matches "Goblin scouts":
@@ -401,18 +403,18 @@ When the verdict is APPROVED, use a single `AskUserQuestion` with `multiSelect: 
 - Prompt: "Verdict: APPROVED. I can update the tracking records now. Select any you'd like me to complete:"
 - Options:
   - `Update systems-index.md status to 'Approved' for [system]`
-  - `Append approval entry to design/gdd/reviews/[doc-name]-review-log.md`
+  - `Append approval entry to docs/design/gdd/reviews/[doc-name]-review-log.md`
 
 If the review-log option is selected, append the same format as below. Execute both selected actions before showing the final closing widget.
 
 When the verdict is NEEDS REVISION or MAJOR REVISION NEEDED, use separate widgets as before:
 
 Use a second `AskUserQuestion`:
-- Prompt: "May I update `design/gdd/systems-index.md` to mark [system] as [Needs Revision / In Review]?" — `Needs Revision` (that exact string) while the revisions are outstanding, `In Review` once they are applied and await re-review. This prompt never offers `Approved`: a revision verdict is not an approval.
+- Prompt: "May I update `docs/GDD.md` to mark [system] as [Needs Revision / In Review]?" — `Needs Revision` (that exact string) while the revisions are outstanding, `In Review` once they are applied and await re-review. This prompt never offers `Approved`: a revision verdict is not an approval.
 - Options: `[A] Yes — update it` / `[B] No — leave it as-is`
 
 Use a third `AskUserQuestion`:
-- Prompt: "May I append this review summary to `design/gdd/reviews/[doc-name]-review-log.md`? This creates a revision history so future re-reviews can track what changed."
+- Prompt: "May I append this review summary to `docs/design/gdd/reviews/[doc-name]-review-log.md`? This creates a revision history so future re-reviews can track what changed."
 - Options: `[A] Yes — append to review log` / `[B] No — skip`
 
 If yes, append an entry in this format:
@@ -427,7 +429,7 @@ Prior verdict resolved: [Yes / No / First review]
 Findings:
 - [BLOCKING] [section]: [one-line finding]
 - [RECOMMENDED] [section]: [one-line finding]
-[output of: Bash: bash .claude/scripts/review-receipts.sh hash "[target-doc-path]" "design/registry/entities.yaml" ".claude/skills/design-review/SKILL.md" [every other file this review read for cross-document facts: the related GDDs in design/gdd/, design/gdd/game-concept.md or design/game-brief.md, the design/narrative/ files] — a file that does not exist prints `not stamped, no such file` and is left out]
+[output of: Bash: bash .claude/scripts/review-receipts.sh hash "[target-doc-path]" "docs/design/registry/entities.yaml" ".claude/skills/design-review/SKILL.md" [every other file this review read for cross-document facts: the related GDDs in docs/design/gdd/, docs/GDD.md or docs/GDD.md, the docs/story/ files] — a file that does not exist prints `not stamped, no such file` and is left out]
 ```
 
 Findings rules: one line per finding, named by the section it lives in;
@@ -451,8 +453,8 @@ verbatim).
 Once the systems-index and review-log widgets are answered, check project state and show one final `AskUserQuestion`:
 
 Before building options, read:
-- `design/gdd/systems-index.md` — find any system with Status: In Review or Needs Revision (other than the one just reviewed). Read it by section: find the headings with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
-- Count `.md` files in `design/gdd/` (excluding game-concept.md, systems-index.md) to determine if `/review-all-gdds` is worth offering (≥2 GDDs)
+- `docs/GDD.md` — find any system with Status: In Review or Needs Revision (other than the one just reviewed). Read it by section: find the headings with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
+- Count `.md` files in `docs/design/gdd/` (excluding game-concept.md, systems-index.md) to determine if `/review-all-gdds` is worth offering (≥2 GDDs)
 - Find the next system with Status: Not Started in design order
 
 Build the option list dynamically — only include options that are genuinely next:

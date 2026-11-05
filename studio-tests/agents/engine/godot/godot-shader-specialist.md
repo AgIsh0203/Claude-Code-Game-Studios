@@ -81,6 +81,6 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- Dissolve shader (Case 1) should be paired with a visual test screenshot in `production/qa/evidence/`
+- Dissolve shader (Case 1) should be paired with a visual test screenshot in `docs/production/qa/evidence/`
 - Texture-type case (Case 3) confirms the agent reads what a post-cutoff change actually covers before applying it, instead of rewriting syntax the change does not touch
 - Glow rework (Case 5) is a Godot 4.6-specific test — verifies the agent applies a post-cutoff migration note

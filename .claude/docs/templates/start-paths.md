@@ -5,12 +5,12 @@ what's required, not what's allowed.
 
 **`minimal`: 4 steps to running code**
 1. `/setup-engine`: choose and configure the engine
-2. `/brainstorm`: write the one-page `design/game-brief.md`
+2. `/brainstorm`: write the one-page `docs/GDD.md`
 3. `/create-stories`: turn the brief's MVP list into stories (no epics or sprint plan needed)
 4. `/dev-story`: the first line of game code
 
 **`standard`**
-- Concept: `/setup-engine` → `/brainstorm` → `/prototype` → `/art-bible` → `/gate-check`
+- Concept: `/setup-engine` → `/brainstorm` → `/gamedev-prototype` → `/art-bible` → `/gate-check`
 - Systems Design: `/map-systems` → `/design-system` (once per system) → `/review-all-gdds` →
   `/gate-check`
 - Architecture: `/create-architecture` → `/architecture-decision` (once per decision) →

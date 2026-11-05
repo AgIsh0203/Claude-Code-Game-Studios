@@ -14,7 +14,7 @@ nothing, says "run `/gate-check release` first", and offers an explicit override
 that is recorded (`Stage override: …`) in the go/no-go record and the report — it
 never sets `project.stage` itself. The skill announces the active set before
 Phase 1 — the default `individual` spawns release-manager alone. Each agent writes
-to its own named file under `production/releases/` (patch notes under
+to its own named file under `docs/production/releases/` (patch notes under
 `docs/patch-notes/`). Phase 3 agents run in parallel. Ends with a go/no-go
 decision; deployment (Phase 6) is skipped if the producer calls NO-GO and, on GO,
 still requires an explicit `AskUserQuestion` approval in every automation mode.
@@ -27,12 +27,12 @@ Closes with a post-release monitoring plan.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED
-- [ ] File Write Protocol distinguishes sub-agents (bounded exception: named path, new artifact under `production/`, `docs/` or `tests/`, gated phase — no per-write prompt) from sub-skills (normal protocol — they ask before writing), and requires explicit confirmation for tags, pushes, builds and storefront changes
+- [ ] File Write Protocol distinguishes sub-agents (bounded exception: named path, new artifact under `docs/production/`, `docs/` or `tests/`, gated phase — no per-write prompt) from sub-skills (normal protocol — they ask before writing), and requires explicit confirmation for tags, pushes, builds and storefront changes
 - [ ] File Write Protocol section states that the orchestrator does not write files directly
-- [ ] Names a destination per agent, so no two parallel agents share a file: `production/releases/release-plan-[version].md`, `release-checklist-[version].md`, `qa-gate-[version].md`, `build-[version].md`, `security-signoff-[version].md`, `netcode-signoff-[version].md`, `localization-signoff-[version].md`, `performance-signoff-[version].md`, `analytics-signoff-[version].md`, `go-no-go-[version].md`, `announcement-[version].md`, `release-report-[version].md`, and `docs/patch-notes/[version].md`
+- [ ] Names a destination per agent, so no two parallel agents share a file: `docs/production/releases/release-plan-[version].md`, `release-checklist-[version].md`, `qa-gate-[version].md`, `build-[version].md`, `security-signoff-[version].md`, `netcode-signoff-[version].md`, `localization-signoff-[version].md`, `performance-signoff-[version].md`, `analytics-signoff-[version].md`, `go-no-go-[version].md`, `announcement-[version].md`, `release-report-[version].md`, and `docs/patch-notes/[version].md`
 - [ ] Error Recovery Protocol section is present: verify a named artifact is on disk, surface BLOCKED immediately, always produce a partial report, full procedure (surface / assess / offer options / partial report) in `.claude/docs/error-recovery-protocol.md`
 - [ ] Phase 0 resolves `project.stage`, and a stage check before Phase 1 stops when it is not `Release` ("run `/gate-check release` first"), spawning nothing; the only way past it is an explicit `AskUserQuestion` override, asked in every `automation` mode and recorded as a `Stage override:` line in the go/no-go record and the final report
-- [ ] Has a next-step handoff referencing post-release monitoring and `/retrospective`; the skill does not write `project.stage` or `production/stage.txt` itself
+- [ ] Has a next-step handoff referencing post-release monitoring and `/retrospective`; the skill does not write `project.stage` or `.claude/ccgs/stage.txt` itself
 - [ ] qa-lead checks open bugs at the release gate's thresholds for the resolved `workflow`: S1 at every tier, S2 and S3 too at `full`
 - [ ] A "phase gate" is a decision point the pipeline itself lists, whatever the `automation` mode; no clause says directors spawn at phase gates
 - [ ] Phase 2 is trunk-based: the release candidate is a commit on `main`, and a `release/*` branch is cut only when the release needs stabilising (freeze / certification), with every fix also landing on `main`
@@ -47,9 +47,9 @@ Closes with a post-release monitoring plan.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -60,9 +60,9 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `review_mode: full`, `team.size: studio`, `automation: collaborative`
-- `project.stage` in `project.yaml` is `Release` (`/gate-check release` has passed)
+- `project.stage` in `.claude/ccgs/project.yaml` is `Release` (`/gate-check release` has passed)
 - Milestone acceptance criteria are all met (producer can confirm)
-- `project.yaml` sets `platform.online: false` and `platform.multiplayer: false`; the game collects no player data
+- `.claude/ccgs/project.yaml` sets `platform.online: false` and `platform.multiplayer: false`; the game collects no player data
 - No freeze or platform certification is planned for this release
 - All CI builds are clean on `main`
 - No open S1/S2 bugs; all strings translated
@@ -71,14 +71,14 @@ Fixture defaults.
 
 **Expected behavior:**
 1. The stage check passes (`project.stage: Release`); before any spawn, one line announces the active set for `team.size: studio`
-2. Phase 1: Spawns `producer` via Agent; confirms all milestone acceptance criteria met; identifies any deferred scope; writes `production/releases/release-plan-v1.0.0.md`; AskUserQuestion: user approves before Phase 2
-3. Phase 2: Spawns `release-manager` via Agent; bumps version numbers on `main`, and that commit is the release candidate; finds no release checklist from Polish, so invokes `/release-checklist` (`production/releases/release-checklist-v1.0.0.md`); cuts no `release/*` branch, since nothing needs stabilising; AskUserQuestion: user approves before Phase 3
-4. Phase 3 (parallel): Issues Agent calls simultaneously for `qa-lead` (regression suite, critical path sign-off, `production/releases/qa-gate-v1.0.0.md`) and `devops-engineer` (build artifacts, CI verification, `production/releases/build-v1.0.0.md`); security-engineer is NOT spawned (`platform.online: false`, no player data) and network-programmer is NOT spawned (`platform.multiplayer: false`), and the Phase 3 output names each skip with its reason
-5. Phase 4: localization-lead verifies all strings are translated (`production/releases/localization-signoff-v1.0.0.md`); performance-analyst benchmarks the release build (`performance-signoff-v1.0.0.md`); `analytics-engineer` verifies telemetry fires correctly on the release build (`analytics-signoff-v1.0.0.md`) — each agent writes its own file
-6. Phase 5: Spawns `producer` via Agent; collects sign-offs from qa-lead, release-manager, devops-engineer and technical-director; no open blocking issues; producer declares GO (`production/releases/go-no-go-v1.0.0.md`)
+2. Phase 1: Spawns `producer` via Agent; confirms all milestone acceptance criteria met; identifies any deferred scope; writes `docs/production/releases/release-plan-v1.0.0.md`; AskUserQuestion: user approves before Phase 2
+3. Phase 2: Spawns `release-manager` via Agent; bumps version numbers on `main`, and that commit is the release candidate; finds no release checklist from Polish, so invokes `/release-checklist` (`docs/production/releases/release-checklist-v1.0.0.md`); cuts no `release/*` branch, since nothing needs stabilising; AskUserQuestion: user approves before Phase 3
+4. Phase 3 (parallel): Issues Agent calls simultaneously for `qa-lead` (regression suite, critical path sign-off, `docs/production/releases/qa-gate-v1.0.0.md`) and `devops-engineer` (build artifacts, CI verification, `docs/production/releases/build-v1.0.0.md`); security-engineer is NOT spawned (`platform.online: false`, no player data) and network-programmer is NOT spawned (`platform.multiplayer: false`), and the Phase 3 output names each skip with its reason
+5. Phase 4: localization-lead verifies all strings are translated (`docs/production/releases/localization-signoff-v1.0.0.md`); performance-analyst benchmarks the release build (`performance-signoff-v1.0.0.md`); `analytics-engineer` verifies telemetry fires correctly on the release build (`analytics-signoff-v1.0.0.md`) — each agent writes its own file
+6. Phase 5: Spawns `producer` via Agent; collects sign-offs from qa-lead, release-manager, devops-engineer and technical-director; no open blocking issues; producer declares GO (`docs/production/releases/go-no-go-v1.0.0.md`)
 7. Phase 6: `AskUserQuestion` "Producer verdict is GO. Execute Phase 6 — tag, deploy to staging, deploy to production?" with [A] Yes, deploy / [B] Staging only — hold production / [C] Stop here; user selects [A]
-8. Phase 6: release-manager + devops-engineer tag the release, finalize the changelog via `/changelog`, deploy to staging, then production; in parallel release-manager finalizes patch notes via `/patch-notes v1.0.0` (`docs/patch-notes/v1.0.0.md`), and `community-manager` writes the launch announcement from them (`production/releases/announcement-v1.0.0.md`)
-9. Phase 7: release-manager generates the release report (`production/releases/release-report-v1.0.0.md`); producer updates milestone tracking; qa-lead monitors for regressions; community-manager publishes; analytics-engineer confirms live dashboards healthy
+8. Phase 6: release-manager + devops-engineer tag the release, finalize the changelog via `/changelog`, deploy to staging, then production; in parallel release-manager finalizes patch notes via `/patch-notes v1.0.0` (`docs/patch-notes/v1.0.0.md`), and `community-manager` writes the launch announcement from them (`docs/production/releases/announcement-v1.0.0.md`)
+9. Phase 7: release-manager generates the release report (`docs/production/releases/release-report-v1.0.0.md`); producer updates milestone tracking; qa-lead monitors for regressions; community-manager publishes; analytics-engineer confirms live dashboards healthy
 10. Next steps: monitor dashboards for 48 hours; `/retrospective` if significant issues occurred
 11. Verdict: COMPLETE — release executed and deployed
 
@@ -93,7 +93,7 @@ Fixture defaults.
 - [ ] `/changelog` is invoked by release-manager in Phase 6 (not written directly)
 - [ ] `/patch-notes v1.0.0` is invoked by release-manager in Phase 6, and community-manager writes the announcement from its output — community-manager is never asked to run `/patch-notes`
 - [ ] Phase 7 monitoring plan includes a 48-hour post-release monitoring commitment
-- [ ] No stop and no override question at the stage check, because `project.stage` reads `Release`; the skill writes neither `project.stage` nor `production/stage.txt`, and no post-launch stage value is invented
+- [ ] No stop and no override question at the stage check, because `project.stage` reads `Release`; the skill writes neither `project.stage` nor `.claude/ccgs/stage.txt`, and no post-launch stage value is invented
 - [ ] Verdict: COMPLETE appears in the final output
 
 ---
@@ -135,7 +135,7 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `review_mode: full`, `team.size: studio`, `automation: collaborative`, `project.stage: Release`
-- `project.yaml` sets `platform.multiplayer: true` and `platform.online: true`; the game stores player account data
+- `.claude/ccgs/project.yaml` sets `platform.multiplayer: true` and `platform.online: true`; the game stores player account data
 - Release candidate exists for v2.1.0
 - qa-lead and devops-engineer both return clean sign-offs
 
@@ -143,7 +143,7 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Phases 1–2 complete normally
-2. Phase 3 (parallel): Orchestrator reads `platform.multiplayer: true` and `platform.online: true` from `project.yaml` and notes the stored player data; issues Agent calls simultaneously for `qa-lead`, `devops-engineer`, `security-engineer` and `network-programmer`
+2. Phase 3 (parallel): Orchestrator reads `platform.multiplayer: true` and `platform.online: true` from `.claude/ccgs/project.yaml` and notes the stored player data; issues Agent calls simultaneously for `qa-lead`, `devops-engineer`, `security-engineer` and `network-programmer`
 3. security-engineer conducts pre-release security audit: reviews authentication flows, anti-cheat presence, data privacy compliance; returns sign-off
 4. network-programmer verifies lag compensation, reconnect handling, and bandwidth under load; returns sign-off
 5. All four Phase 3 agents complete; their results are collected before Phase 4 begins
@@ -165,7 +165,7 @@ Fixture defaults.
 
 **Fixture:**
 - Resolved config block: `team.size: studio`, `automation: collaborative`, `project.stage: Release`
-- `project.yaml` sets `platform.online: false` and `platform.multiplayer: false`; no player data
+- `.claude/ccgs/project.yaml` sets `platform.online: false` and `platform.multiplayer: false`; no player data
 - Release candidate exists for v1.2.0
 - Phase 3 (qa-lead, devops-engineer) complete with clean sign-offs
 - Phase 4: localization-lead finds 47 untranslated strings in the French locale (a supported language) and returns it as a BLOCKED/CONCERNS item
@@ -175,7 +175,7 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Phases 1–3 complete with clean sign-offs
-2. Phase 4: the translation check is delegated to localization-lead (active at `studio`); its sign-off is written to `production/releases/localization-signoff-v1.2.0.md` and the orchestrator confirms the file exists
+2. Phase 4: the translation check is delegated to localization-lead (active at `studio`); its sign-off is written to `docs/production/releases/localization-signoff-v1.2.0.md` and the orchestrator confirms the file exists
 3. At the Phase 4 → 5 transition the orchestrator writes the localization finding in conversation and captures the decision via `AskUserQuestion` — it does not auto-advance
 4. Phase 5: producer evaluates the untranslated strings as an open issue and declares NO-GO
 5. Orchestrator surfaces "PRODUCER: NO-GO — [rationale naming the untranslated French strings]" and offers via `AskUserQuestion`: fix the blocker and re-run the affected phase / defer the release / override NO-GO with documented rationale
@@ -198,18 +198,18 @@ Fixture defaults.
 In both variants `project.stage` is `Release`.
 
 **Fixture (variant A — milestone data present):**
-- `production/milestones/` exists with a milestone file; most recent milestone is "v1.1.0 — Gold"
-- `production/session-state/active.md` references a version or milestone
+- `docs/production/milestones/` exists with a milestone file; most recent milestone is "v1.1.0 — Gold"
+- `.claude/ccgs/session-state/active.md` references a version or milestone
 
 **Fixture (variant B — no discoverable version):**
-- `production/milestones/` does not exist
-- `production/session-state/active.md` does not reference a version
+- `docs/production/milestones/` does not exist
+- `.claude/ccgs/session-state/active.md` does not reference a version
 - No git tags are present from which to infer a version
 
 **Input:** `/team-release` (no argument)
 
 **Expected behavior (variant A):**
-1. Argument check: no version provided; reads `production/session-state/active.md` and the most recent milestone file in `production/milestones/`
+1. Argument check: no version provided; reads `.claude/ccgs/session-state/active.md` and the most recent milestone file in `docs/production/milestones/`
 2. Infers v1.1.0 as the target version; reports "No version argument provided — inferred v1.1.0 from milestone data. Proceeding."
 3. Confirms with AskUserQuestion before beginning Phase 1: "Releasing v1.1.0. Is this correct?"
 4. Proceeds as if `/team-release v1.1.0` was the input
@@ -221,7 +221,7 @@ In both variants `project.stage` is `Release`.
 
 **Assertions:**
 - [ ] Skill does NOT default to a hardcoded version string when no argument is provided
-- [ ] Skill reads `production/session-state/active.md` and milestone files before asking (variant A)
+- [ ] Skill reads `.claude/ccgs/session-state/active.md` and milestone files before asking (variant A)
 - [ ] Inferred version is confirmed with the user via AskUserQuestion before proceeding (variant A)
 - [ ] When no version is discoverable, AskUserQuestion is used — skill does not guess (variant B)
 - [ ] Skill does NOT error out when milestone files are absent — it falls back to asking (variant B)
@@ -245,7 +245,7 @@ In both variants `project.stage` is `Release`.
 **Expected behavior (variant B — the user overrides):**
 1. Same stop and question; user picks `[B]` and, asked why, answers "cert window closes Friday"
 2. The run continues to Phase 1 with the override in the producer's brief
-3. The go/no-go record (`production/releases/go-no-go-v1.0.0.md`) and the final report carry `Stage override: project.stage was Polish — release gate not passed; the user chose to proceed: cert window closes Friday`
+3. The go/no-go record (`docs/production/releases/go-no-go-v1.0.0.md`) and the final report carry `Stage override: project.stage was Polish — release gate not passed; the user chose to proceed: cert window closes Friday`
 4. `project.stage` still reads `Polish` at the end of the run
 
 **Assertions:**
@@ -254,7 +254,7 @@ In both variants `project.stage` is `Release`.
 - [ ] The question is asked in `autonomous` mode — the override is never taken automatically
 - [ ] On `[A]` the verdict is BLOCKED and no agent is spawned at all (not even release-manager)
 - [ ] On `[B]` the override and its reason appear in the go/no-go record and in the final report
-- [ ] The skill writes neither `project.stage` nor `production/stage.txt` in either variant
+- [ ] The skill writes neither `project.stage` nor `.claude/ccgs/stage.txt` in either variant
 
 ---
 

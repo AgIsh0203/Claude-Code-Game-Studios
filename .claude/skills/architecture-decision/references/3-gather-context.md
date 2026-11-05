@@ -71,7 +71,7 @@ Read GDDs the same way `/design-system` Step 2b does: only GDDs the registry
 or the ADR list names as directly relevant, and only their `## Dependencies`,
 `## Formulas`, and `## Edge Cases` sections
 (`Grep pattern="^## (Dependencies|Formulas|Edge Cases)" ... -A 40`) — never a
-speculative full read of `design/gdd/*.md` looking for anything that might
+speculative full read of `docs/design/gdd/*.md` looking for anything that might
 relate.
 
 Skip 3b entirely if the registry already answers everything this decision

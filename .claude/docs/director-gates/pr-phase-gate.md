@@ -9,7 +9,7 @@ Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, pr
 **Context to pass**:
 - Target phase name and the resolved `workflow` tier
 - The target gate's required and recommended artifacts at the resolved tier (from `/gate-check`'s loaded gate file)
-- Sprint and milestone artifacts present — at `minimal`, the Build order in `design/game-brief.md` is the plan (that tier has no sprint plan)
+- Sprint and milestone artifacts present — at `minimal`, the Build order in `docs/GDD.md` is the plan (that tier has no sprint plan)
 - Team size (`team.size`) and sprint capacity (from the current sprint plan, if one exists)
 - Current blocked story count
 

@@ -5,8 +5,8 @@
 `/onboard [role|area]` generates an onboarding document for a new contributor or
 agent. It reads `CLAUDE.md`, the matching agent definition in `.claude/agents/`
 when a role is given, scans the area that role works in (the code root for
-programmers, `design/` for designers, `design/narrative/` for narrative, `tests/`
-for QA, `production/` for production) and reads recent git history.
+programmers, `docs/design/` for designers, `docs/story/` for narrative, `tests/`
+for QA, `docs/production/` for production) and reads recent git history.
 
 Before producing anything it lists its inputs as FOUND or ABSENT. A section whose
 input is ABSENT is written as `NOT ASSESSED — NO DATA`, and one fed by an
@@ -15,7 +15,7 @@ section names what Phase 2 found by path (for a designer, each existing GDD and
 design doc). If every input is ABSENT
 the whole verdict is `NOT ASSESSED — NO DATA`, naming what was missing. Otherwise
 it fills the `# Onboarding: [Role/Area]` template, presents it, and asks "May I
-write this to `production/onboarding/onboard-[role]-[date].md`?". The verdict is
+write this to `docs/production/onboarding/onboard-[role]-[date].md`?". The verdict is
 **COMPLETE**, followed by next steps pointing to `/sprint-status` and `/help`. No
 director gates apply.
 
@@ -42,9 +42,9 @@ in its allowed tools) and no director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -55,9 +55,9 @@ Fixture defaults.
 
 **Fixture:**
 - `CLAUDE.md` exists
-- `project.yaml` has `engine.name: Godot`, so the code root is `src/`
+- `.claude/ccgs/project.yaml` has `engine.name: Godot`, so the code root is `src/`
 - `src/` holds game code; `.claude/agents/gameplay-programmer.md` exists
-- `production/sprints/sprint-005.md` exists; git log has recent commits
+- `docs/production/sprints/sprint-005.md` exists; git log has recent commits
 - `modes.automation` is unset (defaults to `collaborative`)
 
 **Input:** `/onboard gameplay-programmer`
@@ -71,7 +71,7 @@ Fixture defaults.
    Standards and Conventions, Current State of Your Area, Current Sprint Context,
    Key Dependencies, Common Pitfalls, First Tasks, Questions to Ask)
 4. Skill presents the document, then asks "May I write this to
-   `production/onboarding/onboard-gameplay-programmer-[date].md`?"
+   `docs/production/onboarding/onboard-gameplay-programmer-[date].md`?"
 5. On approval it writes the file (creating the directory if needed); verdict is
    COMPLETE, with `/sprint-status` and `/help` as next steps
 
@@ -79,30 +79,30 @@ Fixture defaults.
 - [ ] The agent definition for the named role is read
 - [ ] The code root `src/` is scanned for this programmer role
 - [ ] The document uses the `# Onboarding: [Role/Area]` template sections
-- [ ] The document is presented before the "May I write" ask naming `production/onboarding/onboard-gameplay-programmer-[date].md`
+- [ ] The document is presented before the "May I write" ask naming `docs/production/onboarding/onboard-gameplay-programmer-[date].md`
 - [ ] Verdict is COMPLETE and next steps name `/sprint-status` and `/help`
 
 ---
 
-### Case 2: Designer Role — Scans design/, Not the Code Root
+### Case 2: Designer Role — Scans docs/design/, Not the Code Root
 
 **Fixture:**
 - `CLAUDE.md` exists; `.claude/agents/game-designer.md` exists
-- `design/gdd/` holds three system GDDs
+- `docs/design/gdd/` holds three system GDDs
 - `src/` also holds code
 
 **Input:** `/onboard game-designer`
 
 **Expected behavior:**
 1. Skill reads `CLAUDE.md` and `.claude/agents/game-designer.md`
-2. Phase 2 takes the designers branch and scans `design/` for existing design
+2. Phase 2 takes the designers branch and scans `docs/design/` for existing design
    documents
 3. "Current State of Your Area" reflects the three GDDs found
 4. Document is presented, "May I write" asked for
-   `production/onboarding/onboard-game-designer-[date].md`; verdict COMPLETE
+   `docs/production/onboarding/onboard-game-designer-[date].md`; verdict COMPLETE
 
 **Assertions:**
-- [ ] `design/` is the area scanned for this role
+- [ ] `docs/design/` is the area scanned for this role
 - [ ] The existing GDDs are named in the document's current-state section
 - [ ] The file path in the "May I write" ask uses the role name
 - [ ] Verdict is COMPLETE
@@ -141,7 +141,7 @@ Fixture defaults.
 
 **Fixture:**
 - `CLAUDE.md` exists; `.claude/agents/gameplay-programmer.md` exists
-- `project.yaml` has no `engine.name`, technical-preferences has
+- `.claude/ccgs/project.yaml` has no `engine.name`, technical-preferences has
   `[TO BE CONFIGURED]`, and both `src/` and `Assets/` exist (ambiguous tree)
 
 **Input:** `/onboard gameplay-programmer`
@@ -174,16 +174,16 @@ Fixture defaults.
 **Input:** `/onboard producer`
 
 **Expected behavior:**
-1. Skill scans `production/` for the current sprint and milestone
+1. Skill scans `docs/production/` for the current sprint and milestone
 2. No agent of any kind is spawned; no gate IDs appear in output
 3. Document is presented, then "May I write this to
-   `production/onboarding/onboard-producer-[date].md`?" is asked
+   `docs/production/onboarding/onboard-producer-[date].md`?" is asked
 4. Verdict is COMPLETE
 
 **Assertions:**
 - [ ] No director gate is invoked and no gate skip message appears
 - [ ] No subagent is spawned
-- [ ] `production/` is the area scanned for this role
+- [ ] `docs/production/` is the area scanned for this role
 - [ ] Verdict is COMPLETE after the write ask
 
 ---
@@ -193,7 +193,7 @@ Fixture defaults.
 - [ ] Reads `CLAUDE.md` and, when a role is given, its agent definition before generating
 - [ ] Scans only the area that matches the role
 - [ ] Records each input as FOUND or ABSENT; ABSENT-backed sections read `NOT ASSESSED — NO DATA`
-- [ ] Presents the document before asking "May I write" to `production/onboarding/onboard-[role]-[date].md`
+- [ ] Presents the document before asking "May I write" to `docs/production/onboarding/onboard-[role]-[date].md`
 - [ ] Ends with verdict COMPLETE and the `/sprint-status` / `/help` next steps — or, when every input is absent, stops at `NOT ASSESSED — NO DATA` naming what produces each missing input
 
 ---
@@ -201,10 +201,10 @@ Fixture defaults.
 ## Coverage Notes
 
 - A call with no role argument (`/onboard`) takes Phase 2's general-orientation
-  branch (the top level of `design/`, `docs/architecture/`, `production/` and
+  branch (the top level of `docs/design/`, `docs/architecture/`, `docs/production/` and
   the code root, plus `active.md`, and a note that a role would focus the next
   pass); it is not separately tested.
-- `narrative` (`design/narrative/`) and QA with an existing `tests/` directory
+- `narrative` (`docs/story/`) and QA with an existing `tests/` directory
   follow the same branch pattern as Cases 1 and 2 and are not separately tested.
 - `modes.automation: autonomous` (log and proceed instead of asking) is not
   tested here.

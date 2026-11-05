@@ -4,9 +4,9 @@
 
 `/settings` shows and changes project configuration. It has four forms:
 `/settings` (view-all: every effective setting with its source), `/settings
-<key>` (view-one), `/settings <key>=<value>` (write to `project.yaml`) and
+<key>` (view-one), `/settings <key>=<value>` (write to `.claude/ccgs/project.yaml`) and
 `/settings --local <key>=<value>` (write a personal override to the gitignored
-`project.local.yaml`). Anything else, including an empty key or value, prints
+`.claude/ccgs/project.local.yaml`). Anything else, including an empty key or value, prints
 the usage block. It runs on the Sonnet model and reads every value through
 `yaml-helper.sh` (`resolve_setting`, `get_yaml_key`, `is_locally_overridable`,
 `validate_enum_value`), so a value the `modes.rigor` preset supplies is shown as
@@ -14,7 +14,7 @@ the usage block. It runs on the Sonnet model and reads every value through
 
 Every write is validated against the schema enums first, then confirmed with an
 `AskUserQuestion` approval gate (`[A] Yes, write` / `[B] No, cancel`). A
-`project.yaml` write is a `schema_changes` decision, so it is confirmed even in
+`.claude/ccgs/project.yaml` write is a `schema_changes` decision, so it is confirmed even in
 `autonomous` mode. `--local` refuses a key that is not on the local-override
 whitelist. A setting that `.claude/docs/effects-map.md` marks with a
 `> ### RESERVED` banner is stored when asked, but every form says nothing reads
@@ -44,9 +44,9 @@ None. `/settings` is a configuration utility. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -56,7 +56,7 @@ Fixture defaults.
 ### Case 1: Happy Path — view-all shows derived values, a local override and the legend
 
 **Fixture:**
-- `project.yaml`:
+- `.claude/ccgs/project.yaml`:
   ```yaml
   framework:
     version: 1.2.0
@@ -68,7 +68,7 @@ Fixture defaults.
   engine:
     name: Godot
   ```
-- `project.local.yaml`:
+- `.claude/ccgs/project.local.yaml`:
   ```yaml
   modes:
     automation: autonomous
@@ -81,20 +81,20 @@ Fixture defaults.
 2. Lists every file leaf, then appends the rigor family the files do not set:
    `modes.workflow`, `qa.level`, `modes.story_granularity`, `modes.review_mode`
    and `team.size`, each annotated `(derived from rigor: full, …)`
-3. `docs.density: terse` is annotated `(project.yaml, locked)` — the explicit
+3. `docs.density: terse` is annotated `(.claude/ccgs/project.yaml, locked)` — the explicit
    value wins over the `thorough` that `rigor: full` would supply
 4. `modes.automation: autonomous` is annotated
    `(LOCAL OVERRIDE — yaml has: collaborative)`
 5. Leaves are grouped by top-level section (`modes:`, `docs:`, `qa:`, …), not
    by the file they came from
 6. Below the block, the two-line legend: `locked` means it cannot be overridden
-   in `project.local.yaml`, and does not mean fixed
+   in `.claude/ccgs/project.local.yaml`, and does not mean fixed
 7. No file is written
 
 **Assertions:**
 - [ ] All five rigor-derived knobs appear with real values, none as "(not set)"
 - [ ] The explicit `docs.density` shows its own value and source, not the preset's
-- [ ] The local override names the `project.yaml` value it shadows
+- [ ] The local override names the `.claude/ccgs/project.yaml` value it shadows
 - [ ] The `locked` legend is printed, and says a derived value can still be set explicitly
 - [ ] Nothing is written
 
@@ -103,7 +103,7 @@ Fixture defaults.
 ### Case 2: View-one — a rigor-derived key says how to set it
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard` and no `qa.level`
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard` and no `qa.level`
 
 **Input:** `/settings qa.level`
 
@@ -122,7 +122,7 @@ Fixture defaults.
 ### Case 3: Set-yaml — changing `modes.rigor` reports the six knobs it moves
 
 **Fixture:**
-- `project.yaml`:
+- `.claude/ccgs/project.yaml`:
   ```yaml
   modes:
     rigor: minimal
@@ -136,29 +136,29 @@ Fixture defaults.
 
 **Expected behavior:**
 1. `validate_enum_value modes.rigor standard` passes
-2. `AskUserQuestion` asks ``Set `modes.rigor=standard` in `project.yaml`?``
+2. `AskUserQuestion` asks ``Set `modes.rigor=standard` in `.claude/ccgs/project.yaml`?``
    with `[A] Yes, write` / `[B] No, cancel`
 3. The `Edit` anchors on the `modes:` line plus the `rigor: minimal` line and
    changes only that value; no second `modes:` block is added
-4. Confirms ``Set `modes.rigor=standard` in `project.yaml`.`` and lists what
+4. Confirms ``Set `modes.rigor=standard` in `.claude/ccgs/project.yaml`.`` and lists what
    the six knobs resolve to now, re-read with `resolve_setting`:
    `modes.workflow: standard`, `qa.level: standard`,
    `modes.story_granularity: balanced`, `modes.review_mode: lean`,
    `team.size: individual` (each derived from rigor: standard) and
-   `docs.density: thorough` (`project.yaml` — explicit, unchanged)
+   `docs.density: thorough` (`.claude/ccgs/project.yaml` — explicit, unchanged)
 
 **Assertions:**
 - [ ] Approval is asked before the file is edited
-- [ ] `project.yaml` still has exactly one `modes:` block, with `rigor: standard`
+- [ ] `.claude/ccgs/project.yaml` still has exactly one `modes:` block, with `rigor: standard`
 - [ ] The six-knob list shows the explicit `docs.density` as unchanged, not as `balanced`
-- [ ] No other line of `project.yaml` changes
+- [ ] No other line of `.claude/ccgs/project.yaml` changes
 
 ---
 
 ### Case 4: Invalid value — rejected before any question
 
 **Fixture:**
-- `project.yaml` sets `modes.review_mode: lean`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: lean`
 
 **Input:** `/settings modes.review_mode=chaotic`
 
@@ -170,14 +170,14 @@ Fixture defaults.
 **Assertions:**
 - [ ] The helper's error line is shown as it is, naming the allowed values
 - [ ] No `AskUserQuestion` is asked
-- [ ] `project.yaml` is unchanged
+- [ ] `.claude/ccgs/project.yaml` is unchanged
 
 ---
 
 ### Case 5: `--local` on a locked key — refused with the team-wide route
 
 **Fixture:**
-- `project.yaml` sets `engine.name: Godot`; no `project.local.yaml`
+- `.claude/ccgs/project.yaml` sets `engine.name: Godot`; no `.claude/ccgs/project.local.yaml`
 
 **Input:** `/settings --local engine.name=Unity`
 
@@ -189,30 +189,30 @@ Fixture defaults.
 **Assertions:**
 - [ ] The refusal names the `/settings <key>=<value>` route
 - [ ] No approval question is asked
-- [ ] No `project.local.yaml` is created
+- [ ] No `.claude/ccgs/project.local.yaml` is created
 
 ---
 
 ### Case 6: `--local` on a whitelisted key — creates the override file
 
 **Fixture:**
-- `project.yaml` exists with `modes.automation: collaborative`; no
-  `project.local.yaml`
+- `.claude/ccgs/project.yaml` exists with `modes.automation: collaborative`; no
+  `.claude/ccgs/project.local.yaml`
 - The user answers `[A] Yes, write`
 
 **Input:** `/settings --local modes.automation=autonomous`
 
 **Expected behavior:**
 1. The whitelist and enum checks pass
-2. `AskUserQuestion` asks ``Set `modes.automation=autonomous` in `project.local.yaml` (your personal override, gitignored)?``
-3. `project.local.yaml` is created with the value inside its `modes:` parent
+2. `AskUserQuestion` asks ``Set `modes.automation=autonomous` in `.claude/ccgs/project.local.yaml` (your personal override, gitignored)?``
+3. `.claude/ccgs/project.local.yaml` is created with the value inside its `modes:` parent
    block
-4. Confirms ``Set `modes.automation=autonomous` in `project.local.yaml` (your override).``
+4. Confirms ``Set `modes.automation=autonomous` in `.claude/ccgs/project.local.yaml` (your override).``
 
 **Assertions:**
 - [ ] Approval is asked before the file is created
 - [ ] The new file nests the key under `modes:`, not as a dotted top-level line
-- [ ] `project.yaml` is unchanged
+- [ ] `.claude/ccgs/project.yaml` is unchanged
 
 ---
 
@@ -222,7 +222,7 @@ Fixture defaults.
 - `.claude/docs/effects-map.md` is the live file; pick a key whose section
   carries the `> ### RESERVED` banner (`accessibility.target` when this spec
   was written — re-derive it with the skill's own grep)
-- `project.yaml` does not set that key; the user answers `[A] Yes, write`
+- `.claude/ccgs/project.yaml` does not set that key; the user answers `[A] Yes, write`
 
 **Input:** `/settings accessibility.target=standard`, then `/settings`, then
 `/settings accessibility.target`
@@ -248,32 +248,32 @@ Fixture defaults.
 ### Case 8: Shadowed write and autonomous mode — still asked, with the shadow named
 
 **Fixture:**
-- `project.yaml` sets `modes.review_mode: lean` and `modes.automation: autonomous`
-- `project.local.yaml` sets `modes.review_mode: solo`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: lean` and `modes.automation: autonomous`
+- `.claude/ccgs/project.local.yaml` sets `modes.review_mode: solo`
 - The user answers `[A] Yes, write`
 
 **Input:** `/settings modes.review_mode=full`
 
 **Expected behavior:**
 1. Before the approval question: "Note: this setting is currently locally
-   overridden in `project.local.yaml` (value: `solo`). Writing to `project.yaml`
+   overridden in `.claude/ccgs/project.local.yaml` (value: `solo`). Writing to `.claude/ccgs/project.yaml`
    will not change your effective value."
 2. The approval question is asked even though `modes.automation` is
-   `autonomous`: a `project.yaml` write is a `schema_changes` decision, which is
+   `autonomous`: a `.claude/ccgs/project.yaml` write is a `schema_changes` decision, which is
    on the default always-ask list
-3. `project.yaml` gets `review_mode: full`; `project.local.yaml` is unchanged
+3. `.claude/ccgs/project.yaml` gets `review_mode: full`; `.claude/ccgs/project.local.yaml` is unchanged
 
 **Assertions:**
 - [ ] The shadow note names the local value and comes before the question
 - [ ] Autonomous mode does not skip the approval question
-- [ ] Only `project.yaml` is edited
+- [ ] Only `.claude/ccgs/project.yaml` is edited
 
 ---
 
 ### Case 9: Malformed operand — usage, no write
 
 **Fixture:**
-- `project.yaml` exists
+- `.claude/ccgs/project.yaml` exists
 
 **Input:** `/settings --local modes.automation=` (and, separately,
 `/settings =full`)
@@ -294,7 +294,7 @@ Fixture defaults.
 - [ ] Every write is preceded by an `AskUserQuestion` approval gate; `[B] No, cancel` leaves both files unchanged
 - [ ] Values are validated with `validate_enum_value` before the approval question
 - [ ] Values are read with `resolve_setting`, so derived values show with their rigor source
-- [ ] `--local` writes only whitelisted keys, and never creates `project.local.yaml` without a `project.yaml`
+- [ ] `--local` writes only whitelisted keys, and never creates `.claude/ccgs/project.local.yaml` without a `.claude/ccgs/project.yaml`
 - [ ] Reserved keys are flagged on view-all, view-one and both write paths
 - [ ] Every helper call runs from the project root in the same Bash command that sources `yaml-helper.sh`
 
@@ -305,5 +305,5 @@ Fixture defaults.
 - View-all with schema errors in one or both files, Phase 4's Case D (no clean
   insertion point) and a session started in a subfolder are not separately
   fixture-tested.
-- The missing-`project.yaml` stops (view-all, and `--local` with no base file)
+- The missing-`.claude/ccgs/project.yaml` stops (view-all, and `--local` with no base file)
   and a missing `yaml-helper.sh` are not separately fixture-tested.

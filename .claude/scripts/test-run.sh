@@ -14,7 +14,7 @@
 #
 # Usage: bash .claude/scripts/test-run.sh <engine> [options]
 #   <engine>            godot, unity or unreal (any case)
-#   --cmd COMMAND       the test command to run, instead of project.yaml's
+#   --cmd COMMAND       the test command to run, instead of .claude/ccgs/project.yaml's
 #                       commands.test or the engine's default
 #   --exe PATH          the editor executable (default: the one commands.test
 #                       names, for godot only when its name says godot, else
@@ -86,7 +86,7 @@
 # 1 cannot read the root or write the log; 2 usage error; 3 unknown engine.
 # It runs the project's own test command and writes under the project (Unity's
 # results file, the engine's caches); it never prompts and never edits
-# project.yaml.
+# .claude/ccgs/project.yaml.
 #
 # bash 3.2 and BWK awk safe, no Python.
 
@@ -137,7 +137,7 @@ else
   cd "$HERE/../.." 2>/dev/null || { echo "test-run: cannot reach the repo root" >&2; exit 1; }
 fi
 [ -f "$HERE/yaml-get.awk" ] || { echo "test-run: $HERE/yaml-get.awk is missing" >&2; exit 1; }
-yget() { [ -f project.yaml ] && YG_PATH="$1" awk -f "$HERE/yaml-get.awk" project.yaml; }
+yget() { [ -f .claude/ccgs/project.yaml ] && YG_PATH="$1" awk -f "$HERE/yaml-get.awk" .claude/ccgs/project.yaml; }
 
 printf 'engine\t%s\n' "$ENAME"
 

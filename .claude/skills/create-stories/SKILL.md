@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,docs.density,story_granularity,qa.level,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
@@ -22,8 +24,8 @@ A story is one implementable behaviour: small enough for the size
 decision that governs it. Run this skill once per epic, in dependency order:
 Foundation epics first, then Core, Feature, Presentation.
 
-**Writes:** `production/epics/[epic-slug]/story-NNN-[slug].md`, the epic's
-`EPIC.md` Stories table, and its row in `production/epics/index.md`.
+**Writes:** `docs/production/epics/[epic-slug]/story-NNN-[slug].md`, the epic's
+`EPIC.md` Stories table, and its row in `docs/production/epics/index.md`.
 **Next:** `/dev-story [story-path]` at `workflow: minimal`; otherwise
 `/story-readiness [story-path]`, then `/dev-story`.
 
@@ -64,34 +66,34 @@ full context, guidance and ADR rationale. The TR-ID, ADR Version and acceptance
 criteria are never trimmed.
 
 **Which epic.** The text typed after the skill name, with any `--review <mode>`
-pair removed: an epic slug (`combat`) or a path (`production/epics/combat/EPIC.md`).
+pair removed: an epic slug (`combat`) or a path (`docs/production/epics/combat/EPIC.md`).
 With nothing typed, the epic the user's request names ("the loot epic") counts as
 named.
 
 - **Named, but no `EPIC.md` there:** at `standard` and `full`, stop: "No epic at
-  `production/epics/[slug]/EPIC.md`. Run `/create-epics` to create it, or check the
-  slug with `ls production/epics/`." Never decompose from a guess. At `minimal`,
+  `docs/production/epics/[slug]/EPIC.md`. Run `/create-epics` to create it, or check the
+  slug with `ls docs/production/epics/`." Never decompose from a guess. At `minimal`,
   say this tier needs no `/create-epics` epic, take Phase 2's `minimal` branch, and
   name the slug it uses.
 - **Blank, at `minimal`:** take Phase 2's `minimal` branch.
-- **Blank, at `standard` or `full`:** list `production/epics/*/EPIC.md` with each
+- **Blank, at `standard` or `full`:** list `docs/production/epics/*/EPIC.md` with each
   status, then ask: "Which epic would you like to break into stories?" with one
   option per epic. **No epics found:** stop and say "No epics found under
-  `production/epics/`. Run `/create-epics layer: foundation` first." Never ask a
+  `docs/production/epics/`. Run `/create-epics layer: foundation` first." Never ask a
   question with no options.
 
 ## Phase 2: Load the inputs
 
 ### `minimal`: build the epic from the brief
 
-1. **No `design/game-brief.md`:** stop. "There is no brief to build stories from
+1. **No `docs/GDD.md`:** stop. "There is no brief to build stories from
    yet: run `/brainstorm` first; it writes the one-page brief." When the code root
    already holds the game (10 or more source files), name `/reverse-document design
    [code root]` instead.
-2. Read `design/game-brief.md` in full (one page).
+2. Read `docs/GDD.md` in full (one page).
 3. **The epic.** `<slug>` is the brief's working title, slugified (`mvp` if it has
    none), or the epic the user named.
-   - `production/epics/<slug>/EPIC.md` exists: it is the epic. Use its scope, still
+   - `docs/production/epics/<slug>/EPIC.md` exists: it is the epic. Use its scope, still
      traced to the brief, and never rewrite it.
    - It does not: draft one, written in Phase 7 only after the Phase 6 ask names
      it. Goal = the brief's one-sentence pitch; scope = its MVP feature list;
@@ -106,10 +108,10 @@ Read no GDD, control manifest, TR registry or ADR at `minimal`. Go to Phase 3.
 
 ### `standard` and `full`: the epic and what governs it
 
-1. **The epic:** `production/epics/[epic-slug]/EPIC.md` in full (its layer, GDD,
+1. **The epic:** `docs/production/epics/[epic-slug]/EPIC.md` in full (its layer, GDD,
    governing ADRs, and the GDD Requirements table with TR-IDs).
 2. **The GDD:** its sections by heading, never the whole file:
-   `bash .claude/scripts/md-section.sh extract design/gdd/[file].md "Acceptance Criteria"`,
+   `bash .claude/scripts/md-section.sh extract docs/design/gdd/[file].md "Acceptance Criteria"`,
    and the same for `Formulas`, `Edge Cases` and `Detailed Design` (exit 3: try
    `Detailed Rules`, the design standard's name for the same section); at `full`
    the other required sections too (`list` shows the headings).
@@ -221,7 +223,7 @@ Story 002: [title] — Integration — ADR-0004 — BLOCKED (ADR-0004 is Propose
 
 Story 003: [title] — Visual/Feel — ADR-0001 — Ready — Estimate S
   Covers: TR-[system]-004
-  Evidence required: retained screenshot + sign-off in production/qa/evidence/[slug]-evidence.md
+  Evidence required: retained screenshot + sign-off in docs/production/qa/evidence/[slug]-evidence.md
 
 [N stories: N Logic, N Integration, N Visual/Feel, N UI, N Config/Data; N Blocked]
 QL-STORY-READY: [skipped — Solo mode | its verdicts]
@@ -230,9 +232,9 @@ QL-STORY-READY: [skipped — Solo mode | its verdicts]
 At `minimal`, each line traces to `Brief MVP feature N`, there is no ADRs line, and
 there is one story per MVP feature: no extra stories for brief items outside the
 MVP list. Then
-ask: "May I write these [N] stories to `production/epics/[epic-slug]/`, and
-[create | update] `production/epics/[epic-slug]/EPIC.md` and update
-`production/epics/index.md`?" Options: Yes, write all [N] / Not yet, I want to
+ask: "May I write these [N] stories to `docs/production/epics/[epic-slug]/`, and
+[create | update] `docs/production/epics/[epic-slug]/EPIC.md` and update
+`docs/production/epics/index.md`?" Options: Yes, write all [N] / Not yet, I want to
 adjust first; an adjustment can change any estimate. Name every file Phase 7 touches: *create* `EPIC.md` only when it
 does not exist, and leave `index.md` out when it does not exist. Write nothing
 before the yes.
@@ -241,7 +243,7 @@ before the yes.
 
 ### The story files
 
-**Each story** is `production/epics/[epic-slug]/story-[NNN]-[slug].md`, laid out
+**Each story** is `docs/production/epics/[epic-slug]/story-[NNN]-[slug].md`, laid out
 as `.claude/docs/templates/story.md`. Never reuse a story number. Write each file
 as a file, never through a shell command: a shell write skips the project's write
 checks.
@@ -251,7 +253,7 @@ exactly:
 
 | Field | Value at `minimal` |
 |---|---|
-| GDD | `design/game-brief.md` |
+| GDD | `docs/GDD.md` |
 | Requirement | `Brief MVP feature N`, never a TR-ID |
 | ADR Governing Implementation, ADR Decision Summary, ADR Version | `N/A (minimal — no ADRs)` |
 | Manifest Version, Control Manifest Rules | `N/A (minimal — no control manifest)` |
@@ -287,16 +289,16 @@ is:
 | 002 | [title] | Integration | Blocked | ADR-0004 |
 ```
 
-### `production/epics/index.md`
+### `docs/production/epics/index.md`
 
 Set the epic's `Stories` cell to `[N] stories`,
 the epic's total after this run. When the file does not exist, say so:
-`Epics index not updated: production/epics/index.md absent`.
+`Epics index not updated: docs/production/epics/index.md absent`.
 
 ## Phase 8: Close
 
-If other epics in `production/epics/` have no stories, list them. Then ask:
-"[N] stories written to `production/epics/[epic-slug]/`. What next?" Options, those
+If other epics in `docs/production/epics/` have no stories, list them. Then ask:
+"[N] stories written to `docs/production/epics/[epic-slug]/`. What next?" Options, those
 that apply:
 
 - Start implementing: `/dev-story [first-story-path]` at `minimal`,
@@ -315,9 +317,9 @@ notes from the ADRs, rules from the manifest; none are invented.
 answered (repeat it if you showed it earlier):
 
 ```
-Verdict: COMPLETE — [N] stories written to production/epics/[epic-slug]/ ([N] Ready, [N] Blocked)
+Verdict: COMPLETE — [N] stories written to docs/production/epics/[epic-slug]/ ([N] Ready, [N] Blocked)
 Review: [QL-STORY-READY skipped — Solo mode | skipped — Lean mode | its verdicts]
-Index: [production/epics/index.md updated | Epics index not updated: production/epics/index.md absent]
+Index: [docs/production/epics/index.md updated | Epics index not updated: docs/production/epics/index.md absent]
 Next step: [/dev-story [first-story-path] | /story-readiness [first-story-path]]
 ```
 

@@ -15,7 +15,7 @@ I/O hotspot candidates (Phase 3) — it does not ingest runtime profiler exports
 The report rates each budgeted row `OK` / `WARNING` / `OVER`; a metric with no
 committed budget is `NOT ASSESSED`, and the summary gives headroom only against a
 budget that is set (`no budget set — headroom not assessed` otherwise). The skill asks "May I write this profiling
-report to `production/polish/[scope]-report-[date].md`?" before writing (Phase
+report to `docs/production/polish/[scope]-report-[date].md`?" before writing (Phase
 4), offers implement / cut scope / defer / escalate choices for M- or L-effort
 hotspots (Phase 5), and hands off to `/architecture-decision`, `/scope-check`
 or `/sprint-plan update` (Phase 6). No director gates are invoked. Verdicts:
@@ -32,7 +32,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: COMPLETE, NOT ASSESSED — NO DATA, and the per-metric statuses OK / WARNING / OVER
-- [ ] Contains "May I write" language naming `production/polish/[scope]-report-[date].md`
+- [ ] Contains "May I write" language naming `docs/production/polish/[scope]-report-[date].md`
 - [ ] Has a next-step handoff (Phase 6: `/architecture-decision`, `/scope-check`, `/sprint-plan update`)
 
 ---
@@ -46,9 +46,9 @@ in any review mode.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -58,7 +58,7 @@ Fixture defaults.
 ### Case 1: Happy Path — Budgets committed, combat hotspots found
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `performance.target_framerate: 60`,
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `performance.target_framerate: 60`,
   `performance.frame_budget_ms: 16.6`, `performance.draw_call_limit: 200`,
   `performance.memory_ceiling_mb: 2048`; `performance.enforce` unset (resolves
   to `warn`); `modes.automation` unset (collaborative)
@@ -77,7 +77,7 @@ Fixture defaults.
 4. Phase 3: the combat `_process()` functions are listed; the nested loop and the per-frame raycast are identified
 5. Phase 4: the report's Performance Budgets table uses 16.6 ms, 2048 MB and 200 draw calls as budgets, each of those three rows with an OK / WARNING / OVER status; the Load time row has no committed budget and is `NOT ASSESSED`; hotspots and recommendations cite `enemy_manager.gd` with a line number
 6. Summary gives the top 3 hotspots, estimated headroom against the three set budgets, `no budget set — headroom not assessed` for load time, and a recommended next action
-7. Skill asks "May I write this profiling report to `production/polish/combat-report-[date].md`?"
+7. Skill asks "May I write this profiling report to `docs/production/polish/combat-report-[date].md`?"
 8. The nested-loop hotspot is rated Fix Effort M or L, so Phase 5 offers: implement, reduce scope via `/scope-check`, defer to Polish, or escalate via `/architecture-decision`
 9. Verdict: COMPLETE
 
@@ -87,7 +87,7 @@ Fixture defaults.
 - [ ] Each optimization recommendation states location, expected gain, risk and approach
 - [ ] The frame time, memory and draw call rows carry an OK / WARNING / OVER status; the Load time row is `NOT ASSESSED`, not OK
 - [ ] No headroom is claimed for load time; the summary says `no budget set — headroom not assessed`
-- [ ] "May I write" names `production/polish/combat-report-[date].md` and precedes any write
+- [ ] "May I write" names `docs/production/polish/combat-report-[date].md` and precedes any write
 - [ ] The M/L-effort hotspot triggers the Phase 5 choice (implement / `/scope-check` / defer to Polish / `/architecture-decision`)
 - [ ] Verdict is COMPLETE
 
@@ -96,7 +96,7 @@ Fixture defaults.
 ### Case 2: No Committed Budget — Budget rows are NOT ASSESSED
 
 **Fixture:**
-- `project.yaml` has `engine.name: godot` and no `performance` block
+- `.claude/ccgs/project.yaml` has `engine.name: godot` and no `performance` block
 - No design doc and no `CLAUDE.md` section states a frame-rate, memory, load-time or draw-call target
 - `src/` contains gameplay scripts with `_process()` functions
 
@@ -107,7 +107,7 @@ Fixture defaults.
 2. Source code is FOUND, so Phase 3 analysis still runs and hotspots are reported
 3. Every row of the Performance Budgets table is `NOT ASSESSED` — none is measured against the template's `[16.67ms]` placeholder
 4. The summary does not claim headroom against a budget nobody set: it says `no budget set — headroom not assessed`
-5. Skill asks "May I write this profiling report to `production/polish/full-report-[date].md`?"; the `NOT ASSESSED` rows stay in the file offered for writing
+5. Skill asks "May I write this profiling report to `docs/production/polish/full-report-[date].md`?"; the `NOT ASSESSED` rows stay in the file offered for writing
 
 **Assertions:**
 - [ ] No budget row shows OK, WARNING or OVER; each is `NOT ASSESSED`
@@ -120,7 +120,7 @@ Fixture defaults.
 ### Case 3: Nothing to Profile — Whole verdict NOT ASSESSED — NO DATA
 
 **Fixture:**
-- Fresh project: `project.yaml` has `engine.name: godot` and no `performance` block, and the code root `src/` is absent
+- Fresh project: `.claude/ccgs/project.yaml` has `engine.name: godot` and no `performance` block, and the code root `src/` is absent
 - No design docs exist
 - No profiler output exists anywhere
 
@@ -143,19 +143,19 @@ Fixture defaults.
 ### Case 4: Local Enforcement Override `block` — Violations are blockers
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `performance.enforce: warn`, `performance.draw_call_limit: 200`, the other three budgets set
-- `project.local.yaml`: `performance.enforce: block`, so the resolved block at the top of the skill shows `block`
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `performance.enforce: warn`, `performance.draw_call_limit: 200`, the other three budgets set
+- `.claude/ccgs/project.local.yaml`: `performance.enforce: block`, so the resolved block at the top of the skill shows `block`
 - `src/levels/forest/forest_builder.gd` instantiates 600 individual foliage `MeshInstance3D` nodes, each with its own material and no instancing
 - `modes.automation` unset (collaborative)
 
 **Input:** `/perf-profile forest`
 
 **Expected behavior:**
-1. Phase 0 uses `block` from the resolved config block at the top of the skill, not the `warn` a fresh read of `project.yaml` would give
+1. Phase 0 uses `block` from the resolved config block at the top of the skill, not the `warn` a fresh read of `.claude/ccgs/project.yaml` would give
 2. The draw-call estimate for the forest scope exceeds 200; the Draw calls row is OVER
 3. The report states explicitly that the violation is a blocker — release-stopping — and that `/gate-check` will FAIL the Polish gate on it
 4. A recommendation (e.g., batching or instancing the foliage) is given with its expected gain
-5. Skill asks "May I write" before writing `production/polish/forest-report-[date].md`
+5. Skill asks "May I write" before writing `docs/production/polish/forest-report-[date].md`
 
 **Assertions:**
 - [ ] The local `block` applies, not the committed `warn` — `performance.enforce` comes from the resolved block
@@ -168,7 +168,7 @@ Fixture defaults.
 ### Case 5: Enforcement Level `off` in Full Review Mode — Informational only, no gates
 
 **Fixture:**
-- `project.yaml`: `engine.name: godot`, `modes.review_mode: full`, `modes.workflow: standard` (pinned: unset resolves to `minimal`, which has no sprints, so Phase 6 would name the brief's build order instead of `/sprint-plan update`), `performance.enforce: off`, all four budgets set
+- `.claude/ccgs/project.yaml`: `engine.name: godot`, `modes.review_mode: full`, `modes.workflow: standard` (pinned: unset resolves to `minimal`, which has no sprints, so Phase 6 would name the brief's build order instead of `/sprint-plan update`), `performance.enforce: off`, all four budgets set
 - `src/` contains a `_process()` whose estimated frame cost exceeds `performance.frame_budget_ms`
 
 **Input:** `/perf-profile full`
@@ -225,7 +225,7 @@ Fixture defaults.
 ### Case 7: Session Started in a Subfolder — budgets are still read from the project root
 
 **Fixture:**
-- `project.yaml` at the project root: `engine.name: godot`,
+- `.claude/ccgs/project.yaml` at the project root: `engine.name: godot`,
   `performance.target_framerate: 60`, `performance.frame_budget_ms: 16.6`,
   `performance.draw_call_limit: 200`, `performance.memory_ceiling_mb: 2048`
 - The session's working directory is `src/gameplay/` (a subfolder), not the root
@@ -238,14 +238,14 @@ Fixture defaults.
    first changes to the project root and loads `.claude/hooks/yaml-helper.sh`
    from there
 2. All four keys return their committed values; none comes back empty because
-   the helper or `project.yaml` was not found from the subfolder
+   the helper or `.claude/ccgs/project.yaml` was not found from the subfolder
 3. The Performance Budgets table uses 16.6 ms, 2048 MB and 200 draw calls; those
    rows are not `NOT ASSESSED`
 
 **Assertions:**
 - [ ] The budget read is a single command that changes to the project root before sourcing the helper, not four reads run from the current folder
 - [ ] The four values are the committed ones, not empty
-- [ ] No budget row is `NOT ASSESSED` because of the working directory: a budget set in `project.yaml` is never reported as unset
+- [ ] No budget row is `NOT ASSESSED` because of the working directory: a budget set in `.claude/ccgs/project.yaml` is never reported as unset
 - [ ] The nested loop is still found and reported with a `file:line` location
 
 ---
@@ -256,7 +256,7 @@ Fixture defaults.
 - [ ] Reads the four `performance.*` budget keys with `get_effective_yaml_key` before falling back to design docs or `CLAUDE.md`
 - [ ] A metric with no committed budget is `NOT ASSESSED` — never measured against the `[16.67ms]` placeholder — and the summary claims headroom only against a budget that is set
 - [ ] Applies `performance.enforce` from the resolved block: `warn` → findings, `block` → blockers, `off` → informational
-- [ ] Asks "May I write" naming `production/polish/[scope]-report-[date].md` before writing, and keeps `NOT ASSESSED` sections in the written file
+- [ ] Asks "May I write" naming `docs/production/polish/[scope]-report-[date].md` before writing, and keeps `NOT ASSESSED` sections in the written file
 - [ ] No director gates are invoked
 - [ ] Ends with the Phase 6 next-step handoff; the scheduling line depends on `workflow` (`/sprint-plan update` at `standard`/`full`, the brief's build order at `minimal`)
 

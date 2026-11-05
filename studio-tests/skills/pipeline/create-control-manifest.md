@@ -56,9 +56,9 @@ then supplied and the gate re-run, or the run goes on with
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -93,7 +93,7 @@ Fixture defaults.
 **Assertions:**
 - [ ] All 4 Accepted ADRs are listed under `ADRs Covered` in the manifest header
 - [ ] Each layer section has `### Required Patterns` and `### Forbidden Approaches`
-- [ ] Every rule carries its source — `— source: [ADR-NNNN]` for a layer rule; a global rule names its `project.yaml` / `technical-preferences.md` key or engine-reference file (e.g. `deprecated-apis.md`)
+- [ ] Every rule carries its source — `— source: [ADR-NNNN]` for a layer rule; a global rule names its `.claude/ccgs/project.yaml` / `technical-preferences.md` key or engine-reference file (e.g. `deprecated-apis.md`)
 - [ ] Preview is shown and "Does this rule summary look complete?" is asked before any write ask
 - [ ] "TD-MANIFEST skipped — Solo mode." appears; no technical-director is spawned
 - [ ] Skill does NOT write before the "May I write the Control Manifest?" approval
@@ -154,7 +154,7 @@ Fixture defaults.
 - `docs/architecture/control-manifest.md` already exists with
   `Manifest Version` and `Last Updated` both dated last week
 - `docs/architecture/` contains Accepted ADRs, one of them accepted since then
-- `production/epics/` already holds epics with stories, so the first-run
+- `docs/production/epics/` already holds epics with stories, so the first-run
   `/create-epics` next step does not apply
 
 **Input:** `/create-control-manifest update`

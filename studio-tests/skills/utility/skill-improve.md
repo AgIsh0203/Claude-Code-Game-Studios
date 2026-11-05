@@ -6,7 +6,7 @@
 cycle on a single skill. It records a static baseline with
 `/skill-test static [name]` (FAIL and WARN counts, and which of Checks 1–7
 failed), then a category baseline with `/skill-test category [name]` when the
-skill has a `category:` in `studio-tests/catalog.yaml`. If both
+skill has a `category:` in `.claude/ccgs/studio-tests/catalog.yaml`. If both
 baselines are clean it stops with "No improvements needed." Otherwise it shows
 a diagnosis, proposes before/after fixes, asks "May I write this improved
 version to `.claude/skills/[name]/SKILL.md`?" (naming each `references/` file
@@ -44,9 +44,9 @@ None. `/skill-improve` is a meta-utility skill. No director gates apply.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -131,7 +131,7 @@ Fixture defaults.
     paragraph (G2 FAIL — a narrow panel no longer names who was left out)
   - `references/4-assessment.md` has its `solo` bullet changed to "run the
     panel" (G4 FAIL — directors spawn in solo mode)
-- G2 and G4 are the `### gate` metrics in `studio-tests/quality-rubric.md`
+- G2 and G4 are the `### gate` metrics in `.claude/ccgs/studio-tests/quality-rubric.md`
 - catalog gives `gate-check` `category: gate`; the user approves the write, and
   the re-test is clean in both dimensions
 

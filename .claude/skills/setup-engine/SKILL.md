@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch, Agent, AskUse
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 # Engine Setup
 
 When this skill is invoked:
@@ -15,11 +17,11 @@ When this skill is invoked:
 
 **Tier awareness.** The `workflow` tier resolved above governs which design
 artifact this skill expects and the finish path it recommends in §12:
-- **`minimal`** — the design artifact is the one-page `design/game-brief.md`
+- **`minimal`** — the design artifact is the one-page `docs/GDD.md`
   (no GDDs, systems decomposition, or per-system design at this tier).
   `/setup-engine` runs *first* in the minimal path, so a missing brief here is
   normal, not a gap. The finish path is the 4-step floor.
-- **`standard` / `full`** — the design artifact is `design/gdd/game-concept.md`
+- **`standard` / `full`** — the design artifact is `docs/GDD.md`
   and the finish path is the full pipeline.
 
 If the block did not render (shell preprocessing disabled), assume `minimal` (the default).
@@ -52,7 +54,7 @@ Four modes:
 
 **Read `references/5-technical-preferences.md` now and follow it** — this phase's steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
 
-## 5.5 Populate `project.yaml` (Primary Config Store)
+## 5.5 Populate `.claude/ccgs/project.yaml` (Primary Config Store)
 
 **Read `references/5.5-project-yaml.md` now and follow it** — this phase's steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
 
@@ -115,9 +117,9 @@ If invoked as `/setup-engine refresh`:
 ## Guardrails
 
 - NEVER guess an engine version — always verify via WebSearch or user confirmation
-- `project.yaml` is the primary config store (v1.1). Always dual-write engine
-  config to BOTH `project.yaml` (primary) and `technical-preferences.md` (legacy
-  mirror). If the two ever diverge, `project.yaml` is authoritative.
+- `.claude/ccgs/project.yaml` is the primary config store (v1.1). Always dual-write engine
+  config to BOTH `.claude/ccgs/project.yaml` (primary) and `technical-preferences.md` (legacy
+  mirror). If the two ever diverge, `.claude/ccgs/project.yaml` is authoritative.
 - NEVER overwrite existing reference docs without asking — append or update
 - If reference docs already exist for a different engine, ask before replacing
 - Always show the user what you're about to change before making CLAUDE.md edits

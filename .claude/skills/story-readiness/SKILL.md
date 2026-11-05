@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, AskUserQuestion, Agent, Bash(bash "*/.claude/sk
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,qa.level,gate_level,story_granularity,system_overrides`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
@@ -49,10 +51,10 @@ the story, epic or sprint the user's request names is the scope.
 
 - **A story path**: that story.
 - **`sprint`**: the stories the current sprint lists (Phase 2 reads them).
-- **`all`**: every `story-*.md` under `production/epics/`.
+- **`all`**: every `story-*.md` under `docs/production/epics/`.
 - **An epic** (a slug or its folder): the `story-*.md` files in that folder.
 - **Blank**: Ask: "What would you like to check?" Options: A specific story file /
-  All stories in the current sprint / All stories in production/epics/ / The
+  All stories in the current sprint / All stories in docs/production/epics/ / The
   stories of one epic.
 
 **Zero stories in scope: stop with `NOT ASSESSED — no stories in scope`.** Name the
@@ -76,7 +78,7 @@ Say "Checking [N] story files." before going on.
    means a file was not found. With `NOT_FOUND` rows, each names a sprint `file:`
    entry or a path that is not a file: report each as a missing story and check
    the rest. With no `NOT_FOUND` row and `--sprint`, there is no
-   `production/sprint-status.yaml`: report "no sprint plan found". Read each story file too: the testability, scope and
+   `docs/production/sprint-status.yaml`: report "no sprint plan found". Read each story file too: the testability, scope and
    asset items below need its words.
 2. **ADRs.** One call gives every ADR's status and layer:
    `bash .claude/scripts/adr-status.sh`. A `no_status` or `UNFILLED` status is a
@@ -88,7 +90,7 @@ Say "Checking [N] story files." before going on.
    `docs/architecture/tr-registry.yaml`. Missing file: note it once; the TR-ID
    item passes for every story.
 5. **Sprint priority** (`sprint` scope): which stories are Must Have and Should
-   Have, from the newest plan in `production/sprints/`.
+   Have, from the newest plan in `docs/production/sprints/`.
 
 **Tier per story.** `workflow` is resolved per story: use the `system_overrides`
 row for the story's system (the GDD filename stem of its `GDD:` path; the `[system]`
@@ -101,7 +103,7 @@ Check every item for every story. The tier decides which groups block:
 
 | Group | `full` | `standard` | `minimal` |
 |---|---|---|---|
-| Design Completeness | blocks | blocks | blocks; `design/game-brief.md` stands in for the GDD |
+| Design Completeness | blocks | blocks | blocks; `docs/GDD.md` stands in for the GDD |
 | Architecture Completeness | blocks | the ADR status item blocks; the rest advisory unless it concerns a critical ADR | N/A, except the ADR status item |
 | Scope Clarity | blocks | blocks | blocks, except Estimate: advisory (no sprint plan to size for) |
 | Open Questions | blocks | blocks | blocks |
@@ -113,9 +115,9 @@ lowers READY by itself.
 
 ### Design Completeness
 
-- [ ] **Requirement traced**: the story names its `design/gdd/` file and quotes or
+- [ ] **Requirement traced**: the story names its `docs/design/gdd/` file and quotes or
   links a specific rule or criterion from it, not just the file name. At
-  `minimal`: `design/game-brief.md` and the MVP feature the story implements.
+  `minimal`: `docs/GDD.md` and the MVP feature the story implements.
   A named design document that does not exist: NOT ASSESSED.
 - [ ] **Self-contained**: the acceptance criteria say what done means without
   opening the GDD.
@@ -126,7 +128,7 @@ lowers READY by itself.
 - [ ] **No judgement calls**: "feels responsive" or "looks good" fails for Logic,
   Integration, UI and Config/Data. For Visual/Feel such criteria are expected:
   pass when the criterion names an evidence file such as
-  `production/qa/evidence/[slug]-evidence.md`, NEEDS WORK when it names none.
+  `docs/production/qa/evidence/[slug]-evidence.md`, NEEDS WORK when it names none.
 
 ### Architecture Completeness
 
@@ -181,7 +183,7 @@ lowers READY by itself.
 
 ### Asset References
 
-- [ ] **Assets the story uses exist**: paths under `assets/`, or with `.png`,
+- [ ] **Assets the story uses exist**: paths under `Content/`, or with `.png`,
   `.jpg`, `.svg`, `.wav`, `.ogg`, `.mp3`, `.glb`, `.gltf`, `.tres`, `.tscn` or
   `.res`, that the story reads or builds on. A file the story says it will create
   (a new scene, a new data file) is not checked. Missing: NEEDS WORK; name the
@@ -205,8 +207,8 @@ lowers READY by itself.
   `Type: [Logic|Integration|Visual/Feel|UI|Config/Data]` to the header.
 - [ ] **Test evidence clear**: a `## Test Evidence` section saying where evidence
   goes: the test file for Logic and Integration; the retained screenshot of each
-  screen under `production/qa/evidence/` for UI; that plus
-  `production/qa/evidence/[story-slug]-evidence.md` for Visual/Feel.
+  screen under `docs/production/qa/evidence/` for UI; that plus
+  `docs/production/qa/evidence/[story-slug]-evidence.md` for Visual/Feel.
   - At `qa.level: minimal`, Logic, Integration and Config/Data pass: tests are
     waived. List no gap, and add no note, about a missing test file, `tests/`
     folder or test runner. UI and
@@ -276,7 +278,7 @@ Not Assessed: [title]: [what could not be read]
 gap]. Fix them before the sprint starts, or replan with /sprint-plan update.`
 
 **Then, for one story:** look for other stories to start. In the newest plan in
-`production/sprints/`, find up to 3 that are Ready or Not Started, not this one,
+`docs/production/sprints/`, find up to 3 that are Ready or Not Started, not this one,
 not waiting on unfinished dependencies, and Must Have or Should Have. List each
 with a one-line description and its estimate. When there are none, say which:
 `Next ready stories: no sprint file found` or `Next ready stories: none ready in

@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/.claude/skills/team-narrative/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 # Team Narrative
 
 If no argument is provided, output usage guidance and exit without spawning any agents:
@@ -91,27 +93,27 @@ Use the `Agent` tool to spawn each team member as a subagent:
 - `subagent_type: level-designer` — Level layouts that serve the narrative, pacing
 - `subagent_type: localization-lead` — Localization readiness — flags non-localizable strings, cultural assumptions, and i18n gaps
 
-**Read the canon first.** Before Phase 1, read the shared inputs that exist — the narrative bible or tone guide, the character and faction files under `design/narrative/`, and the world rules. Never tell an agent to invent canon: if none exists, say so and ask the user before any drafting.
+**Read the canon first.** Before Phase 1, read the shared inputs that exist — the narrative bible or tone guide, the character and faction files under `docs/story/`, and the world rules. Never tell an agent to invent canon: if none exists, say so and ask the user before any drafting.
 
 **Brief each agent — do not dump context.** Read the shared inputs **once** and pass a distilled brief inline: the lines each agent actually needs, never a file path for a document you have already read (an agent handed a path re-reads the whole file). Pass a path only for a document you have not read and only that agent needs.
 
 **End every agent prompt with a return contract:** "Write your full output to `[path]` — that named path is your write authorisation under the bounded exception below, so write it without a separate approval prompt. Return **only** (1) the path written, (2) a ≤5-bullet summary of decisions, (3) any BLOCKED/CONCERNS items, one line each. Do not restate the documents you read." Without it, an agent returns everything it read back into this session.
 
 **Substitute a real path for `[path]`.** Agents write drafts under
-`production/narrative/[content-slug]/` — inside the bounded exception below. The
-finished documents belong in `design/narrative/`, which the exception does **not**
+`docs/production/narrative/[content-slug]/` — inside the bounded exception below. The
+finished documents belong in `docs/story/`, which the exception does **not**
 cover, so **you** write those after one approval (see "Write the finals"):
 
 | Agent | Drafts to (`[path]`) | Final document (you write it) |
 |---|---|---|
-| narrative-director | `production/narrative/[content-slug]/brief.md` | `design/narrative/[content-slug]-brief.md` |
-| world-builder | `production/narrative/[content-slug]/lore-[topic].md` | `design/narrative/lore/[topic].md` |
-| writer | `production/narrative/[content-slug]/dialogue-[scene-slug].md` | `design/narrative/dialogue/[scene-slug].md` |
-| art-director | `production/narrative/[content-slug]/visual-direction.md` | `design/narrative/[content-slug]-visual-direction.md` |
-| level-designer | `production/narrative/[content-slug]/level-integration.md` | `design/narrative/[content-slug]-level-integration.md` |
-| localization-lead | `production/narrative/[content-slug]/i18n-review.md` | stays in `production/` — a review, not a design document |
+| narrative-director | `docs/production/narrative/[content-slug]/brief.md` | `docs/story/[content-slug]-brief.md` |
+| world-builder | `docs/production/narrative/[content-slug]/lore-[topic].md` | `docs/story/lore/[topic].md` |
+| writer | `docs/production/narrative/[content-slug]/dialogue-[scene-slug].md` | `docs/story/dialogue/[scene-slug].md` |
+| art-director | `docs/production/narrative/[content-slug]/visual-direction.md` | `docs/story/[content-slug]-visual-direction.md` |
+| level-designer | `docs/production/narrative/[content-slug]/level-integration.md` | `docs/story/[content-slug]-level-integration.md` |
+| localization-lead | `docs/production/narrative/[content-slug]/i18n-review.md` | stays in `docs/production/` — a review, not a design document |
 
-> **The final destination is not a free choice.** `design/narrative/` is read by
+> **The final destination is not a free choice.** `docs/story/` is read by
 > `/asset-spec`, `/design-review`, `/localize`, `/onboard`,
 > `/project-stage-detect`, `/team-level` and the `cd-narrative` director gate.
 > An artifact written anywhere else is invisible to all seven.
@@ -121,7 +123,7 @@ cover, so **you** write those after one approval (see "Write the finals"):
 > run to invent one, which defeats it. `/team-qa` Phase 4 carries the same
 > requirement for the same reason.
 
-> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
+> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `docs/production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
 
 Launch independent agents in parallel where the pipeline allows it (e.g., Phase 2 agents can run simultaneously).
 
@@ -187,8 +189,8 @@ Delegate in parallel — issue every `Agent` call before waiting for any result:
 ### Write the finals
 You hold every draft. List the final documents from the table above, then ask once
 via `AskUserQuestion` — "May I write these [N] narrative documents to
-`design/narrative/`?" — and write them on approval. The drafts under
-`production/narrative/[content-slug]/` stay as the working record.
+`docs/story/`?" — and write them on approval. The drafts under
+`docs/production/narrative/[content-slug]/` stay as the working record.
 
 ## Error Recovery Protocol
 
@@ -212,13 +214,13 @@ Common blockers:
 
 ## File Write Protocol
 
-Sub-agents write their drafts to the `production/narrative/[content-slug]/` paths
+Sub-agents write their drafts to the `docs/production/narrative/[content-slug]/` paths
 you name, under the **bounded exception** documented above under "Why this does
 not violate the Collaboration Protocol" — the path is one you named, the artifact
-is new under `production/`, `docs/` or `tests/`, and the phase is gated by an
+is new under `docs/production/`, `docs/` or `tests/`, and the phase is gated by an
 `AskUserQuestion`. A sub-agent does **not** prompt per write inside those bounds;
 outside them it must ask. The **one exception is the final documents under
-`design/narrative/`**: you hold every draft, so you write those yourself after
+`docs/story/`**: you hold every draft, so you write those yourself after
 the single "May I write …?" in "Write the finals".
 
 ## Output

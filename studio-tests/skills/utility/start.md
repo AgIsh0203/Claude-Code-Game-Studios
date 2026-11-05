@@ -17,12 +17,12 @@ kept when `modes.rigor` is set, otherwise inferred from what the user said
 an assumptions card, which names `/settings` for later changes, and asks one
 question: `Save them` / `Don't save`. It asks no rigor question. Only an explicit
 yes writes: the stage through `set-stage.sh`
-(`project.yaml` and the legacy mirror `production/stage.txt`) and an inferred
+(`.claude/ccgs/project.yaml` and the legacy mirror `.claude/ccgs/stage.txt`) and an inferred
 rigor through `config-set.sh`. Phase 5 asks the automation question unless the
 key is set, and writes the pick through `config-set.sh`. `/start` never writes
 any of the six knobs `modes.rigor` fronts (`modes.review_mode`,
 `modes.workflow`, `docs.density`, `qa.level`, `modes.story_granularity`,
-`team.size`) or `production/review-mode.txt`.
+`team.size`) or `.claude/ccgs/review-mode.txt`.
 
 Phase 6 prints the path for the rigor (Path D's existing-work path included;
 at `minimal` a D user with no brief is told where the brief comes from) and
@@ -39,7 +39,7 @@ Checked against the SKILL.md by `/skill-test spec`, no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keyword: COMPLETE
-- [ ] States the write rule for every write: the stage and an inferred rigor only after an explicit yes to the save question that names `project.yaml` and `production/stage.txt`; `modes.automation` from the user's pick, and never when the save was declined
+- [ ] States the write rule for every write: the stage and an inferred rigor only after an explicit yes to the save question that names `.claude/ccgs/project.yaml` and `.claude/ccgs/stage.txt`; `modes.automation` from the user's pick, and never when the save was declined
 - [ ] Has a next-step handoff at the end (Phase 7: "Type `[skill]` to begin.")
 
 ---
@@ -53,9 +53,9 @@ point this skill runs.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -65,7 +65,7 @@ Fixture defaults.
 ### Case 1: Happy Path — Fresh repo, Path A, rigor inferred
 
 **Fixture:**
-- No `project.yaml`, no `production/stage.txt`; `technical-preferences.md`
+- No `.claude/ccgs/project.yaml`, no `.claude/ccgs/stage.txt`; `technical-preferences.md`
   holds only placeholders (runs without the Fixture Defaults block)
 - No design documents, prototypes or source code; `origin` is the user's own repo
 - The user picks `A) No idea yet`, then `Save them`, then `Guided`
@@ -77,10 +77,10 @@ Fixture defaults.
 2. Phase 2 offers exactly A–D; no engine question is asked
 3. Path A names only `/brainstorm open` as the next step and leaves the full path for later
 4. Phase 4 shows the card: stage `Concept`, rigor `minimal` with the reason (no
-   concept yet), and asks to save them to `project.yaml` and the stage to
-   `production/stage.txt`; it asks no rigor question
-5. After `Save them`, `set-stage.sh Concept` creates `project.yaml` and writes
-   `production/stage.txt`, and `config-set.sh modes.rigor minimal` adds the rigor
+   concept yet), and asks to save them to `.claude/ccgs/project.yaml` and the stage to
+   `.claude/ccgs/stage.txt`; it asks no rigor question
+5. After `Save them`, `set-stage.sh Concept` creates `.claude/ccgs/project.yaml` and writes
+   `.claude/ccgs/stage.txt`, and `config-set.sh modes.rigor minimal` adds the rigor
 6. Phase 5 asks the automation question; `config-set.sh modes.automation guided` runs on the pick
 7. Phase 6 prints the minimal 4-step path (`/setup-engine`, `/brainstorm`,
    `/create-stories`, `/dev-story`) and asks which step to take first
@@ -90,9 +90,9 @@ Fixture defaults.
 - [ ] Phase 2 offers exactly the four A–D options and no engine choice
 - [ ] No rigor question is asked; the inferred `minimal` is on the card with its reason
 - [ ] Nothing is written before the explicit `Save them`
-- [ ] `project.stage` and `production/stage.txt` are both `Concept`
-- [ ] `project.yaml` ends up holding only `project.stage`, `modes.rigor` and `modes.automation` from `/start`: none of the six rigor-fronted knobs, and no `production/review-mode.txt`
-- [ ] `project.yaml` has exactly one `modes:` block, holding `rigor` and `automation`
+- [ ] `project.stage` and `.claude/ccgs/stage.txt` are both `Concept`
+- [ ] `.claude/ccgs/project.yaml` ends up holding only `project.stage`, `modes.rigor` and `modes.automation` from `/start`: none of the six rigor-fronted knobs, and no `.claude/ccgs/review-mode.txt`
+- [ ] `.claude/ccgs/project.yaml` has exactly one `modes:` block, holding `rigor` and `automation`
 - [ ] Phase 6 prints the minimal 4-step path
 - [ ] The next skill is not started; Verdict is COMPLETE
 
@@ -101,8 +101,8 @@ Fixture defaults.
 ### Case 2: Returning User — Onboarding skipped
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot` and `modes.rigor: minimal`; no explicit `modes.review_mode`
-- `design/game-brief.md` exists
+- `.claude/ccgs/project.yaml` has `engine.name: Godot` and `modes.rigor: minimal`; no explicit `modes.review_mode`
+- `docs/GDD.md` exists
 
 **Input:** `/start`
 
@@ -116,17 +116,17 @@ Fixture defaults.
 - [ ] The A–D starting-point question is not asked
 - [ ] The message names the configured engine (Godot) and the brief path
 - [ ] Review mode is reported as `solo`, resolved from rigor
-- [ ] No write is made to `project.yaml` or `production/stage.txt`
+- [ ] No write is made to `.claude/ccgs/project.yaml` or `.claude/ccgs/stage.txt`
 
 ---
 
 ### Case 3: Existing Work on Unity — Path D, stage from the files, rigor already set
 
 **Fixture:**
-- `project.yaml` has `engine.name: Unity`, `modes.rigor: standard` and
+- `.claude/ccgs/project.yaml` has `engine.name: Unity`, `modes.rigor: standard` and
   `modes.automation: collaborative`
-- C# scripts exist under `Assets/Scripts/`; `design/gdd/` holds 3 system GDDs;
-  no `design/gdd/game-concept.md`, no `docs/architecture/`
+- C# scripts exist under `Assets/Scripts/`; `docs/design/gdd/` holds 3 system GDDs;
+  no `docs/GDD.md`, no `docs/architecture/`
 - The user picks `D) Existing work` and `Save them`
 
 **Input:** `/start`
@@ -146,7 +146,7 @@ Fixture defaults.
 
 **Assertions:**
 - [ ] Source files are found under `Assets/`, not reported as absent
-- [ ] Stage `Systems Design` is written to both `project.yaml` and `production/stage.txt`, after the yes
+- [ ] Stage `Systems Design` is written to both `.claude/ccgs/project.yaml` and `.claude/ccgs/stage.txt`, after the yes
 - [ ] No rigor or automation question is asked, and neither key is rewritten
 - [ ] The existing-work path at `standard` includes the GDD, ADR and registry retrofit steps
 - [ ] Verdict is COMPLETE
@@ -204,8 +204,8 @@ Fixture defaults.
 ### Case 6: Path D With Rigor Unset — inferred from the description, not asked
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot` and no `modes` block
-- `src/` holds GDScript files; `design/gdd/` holds 4 system GDDs; no
+- `.claude/ccgs/project.yaml` has `engine.name: Godot` and no `modes` block
+- `src/` holds GDScript files; `docs/design/gdd/` holds 4 system GDDs; no
   `docs/architecture/`
 - The user picks `D) Existing work` and says "a commercial game for Steam with
   one clear core loop", then picks `Save them`, then `Collaborative`
@@ -234,11 +234,11 @@ Fixture defaults.
 ### Case 7: Existing `modes:` Block — rigor and automation go into it, never a second one
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot` and an existing block `modes:` with
+- `.claude/ccgs/project.yaml` has `engine.name: Godot` and an existing block `modes:` with
   only `review_mode: lean` under it; `modes.rigor` and `modes.automation` are
   unset (runs without the Fixture Defaults block, since it tests how the keys
   are added)
-- No `design/game-brief.md` and no concept, so this is not a returning user
+- No `docs/GDD.md` and no concept, so this is not a returning user
 - The user picks `A) No idea yet`, `Save them`, then `Guided`
 
 **Input:** `/start`
@@ -250,7 +250,7 @@ Fixture defaults.
 3. `review_mode: lean` is left as the user had it
 
 **Assertions:**
-- [ ] The finished `project.yaml` has exactly one `modes:` key, holding `review_mode`, `rigor` and `automation`
+- [ ] The finished `.claude/ccgs/project.yaml` has exactly one `modes:` key, holding `review_mode`, `rigor` and `automation`
 - [ ] The existing `review_mode: lean` is unchanged and `/start` writes none of the other rigor-fronted knobs
 - [ ] There is one save question for the stage and rigor, and the automation pick needs no further ask
 
@@ -259,11 +259,11 @@ Fixture defaults.
 ### Case 8: Path D at `minimal` With No Brief — names where the brief comes from
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot`, `modes.rigor: minimal` and
+- `.claude/ccgs/project.yaml` has `engine.name: Godot`, `modes.rigor: minimal` and
   `modes.automation: collaborative`
-- `src/` holds 14 GDScript files; `design/gdd/` holds 2 system GDDs; no
-  `docs/architecture/`; no `design/game-brief.md` and no
-  `design/gdd/game-concept.md`
+- `src/` holds 14 GDScript files; `docs/design/gdd/` holds 2 system GDDs; no
+  `docs/architecture/`; no `docs/GDD.md` and no
+  `docs/GDD.md`
 - The user picks `D) Existing work` and `Save them`
 
 **Input:** `/start`
@@ -279,10 +279,10 @@ Fixture defaults.
 
 **Assertions:**
 - [ ] The minimal path lists `/project-stage-detect` and `/adopt`, and no `/design-system retrofit`, `/architecture-decision retrofit` or `/architecture-review`
-- [ ] With no `design/game-brief.md`, the path names `/reverse-document design src/` as the brief's source, with the code root filled in
+- [ ] With no `docs/GDD.md`, the path names `/reverse-document design src/` as the brief's source, with the code root filled in
 - [ ] `/brainstorm` is not named as the brief's source
 - [ ] Variant — `src/` holds only 4 source files: the brief's source is `/brainstorm`, and `/reverse-document` is not named
-- [ ] Variant — `design/game-brief.md` exists: this is the returning-user skip
+- [ ] Variant — `docs/GDD.md` exists: this is the returning-user skip
 
 ---
 
@@ -290,7 +290,7 @@ Fixture defaults.
 
 - [ ] Reads the project with `project-state.sh` before the first question, without printing it
 - [ ] Asks the starting-point question with options A–D; leaves the engine to `/setup-engine`
-- [ ] Never writes any of the six rigor-fronted knobs (`modes.review_mode`, `modes.workflow`, `docs.density`, `qa.level`, `modes.story_granularity`, `team.size`) or `production/review-mode.txt`
+- [ ] Never writes any of the six rigor-fronted knobs (`modes.review_mode`, `modes.workflow`, `docs.density`, `qa.level`, `modes.story_granularity`, `team.size`) or `.claude/ccgs/review-mode.txt`
 - [ ] Shows the stage and rigor on a card and writes them only on an explicit yes; asks no rigor question
 - [ ] Skips the automation question when the key is set
 - [ ] Writes through `set-stage.sh` and `config-set.sh`, never by editing YAML by hand

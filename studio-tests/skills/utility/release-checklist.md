@@ -5,8 +5,8 @@
 `/release-checklist [platform: pc|console|mobile|all]` builds a pre-release
 checklist scoped to the project. It resolves `modes.rigor`, `modes.workflow`,
 `project.stage` and `platform.cert_tier`, reads `CLAUDE.md` and the current
-milestone in `production/milestones/`, and reads open bugs from
-`production/qa/bugs/` (Severity and Status lines). The bug items use the release
+milestone in `docs/production/milestones/`, and reads open bugs from
+`docs/production/qa/bugs/` (Severity and Status lines). The bug items use the release
 gate's thresholds for the resolved `workflow` — an open S1, S2 or S3 fails at
 `full`, only an open S1 at `standard`/`minimal` (an open S2/S3 is a listed risk)
 — and with no bug files they read `NOT ASSESSED — no bug records`, never zero.
@@ -28,7 +28,7 @@ means asking which platforms are in scope, or
 `### Go / No-Go: [READY / NOT ASSESSED / NOT READY]` — first match NOT READY (a
 blocking item fails), then NOT ASSESSED (any section or item NOT ASSESSED), then READY —
 then asks "May I write this to
-`production/releases/release-checklist-[version].md`?". No director gates apply.
+`docs/production/releases/release-checklist-[version].md`?". No director gates apply.
 
 ---
 
@@ -55,9 +55,9 @@ advancement is `/gate-check`.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -69,8 +69,8 @@ Fixture defaults.
 **Fixture:**
 - `platform.cert_tier: steam`; `project.stage: Polish`; `engine.name: Godot`
 - `src/` has 40 source files containing 3 TODO, 1 FIXME and 0 HACK comments
-- `production/milestones/` holds the current milestone
-- `production/qa/bugs/` holds `BUG-0003.md` (S1, `**Status**: Closed`) and
+- `docs/production/milestones/` holds the current milestone
+- `docs/production/qa/bugs/` holds `BUG-0003.md` (S1, `**Status**: Closed`) and
   `BUG-0004.md` (S4, `**Status**: Open`); `modes.rigor` is unset (`workflow: minimal`)
 - CI test output exists
 
@@ -84,7 +84,7 @@ Fixture defaults.
 4. Certification is the Steamworks block only
 5. Store / Distribution, Launch Readiness and the Go / No-Go line follow
 6. Skill presents total items and known blockers, then asks "May I write this
-   to `production/releases/release-checklist-[version].md`?"; next steps name
+   to `docs/production/releases/release-checklist-[version].md`?"; next steps name
    `/gate-check` and `/team-release`
 
 **Assertions:**
@@ -92,8 +92,8 @@ Fixture defaults.
 - [ ] Only the PC device block appears
 - [ ] Certification contains Steamworks rows and no itch.io or console certification rows
 - [ ] Go / No-Go is READY or NOT READY — never NOT ASSESSED, since every section in this fixture could be assessed
-- [ ] The Quality Gates bug line is counted from `production/qa/bugs/` (0 open S1, S2 or S3); the closed S1 and the open S4 fail nothing
-- [ ] Nothing is written before the "May I write" ask naming `production/releases/release-checklist-[version].md`
+- [ ] The Quality Gates bug line is counted from `docs/production/qa/bugs/` (0 open S1, S2 or S3); the closed S1 and the open S4 fail nothing
+- [ ] Nothing is written before the "May I write" ask naming `docs/production/releases/release-checklist-[version].md`
 
 ---
 
@@ -152,7 +152,7 @@ Fixture defaults.
 - No `engine.name`, no legacy engine value, and none of `src/`, `Assets/`,
   `Source/` exists (code root unresolved)
 - No test output directories or CI logs
-- `production/qa/bugs/` holds one bug, `BUG-0002.md` (S2, `**Status**: Closed`)
+- `docs/production/qa/bugs/` holds one bug, `BUG-0002.md` (S2, `**Status**: Closed`)
 
 **Input:** `/release-checklist pc`
 
@@ -204,7 +204,7 @@ Fixture defaults.
 - No `engine.name`, no legacy engine value, and none of `src/`, `Assets/`,
   `Source/` exists (code root unresolved)
 - CI test output exists
-- `production/qa/bugs/BUG-0007.md` is an S1 (Critical) bug with `**Status**: Open`
+- `docs/production/qa/bugs/BUG-0007.md` is an S1 (Critical) bug with `**Status**: Open`
 
 **Input:** `/release-checklist pc`
 
@@ -227,15 +227,15 @@ Fixture defaults.
 
 **Fixture:**
 - `platform.cert_tier: steam`; source files present; CI test output exists
-- Run A: `modes.rigor: standard` (`workflow: standard`); `production/qa/bugs/BUG-0012.md`
+- Run A: `modes.rigor: standard` (`workflow: standard`); `docs/production/qa/bugs/BUG-0012.md`
   is an S2 (High) bug with `**Status**: Open`, and no other bug is open
-- Run B: `modes.rigor: full` (`workflow: full`); `production/qa/bugs/BUG-0013.md`
+- Run B: `modes.rigor: full` (`workflow: full`); `docs/production/qa/bugs/BUG-0013.md`
   is an S3 (Medium) bug with `**Status**: Open`, and no other bug is open
 
 **Input:** `/release-checklist pc`
 
 **Expected behavior:**
-1. Both runs read the bugs from `production/qa/bugs/`, not from the milestone
+1. Both runs read the bugs from `docs/production/qa/bugs/`, not from the milestone
 2. Run A: the open S2 fails no item — at `standard` only an open S1 blocks — and
    is listed in the Rationale as a risk; the S2/S3 row is not emitted
 3. Run B: the "Zero open S2 (High) and S3 (Medium) bugs" row fails on the open
@@ -252,7 +252,7 @@ Fixture defaults.
 
 **Fixture:**
 - `platform.cert_tier: steam`; source files present; CI test output exists
-- `production/qa/bugs/` does not exist
+- `docs/production/qa/bugs/` does not exist
 
 **Input:** `/release-checklist pc`
 
@@ -276,7 +276,7 @@ Fixture defaults.
 - [ ] Treats unset `cert_tier` as a question (or NOT ASSESSED), never as `none`
 - [ ] Chooses device blocks from the argument and certification from `cert_tier`
 - [ ] States a denominator with every scan count, or reports NOT ASSESSED
-- [ ] Reads open bugs from `production/qa/bugs/` and applies the release gate's thresholds for the resolved `workflow` (S1–S3 at `full`, S1 at `standard`/`minimal`); no bug files → `NOT ASSESSED — no bug records`
+- [ ] Reads open bugs from `docs/production/qa/bugs/` and applies the release gate's thresholds for the resolved `workflow` (S1–S3 at `full`, S1 at `standard`/`minimal`); no bug files → `NOT ASSESSED — no bug records`
 - [ ] Go / No-Go takes the first match: NOT READY, then NOT ASSESSED, then READY
 - [ ] Presents totals and blockers before asking "May I write"
 - [ ] Ends with `/gate-check` and `/team-release` as next steps

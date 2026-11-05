@@ -3,14 +3,16 @@ name: test-evidence-review
 description: "Quality review of test files and evidence — goes beyond existence, evaluates assertion coverage. ADEQUATE/INCOMPLETE/MISSING/NOT ASSESSED per story."
 argument-hint: "[story-path | sprint | system-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/test-evidence-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/review-receipts.sh check *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/test-evidence-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/review-receipts.sh check *)
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation,workflow,qa.level,testing.strict`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -38,7 +40,7 @@ goes further — it reviews the **quality** of those tests and evidence document
 A test file that exists and passes may still leave critical behaviour uncovered.
 A manual evidence doc that exists may lack the sign-offs required for closure.
 
-**Output:** Summary report (in conversation) + optional `production/qa/evidence-review-[date].md`
+**Output:** Summary report (in conversation) + optional `docs/production/qa/evidence-review-[date].md`
 
 **When to run:**
 - Before QA hand-off sign-off (`/team-qa` Phase 5)
@@ -64,10 +66,10 @@ Based on the argument:
 **Single story**: Read the story file directly. Extract: Story Type, Test
 Evidence section, story slug, system name.
 
-**Sprint**: Read the most recently modified file in `production/sprints/`; extract
+**Sprint**: Read the most recently modified file in `docs/production/sprints/`; extract
 the list of story file paths from the sprint plan.
 
-**System**: Glob `production/epics/[system-name]/story-*.md`.
+**System**: Glob `docs/production/epics/[system-name]/story-*.md`.
 
 > **If the resolved scope contains ZERO stories, stop here.** Report
 > `NOT ASSESSED — no stories in scope`, name which scope was searched and which
@@ -90,8 +92,8 @@ the list of story file paths from the sprint plan.
 For the resulting story set, collect the fields below with **targeted section
 greps, not a full read of each story**:
 ```
-Grep pattern="## Test Evidence" glob="production/epics/**/story-*.md" output_mode="content" -A 8
-Grep pattern="## Acceptance Criteria" glob="production/epics/**/story-*.md" output_mode="content" -A 15
+Grep pattern="## Test Evidence" glob="docs/production/epics/**/story-*.md" output_mode="content" -A 8
+Grep pattern="## Acceptance Criteria" glob="docs/production/epics/**/story-*.md" output_mode="content" -A 15
 ```
 - **Story Type** (Logic / Integration / Visual/Feel / UI / Config/Data) and the
   stated evidence path — both live under `## Test Evidence`, so the first grep's
@@ -117,13 +119,13 @@ contains the story slug or its system. Test files are named per
 
 **Integration stories**: the same, under the integration root (`tests/integration/[system]/`,
 `Assets/Tests/PlayMode/`, or Unreal's test root)
-  - Also check `production/qa/playtests/` for playtest records mentioning the story
+  - Also check `docs/production/qa/playtests/` for playtest records mentioning the story
 
-**Visual/Feel and UI stories**: Glob `production/qa/evidence/` for a retained image
+**Visual/Feel and UI stories**: Glob `docs/production/qa/evidence/` for a retained image
 (`*.png`, `*.jpg`, `*.gif`) belonging to this story, and for
 `[story-slug]-evidence.*`
 
-**Config/Data stories**: Glob `production/qa/smoke-*.md` (any smoke check report)
+**Config/Data stories**: Glob `docs/production/qa/smoke-*.md` (any smoke check report)
 
 Note what was found (path) or not found (gap) for each story.
 
@@ -207,7 +209,7 @@ What closes the story follows the evidence table in
 
 ### Screenshot / artefact completeness
 
-For Visual/Feel stories: Glob `production/qa/evidence/` for a retained image
+For Visual/Feel stories: Glob `docs/production/qa/evidence/` for a retained image
 (`*.png`, `*.jpg`, `*.gif`) belonging to this story. A doc that describes a
 visual check but retains no image is INCOMPLETE — this gate is BLOCKING by
 default, and a description is an assertion rather than evidence.
@@ -218,7 +220,7 @@ A walkthrough log is welcome but not required.
 ### Evidence older than its code
 
 For each story with a retained image, run
-`bash .claude/scripts/review-receipts.sh check production/qa/evidence/[story-slug]/stamp.txt`.
+`bash .claude/scripts/review-receipts.sh check docs/production/qa/evidence/[story-slug]/stamp.txt`.
 List each `CHANGED:` or `GONE:` file as POTENTIALLY STALE — it changed after the
 evidence was captured. `RECEIPT: NONE`: say "no stamp" and use the date check
 below. A report line only: it never changes the story's verdict.
@@ -331,7 +333,7 @@ in scope was waived, and the report names each waived story either way.
 Present the report in conversation.
 
 Ask: "May I write this test evidence review to
-`production/qa/evidence-review-[date].md`?"
+`docs/production/qa/evidence-review-[date].md`?"
 
 This is optional — the report is useful standalone. Write only if the user
 wants a persistent record.

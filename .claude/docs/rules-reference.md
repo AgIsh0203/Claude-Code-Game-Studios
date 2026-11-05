@@ -27,11 +27,11 @@ alone.
 To see which rules actually load, and why, wire the `InstructionsLoaded` hook —
 `.claude/hooks/log-instructions.sh` records every instruction file and its load
 reason (`session_start`, `path_glob_match`, `nested_traversal`, `include`,
-`compact`) to `production/session-logs/instructions-loaded.log`.
+`compact`) to `.claude/ccgs/session-logs/instructions-loaded.log`.
 
 **Globs match regardless of case.** Claude Code 2.1.282 matches `paths:`
 gitignore-style and case-insensitively (observed; the docs do not say), so
-`Assets/**/UI/**` also matches a Godot project's `assets/ui/` art. That is why
+`Assets/**/UI/**` also matches a Godot project's `Content/ui/` art. That is why
 the Unity and Unreal code globs below name their file types.
 
 Paths are listed Godot · Unity · Unreal. Folder names are shown in one case;
@@ -44,12 +44,12 @@ each rule's own globs list the case variants (`{AI,Ai,ai}`).
 | `ai-code.md` | `src/ai/**` · `Assets/**/AI/**/*.cs` · `Source/**/AI/**/*.{h,cpp}` | Performance budgets, debuggability, data-driven params |
 | `network-code.md` | `src/networking/**` · `Assets/**/Network(ing)/**/*.cs` · `Source/**/Network(ing)/**/*.{h,cpp}` | Server-authoritative, versioned messages, security |
 | `ui-code.md` | `src/ui/**` · `Assets/**/UI/**/*.cs` · `Source/**/UI/**/*.{h,cpp}` | No game state ownership, localization-ready, accessibility |
-| `design-docs.md` | `design/gdd/**` | Required sections per `modes.workflow` (8 at `full`, 5 at `standard`), formula format, edge cases |
-| `narrative.md` | `design/narrative/**` | Lore consistency, character voice, canon levels |
-| `data-files.md` | `assets/data/**/*.json` · `Assets/**/Data/**/*.json` · `Content/**/Data/**/*.json` | JSON validity, naming conventions, schema rules |
+| `design-docs.md` | `docs/design/gdd/**` | Required sections per `modes.workflow` (8 at `full`, 5 at `standard`), formula format, edge cases |
+| `narrative.md` | `docs/story/**` | Lore consistency, character voice, canon levels |
+| `data-files.md` | `Content/data/**/*.json` · `Assets/**/Data/**/*.json` · `Content/**/Data/**/*.json` | JSON validity, naming conventions, schema rules |
 | `test-standards.md` | `tests/**` · `Assets/Tests/**/*.cs` · `Source/**/Tests/**/*.{h,cpp}` | Test naming, coverage requirements, fixture patterns |
-| `prototype-code.md` | `prototypes/**` | Relaxed standards, README required, hypothesis documented |
-| `shader-code.md` | `assets/shaders/**`, `**/*.gdshader` · `Assets/**/*.{shader,hlsl,cginc,compute,shadergraph}` · `Shaders/**`, `**/*.{usf,ush}` | Naming conventions, performance targets, cross-platform rules |
+| `prototype-code.md` | `docs/prototypes/**` | Relaxed standards, README required, hypothesis documented |
+| `shader-code.md` | `Content/shaders/**`, `**/*.gdshader` · `Assets/**/*.{shader,hlsl,cginc,compute,shadergraph}` · `Shaders/**`, `**/*.{usf,ush}` | Naming conventions, performance targets, cross-platform rules |
 | `scene-files.md` | `**/*.tscn`, `**/*.tres` · `**/*.unity`, `**/*.prefab`, `Assets/**/*.asset` · — | Hand-edit limits for editor-written scene and asset files; Unreal `.uasset`/`.umap` are binary, and `settings.json` denies edits to them |
 | `agent-memory.md` | `.claude/agent-memory/**` | The one place an agent may write unasked — and why a temporary absence must never be recorded as a durable fact |
 | `skill-authoring.md` | `.claude/skills/**`, `.claude/agents/**` | A check must be able to report that it did not run — the five obligations for verdicts, defaults, skips, sourcing and derived coverage |

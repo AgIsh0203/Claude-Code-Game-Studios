@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: sonnet
 ---
 
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
+
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow`
 
 Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
@@ -37,7 +39,7 @@ It validates:
 4. **Velocity** (how long did this take? That's your real production rate estimate.)
 
 **Earlier in the project?** If you haven't written GDDs yet and want to validate
-whether the core idea is worth designing, run `/prototype` (concept prototype) instead.
+whether the core idea is worth designing, run `/gamedev-prototype` (concept prototype) instead.
 
 ---
 
@@ -56,10 +58,10 @@ and the control manifest by section: find the headings you need with
 the Grep tool (pattern `^#`, content mode) and Read those ranges with offset
 and limit.
 - `CLAUDE.md` — tech stack and engine
-- `design/gdd/game-concept.md` — core fantasy and game pillars (or
-  `design/game-brief.md`, the one-page brief that replaces it at `rigor: minimal` —
+- `docs/GDD.md` — core fantasy and game pillars (or
+  `docs/GDD.md`, the one-page brief that replaces it at `rigor: minimal` —
   pitch, core loop and "what they feel" line; it has no pillars)
-- `design/gdd/systems-index.md` — MVP systems and their priorities
+- `docs/GDD.md` — MVP systems and their priorities
 - `docs/architecture/architecture.md` — layer structure
 - `docs/architecture/control-manifest.md` — technical rules for implementation
 - Key GDDs for the systems being sliced
@@ -106,10 +108,10 @@ Define in bullet points:
 - Hard time limit: [X] days. If exceeded, scope was wrong — stop and reassess.
 
 Ask the user to confirm scope before building. Name the checkpoint file in that
-confirmation: "May I record this plan in `production/session-state/active.md`?"
+confirmation: "May I record this plan in `.claude/ccgs/session-state/active.md`?"
 
-Once confirmed, write a session checkpoint to `production/session-state/active.md`
-(create `production/session-state/` if it does not exist). Include: concept name,
+Once confirmed, write a session checkpoint to `.claude/ccgs/session-state/active.md`
+(create `.claude/ccgs/session-state/` if it does not exist). Include: concept name,
 validation question, systems in scope, art quality level, and current phase ("Phase
 4 — Implement"). Update this file at the end of each build day with what was
 completed. This is the primary recovery mechanism if the session ends mid-slice —
@@ -120,7 +122,7 @@ multi-week Engine builds will span many sessions.
 ## Phase 4: Implement
 
 Ask: "May I create the vertical slice directory at
-`prototypes/[concept-name]-vertical-slice/` and begin implementation?"
+`docs/prototypes/[concept-name]-vertical-slice/` and begin implementation?"
 
 If yes, create the directory. Every file must begin with:
 
@@ -138,7 +140,7 @@ files) are exempt.
 
 **Quality standards** — higher than concept prototype, not full production:
 - Follow architecture layers from `docs/architecture/control-manifest.md`
-- Naming conventions — `naming.*` from `project.yaml`; for any key absent or empty (including when `project.yaml` has no `naming` block), from `.claude/docs/technical-preferences.md`
+- Naming conventions — `naming.*` from `.claude/ccgs/project.yaml`; for any key absent or empty (including when `.claude/ccgs/project.yaml` has no `naming` block), from `.claude/docs/technical-preferences.md`
 - No hardcoded gameplay values — use constants or config files
 - Basic error handling on critical paths
 - Placeholder art acceptable; representative art preferred
@@ -279,10 +281,10 @@ text with real observations. The recommendation carries the Phase 5 verdict,
 NOT ASSESSED included, with its reason.
 
 Ask: "May I write this report to
-`prototypes/[concept-name]-vertical-slice/REPORT.md` and add its row to
-`prototypes/index.md`?"
+`docs/prototypes/[concept-name]-vertical-slice/REPORT.md` and add its row to
+`docs/prototypes/index.md`?"
 
-If yes, write the file. Then update `prototypes/index.md` (create if it does not
+If yes, write the file. Then update `docs/prototypes/index.md` (create if it does not
 exist) — append one row to the vertical slice table: concept name, date, verdict,
 and a link to the REPORT.md. Note whether this was a first-run slice or a re-run
 after a PIVOT. The velocity log in this report is some of the most valuable data in
@@ -301,8 +303,8 @@ the project — cross-reference it with sprint estimates.
   "CD-PLAYTEST skipped — the slice has not been played yet."
 
 Pass: the full REPORT.md content, the validation question, game pillars and core
-fantasy from `design/gdd/game-concept.md` (or the pitch and "what they feel" line
-from `design/game-brief.md` at `rigor: minimal`).
+fantasy from `docs/GDD.md` (or the pitch and "what they feel" line
+from `docs/GDD.md` at `rigor: minimal`).
 
 The creative director evaluates the vertical slice result against the game's
 creative vision and pillars and returns one of the gate's verdicts — APPROVE,
@@ -321,8 +323,8 @@ CONCERNS or REJECT. Apply it to the recommendation:
   `CD-PLAYTEST: NOT ASSESSED — [input]` in the report.
 
 When the director returned CONCERNS, REJECT or NOT ASSESSED, ask "May I update
-`prototypes/[concept-name]-vertical-slice/REPORT.md` and its
-`prototypes/index.md` row?", then record the director's verdict and reason in
+`docs/prototypes/[concept-name]-vertical-slice/REPORT.md` and its
+`docs/prototypes/index.md` row?", then record the director's verdict and reason in
 REPORT.md, and the final recommendation in both if it changed.
 
 ---
@@ -330,7 +332,7 @@ REPORT.md, and the final recommendation in both if it changed.
 ## Phase 8: Summary and Next Steps
 
 Output a summary: the validation question, velocity data, and final recommendation.
-Link to `prototypes/[concept-name]-vertical-slice/REPORT.md`.
+Link to `docs/prototypes/[concept-name]-vertical-slice/REPORT.md`.
 
 **If PROCEED:**
 Your vertical slice validated the full game loop. The project is ready for
@@ -359,12 +361,12 @@ two questions (plain text, one at a time):
 1. "What systems or mechanics worked at this quality level and should be preserved in the revised design?"
 2. "What specifically failed — the core loop, the architecture, the pipeline, or the fun?"
 
-Ask: "May I write this to `prototypes/[concept-name]-vertical-slice/PIVOT-NOTE.md`?"
+Ask: "May I write this to `docs/prototypes/[concept-name]-vertical-slice/PIVOT-NOTE.md`?"
 
 If yes, write the file with: what worked, what failed, the specific systems or
 architecture decisions that need revision, and what the next slice should prove
 differently. When `/vertical-slice` is next run after a PIVOT, check the
-`prototypes/` directory for a `PIVOT-NOTE.md` — use it to frame the new validation
+`docs/prototypes/` directory for a `PIVOT-NOTE.md` — use it to frame the new validation
 question and inform scope decisions.
 
 - Revise affected GDDs with `/design-system [mechanic]`
@@ -383,8 +385,8 @@ Before abandoning the concept, confirm the verdict is sound:
 
 If 2+ boxes apply → KILL verdict is sound. If 0–1 apply → one targeted PIVOT may recover the concept.
 
-**Document the kill in `prototypes/GRAVEYARD.md`** (create if it doesn't exist).
-Ask: "May I append this to `prototypes/GRAVEYARD.md`?" If yes, add one entry:
+**Document the kill in `docs/prototypes/GRAVEYARD.md`** (create if it doesn't exist).
+Ask: "May I append this to `docs/prototypes/GRAVEYARD.md`?" If yes, add one entry:
 
 ```
 ## [Concept Name] Vertical Slice — YYYY-MM-DD
@@ -395,14 +397,14 @@ Ask: "May I append this to `prototypes/GRAVEYARD.md`?" If yes, add one entry:
 ```
 
 - Return to `/brainstorm` with what you learned
-- Or run `/prototype [new-concept]` to test a new direction cheaply first
+- Or run `/gamedev-prototype [new-concept]` to test a new direction cheaply first
 
 **If NOT ASSESSED:**
 
 The slice is built but not validated. Say which reason applied, then finish the
-Phase 5 playthrough and debrief — the `production/session-state/active.md`
+Phase 5 playthrough and debrief — the `.claude/ccgs/session-state/active.md`
 checkpoint is where to resume — and, after asking, update REPORT.md and its
-`prototypes/index.md` row with the verdict. Do not take the slice to
+`docs/prototypes/index.md` row with the verdict. Do not take the slice to
 `/gate-check production` as if it had passed: NOT ASSESSED is not a PROCEED.
 
 ---
@@ -410,7 +412,7 @@ checkpoint is where to resume — and, after asking, update REPORT.md and its
 ### Important Constraints
 
 - Vertical slice code must NEVER be refactored into production — it is reference only
-- Production code must NEVER import from `prototypes/`
+- Production code must NEVER import from `docs/prototypes/`
 - If recommendation is PROCEED, production implementation is written from scratch
   using the slice as a design reference only
 - Scope cuts are acceptable; quality cuts are not — a low-quality slice proves nothing

@@ -1,6 +1,6 @@
-# /prototype — Phase 1: Define the Question
+# /gamedev-prototype — Phase 1: Define the Question
 
-> Part of `/prototype`. `SKILL.md` names when to read this file; the settings it
+> Part of `/gamedev-prototype`. `SKILL.md` names when to read this file; the settings it
 > resolved and the rules under its later headings still apply here.
 
 ## Phase 1: Define the Question
@@ -12,7 +12,7 @@ Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
 **Check for spike mode:** If `--spike` was passed, skip to the **Spike Mode** section
 at the bottom of this skill.
 
-**Check for a carry-forward note:** Glob `prototypes/*/PIVOT-NOTE.md`. If one
+**Check for a carry-forward note:** Glob `docs/prototypes/*/PIVOT-NOTE.md`. If one
 exists for this concept (or an earlier version of it), read it and start from its
 revised hypothesis instead of forming one from scratch — say which note you used.
 

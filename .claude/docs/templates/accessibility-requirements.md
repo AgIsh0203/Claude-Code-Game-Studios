@@ -14,7 +14,7 @@
 > - PlayStation Accessibility (Sony Guidelines) [Yes / No / Partial]
 > - Apple / Google Accessibility Guidelines [Yes / No / N/A — mobile only]
 > **Accessibility Consultant**: [Name and organization, or "None engaged"]
-> **Linked Documents**: `design/gdd/systems-index.md`, `design/ux/interaction-patterns.md`
+> **Linked Documents**: `docs/GDD.md`, `docs/design/ux/interaction-patterns.md`
 > **Template**: Accessibility Requirements
 
 > **Why this document exists**: Per-screen accessibility annotations belong in

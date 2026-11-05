@@ -6,10 +6,12 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash "*/.claude/skills/team-release/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 # Team Release
 
 **Argument check:** If no version number is provided:
-1. Read `production/session-state/active.md` and the most recent file in `production/milestones/` (if they exist) to infer the target version.
+1. Read `.claude/ccgs/session-state/active.md` and the most recent file in `docs/production/milestones/` (if they exist) to infer the target version.
 2. If a version is found: report "No version argument provided — inferred [version] from milestone data. Proceeding." Then confirm with `AskUserQuestion`: "Releasing [version]. Is this correct?"
 3. If no version is discoverable: use `AskUserQuestion` to ask "What version number should be released? (e.g., v1.0.0)" and wait for user input before proceeding. Do NOT default to a hardcoded version string.
 
@@ -120,27 +122,27 @@ Use the `Agent` tool to spawn each team member as a subagent:
 **End every agent prompt with a return contract:** "Write your full output to `[path]` — that named path is your write authorisation under the bounded exception below, so write it without a separate approval prompt. Return **only** (1) the path written, (2) a ≤5-bullet summary of decisions, (3) any BLOCKED/CONCERNS items, one line each. Do not restate the documents you read." Without it, an agent returns everything it read back into this session.
 
 **Substitute a real path for `[path]`.** One file per agent under
-`production/releases/`, except the two whose homes are fixed elsewhere. An active
+`docs/production/releases/`, except the two whose homes are fixed elsewhere. An active
 agent standing in for one outside the active set writes that agent's file:
 
 | Phase / agent | Writes to | Destination fixed by |
 |---|---|---|
-| 1 producer | `production/releases/release-plan-[version].md` | this skill |
-| 2 release-manager | `production/releases/release-checklist-[version].md` | `/release-checklist` |
-| 3 qa-lead | `production/releases/qa-gate-[version].md` | this skill |
-| 3 devops-engineer | `production/releases/build-[version].md` | this skill |
-| 3 security-engineer | `production/releases/security-signoff-[version].md` | this skill |
-| 3 network-programmer | `production/releases/netcode-signoff-[version].md` | this skill |
-| 4 localization-lead | `production/releases/localization-signoff-[version].md` | this skill |
-| 4 performance-analyst | `production/releases/performance-signoff-[version].md` | this skill |
-| 4 analytics-engineer | `production/releases/analytics-signoff-[version].md` | this skill |
-| 5 go/no-go | `production/releases/go-no-go-[version].md` | this skill |
+| 1 producer | `docs/production/releases/release-plan-[version].md` | this skill |
+| 2 release-manager | `docs/production/releases/release-checklist-[version].md` | `/release-checklist` |
+| 3 qa-lead | `docs/production/releases/qa-gate-[version].md` | this skill |
+| 3 devops-engineer | `docs/production/releases/build-[version].md` | this skill |
+| 3 security-engineer | `docs/production/releases/security-signoff-[version].md` | this skill |
+| 3 network-programmer | `docs/production/releases/netcode-signoff-[version].md` | this skill |
+| 4 localization-lead | `docs/production/releases/localization-signoff-[version].md` | this skill |
+| 4 performance-analyst | `docs/production/releases/performance-signoff-[version].md` | this skill |
+| 4 analytics-engineer | `docs/production/releases/analytics-signoff-[version].md` | this skill |
+| 5 go/no-go | `docs/production/releases/go-no-go-[version].md` | this skill |
 | 6 release-manager | `docs/patch-notes/[version].md` | `/patch-notes` |
-| 6 community-manager | `production/releases/announcement-[version].md` | this skill |
-| 7 release-manager | `production/releases/release-report-[version].md` | this skill |
+| 6 community-manager | `docs/production/releases/announcement-[version].md` | this skill |
+| 7 release-manager | `docs/production/releases/release-report-[version].md` | this skill |
 
 > **Every one of those thirteen outputs needs a stated destination.**
-> `production/releases/` is where `/release-checklist` already writes, and
+> `docs/production/releases/` is where `/release-checklist` already writes, and
 > `docs/patch-notes/[version].md` is where `/patch-notes` already writes, so the
 > release record lands in one place regardless of which skill produced it.
 >
@@ -148,7 +150,7 @@ agent standing in for one outside the active set writes that agent's file:
 > spawn agents in parallel; two agents appending to one file race, and the loser's
 > section vanishes silently.
 
-> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
+> **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `docs/production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
 
 Launch independent agents in parallel where the pipeline allows it (e.g., Phase 3 agents can run simultaneously).
 
@@ -175,7 +177,7 @@ Delegate in parallel:
 - **security-engineer** *(if game has online features, multiplayer, or player data)*: Conduct pre-release security audit. Review authentication, anti-cheat, data privacy compliance. Sign off on security posture.
 - **network-programmer** *(if game has multiplayer)*: Sign off on netcode stability. Verify lag compensation, reconnect handling, and bandwidth usage under load.
 
-When either agent is in the active set, decide its condition from `platform.online` and `platform.multiplayer` in `project.yaml`, plus whether the game stores player data. A key that is absent is not a `false`: ask the user rather than assume an offline game. An agent skipped on these grounds says so by name in the Phase 3 output — e.g. `security-engineer: not spawned — platform.online: false, platform.multiplayer: false, no player data`.
+When either agent is in the active set, decide its condition from `platform.online` and `platform.multiplayer` in `.claude/ccgs/project.yaml`, plus whether the game stores player data. A key that is absent is not a `false`: ask the user rather than assume an offline game. An agent skipped on these grounds says so by name in the Phase 3 output — e.g. `security-engineer: not spawned — platform.online: false, platform.multiplayer: false, no player data`.
 
 ### Phase 4: Localization, Performance, and Analytics
 Delegate (can run in parallel with Phase 3 if resources available):
@@ -280,7 +282,7 @@ distinction matters here more than anywhere else in the pipeline:
 
 - **Sub-agents spawned via `Agent`** follow the **bounded exception** documented above
   under "Why this does not violate the Collaboration Protocol" — the path is one you
-  named, the artifact is new under `production/`, `docs/` or `tests/`, and the phase
+  named, the artifact is new under `docs/production/`, `docs/` or `tests/`, and the phase
   is gated by an `AskUserQuestion`. A sub-agent does **not** prompt per write inside
   those bounds; outside them it must ask.
 - **Sub-skills** are not sub-agents and the exception does not reach them. They
@@ -301,4 +303,4 @@ Verdict: **BLOCKED** — release halted; the stage check stopped it, go/no-go wa
 
 - Monitor post-release dashboards for 48 hours.
 - Run `/retrospective` if significant issues occurred during the release.
-- `project.stage` reads `Release` unless the stage check was overridden: `/gate-check release` is the Polish → Release readiness gate, run before this skill. After an override the stage still reads what it did. Only `/gate-check` changes `project.stage` (on a PASS, or a CONCERNS whose risks the user accepted), so this skill never writes it or `production/stage.txt`. `Release` is the terminal stage in the `project.stage` enum — there is no post-launch stage value. Record live/post-launch status in the release report, not in `project.stage`.
+- `project.stage` reads `Release` unless the stage check was overridden: `/gate-check release` is the Polish → Release readiness gate, run before this skill. After an override the stage still reads what it did. Only `/gate-check` changes `project.stage` (on a PASS, or a CONCERNS whose risks the user accepted), so this skill never writes it or `.claude/ccgs/stage.txt`. `Release` is the terminal stage in the `project.stage` enum — there is no post-launch stage value. Record live/post-launch status in the release report, not in `project.stage`.

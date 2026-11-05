@@ -37,7 +37,7 @@ required-artifact set for that tier.
 Resolve the workflow tier (store the result; see scope note below):
 1. If the resolution is for a named system AND
    `workflow_overrides.system_overrides.<system>` is set → use that tier
-2. Else read `modes.workflow` from `project.yaml` → use that value
+2. Else read `modes.workflow` from `.claude/ccgs/project.yaml` → use that value
 3. Else → use the tier implied by `modes.rigor`
    (`minimal`→`minimal`, `standard`→`standard`, `full`→`full`;
     `rigor` itself defaults to `minimal`)
@@ -50,7 +50,7 @@ its fallback will ignore `rigor: minimal` and `rigor: full` entirely.
 
 ### What `<system>` is — one derivation, everywhere
 
-**`<system>` is the GDD filename stem**: `design/gdd/forge-heat-system.md` →
+**`<system>` is the GDD filename stem**: `docs/design/gdd/forge-heat-system.md` →
 `forge-heat-system`. That is the key to write under
 `workflow_overrides.system_overrides`, and every skill must derive it the same
 way.
@@ -60,7 +60,7 @@ it as a fallback match when the GDD stem yields nothing, but never derive the ke
 from it in preference to the stem.
 
 > **Why this is stated here rather than per skill.** Reading *"the `[system]`
-> segment of its `TR-[system]-NNN` ID (else its `design/gdd/` path)"* — TR-ID
+> segment of its `TR-[system]-NNN` ID (else its `docs/design/gdd/` path)"* — TR-ID
 > **first** — is the wrong order. A system whose GDD is `forge-heat-system.md` and
 > whose requirements are `TR-forge-001` would then have **two different override
 > keys depending on whether a registry entry existed**, and the documented remedy
@@ -71,7 +71,7 @@ from it in preference to the stem.
 
 **A key that matches no system is an error, not a no-op.** If
 `workflow_overrides.system_overrides` contains a key that resolves to no GDD stem
-in `design/gdd/`, say so — naming the unmatched key and the stems available.
+in `docs/design/gdd/`, say so — naming the unmatched key and the stems available.
 Silently ignoring it would leave an override that does nothing, unnoticed.
 
 > **Checked where GDDs are expected to already exist — not by the skill that
@@ -80,7 +80,7 @@ Silently ignoring it would leave an override that does nothing, unnoticed.
 > phase boundary, by which point every in-scope GDD should be on disk. An
 > unmatched key there is genuinely suspicious.
 >
-> `/design-system` **creates** `design/gdd/<system>.md`, so before its first run
+> `/design-system` **creates** `docs/design/gdd/<system>.md`, so before its first run
 > the override key matches no stem *by definition* — that is the healthy case,
 > not an error. It must not report the key as orphaned, and must not refuse to
 > apply the tier it names. The same holds for any other authoring skill running
@@ -113,10 +113,10 @@ says so.
 `rigor` expansion. Do **not** use `get_effective_yaml_key modes.workflow`: it
 reads the two YAML files only, so on a project that sets `modes.rigor` and not
 `modes.workflow` it returns **empty** while the effective tier is whatever rigor
-implies. (`project.local.yaml` is not allowed to override workflow — it is locked
-to `project.yaml` per the whitelist — so the only sources are `project.yaml` and
+implies. (`.claude/ccgs/project.local.yaml` is not allowed to override workflow — it is locked
+to `.claude/ccgs/project.yaml` per the whitelist — so the only sources are `.claude/ccgs/project.yaml` and
 the expansion.) Per-system overrides read via
-`get_yaml_key project.yaml workflow_overrides.system_overrides.<system>`.
+`get_yaml_key .claude/ccgs/project.yaml workflow_overrides.system_overrides.<system>`.
 
 ---
 
@@ -126,12 +126,12 @@ the expansion.) Per-system overrides read via
 |------|----------------|---------------------|----------|
 | `full` | High | All 8 GDD sections per system, full architecture, all ADRs, art bible, UX specs per screen | Teams, commercial titles, learning the full pipeline |
 | `standard` | Balanced | 5 GDD sections per system, one architecture doc, critical ADRs, game concept, systems index | Projects that outgrew a brief - several interacting systems, or a design someone else implements |
-| `minimal` | Low | One-page `design/game-brief.md` + engine choice (its build-order field is the plan — no separate sprint plan) | **Default.** Jam projects, small scope, design already in your head |
+| `minimal` | Low | One-page `docs/GDD.md` + engine choice (its build-order field is the plan — no separate sprint plan) | **Default.** Jam projects, small scope, design already in your head |
 
 **Default**: `minimal` (the rationale block above `_yaml_helper_defaults` in
 `.claude/hooks/yaml-helper.sh` carries the reasoning and the ordering
 constraint). **Set by**: `/start` (via `modes.rigor`), `/settings`. **Locked to
-`project.yaml`** (not locally overridable — divergence would change which
+`.claude/ccgs/project.yaml`** (not locally overridable — divergence would change which
 artifacts must exist on disk).
 
 > **Permissive, not restrictive.** `workflow` controls what is REQUIRED, not
@@ -140,17 +140,17 @@ artifacts must exist on disk).
 > user can invoke.
 
 > **`minimal` floor.** Even at minimal, engine choice and a filled
-> **`design/game-brief.md`** are required before code starts — the brief's
+> **`docs/GDD.md`** are required before code starts — the brief's
 > build-order field is the plan, so there is no separate `sprint-plan` step.
 > Everything else can be skipped.
 
-> **"Game brief" is a real artifact at `minimal`: `design/game-brief.md`.**
+> **"Game brief" is a real artifact at `minimal`: `docs/GDD.md`.**
 > `/brainstorm` writes it from the one-page template
 > (`.claude/docs/templates/game-brief.md`) when the effective tier is `minimal`,
-> in place of the full-length `design/gdd/game-concept.md` it writes at
+> in place of the full-length `docs/GDD.md` it writes at
 > `standard`/`full`. The two are distinct files for distinct tiers: any check,
 > gate, or glob for the `minimal` design artifact must target
-> **`design/game-brief.md`**; `game-concept.md` remains the `standard`/`full`
+> **`docs/GDD.md`**; `game-concept.md` remains the `standard`/`full`
 > concept doc.
 
 ---
@@ -173,7 +173,7 @@ Edge Cases, Dependencies, Tuning Knobs, Acceptance Criteria.
 |------|----------------------|
 | `full` | All 8 |
 | `standard` | **5 required**: Overview, Detailed Rules, Edge Cases, Dependencies, Acceptance Criteria. **Conditional**: Formulas — required when the system **defines numeric rules** (rates, curves, thresholds, costs, damage, drop weights — anything a balance pass would tune); optional only when it defines none. The `Category` column is a hint, not the test. **Skipped**: Player Fantasy, Tuning Knobs. |
-| `minimal` | None — `design/game-brief.md` replaces GDDs. A GDD may still be authored voluntarily. |
+| `minimal` | None — `docs/GDD.md` replaces GDDs. A GDD may still be authored voluntarily. |
 
 > **Edge Cases is required at `standard`** (it was promoted from optional —
 > skipping it produced "what happens if X is null?" debt during implementation).
@@ -244,8 +244,8 @@ Project has `modes.workflow: standard`, `workflow_overrides.system_overrides.com
 ## Per-Skill Behavior (the working summary — sufficient at runtime)
 
 **Authoring** — branch on the effective tier for required sections (and, for
-`brainstorm`, for which design artifact is produced — `design/game-brief.md` at
-`minimal` vs `design/gdd/game-concept.md` at `standard`/`full`):
+`brainstorm`, for which design artifact is produced — `docs/GDD.md` at
+`minimal` vs `docs/GDD.md` at `standard`/`full`):
 `brainstorm`, `design-system`, `art-bible`, `create-architecture`, `ux-design`,
 `map-systems`, `architecture-decision`.
 
@@ -293,7 +293,7 @@ per-skill tables for spec authors, and is not worth loading to apply a knob.
 > and `modes.review_mode`, for six fronted knobs total). One question at `/start`
 > sets all of them; setting any explicitly overrides just that one and leaves its
 > siblings on the rigor level. `team.size` and `modes.review_mode` are the two that
-> also stay overridable from `project.local.yaml` (they are personal-experience
+> also stay overridable from `.claude/ccgs/project.local.yaml` (they are personal-experience
 > knobs, not on-disk artifacts).
 
 - **`docs.density`** (`terse` | `balanced` | `thorough`) — `workflow` controls

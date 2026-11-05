@@ -28,7 +28,7 @@ you write. Driven by `/skill-test` and `/skill-improve`.
 ## What's in here
 
 ```
-studio-tests/
+.claude/ccgs/studio-tests/
 ├── README.md              ← you are here
 ├── CLAUDE.md              ← tells Claude how to use this framework
 ├── catalog.yaml           ← master registry: all 74 skills + 49 agents, coverage tracking
@@ -48,7 +48,7 @@ studio-tests/
 ├── agents/                ← behavioral spec files for agents (one per agent)
 │   ├── directors/         ← creative-director, technical-director, producer, art-director
 │   ├── leads/             ← lead-programmer, narrative-director, audio-director, game-designer, systems-designer, level-designer, qa-lead
-│   ├── specialists/       ← gameplay/engine/network/AI/tools/UI programmers, technical-artist, sound-designer, ux-designer, performance-analyst, prototyper, writer, world-builder
+│   ├── specialists/       ← gameplay/engine/network/AI/Tools/UI programmers, technical-artist, sound-designer, ux-designer, performance-analyst, prototyper, writer, world-builder
 │   ├── engine/            ← engine-specific specialists, split per engine:
 │   │   ├── godot/         ← Godot-specific specialists
 │   │   ├── unity/         ← Unity-specific specialists

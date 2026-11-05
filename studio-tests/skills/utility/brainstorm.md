@@ -7,13 +7,13 @@ resolved `workflow` tier **first**:
 
 - **`minimal`** (the default — `modes.rigor` defaults to `minimal`) runs the
   **Lean Brief flow**: 2–3 one-line concepts, one pick, the brief fields filled
-  conversationally, and a one-page `design/game-brief.md` written after
-  "Brief is ready. May I write it to `design/game-brief.md`?". No director gates
+  conversationally, and a one-page `docs/GDD.md` written after
+  "Brief is ready. May I write it to `docs/GDD.md`?". No director gates
   run and no `game-concept.md` is written.
 - **`standard` / `full`** run the full flow: Creative Discovery, 3 distinct
   concepts, core loop, pillars, player types, scope, then
-  `design/gdd/game-concept.md` after "Game concept is ready. May I write it to
-  `design/gdd/game-concept.md`?".
+  `docs/GDD.md` after "Game concept is ready. May I write it to
+  `docs/GDD.md`?".
 
 In the full flow, director gates run at three points, not together: CD-PILLARS
 (creative-director) and AD-CONCEPT-VISUAL (art-director) in parallel once
@@ -32,7 +32,7 @@ Checked against the SKILL.md by `/skill-test spec` — no fixture needed.
 - [ ] Has required frontmatter fields: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keyword: COMPLETE (in both the Lean Brief flow and the full flow)
-- [ ] Contains "May I write" language for both `design/game-brief.md` and `design/gdd/game-concept.md`
+- [ ] Contains "May I write" language for both `docs/GDD.md` and `docs/GDD.md`
 - [ ] Has a next-step handoff at the end (`/map-systems` in the full flow's design-first steps; `/create-stories` in the Lean Brief flow)
 - [ ] Documents 4 director gates in full mode: CD-PILLARS, AD-CONCEPT-VISUAL, TD-FEASIBILITY, PR-SCOPE
 - [ ] Documents a named skip note for each gate in lean and solo modes
@@ -57,9 +57,9 @@ Full flow only (`workflow: standard` or `full`):
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -69,8 +69,8 @@ Fixture defaults.
 ### Case 1: Happy Path — Full mode, 3 concepts, gates at their three points
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: full` (`workflow` → `full`, `review_mode` → `full`)
-- No existing `design/gdd/game-concept.md`
+- `.claude/ccgs/project.yaml` sets `modes.rigor: full` (`workflow` → `full`, `review_mode` → `full`)
+- No existing `docs/GDD.md`
 - CD-PILLARS returns APPROVE; TD-FEASIBILITY returns VIABLE and PR-SCOPE returns REALISTIC (each gate's own verdict words)
 
 **Input:** `/brainstorm`
@@ -85,7 +85,7 @@ Fixture defaults.
 5. Phase 6 asks for platform and engine (the engine question always prompts);
    TD-FEASIBILITY spawns after risks are identified, before scope tiers
 6. PR-SCOPE spawns after scope tiers are defined
-7. Skill asks "Game concept is ready. May I write it to `design/gdd/game-concept.md`?"
+7. Skill asks "Game concept is ready. May I write it to `docs/GDD.md`?"
 8. Written after approval with a Visual Identity Anchor section; the design-first next steps include `/map-systems`
 9. Verdict is COMPLETE
 
@@ -93,7 +93,7 @@ Fixture defaults.
 - [ ] Exactly 3 concept options are presented
 - [ ] CD-PILLARS and AD-CONCEPT-VISUAL are issued as simultaneous `Agent` calls
 - [ ] TD-FEASIBILITY spawns before scope tiers are defined; PR-SCOPE after
-- [ ] "May I write it to `design/gdd/game-concept.md`?" is asked before writing
+- [ ] "May I write it to `docs/GDD.md`?" is asked before writing
 - [ ] The concept document includes a Visual Identity Anchor section
 - [ ] Next-step handoff lists `/map-systems`
 - [ ] Verdict is COMPLETE
@@ -103,7 +103,7 @@ Fixture defaults.
 ### Case 2: Failure Path — CD-PILLARS returns REJECT
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: full`
+- `.claude/ccgs/project.yaml` sets `modes.rigor: full`
 - Pillars and anti-pillars have been agreed with the user
 - CD-PILLARS returns REJECT: "The pillars do not carry weight — none forces a design choice"
 - AD-CONCEPT-VISUAL returns 3 named visual directions
@@ -124,14 +124,14 @@ Fixture defaults.
 - [ ] User is offered `Revise [specific pillar]` and `Discuss further` (and may `Lock in as-is`)
 - [ ] The first question after the REJECT has no Visual anchor question
 - [ ] Visual anchor selection is not requested until the pillar issue is resolved
-- [ ] `design/gdd/game-concept.md` is not written at this point
+- [ ] `docs/GDD.md` is not written at this point
 
 ---
 
 ### Case 3: Lean Mode — All 4 gates skipped with named notes
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard` (`workflow` → `standard`, `review_mode` → `lean`)
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard` (`workflow` → `standard`, `review_mode` → `lean`)
 - No existing game concept
 
 **Input:** `/brainstorm`
@@ -141,7 +141,7 @@ Fixture defaults.
 2. At Phase 4: "CD-PILLARS skipped — Lean mode. AD-CONCEPT-VISUAL skipped — Lean mode."
 3. At Phase 6: "TD-FEASIBILITY skipped — Lean mode." then "PR-SCOPE skipped — Lean mode."
 4. No director agents are spawned
-5. "Game concept is ready. May I write it to `design/gdd/game-concept.md`?" is asked
+5. "Game concept is ready. May I write it to `docs/GDD.md`?" is asked
 6. Written after approval; Verdict is COMPLETE
 
 **Assertions:**
@@ -155,9 +155,9 @@ Fixture defaults.
 ### Case 4: Solo Default — Minimal tier runs the Lean Brief flow
 
 **Fixture:**
-- `project.yaml` has `engine.name` set and no `modes` block (`modes.rigor`
+- `.claude/ccgs/project.yaml` has `engine.name` set and no `modes` block (`modes.rigor`
   defaults to `minimal`: `workflow` → `minimal`, `review_mode` → `solo`)
-- No `design/game-brief.md`, no `design/gdd/game-concept.md`
+- No `docs/GDD.md`, no `docs/GDD.md`
 
 **Input:** `/brainstorm roguelike`
 
@@ -166,14 +166,14 @@ Fixture defaults.
 2. From the hint, proposes 2–3 one-line concepts and asks one question to pick or combine
 3. Fills the brief fields conversationally (pitch, core loop, player goal & fail
    state, MVP, out of scope, build order) and presents the brief for one confirmation
-4. Asks "Brief is ready. May I write it to `design/game-brief.md`?" with
+4. Asks "Brief is ready. May I write it to `docs/GDD.md`?" with
    `[A] Yes — write it` / `[B] Revise a field first`
 5. Next steps: `/create-stories`, then `/dev-story`; `/setup-engine` is NOT listed
    because `engine.name` is set
 6. Verdict is COMPLETE
 
 **Assertions:**
-- [ ] Output file is `design/game-brief.md`; `design/gdd/game-concept.md` is not written
+- [ ] Output file is `docs/GDD.md`; `docs/GDD.md` is not written
 - [ ] 2–3 one-line concepts are proposed (not the full 9-field concept cards)
 - [ ] No director agent is spawned
 - [ ] Next steps list `/create-stories` and `/dev-story`, not `/map-systems` or `/setup-engine`
@@ -184,7 +184,7 @@ Fixture defaults.
 ### Case 5: Director Gate — PR-SCOPE returns UNREALISTIC
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: full`
+- `.claude/ccgs/project.yaml` sets `modes.rigor: full`
 - Concept, pillars and scope tiers are defined
 - PR-SCOPE returns UNREALISTIC: "The MVP would take 18+ months for a solo developer"
 - The user cuts the MVP to the adjusted tiers the skill offers, then answers
@@ -198,7 +198,7 @@ Fixture defaults.
 3. Because the verdict is UNREALISTIC, the skill offers to adjust the MVP
    definition or scope tiers before writing the document
 4. The write ask comes only after that offer is resolved; the user decides
-5. After the user approves the write, `design/gdd/game-concept.md` is written
+5. After the user approves the write, `docs/GDD.md` is written
 
 **Assertions:**
 - [ ] PR-SCOPE assessment is shown to the user before the "May I write" ask
@@ -212,7 +212,7 @@ Fixture defaults.
 ### Case 6: Solo Review on the Full Flow — All 4 gates skipped with Solo-mode notes
 
 **Fixture:**
-- `project.yaml` sets `modes.rigor: standard` (`workflow` → `standard`)
+- `.claude/ccgs/project.yaml` sets `modes.rigor: standard` (`workflow` → `standard`)
 - No existing game concept
 
 **Input:** `/brainstorm --review solo`
@@ -223,7 +223,7 @@ Fixture defaults.
 2. At Phase 4: "CD-PILLARS skipped — Solo mode. AD-CONCEPT-VISUAL skipped — Solo mode."
 3. At Phase 6: "TD-FEASIBILITY skipped — Solo mode." then "PR-SCOPE skipped — Solo mode."
 4. No director agents are spawned
-5. "Game concept is ready. May I write it to `design/gdd/game-concept.md`?" is
+5. "Game concept is ready. May I write it to `docs/GDD.md`?" is
    asked, and the concept is written after approval; Verdict is COMPLETE
 
 **Assertions:**
@@ -241,7 +241,7 @@ Fixture defaults.
 - [ ] Concept selection always asks, regardless of `modes.automation`
 - [ ] Gates spawn at their own points in full mode (CD-PILLARS + AD-CONCEPT-VISUAL together; TD-FEASIBILITY; PR-SCOPE)
 - [ ] In the full flow (`workflow: standard` / `full`), all 4 gates are skipped in lean and solo modes, each noted by name; the Lean Brief flow spawns no gate at all
-- [ ] Asks "May I write" before writing `design/game-brief.md` or `design/gdd/game-concept.md`
+- [ ] Asks "May I write" before writing `docs/GDD.md` or `docs/GDD.md`
 - [ ] Ends with Verdict COMPLETE and the tier's next-step handoff
 
 ---
@@ -253,5 +253,5 @@ Fixture defaults.
   missing input is named and the gate re-run, or the result recorded as not
   assessed; not separately tested.
 - The concept refinement loop ("Generate fresh directions") is not fixture-tested.
-- Resuming an existing `design/game-brief.md` or `design/gdd/game-concept.md` is not separately tested.
+- Resuming an existing `docs/GDD.md` or `docs/GDD.md` is not separately tested.
 - `guided` / `autonomous` automation behaviour for the pillar and write loops is not tested here.

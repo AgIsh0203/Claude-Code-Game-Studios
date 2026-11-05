@@ -17,10 +17,10 @@ framework. It is self-contained and separate from any game project.
 
 ## Path conventions
 
-- Skill specs: `studio-tests/skills/[category]/[name].md`
-- Agent specs: `studio-tests/agents/[tier]/[name].md`
-- Catalog: `studio-tests/catalog.yaml`
-- Rubric: `studio-tests/quality-rubric.md`
+- Skill specs: `.claude/ccgs/studio-tests/skills/[category]/[name].md`
+- Agent specs: `.claude/ccgs/studio-tests/agents/[tier]/[name].md`
+- Catalog: `.claude/ccgs/studio-tests/catalog.yaml`
+- Rubric: `.claude/ccgs/studio-tests/quality-rubric.md`
 
 The `spec:` field in `catalog.yaml` is the authoritative path for each skill/agent spec.
 Always read it rather than guessing the path.
@@ -88,7 +88,7 @@ A tier is the directory a spec lives in. The rubric category is the agent's
 ## Fixture defaults
 
 Every skill spec has a `## Fixture Defaults` section above its cases. A case's
-sandbox project starts from this `project.yaml` block:
+sandbox project starts from this `.claude/ccgs/project.yaml` block:
 
 ```yaml
 modes:
@@ -100,9 +100,9 @@ modes:
 - A setting the case's Fixture names wins over the block, and an explicit
   sub-knob (`modes.workflow`, `modes.review_mode`, `qa.level`, …) wins over the
   `rigor` preset (`.claude/docs/config-resolution.md` § Defaults).
-- A case that says `project.yaml` sets no `modes` keys, or that there is no
-  `project.yaml`, runs without the block: it tests the unset defaults.
-- There is no `project.local.yaml` unless the case names one.
+- A case that says `.claude/ccgs/project.yaml` sets no `modes` keys, or that there is no
+  `.claude/ccgs/project.yaml`, runs without the block: it tests the unset defaults.
+- There is no `.claude/ccgs/project.local.yaml` unless the case names one.
 - A case whose expected behaviour changes with a setting pins that setting in
   its own Fixture, with the reason — e.g. `modes.workflow: standard` (pinned:
   unset resolves to minimal, which recommends the next build instead of a

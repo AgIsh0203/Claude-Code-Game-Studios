@@ -9,9 +9,9 @@
 > **Engine**: [Godot 4.7 / Unity 6 / Unreal Engine 5]
 > **UI Framework**: [Godot Control nodes / Unity UI Toolkit / Unreal UMG]
 > **Related Documents**:
-> - `design/art/art-bible.md` — visual standards (colors, typography, iconography)
-> - `design/accessibility-requirements.md` — accessibility commitments per feature
-> - `design/ux/[screen].md` — individual screen specs that reference patterns
+> - `docs/design/art/art-bible.md` — visual standards (colors, typography, iconography)
+> - `docs/design/accessibility-requirements.md` — accessibility commitments per feature
+> - `docs/design/ux/[screen].md` — individual screen specs that reference patterns
 >
 > **Template**: Interaction Pattern Library
 
@@ -701,8 +701,8 @@ These three patterns define how screens enter and exit the navigation stack.
 
 > Every interactive event should have audio feedback. Sound is a primary feedback
 > channel, not a decoration. The sounds defined here are event categories — the
-> specific audio assets are defined in `design/audio/sound-bible.md` (or
-> `design/gdd/sound-bible.md`, where earlier versions put it). This table maps
+> specific audio assets are defined in `docs/design/audio/sound-bible.md` (or
+> `docs/design/gdd/sound-bible.md`, where earlier versions put it). This table maps
 > interaction events to sound categories so the sound designer and UI programmer
 > use the same vocabulary.
 

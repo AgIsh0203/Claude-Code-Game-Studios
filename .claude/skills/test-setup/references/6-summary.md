@@ -15,7 +15,7 @@ Files created:
 - tests/unit/ and tests/integration/ (Godot) — or the engine's test root:
   Unity Assets/Tests/EditMode/ and PlayMode/, Unreal Source/<Module>/Private/Tests/
 - tests/smoke/critical-paths.md
-- production/qa/evidence/.gitkeep
+- docs/production/qa/evidence/.gitkeep
 [engine-specific files]
 - .github/workflows/tests.yml
 

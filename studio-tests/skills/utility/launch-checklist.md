@@ -13,7 +13,7 @@ licence to emit every track; if it cannot be determined the section is marked
 `NOT ASSESSED — cert tier unknown`.
 
 Phase 2 reads `CLAUDE.md`, the latest milestone, any existing checklist in
-`production/releases/` and the content calendar. Phase 3 scans the code root for
+`docs/production/releases/` and the content calendar. Phase 3 scans the code root for
 TODO/FIXME/HACK, debug output, placeholder assets and hardcoded dev values, and
 reports every scan with its denominator (`scanned [N] files, [M] hits`) or
 `NOT ASSESSED — [reason]`; an unassessable item is written `- [?]` with a legend,
@@ -30,7 +30,7 @@ Status** is computed from them, first match wins: `NOT READY` (any blocking item
 → `NOT ASSESSED` (any `[?]` item, `NOT ASSESSED` section or unconfirmed item, each
 named) → `CONDITIONAL` (any conditional item) → `READY`. Unless the argument is
 `dry-run`, it asks "May I write this to
-`production/releases/launch-checklist-[date].md`?" and creates nothing — not
+`docs/production/releases/launch-checklist-[date].md`?" and creates nothing — not
 even the directory — before the answer. Next steps: `/gate-check release` first
 if `project.stage` is not `Release` (`Polish`, an earlier stage, or unset), then
 `/team-release`. No director gates are spawned.
@@ -62,9 +62,9 @@ Producer, Release Manager) is checklist text for humans, coordinated later via
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -74,11 +74,11 @@ Fixture defaults.
 ### Case 1: Happy Path — Steam project, clean scans, every section confirmed, READY
 
 **Fixture:**
-- `project.yaml`: `project.stage: Release`, `modes.rigor: standard`, `platform.cert_tier: steam`,
+- `.claude/ccgs/project.yaml`: `project.stage: Release`, `modes.rigor: standard`, `platform.cert_tier: steam`,
   engine Godot (code root `src/`); a single-player game with no servers
 - `src/` has 40 source files with no TODO/FIXME/HACK, no debug output, no placeholder or hardcoded dev values
-- `assets/` exists with final assets
-- `production/releases/` does not exist yet
+- `Content/` exists with final assets
+- `docs/production/releases/` does not exist yet
 - In Phase 4b the user answers `Yes — all of them` for every section, except the
   Infrastructure question, where `Some differ` gives each Servers item N/A and
   every Analytics and Monitoring item yes
@@ -100,8 +100,8 @@ Fixture defaults.
    Conditional or unconfirmed, so the first-match rule gives READY
 7. Skill presents the checklist with a summary (Overall Status, total items, blocking
    count, conditional count, not-assessed count, departments with incomplete sections)
-8. Asks "May I write this to `production/releases/launch-checklist-[date].md`?";
-   `production/releases/` is not created before the answer
+8. Asks "May I write this to `docs/production/releases/launch-checklist-[date].md`?";
+   `docs/production/releases/` is not created before the answer
 9. Next steps: `/team-release` — the stage already reads `Release`, so `/gate-check`
    is not offered
 
@@ -112,7 +112,7 @@ Fixture defaults.
 - [ ] Phase 4b asks at most one question per section, and no Phase 3 count is asked about
 - [ ] Overall Status is READY — every item is ticked on evidence or on a Phase 4b answer, or marked N/A
 - [ ] The summary gives total, blocking, conditional and not-assessed counts
-- [ ] "May I write" names `production/releases/launch-checklist-[date].md`, and no directory exists before the user answers it
+- [ ] "May I write" names `docs/production/releases/launch-checklist-[date].md`, and no directory exists before the user answers it
 - [ ] Next steps name `/team-release` and do not offer `/gate-check`
 
 ---
@@ -145,7 +145,7 @@ Fixture defaults.
 ### Case 3: Cert Tier Unset — Ask, do not emit every track
 
 **Fixture:**
-- `project.yaml`: `project.stage: Release`, `modes.rigor: standard`, no `platform.cert_tier`
+- `.claude/ccgs/project.yaml`: `project.stage: Release`, `modes.rigor: standard`, no `platform.cert_tier`
 - Config block shows `platform.cert_tier: (unset -- ask which platforms are in scope)`
 
 **Input:** `/launch-checklist 2026-11-01`
@@ -167,8 +167,8 @@ Fixture defaults.
 ### Case 4: Nothing to Scan — `[?]` items, not green ticks
 
 **Fixture:**
-- `project.yaml`: `project.stage: Release`, `platform.cert_tier: itch`, engine Godot
-- `src/` exists but is empty; no `assets/` directory
+- `.claude/ccgs/project.yaml`: `project.stage: Release`, `platform.cert_tier: itch`, engine Godot
+- `src/` exists but is empty; no `Content/` directory
 
 **Input:** `/launch-checklist 2026-11-01`
 
@@ -196,7 +196,7 @@ Fixture defaults.
 ### Case 5: Director Gate Check — Dry run, cert tier `none`
 
 **Fixture:**
-- `project.yaml`: `project.stage: Release`, `platform.cert_tier: none`
+- `.claude/ccgs/project.yaml`: `project.stage: Release`, `platform.cert_tier: none`
 - Code root with source files
 
 **Input:** `/launch-checklist dry-run`
@@ -272,5 +272,5 @@ Fixture defaults.
   is not separately tested.
 - Stage scoping (items for phases not yet reached are declared out of scope) and
   `rigor: minimal` trimming are not separately tested.
-- An existing checklist in `production/releases/` is read as context only; no
+- An existing checklist in `docs/production/releases/` is read as context only; no
   comparison against it is tested.

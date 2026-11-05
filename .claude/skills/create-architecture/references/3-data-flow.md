@@ -19,6 +19,6 @@ Use ASCII sequence diagrams where helpful. For each data flow:
 - Flag any data flows that cross thread boundaries
 
 Get user approval on each scenario, then record it in
-`production/session-state/active.md`; it is written at Phase 7.
+`.claude/ccgs/session-state/active.md`; it is written at Phase 7.
 
 ---

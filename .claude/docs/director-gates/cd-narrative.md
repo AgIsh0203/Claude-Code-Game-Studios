@@ -11,7 +11,7 @@ runs its own review, ND-CONSISTENCY
 **Context to pass**:
 - Document file path(s)
 - Game pillars
-- Narrative direction brief or tone guide (if exists at `design/narrative/`)
+- Narrative direction brief or tone guide (if exists at `docs/story/`)
 - Any existing lore that the new document references
 
 **Prompt**:

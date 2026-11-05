@@ -78,16 +78,16 @@ defaults below.
 
 ```
 === CCGS Resolved Config ===
-review_mode: lean (production/review-mode.txt)
-automation: guided (project.local.yaml)
-workflow: standard (project.yaml)
+review_mode: lean (.claude/ccgs/review-mode.txt)
+automation: guided (.claude/ccgs/project.local.yaml)
+workflow: standard (.claude/ccgs/project.yaml)
 docs.density: balanced (rigor:standard)
 story_granularity: balanced (rigor:standard)
 qa.level: standard (rigor:standard)
 team.size: individual (rigor:standard)
-project.stage: Systems Design (production/stage.txt)
+project.stage: Systems Design (.claude/ccgs/stage.txt)
 automation_always_ask: scope_changes, file_deletions, schema_changes (default)
-engine: Godot 4.7 (project.yaml)
+engine: Godot 4.7 (.claude/ccgs/project.yaml)
 testing.strict: logic=true integration=false visual=unset ui=unset config=unset (unset = each skill applies its own default)
 system_overrides: combat=full inventory=minimal
 notes: none
@@ -97,16 +97,16 @@ An inline --review flag, if passed, overrides review_mode.
 ```
 
 Every knob line ends with its **provenance** in parentheses. That is what makes a
-wrong value diagnosable — `review_mode: solo (rigor:minimal)` when `project.yaml` says
+wrong value diagnosable — `review_mode: solo (rigor:minimal)` when `.claude/ccgs/project.yaml` says
 `full` points straight at the problem.
 
 ## Resolution chain
 
 | Step | Source | Applies to |
 |---|---|---|
-| 1 | `project.local.yaml` | any setting on the `/settings --local` whitelist (12 keys — `modes.review_mode`, `modes.automation`, `modes.automation_always_ask`, `team.size`, all five `testing.strict.*`, `performance.enforce`, `features.*`) |
-| 2 | `project.yaml` | all keys |
-| 3 | legacy plain-text mirror | `modes.review_mode` → `production/review-mode.txt`; `project.stage` → `production/stage.txt` |
+| 1 | `.claude/ccgs/project.local.yaml` | any setting on the `/settings --local` whitelist (12 keys — `modes.review_mode`, `modes.automation`, `modes.automation_always_ask`, `team.size`, all five `testing.strict.*`, `performance.enforce`, `features.*`) |
+| 2 | `.claude/ccgs/project.yaml` | all keys |
+| 3 | legacy plain-text mirror | `modes.review_mode` → `.claude/ccgs/review-mode.txt`; `project.stage` → `.claude/ccgs/stage.txt` |
 | 4 | **`modes.rigor` expansion** | the six knobs `rigor` fronts — `modes.workflow`, `docs.density`, `qa.level`, `modes.story_granularity`, `modes.review_mode`, `team.size` |
 | 5 | documented default | the table below |
 
@@ -115,14 +115,14 @@ rejected value is named on the `notes:` line. A typo degrades to the documented
 default rather than propagating a nonsense mode into every skill.
 
 > **Step 4 sits below every explicit source and above the terminal default, and
-> that ordering is the whole back-compat guarantee.** A `project.yaml` that
+> that ordering is the whole back-compat guarantee.** A `.claude/ccgs/project.yaml` that
 > already sets `docs.density: terse` resolves exactly as it did before `rigor`
 > existed, because step 2 answers first. Invert steps 4 and 5 and `rigor` becomes
 > a no-op; hoist step 4 above step 2 and it silently overrides settings people
 > already have.
 >
 > Derived values report their provenance as **`rigor:<level>`**, so the source
-> vocabulary is `{project.local.yaml, project.yaml, <legacy path>, rigor:<level>,
+> vocabulary is `{.claude/ccgs/project.local.yaml, .claude/ccgs/project.yaml, <legacy path>, rigor:<level>,
 > default, unset}`. `docs.density: balanced (rigor:standard)` says the value was
 > never written down anywhere — it follows the project's rigor level and will
 > move if that level moves.
@@ -138,7 +138,7 @@ default rather than propagating a nonsense mode into every skill.
 > stated the chain applies to *every* setting. The narrow read scope was an
 > implementation gap, not a design.
 
-> **A key OUTSIDE the whitelist, hand-written into `project.local.yaml`, is
+> **A key OUTSIDE the whitelist, hand-written into `.claude/ccgs/project.local.yaml`, is
 > reported rather than swallowed.** `/settings --local` refuses to
 > write one, but the file exists to be edited by hand, so that path needs its own
 > guard. `modes.rigor: full` written there is a real key with a legal value, so
@@ -153,10 +153,10 @@ default rather than propagating a nonsense mode into every skill.
 > locked setting is locked because it decides which artifacts exist on disk, so
 > a helper that quietly applied one would let two developers' checkouts diverge
 > — the exact thing the whitelist prevents. The user moves the key to
-> `project.yaml` or deletes it.
+> `.claude/ccgs/project.yaml` or deletes it.
 >
 > `schema_version` and `framework.*` are exempt: `effects-map.md` classes them as
-> file metadata rather than preferences, and a `project.local.yaml` carrying
+> file metadata rather than preferences, and a `.claude/ccgs/project.local.yaml` carrying
 > `schema_version: 1` is correct as written.
 
 ## Defaults
@@ -190,7 +190,7 @@ this starting state. (`team.size` is the one knob the flip does not move:
 `minimal` and `standard` both yield `individual`, and only `full` opts into the
 `studio` roster.)
 
-> **The flip DOES reach existing projects.** A `project.yaml` that sets some of
+> **The flip DOES reach existing projects.** A `.claude/ccgs/project.yaml` that sets some of
 > the six explicitly but never sets `rigor` keeps its explicit values and takes
 > the new `minimal` row for the rest -- so an unset `qa.level` that used to
 > resolve `standard` now resolves `minimal`.
@@ -203,7 +203,7 @@ Setting any of the six explicitly overrides just that one and leaves
 its siblings on the rigor level, which is how "comprehensive but compact"
 (`rigor: full` + `docs.density: terse`) stays expressible. Two of the six —
 `modes.review_mode` and `team.size` — are personal-experience knobs that also
-remain overridable from `project.local.yaml` (that source sits above the
+remain overridable from `.claude/ccgs/project.local.yaml` (that source sits above the
 expansion), unlike the four on-disk knobs, which are locked.
 
 > **Keep this table in step with the helper.** Every knob listed here must carry
@@ -217,7 +217,7 @@ table in `.claude/docs/coding-standards.md`. The `testing.strict` line therefore
 reports only the *configured state* (`unset` where absent). The `gate_level` line
 (below) applies that table and names `/smoke-check`'s own default beside `config`.
 
-**The `engine` line is reported from `project.yaml` only.** The `engine_values`
+**The `engine` line is reported from `.claude/ccgs/project.yaml` only.** The `engine_values`
 line (below) adds the per-field fallback to `.claude/docs/technical-preferences.md`,
 which also remains the sole source for forbidden patterns and allowed libraries —
 those never migrated.
@@ -230,12 +230,12 @@ or `~` reads as unset (the reader returns them as strings, which are not empty).
 
 | Label | What it prints |
 |---|---|
-| `gate_level` | The gate level per story type: `testing.strict.<type>` (`project.local.yaml`, then `project.yaml`), then the plain `testing.strict: true\|false`, then the default table in `coding-standards.md`. `gate_level: logic=blocking(default) integration=advisory(project.yaml) visual=blocking(default) ui=blocking(default) config=advisory(default; /smoke-check: blocking)` |
-| `engine_values` | `engine.name`, `.version` and `.language`, each falling back to `technical-preferences.md` (its Engine line holds name and version together). `engine_values: name=Godot(project.yaml) version=4.7(project.yaml) language=GDScript(project.yaml)` |
-| `specialists` | The engine specialists: `primary` from the engine, the rest from the `specialists` block, where `null` is unset and never an agent name; `technical-preferences.md` only when the block is absent. `specialists: primary=godot-specialist(engine.name) code=godot-gdscript-specialist shader=unset ui=godot-specialist additional=none (project.yaml; unset = skip that specialist)` |
+| `gate_level` | The gate level per story type: `testing.strict.<type>` (`.claude/ccgs/project.local.yaml`, then `.claude/ccgs/project.yaml`), then the plain `testing.strict: true\|false`, then the default table in `coding-standards.md`. `gate_level: logic=blocking(default) integration=advisory(.claude/ccgs/project.yaml) visual=blocking(default) ui=blocking(default) config=advisory(default; /smoke-check: blocking)` |
+| `engine_values` | `engine.name`, `.version` and `.language`, each falling back to `technical-preferences.md` (its Engine line holds name and version together). `engine_values: name=Godot(.claude/ccgs/project.yaml) version=4.7(.claude/ccgs/project.yaml) language=GDScript(.claude/ccgs/project.yaml)` |
+| `specialists` | The engine specialists: `primary` from the engine, the rest from the `specialists` block, where `null` is unset and never an agent name; `technical-preferences.md` only when the block is absent. `specialists: primary=godot-specialist(engine.name) code=godot-gdscript-specialist shader=unset ui=godot-specialist additional=none (.claude/ccgs/project.yaml; unset = skip that specialist)` |
 | `review_gate` | Whether a skill's own director gate and the PHASE-GATEs run at the resolved `review_mode` (`director-gates.md`): `solo` none, `lean` the PHASE-GATEs only, `full` all. `review_gate: skill-gates=skip phase-gates=run (review_mode lean, rigor:standard; a --review flag overrides)` |
-| `input_methods` | The input methods from the `platform` block, each listed once: keyboard/mouse when `PC` or `Web` is a target, gamepad and touch when their support is Full or Partial, plus the primary input, where a primary input such as `Keyboard`, `Controller` or `Touchscreen` is read as keyboard/mouse, gamepad or touch; else `technical-preferences.md`'s Input Methods line. `input_methods: keyboard/mouse, gamepad (project.yaml platform; primary: Gamepad)` |
-| `perf_budgets` | The four `performance.*` budgets (`target_framerate`, `frame_budget_ms`, `draw_call_limit`, `memory_ceiling_mb`), from `project.yaml` only: they are not locally overridable. `perf_budgets: target_framerate=60 frame_budget_ms=16.67 draw_call_limit=unset memory_ceiling_mb=unset (project.yaml)` |
+| `input_methods` | The input methods from the `platform` block, each listed once: keyboard/mouse when `PC` or `Web` is a target, gamepad and touch when their support is Full or Partial, plus the primary input, where a primary input such as `Keyboard`, `Controller` or `Touchscreen` is read as keyboard/mouse, gamepad or touch; else `technical-preferences.md`'s Input Methods line. `input_methods: keyboard/mouse, gamepad (.claude/ccgs/project.yaml platform; primary: Gamepad)` |
+| `perf_budgets` | The four `performance.*` budgets (`target_framerate`, `frame_budget_ms`, `draw_call_limit`, `memory_ceiling_mb`), from `.claude/ccgs/project.yaml` only: they are not locally overridable. `perf_budgets: target_framerate=60 frame_budget_ms=16.67 draw_call_limit=unset memory_ceiling_mb=unset (.claude/ccgs/project.yaml)` |
 
 ## Failure modes
 
@@ -244,8 +244,8 @@ condition below degrades to defaults and is named on `notes:`:
 
 | Condition | Behavior |
 |---|---|
-| `project.yaml` absent | legacy → defaults; `notes: project.yaml absent` |
-| `project.yaml` **empty** | defaults; `notes: project.yaml is EMPTY`. Distinct from absent on purpose — a truncated write or an interrupted `/setup-engine` looks like this |
+| `.claude/ccgs/project.yaml` absent | legacy → defaults; `notes: .claude/ccgs/project.yaml absent` |
+| `.claude/ccgs/project.yaml` **empty** | defaults; `notes: .claude/ccgs/project.yaml is EMPTY`. Distinct from absent on purpose — a truncated write or an interrupted `/setup-engine` looks like this |
 | Malformed YAML | unparseable keys resolve empty and fall through |
 | Tab-indented lines | rejected, and the **line numbers are named** on `notes:` |
 | CRLF line endings | parsed correctly (the Windows default) |
@@ -254,11 +254,11 @@ condition below degrades to defaults and is named on `notes:`:
 | Key present, value empty | treated as **unset**; falls through to the next source, never to `""` |
 | Enum-invalid value | chain continues; rejected value named in `notes:` |
 | Duplicate key (two `modes:` blocks, or `rigor:` twice in one block) | a repeated block is **merged**, so every key in either block is read; a key set twice takes the **last** value. Named on `notes:` with its lines — ``duplicate key `modes` (lines 2, 9): read here as one merged block, …`` |
-| `project.local.yaml` without a base | `validate_local_yaml_base` message on `notes:` |
-| Locked key in `project.local.yaml` | ignored as always, but now **named** on `notes:` — `local: not locally overridable, ignored — modes.rigor (move to project.yaml or delete)` |
+| `.claude/ccgs/project.local.yaml` without a base | `validate_local_yaml_base` message on `notes:` |
+| Locked key in `.claude/ccgs/project.local.yaml` | ignored as always, but now **named** on `notes:` — `local: not locally overridable, ignored — modes.rigor (move to .claude/ccgs/project.yaml or delete)` |
 | No Python interpreter | legacy files and defaults only; **explicitly noted** on `notes:` |
 | No block at all | shell preprocessing disabled (`disableSkillShellExecution`) — use the defaults table above |
-| A task notice where the block should be ("Command did not complete within its 120s timeout and was moved to the background") | the settings line ran past Claude Code's 120-second limit for a skill's `!` line, because every process start was slowed — usually by antivirus real-time scanning of the project folder. The settings exist: read each key yourself from `project.local.yaml`, then `project.yaml`, then the defaults table above |
+| A task notice where the block should be ("Command did not complete within its 120s timeout and was moved to the background") | the settings line ran past Claude Code's 120-second limit for a skill's `!` line, because every process start was slowed — usually by antivirus real-time scanning of the project folder. The settings exist: read each key yourself from `.claude/ccgs/project.local.yaml`, then `.claude/ccgs/project.yaml`, then the defaults table above |
 | Bootstrap line not approved, or exits non-zero | **not a degraded state — the skill never renders at all.** See "Why exactly this command" above |
 
 A skill must never treat a missing block as "config is unset in an interesting

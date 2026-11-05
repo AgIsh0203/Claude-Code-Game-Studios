@@ -4,13 +4,15 @@ description: "Launch readiness across every department: code, content, store, ma
 argument-hint: "[launch-date or 'dry-run']"
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(bash "*/.claude/skills/launch-checklist/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/launch-checklist/../../hooks/yaml-helper.sh" resolve_config *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys rigor,workflow,project.stage,cert_tier,automation`
 
-**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
-`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+**Automation mode**: Resolve `modes.automation` (`.claude/ccgs/project.local.yaml` →
+`.claude/ccgs/project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
 every file write follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
@@ -69,9 +71,9 @@ Read the argument for the launch date or `dry-run` mode. Dry-run mode generates 
 ## Phase 2: Gather Project Context
 
 - Read `CLAUDE.md` for tech stack, target platforms, and team structure
-- Read the latest milestone in `production/milestones/`
-- Read any existing release checklist in `production/releases/`
-- Read the content calendar in `design/live-ops/content-calendar.md` if it exists
+- Read the latest milestone in `docs/production/milestones/`
+- Read any existing release checklist in `docs/production/releases/`
+- Read the content calendar in `docs/design/live-ops/content-calendar.md` if it exists
 
 ---
 
@@ -87,11 +89,11 @@ Read the argument for the launch date or `dry-run` mode. Dry-run mode generates 
 > `NOT ASSESSED — [code root unresolved | no source files | no asset folder | directory empty]`.
 > Never a bare tick. The code root is `src/`, `Assets/` or `Source/` by engine
 > (resolve per `.claude/docs/code-root-resolution.md`); assets live in
-> `assets/`, `Assets/` or `Content/`.
+> `Content/`, `Assets/` or `Content/`.
 >
 > This applies to all four bullets below: each searches the same way, for
 > placeholder assets, TODOs, debug output and hardcoded test values, and each
-> returns zero hits on an empty or absent root. With no `assets/` directory, for
+> returns zero hits on an empty or absent root. With no `Content/` directory, for
 > example, the placeholder scan returns zero hits, and a bare tick would mark
 > "All placeholder art replaced" green.
 
@@ -376,9 +378,9 @@ Then fill in the Go / No-Go section from the answers.
 
 Present the completed checklist and summary to the user (Overall Status, total items, blocking items count, conditional items count, not-assessed items count, departments with incomplete sections).
 
-If not in dry-run mode, ask: "May I write this to `production/releases/launch-checklist-[date].md`?"
+If not in dry-run mode, ask: "May I write this to `docs/production/releases/launch-checklist-[date].md`?"
 
-Create nothing before the answer — not even the `production/releases/` directory.
+Create nothing before the answer — not even the `docs/production/releases/` directory.
 If yes, write the file; the write creates the directory with it.
 
 ---

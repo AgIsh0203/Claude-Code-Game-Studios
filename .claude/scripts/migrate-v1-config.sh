@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# migrate-v1-config.sh — convert a v1.0 CCGS project to v1.1 `project.yaml`.
+# migrate-v1-config.sh — convert a v1.0 CCGS project to v1.1 `.claude/ccgs/project.yaml`.
 #
 # WHY THIS IS A SCRIPT AND NOT SKILL PROSE
 #
@@ -16,10 +16,10 @@
 # section wins and this script is the bug.
 #
 # MODES
-#   (default)   migrate: write project.yaml + production/migration-report.md
+#   (default)   migrate: write .claude/ccgs/project.yaml + .claude/ccgs/migration-report.md
 #   --dry-run   report what would happen; write nothing
 #   --finalize  delete legacy files, but ONLY after proving their content is
-#               preserved in project.yaml
+#               preserved in .claude/ccgs/project.yaml
 #
 # NON-DESTRUCTIVE BY DEFAULT. Migration leaves every legacy file in place, so
 # the whole operation is reversible with `git checkout` until --finalize is run
@@ -40,11 +40,11 @@ case "${1:-}" in
   *) echo "usage: $0 [--dry-run|--finalize]" >&2; exit 2 ;;
 esac
 
-PY="project.yaml"
-STAGE_TXT="production/stage.txt"
-REVIEW_TXT="production/review-mode.txt"
+PY=".claude/ccgs/project.yaml"
+STAGE_TXT=".claude/ccgs/stage.txt"
+REVIEW_TXT=".claude/ccgs/review-mode.txt"
 TP=".claude/docs/technical-preferences.md"
-REPORT="production/migration-report.md"
+REPORT=".claude/ccgs/migration-report.md"
 
 WARN=""
 MANUAL=""
@@ -66,8 +66,8 @@ legacy_present() {
 # that is a prose default rather than a placeholder:
 #   - **Required Tests**: Balance formulas, gameplay systems, networking
 # so a FRESH v1.1 clone satisfied this and legacy_present() returned true for it.
-# With project.yaml also present that is the split-brain branch, so `--dry-run`
-# on an ordinary v1.1 project answered "REFUSED: both project.yaml and legacy
+# With .claude/ccgs/project.yaml also present that is the split-brain branch, so `--dry-run`
+# on an ordinary v1.1 project answered "REFUSED: both .claude/ccgs/project.yaml and legacy
 # files exist. Resolve which is authoritative before migrating." -- naming a
 # conflict that does not exist and blocking the preview. That is precisely the
 # case the note above says this function exists to prevent.
@@ -156,7 +156,7 @@ yaml_num() { { [ -z "$1" ] || ! is_num "$1"; } && printf 'null' || printf '%s' "
 # the same legacy files and compare the results, so any divergence in trimming
 # desynchronises them: while both mangled `Systems Design` identically the
 # comparison still matched, but fixing only the writer would make finalize search
-# project.yaml for a value migrate never wrote and refuse to delete anything.
+# .claude/ccgs/project.yaml for a value migrate never wrote and refuse to delete anything.
 # Quote regex metacharacters before a value is spliced into a grep -E pattern.
 # The finalize verifier builds its pattern from legacy file content, so a forked
 # value like `Alpha (draft)` would be read as a regex group and never match, so
@@ -170,15 +170,15 @@ trim_line() {
 
 # --- preflight --------------------------------------------------------------
 
-# A legacy file whose value project.yaml ALREADY carries is a MIRROR, not a
+# A legacy file whose value .claude/ccgs/project.yaml ALREADY carries is a MIRROR, not a
 # rival source of truth.
 #
-# `/start` writes production/stage.txt on every NEW v1.1 project, deliberately,
+# `/start` writes .claude/ccgs/stage.txt on every NEW v1.1 project, deliberately,
 # as a mirror for hooks that have not migrated -- its own header says so.
 # legacy_present() cannot tell that from a v1.0 leftover, so every project
 # onboarded by /start answered:
 #
-#   REFUSED: both project.yaml and legacy files exist.
+#   REFUSED: both .claude/ccgs/project.yaml and legacy files exist.
 #   Resolve which is authoritative before migrating.
 #
 # with nothing whatever to resolve, because the two agreed. And the same message
@@ -186,8 +186,8 @@ trim_line() {
 # DELETES the mirror /start had just created on purpose.
 #
 # The test is the one --finalize already applies, inverted: a legacy value
-# project.yaml does not carry is a genuine second source; one it does carry is a
-# mirror and needs no resolution. Only reachable when project.yaml exists, so a
+# .claude/ccgs/project.yaml does not carry is a genuine second source; one it does carry is a
+# mirror and needs no resolution. Only reachable when .claude/ccgs/project.yaml exists, so a
 # real v1.0 project -- which has none -- takes exactly the path it did before.
 #
 # These helpers must be defined ABOVE this point. A preflight placed before them
@@ -234,7 +234,7 @@ if [ "$MODE" != "finalize" ]; then
       exit 3
     else
       # Values agree and no migration ever ran here. These are v1.1 mirrors --
-      # /start writes production/stage.txt on every new project by design.
+      # /start writes .claude/ccgs/stage.txt on every new project by design.
       # Nothing to resolve, and --finalize would DELETE a file /start meant to
       # create.
       echo "Nothing to do: $PY exists and the legacy files mirror it (values agree)."
@@ -257,7 +257,7 @@ if [ "$MODE" = "finalize" ]; then
   [ -f "$PY" ] || { echo "REFUSED: $PY does not exist. Run migration first."; exit 3; }
   FAILED=""
   # Verify preservation before deleting anything. A legacy file is only removed
-  # once its value is demonstrably present in project.yaml.
+  # once its value is demonstrably present in .claude/ccgs/project.yaml.
   if [ -f "$STAGE_TXT" ]; then
     want=$(trim_line "$STAGE_TXT")
     grep -qE "^[[:space:]]*stage:[[:space:]]*\"?$(re_quote "$want")\"?" "$PY" || FAILED="$FAILED $STAGE_TXT"
@@ -282,7 +282,7 @@ if [ "$MODE" = "finalize" ]; then
     [ -f "$f" ] && rm -f "$f" && echo "deleted $f"
   done
   echo "NOTE: $TP is NOT deleted — it still holds Forbidden Patterns and"
-  echo "      Allowed Libraries, which have no project.yaml equivalent."
+  echo "      Allowed Libraries, which have no .claude/ccgs/project.yaml equivalent."
   echo "finalize complete."
   exit 0
 fi
@@ -303,7 +303,7 @@ if [ -f "$REVIEW_TXT" ]; then
   # can never move review depth on this project again, and the user is told
   # elsewhere that rigor "drives six settings". On a migrated project it drives
   # five. Reporting only the empty case explained the harmless half.
-  [ -n "$REVIEW" ] && warn "$REVIEW_TXT is '$REVIEW' — modes.review_mode is now set EXPLICITLY, which outranks the modes.rigor expansion. Setting modes.rigor later will NOT change review depth on this project. To let rigor drive it, delete the modes.review_mode line from project.yaml after migrating."
+  [ -n "$REVIEW" ] && warn "$REVIEW_TXT is '$REVIEW' — modes.review_mode is now set EXPLICITLY, which outranks the modes.rigor expansion. Setting modes.rigor later will NOT change review depth on this project. To let rigor drive it, delete the modes.review_mode line from .claude/ccgs/project.yaml after migrating."
 fi
 
 # Enum checks. A fork may hold values v1.1 does not know; the spec says preserve
@@ -326,7 +326,7 @@ case "$REVIEW" in
   ""|full|lean|solo) ;;
   *) warn "modes.review_mode \`$REVIEW\` is not a v1.1 value — preserved raw, resolve by hand"; manual "Confirm \`modes.review_mode: $REVIEW\` is intended" ;;
 esac
-# NO DEFAULT HERE. `production/review-mode.txt` was OPTIONAL in v1.0, so it is
+# NO DEFAULT HERE. `.claude/ccgs/review-mode.txt` was OPTIONAL in v1.0, so it is
 # absent for a large share of upgraders. Defaulting to `lean` wrote an explicit
 # value the user never chose, and an explicit `modes.review_mode` sits ABOVE the
 # rigor expansion in the resolution chain — so it pinned the knob permanently.
@@ -425,7 +425,7 @@ specialist_warn() {   # <dotted.key> <raw> <kept>
   [ -n "$2" ] && [ "$2" != "$3" ] || return 0
   warn "$1 trimmed to \`$3\` — the legacy line was: $2"
   case "$2" in
-    *" or "*) manual "\`$1\` had two candidates in $TP (\"$2\"); kept the first — change it in project.yaml if the other is right" ;;
+    *" or "*) manual "\`$1\` had two candidates in $TP (\"$2\"); kept the first — change it in .claude/ccgs/project.yaml if the other is right" ;;
   esac
 }
 S_CODE=$(agent_name "$S_CODE_RAW")
@@ -447,14 +447,14 @@ if [ -f "$TP" ]; then
     esac
   done < <(grep -E '^## ' "$TP" | sed 's/^## //; s/\r$//')
 fi
-[ -f "$TP" ] && manual "Forbidden Patterns and Allowed Libraries stay in $TP — they have no project.yaml equivalent"
+[ -f "$TP" ] && manual "Forbidden Patterns and Allowed Libraries stay in $TP — they have no .claude/ccgs/project.yaml equivalent"
 
 # v1.0 had no `modes.rigor`; its fixed process level matches v1.1's `standard`.
 # v1.1 defaults `rigor` to `minimal`, and this script writes nothing it did not
 # read, so a migrated project lands on `minimal` — fewer required GDD sections,
 # terser docs, lighter test evidence, no director panels. That is a behaviour
 # change the upgrader never chose; say so in the one artifact they read first.
-warn "modes.rigor is not written — v1.1 defaults it to \`minimal\`, which is lighter than v1.0 behaved (v1.0 matched \`standard\`). To keep v1.0's process level, add \`modes: { rigor: standard }\` to project.yaml or run \`/settings modes.rigor=standard\`"
+warn "modes.rigor is not written — v1.1 defaults it to \`minimal\`, which is lighter than v1.0 behaved (v1.0 matched \`standard\`). To keep v1.0's process level, add \`modes: { rigor: standard }\` to .claude/ccgs/project.yaml or run \`/settings modes.rigor=standard\`"
 manual "Decide \`modes.rigor\`: leave unset for the lighter v1.1 default, or pin \`standard\` to keep v1.0's process level"
 
 # Report the STRING keys that land in the file as `null`, which the numeric
@@ -470,7 +470,7 @@ manual "Decide \`modes.rigor\`: leave unset for the lighter v1.1 default, or pin
 #
 # It matters because `get_yaml_key` returns the four-character STRING "null" for
 # such a key. That is not empty, so a caller testing `[ -z ... ]` reads it as
-# CONFIGURED, and nothing in the framework tests for the string -- /code-review
+# CONFIGURED, and nothing in the framework tests for the string -- /gamedev-code-review
 # reads `specialists.shader` to choose which agent to spawn.
 #
 # The value written is deliberately NOT changed here. `null` is the record that
@@ -484,7 +484,7 @@ manual "Decide \`modes.rigor\`: leave unset for the lighter v1.1 default, or pin
 null_warn() {   # <block-guard> <dotted.key> <value>
   [ -n "$1" ] && [ -z "$3" ] || return 0
   warn "$2 written as \`null\` — $TP had no value for it"
-  manual "Set \`$2\` in project.yaml, or delete the key so it resolves to its default"
+  manual "Set \`$2\` in .claude/ccgs/project.yaml, or delete the key so it resolves to its default"
 }
 _G_ENGINE="$ENGINE_NAME"
 null_warn "$_G_ENGINE" "engine.version"    "$ENGINE_VER"
@@ -559,12 +559,12 @@ if [ "$MODE" = "dry-run" ]; then
   exit 0
 fi
 
-# --- write project.yaml -----------------------------------------------------
+# --- write .claude/ccgs/project.yaml -----------------------------------------------------
 
 {
   echo "# CCGS project configuration — migrated from v1.0 legacy files."
   echo "# Generated by .claude/scripts/migrate-v1-config.sh"
-  echo "# Review production/migration-report.md before running --finalize."
+  echo "# Review .claude/ccgs/migration-report.md before running --finalize."
   echo ""
   echo "schema_version: 1"
   echo ""

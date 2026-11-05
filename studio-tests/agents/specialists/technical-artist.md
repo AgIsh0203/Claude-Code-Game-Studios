@@ -75,6 +75,6 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- Dissolve shader (Case 1) should include a visual test reference in `production/qa/evidence/`
+- Dissolve shader (Case 1) should include a visual test reference in `docs/production/qa/evidence/`
 - Engine version check (Case 4) confirms the agent treats VERSION.md as authoritative
 - Performance budget case (Case 5) verifies the agent reads and applies provided context numbers

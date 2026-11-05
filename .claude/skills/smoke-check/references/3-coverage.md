@@ -8,7 +8,7 @@
 Draw the story list from, in priority order:
 1. The QA plan found in Phase 1 (its Test Summary table lists expected test
    file paths per story)
-2. The current sprint plan from `production/sprints/` (most recently modified
+2. The current sprint plan from `docs/production/sprints/` (most recently modified
    file)
 3. If the `quick` argument was passed, skip this phase entirely and note:
    "Coverage scan skipped — run `/smoke-check sprint` for full coverage
@@ -17,7 +17,7 @@ Draw the story list from, in priority order:
 For each story in scope:
 
 1. Extract the system slug from the story's file path
-   (e.g., `production/epics/combat/story-001.md` → `combat`)
+   (e.g., `docs/production/epics/combat/story-001.md` → `combat`)
 2. Glob `tests/unit/[system]/` and `tests/integration/[system]/` for files
    whose name contains the story slug or a closely related term
 3. Check the story file itself for a `Test file:` header field or a

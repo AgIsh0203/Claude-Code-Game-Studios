@@ -21,7 +21,7 @@ Use `AskUserQuestion`:
 navigation map in any related specs? Flag mismatches.
 
 **4. Accessibility coverage**: Does the spec address the accessibility tier
-committed to in `design/accessibility-requirements.md`? If not, flag open questions.
+committed to in `docs/design/accessibility-requirements.md`? If not, flag open questions.
 
 **5. Empty states**: Does every data-dependent element have an empty state defined?
 Flag any that don't.
@@ -42,10 +42,10 @@ When all sections are approved and written:
 
 ### 6a: Update Session State
 
-Update `production/session-state/active.md` with:
+Update `.claude/ccgs/session-state/active.md` with:
 - Task: [screen-name] UX spec
 - Status: Complete (or In Review)
-- File: design/ux/[filename].md
+- File: docs/design/ux/[filename].md
 - Sections: All written
 - Next: [suggestion]
 

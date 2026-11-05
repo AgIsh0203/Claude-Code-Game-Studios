@@ -3,9 +3,11 @@ name: perf-profile
 description: "Performance profiling — find bottlenecks, measure against budgets, produce ranked optimization recommendations."
 argument-hint: "[system-name or 'full']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash "*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh" get_effective_yaml_key *)
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(bash "*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash "*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh" get_effective_yaml_key *)
 model: sonnet
 ---
+
+> **ProjectI:** read `.claude/docs/projecti-layout.md` first. It maps every path below onto this project (docs/GDD.md, docs/Roadmap.md, docs/Playtest.md, the Trello board). Edit existing docs; create a new file only if required. CLAUDE.md wins on any conflict.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys performance.enforce,automation,workflow`
 
@@ -64,7 +66,7 @@ Only `warn`, `block` and `off` are recognized. Surface any other value to the
 user and fall back to `warn` rather than guessing.
 
 > The value is locally overridable (`/settings --local performance.enforce=block`),
-> so use the resolved block above rather than reading `project.yaml` — a
+> so use the resolved block above rather than reading `.claude/ccgs/project.yaml` — a
 > teammate's stricter local setting is meant to bite on their machine only.
 
 ## Phase 1: Determine Scope
@@ -93,9 +95,9 @@ the project root itself, so it works when the session was started in a
 subfolder, and this skill pre-approves that form only (a `source` or `cd ... &&`
 wrapper asks the user every time). Empty output means that budget is not set.
 
-> **Resolve these budgets from `project.yaml`, not from prose.** Phase 0 above
+> **Resolve these budgets from `.claude/ccgs/project.yaml`, not from prose.** Phase 0 above
 > states these four budgets "are profiled the same way at every level". A user
-> who set `performance.target_framerate: 60` in `project.yaml` has it ignored if
+> who set `performance.target_framerate: 60` in `.claude/ccgs/project.yaml` has it ignored if
 > the budget is read from design docs or CLAUDE.md instead.
 
 Then fall back to design docs or CLAUDE.md for anything config does not carry:
@@ -146,13 +148,13 @@ the exact fabrication this skill's own header warns about.
 
 ## Phase 4: Generate Profiling Report
 
-**Write the report to `production/polish/[scope]-report-[date].md`**, asking first
+**Write the report to `docs/production/polish/[scope]-report-[date].md`**, asking first
 per the Collaboration Protocol: *"May I write this profiling report to
-`production/polish/[scope]-report-[date].md`?"* Create the directory if absent.
+`docs/production/polish/[scope]-report-[date].md`?"* Create the directory if absent.
 
 > **Name the destination — do not just render the template into the
 > conversation.** A profile that lives only in the transcript is gone the moment
-> the session ends, and no two runs can be compared. `production/polish/`
+> the session ends, and no two runs can be compared. `docs/production/polish/`
 > is the same location `/team-polish` writes, deliberately: a profile taken by
 > either route belongs in one place, or the comparison this skill exists to enable
 > cannot be made.
@@ -217,7 +219,7 @@ If multiple items are deferred to Polish (choice C), record them under `### Defe
 
 Close every run that produced a report — whether or not Phase 5 ran — with:
 Verdict: **COMPLETE** — performance profile generated (saved to
-`production/polish/[scope]-report-[date].md` if the write was approved). The only
+`docs/production/polish/[scope]-report-[date].md` if the write was approved). The only
 other outcome is the `NOT ASSESSED — NO DATA` path above.
 
 ---

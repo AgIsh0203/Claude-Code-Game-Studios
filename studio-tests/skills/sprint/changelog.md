@@ -8,8 +8,8 @@ Before using the injected history it classifies every commit as Game or
 Framework / maintenance (Unclear counts as Framework), uses only the Game
 commits, and says how many of how many it used; with zero Game commits it stops.
 With no history at all (not a git repository, or no commits) it skips that check
-and stops at Phase 1. It reads sprint plans in `production/sprints/` and GDDs in
-`design/gdd/` for context, and sorts changes into New Features, Improvements, Bug
+and stops at Phase 1. It reads sprint plans in `docs/production/sprints/` and GDDs in
+`docs/design/gdd/` for context, and sorts changes into New Features, Improvements, Bug
 Fixes, Balance Changes, Technical Debt / Refactoring (internal changelog only),
 Known Issues and Miscellaneous. The internal changelog ends with a Metrics
 section that counts commits without a task reference. With no tags it bounds the
@@ -41,9 +41,9 @@ None. Changelog generation is a fast compilation task; no gates are invoked.
 
 ## Fixture Defaults
 
-Every case's `project.yaml` sets `modes.rigor: minimal` and
-`modes.automation: collaborative`, with no `project.local.yaml`, unless its own
-Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
+Every case's `.claude/ccgs/project.yaml` sets `modes.rigor: minimal` and
+`modes.automation: collaborative`, with no `.claude/ccgs/project.local.yaml`, unless its own
+Fixture says otherwise. Rules: `.claude/ccgs/studio-tests/CLAUDE.md` §
 Fixture defaults.
 
 ---
@@ -55,8 +55,8 @@ Fixture defaults.
 **Fixture:**
 - Git history has a tag `v0.3.0`; it is the newest tag in the injected tag list
 - Since that tag: 12 commits across sprints 006, 007, 008 — all Game commits
-  (mechanics, content, bug fixes) naming systems that appear in `design/`
-- `production/sprints/sprint-006.md` through `sprint-008.md` exist and list the
+  (mechanics, content, bug fixes) naming systems that appear in `docs/design/`
+- `docs/production/sprints/sprint-006.md` through `sprint-008.md` exist and list the
   stories whose task IDs appear in the commit messages
 - `docs/CHANGELOG.md` does not yet exist
 
@@ -66,7 +66,7 @@ Fixture defaults.
 1. Skill classifies the injected commits as Game or Framework / maintenance and
    states how many of how many it used
 2. Skill reads `git log --oneline v0.3.0..HEAD`
-3. Skill reads the sprint plans for sprints 006–008 in `production/sprints/`
+3. Skill reads the sprint plans for sprints 006–008 in `docs/production/sprints/`
    for the context behind the changes
 4. Skill categorizes changes into New Features, Improvements, Bug Fixes,
    Balance Changes, Technical Debt / Refactoring, Known Issues and
@@ -79,7 +79,7 @@ Fixture defaults.
 **Assertions:**
 - [ ] Changelog covers the commits in `v0.3.0..HEAD`, and the output states how many of how many injected commits it used
 - [ ] Entries use the skill's section set — New Features, Improvements, Bug Fixes, Balance Changes, Technical Debt / Refactoring, Known Issues, Miscellaneous — not a generic Features/Fixes split
-- [ ] Sprint plans in `production/sprints/` for the covered sprints are read for context before categorizing
+- [ ] Sprint plans in `docs/production/sprints/` for the covered sprints are read for context before categorizing
 - [ ] Both changelogs are presented before the "May I write" prompt, and nothing is written before approval
 - [ ] Verdict is CHANGELOG WRITTEN after the write
 
@@ -173,7 +173,7 @@ Fixture defaults.
 
 **Fixture:**
 - Git history has Game commits since the last tag
-- `project.yaml` sets `modes.review_mode: full`
+- `.claude/ccgs/project.yaml` sets `modes.review_mode: full`
 
 **Input:** `/changelog`
 
@@ -197,7 +197,7 @@ Fixture defaults.
 **Fixture:**
 - The 30 injected commits all touch the framework or tooling — subjects such as
   "fix: session-start hook timeout", "docs: skill catalog", "ci: cache the test
-  runner" — and none names a game system in `design/` or the code root
+  runner" — and none names a game system in `docs/design/` or the code root
 - `docs/CHANGELOG.md` does not exist
 
 **Input:** `/changelog`
@@ -243,7 +243,7 @@ Fixture defaults.
 ## Protocol Compliance
 
 - [ ] Classifies the injected commits as Game or Framework / maintenance and uses only Game commits
-- [ ] Reads the git log and the sprint plans in `production/sprints/` before compiling
+- [ ] Reads the git log and the sprint plans in `docs/production/sprints/` before compiling
 - [ ] Always asks "May I write" before writing the changelog
 - [ ] No director gates are invoked
 - [ ] Verdict is CHANGELOG WRITTEN after a write, COMPLETE when the write is declined, and BLOCKED when there is no history or no Game commit
